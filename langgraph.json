@@ -1,0 +1,8 @@
+{
+  "dependencies": [
+    "."
+  ],
+  "graphs": {
+    "workspace_bootstrap": "./src/agent_hub/graphs/registered.py:graph"
+  }
+}

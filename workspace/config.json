@@ -1,0 +1,9 @@
+{
+  "workspace_root": "/Users/forest/code/langGraph",
+  "allowed_paths": [
+    "/Users/forest/code/langGraph"
+  ],
+  "excluded_paths": [],
+  "registry_path": "/Users/forest/code/workspace-bootstrap.json",
+  "registry_storage_path": "/Users/forest/code/agent-hub/workspace/registry.json"
+}

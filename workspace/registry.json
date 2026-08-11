@@ -1,0 +1,1690 @@
+{
+  "allowed_paths": [
+    "/Users/forest/code/langGraph"
+  ],
+  "excluded_paths": [],
+  "manual_overrides": {},
+  "refreshed_at": "2026-08-11T12:18:07.551446+00:00",
+  "registry_path": "/Users/forest/code/workspace-bootstrap.json",
+  "repositories": [
+    {
+      "dependencies": [],
+      "dependents": [],
+      "development_units": [
+        {
+          "capabilities": [
+            "file_picker_bridge"
+          ],
+          "dependencies": [],
+          "dependents": [],
+          "evidence": [
+            {
+              "detail": "dart_flutter;sha256=14b0ea53f9f0fde8",
+              "discovered_at": "2026-08-11T12:18:07.595191+00:00",
+              "path": "file_picker_bridge/pubspec.yaml",
+              "source": "filesystem"
+            }
+          ],
+          "freshness": "2026-08-11T12:18:07.551446+00:00",
+          "manifests": [
+            "file_picker_bridge/pubspec.yaml"
+          ],
+          "relative_path": ".",
+          "repo_id": "file_picker_bridge",
+          "rule_files": [],
+          "unit_id": "file_picker_bridge:.",
+          "unit_type": "library/package",
+          "validation": [
+            {
+              "available": true,
+              "category": "format",
+              "command": "dart format .",
+              "commands": [
+                "dart format ."
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=14b0ea53f9f0fde8",
+                "discovered_at": "2026-08-11T12:18:07.594980+00:00",
+                "path": "file_picker_bridge/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "file_picker_bridge"
+            },
+            {
+              "available": true,
+              "category": "analyze",
+              "command": "flutter analyze",
+              "commands": [
+                "flutter analyze"
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=14b0ea53f9f0fde8",
+                "discovered_at": "2026-08-11T12:18:07.595082+00:00",
+                "path": "file_picker_bridge/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "file_picker_bridge"
+            },
+            {
+              "available": true,
+              "category": "test",
+              "command": "flutter test",
+              "commands": [
+                "flutter test"
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=14b0ea53f9f0fde8",
+                "discovered_at": "2026-08-11T12:18:07.595159+00:00",
+                "path": "file_picker_bridge/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "file_picker_bridge"
+            }
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "detail": "git metadata",
+          "discovered_at": "2026-08-11T12:18:07.595627+00:00",
+          "path": "file_picker_bridge",
+          "source": "filesystem"
+        }
+      ],
+      "freshness": "2026-08-11T12:18:07.551446+00:00",
+      "git_root": "/Users/forest/code/langGraph/file_picker_bridge",
+      "manifests": [
+        "file_picker_bridge/pubspec.yaml"
+      ],
+      "path": "/Users/forest/code/langGraph/file_picker_bridge",
+      "platform_constraints": [],
+      "repo_id": "file_picker_bridge",
+      "repo_type": "git_repository",
+      "rule_files": [],
+      "runtime": [
+        "dart_flutter"
+      ],
+      "validation": [
+        {
+          "available": true,
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=14b0ea53f9f0fde8",
+            "discovered_at": "2026-08-11T12:18:07.594980+00:00",
+            "path": "file_picker_bridge/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "file_picker_bridge"
+        },
+        {
+          "available": true,
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=14b0ea53f9f0fde8",
+            "discovered_at": "2026-08-11T12:18:07.595082+00:00",
+            "path": "file_picker_bridge/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "file_picker_bridge"
+        },
+        {
+          "available": true,
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=14b0ea53f9f0fde8",
+            "discovered_at": "2026-08-11T12:18:07.595159+00:00",
+            "path": "file_picker_bridge/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "file_picker_bridge"
+        }
+      ]
+    },
+    {
+      "dependencies": [
+        {
+          "evidence": {
+            "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c",
+            "discovered_at": "2026-08-11T12:18:07.659604+00:00",
+            "path": "flutter_study/packages/gcode_core/example/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "kind": "path_dependency",
+          "source": "flutter_study:packages/gcode_core/example",
+          "target": "flutter_study:packages/gcode_core"
+        },
+        {
+          "evidence": {
+            "detail": "dependencies.gcode_core.path;sha256=a33759dee456342d",
+            "discovered_at": "2026-08-11T12:18:07.660653+00:00",
+            "path": "flutter_study/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "kind": "path_dependency",
+          "source": "flutter_study:.",
+          "target": "flutter_study:packages/gcode_core"
+        },
+        {
+          "evidence": {
+            "detail": "dependencies.flutter_study_learning.path;sha256=a33759dee456342d",
+            "discovered_at": "2026-08-11T12:18:07.660700+00:00",
+            "path": "flutter_study/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "kind": "path_dependency",
+          "source": "flutter_study:.",
+          "target": "flutter_study:packages/flutter_study_learning"
+        },
+        {
+          "evidence": {
+            "detail": "dependencies.file_picker_bridge.path;sha256=a33759dee456342d",
+            "discovered_at": "2026-08-11T12:18:07.660745+00:00",
+            "path": "flutter_study/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "kind": "path_dependency",
+          "source": "flutter_study:.",
+          "target": "flutter_study:packages/file_picker_bridge"
+        },
+        {
+          "evidence": {
+            "detail": "dependencies.flutter_ioc_core.path;sha256=a33759dee456342d",
+            "discovered_at": "2026-08-11T12:18:07.660789+00:00",
+            "path": "flutter_study/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "kind": "path_dependency",
+          "source": "flutter_study:.",
+          "target": "flutter_study:packages/flutter_ioc_core"
+        }
+      ],
+      "dependents": [
+        {
+          "evidence": {
+            "detail": "dependencies.file_picker_bridge.path;sha256=a33759dee456342d",
+            "discovered_at": "2026-08-11T12:18:07.660745+00:00",
+            "path": "flutter_study/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "kind": "path_dependency",
+          "source": "flutter_study:.",
+          "target": "flutter_study:packages/file_picker_bridge"
+        },
+        {
+          "evidence": {
+            "detail": "dependencies.flutter_ioc_core.path;sha256=a33759dee456342d",
+            "discovered_at": "2026-08-11T12:18:07.660789+00:00",
+            "path": "flutter_study/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "kind": "path_dependency",
+          "source": "flutter_study:.",
+          "target": "flutter_study:packages/flutter_ioc_core"
+        },
+        {
+          "evidence": {
+            "detail": "dependencies.flutter_study_learning.path;sha256=a33759dee456342d",
+            "discovered_at": "2026-08-11T12:18:07.660700+00:00",
+            "path": "flutter_study/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "kind": "path_dependency",
+          "source": "flutter_study:.",
+          "target": "flutter_study:packages/flutter_study_learning"
+        },
+        {
+          "evidence": {
+            "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c",
+            "discovered_at": "2026-08-11T12:18:07.659604+00:00",
+            "path": "flutter_study/packages/gcode_core/example/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "kind": "path_dependency",
+          "source": "flutter_study:packages/gcode_core/example",
+          "target": "flutter_study:packages/gcode_core"
+        },
+        {
+          "evidence": {
+            "detail": "dependencies.gcode_core.path;sha256=a33759dee456342d",
+            "discovered_at": "2026-08-11T12:18:07.660653+00:00",
+            "path": "flutter_study/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "kind": "path_dependency",
+          "source": "flutter_study:.",
+          "target": "flutter_study:packages/gcode_core"
+        }
+      ],
+      "development_units": [
+        {
+          "capabilities": [
+            "file_picker_bridge"
+          ],
+          "dependencies": [],
+          "dependents": [
+            {
+              "evidence": {
+                "detail": "dependencies.file_picker_bridge.path;sha256=a33759dee456342d",
+                "discovered_at": "2026-08-11T12:18:07.660745+00:00",
+                "path": "flutter_study/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "kind": "path_dependency",
+              "source": "flutter_study:.",
+              "target": "flutter_study:packages/file_picker_bridge"
+            }
+          ],
+          "evidence": [
+            {
+              "detail": "dart_flutter;sha256=2a42bfa513ec4d1c",
+              "discovered_at": "2026-08-11T12:18:07.596824+00:00",
+              "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+              "source": "filesystem"
+            }
+          ],
+          "freshness": "2026-08-11T12:18:07.551446+00:00",
+          "manifests": [
+            "flutter_study/packages/file_picker_bridge/pubspec.yaml"
+          ],
+          "relative_path": "packages/file_picker_bridge",
+          "repo_id": "flutter_study",
+          "rule_files": [],
+          "unit_id": "flutter_study:packages/file_picker_bridge",
+          "unit_type": "library/package",
+          "validation": [
+            {
+              "available": true,
+              "category": "format",
+              "command": "dart format .",
+              "commands": [
+                "dart format ."
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c",
+                "discovered_at": "2026-08-11T12:18:07.596613+00:00",
+                "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "flutter_study/packages/file_picker_bridge"
+            },
+            {
+              "available": true,
+              "category": "analyze",
+              "command": "flutter analyze",
+              "commands": [
+                "flutter analyze"
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c",
+                "discovered_at": "2026-08-11T12:18:07.596704+00:00",
+                "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "flutter_study/packages/file_picker_bridge"
+            },
+            {
+              "available": true,
+              "category": "test",
+              "command": "flutter test",
+              "commands": [
+                "flutter test"
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c",
+                "discovered_at": "2026-08-11T12:18:07.596788+00:00",
+                "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "flutter_study/packages/file_picker_bridge"
+            }
+          ]
+        },
+        {
+          "capabilities": [
+            "flutter_ioc_core"
+          ],
+          "dependencies": [],
+          "dependents": [
+            {
+              "evidence": {
+                "detail": "dependencies.flutter_ioc_core.path;sha256=a33759dee456342d",
+                "discovered_at": "2026-08-11T12:18:07.660789+00:00",
+                "path": "flutter_study/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "kind": "path_dependency",
+              "source": "flutter_study:.",
+              "target": "flutter_study:packages/flutter_ioc_core"
+            }
+          ],
+          "evidence": [
+            {
+              "detail": "dart_flutter;sha256=59812493697a03ce",
+              "discovered_at": "2026-08-11T12:18:07.597588+00:00",
+              "path": "flutter_study/packages/flutter_ioc_core/pubspec.yaml",
+              "source": "filesystem"
+            }
+          ],
+          "freshness": "2026-08-11T12:18:07.551446+00:00",
+          "manifests": [
+            "flutter_study/packages/flutter_ioc_core/pubspec.yaml"
+          ],
+          "relative_path": "packages/flutter_ioc_core",
+          "repo_id": "flutter_study",
+          "rule_files": [],
+          "unit_id": "flutter_study:packages/flutter_ioc_core",
+          "unit_type": "library/package",
+          "validation": [
+            {
+              "available": true,
+              "category": "format",
+              "command": "dart format .",
+              "commands": [
+                "dart format ."
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=59812493697a03ce",
+                "discovered_at": "2026-08-11T12:18:07.597393+00:00",
+                "path": "flutter_study/packages/flutter_ioc_core/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "flutter_study/packages/flutter_ioc_core"
+            },
+            {
+              "available": true,
+              "category": "analyze",
+              "command": "flutter analyze",
+              "commands": [
+                "flutter analyze"
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=59812493697a03ce",
+                "discovered_at": "2026-08-11T12:18:07.597476+00:00",
+                "path": "flutter_study/packages/flutter_ioc_core/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "flutter_study/packages/flutter_ioc_core"
+            },
+            {
+              "available": true,
+              "category": "test",
+              "command": "flutter test",
+              "commands": [
+                "flutter test"
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=59812493697a03ce",
+                "discovered_at": "2026-08-11T12:18:07.597554+00:00",
+                "path": "flutter_study/packages/flutter_ioc_core/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "flutter_study/packages/flutter_ioc_core"
+            }
+          ]
+        },
+        {
+          "capabilities": [
+            "flutter_study_learning"
+          ],
+          "dependencies": [],
+          "dependents": [
+            {
+              "evidence": {
+                "detail": "dependencies.flutter_study_learning.path;sha256=a33759dee456342d",
+                "discovered_at": "2026-08-11T12:18:07.660700+00:00",
+                "path": "flutter_study/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "kind": "path_dependency",
+              "source": "flutter_study:.",
+              "target": "flutter_study:packages/flutter_study_learning"
+            }
+          ],
+          "evidence": [
+            {
+              "detail": "dart_flutter;sha256=bee0f16de6ac1d72",
+              "discovered_at": "2026-08-11T12:18:07.598439+00:00",
+              "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+              "source": "filesystem"
+            }
+          ],
+          "freshness": "2026-08-11T12:18:07.551446+00:00",
+          "manifests": [
+            "flutter_study/packages/flutter_study_learning/pubspec.yaml"
+          ],
+          "relative_path": "packages/flutter_study_learning",
+          "repo_id": "flutter_study",
+          "rule_files": [],
+          "unit_id": "flutter_study:packages/flutter_study_learning",
+          "unit_type": "library/package",
+          "validation": [
+            {
+              "available": true,
+              "category": "format",
+              "command": "dart format .",
+              "commands": [
+                "dart format ."
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72",
+                "discovered_at": "2026-08-11T12:18:07.598242+00:00",
+                "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "flutter_study/packages/flutter_study_learning"
+            },
+            {
+              "available": true,
+              "category": "analyze",
+              "command": "flutter analyze",
+              "commands": [
+                "flutter analyze"
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72",
+                "discovered_at": "2026-08-11T12:18:07.598325+00:00",
+                "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "flutter_study/packages/flutter_study_learning"
+            },
+            {
+              "available": true,
+              "category": "test",
+              "command": "flutter test",
+              "commands": [
+                "flutter test"
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72",
+                "discovered_at": "2026-08-11T12:18:07.598405+00:00",
+                "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "flutter_study/packages/flutter_study_learning"
+            }
+          ]
+        },
+        {
+          "capabilities": [
+            "example"
+          ],
+          "dependencies": [
+            {
+              "evidence": {
+                "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c",
+                "discovered_at": "2026-08-11T12:18:07.659604+00:00",
+                "path": "flutter_study/packages/gcode_core/example/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "kind": "path_dependency",
+              "source": "flutter_study:packages/gcode_core/example",
+              "target": "flutter_study:packages/gcode_core"
+            }
+          ],
+          "dependents": [],
+          "evidence": [
+            {
+              "detail": "dart_flutter;sha256=8f4a33b15f10090c",
+              "discovered_at": "2026-08-11T12:18:07.601606+00:00",
+              "path": "flutter_study/packages/gcode_core/example/pubspec.yaml",
+              "source": "filesystem"
+            }
+          ],
+          "freshness": "2026-08-11T12:18:07.551446+00:00",
+          "manifests": [
+            "flutter_study/packages/gcode_core/example/pubspec.yaml"
+          ],
+          "relative_path": "packages/gcode_core/example",
+          "repo_id": "flutter_study",
+          "rule_files": [],
+          "unit_id": "flutter_study:packages/gcode_core/example",
+          "unit_type": "application",
+          "validation": [
+            {
+              "available": true,
+              "category": "format",
+              "command": "dart format .",
+              "commands": [
+                "dart format ."
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=8f4a33b15f10090c",
+                "discovered_at": "2026-08-11T12:18:07.601342+00:00",
+                "path": "flutter_study/packages/gcode_core/example/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "flutter_study/packages/gcode_core/example"
+            },
+            {
+              "available": true,
+              "category": "analyze",
+              "command": "flutter analyze",
+              "commands": [
+                "flutter analyze"
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=8f4a33b15f10090c",
+                "discovered_at": "2026-08-11T12:18:07.601464+00:00",
+                "path": "flutter_study/packages/gcode_core/example/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "flutter_study/packages/gcode_core/example"
+            },
+            {
+              "available": true,
+              "category": "test",
+              "command": "flutter test",
+              "commands": [
+                "flutter test"
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=8f4a33b15f10090c",
+                "discovered_at": "2026-08-11T12:18:07.601558+00:00",
+                "path": "flutter_study/packages/gcode_core/example/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "flutter_study/packages/gcode_core/example"
+            }
+          ]
+        },
+        {
+          "capabilities": [
+            "gcode_core"
+          ],
+          "dependencies": [],
+          "dependents": [
+            {
+              "evidence": {
+                "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c",
+                "discovered_at": "2026-08-11T12:18:07.659604+00:00",
+                "path": "flutter_study/packages/gcode_core/example/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "kind": "path_dependency",
+              "source": "flutter_study:packages/gcode_core/example",
+              "target": "flutter_study:packages/gcode_core"
+            },
+            {
+              "evidence": {
+                "detail": "dependencies.gcode_core.path;sha256=a33759dee456342d",
+                "discovered_at": "2026-08-11T12:18:07.660653+00:00",
+                "path": "flutter_study/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "kind": "path_dependency",
+              "source": "flutter_study:.",
+              "target": "flutter_study:packages/gcode_core"
+            }
+          ],
+          "evidence": [
+            {
+              "detail": "dart_flutter;sha256=60279b8182644c68",
+              "discovered_at": "2026-08-11T12:18:07.605358+00:00",
+              "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+              "source": "filesystem"
+            }
+          ],
+          "freshness": "2026-08-11T12:18:07.551446+00:00",
+          "manifests": [
+            "flutter_study/packages/gcode_core/pubspec.yaml"
+          ],
+          "relative_path": "packages/gcode_core",
+          "repo_id": "flutter_study",
+          "rule_files": [],
+          "unit_id": "flutter_study:packages/gcode_core",
+          "unit_type": "library/package",
+          "validation": [
+            {
+              "available": true,
+              "category": "format",
+              "command": "dart format .",
+              "commands": [
+                "dart format ."
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=60279b8182644c68",
+                "discovered_at": "2026-08-11T12:18:07.605140+00:00",
+                "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "flutter_study/packages/gcode_core"
+            },
+            {
+              "available": true,
+              "category": "analyze",
+              "command": "flutter analyze",
+              "commands": [
+                "flutter analyze"
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=60279b8182644c68",
+                "discovered_at": "2026-08-11T12:18:07.605235+00:00",
+                "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "flutter_study/packages/gcode_core"
+            },
+            {
+              "available": true,
+              "category": "test",
+              "command": "flutter test",
+              "commands": [
+                "flutter test"
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=60279b8182644c68",
+                "discovered_at": "2026-08-11T12:18:07.605320+00:00",
+                "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "flutter_study/packages/gcode_core"
+            }
+          ]
+        },
+        {
+          "capabilities": [
+            "main_app"
+          ],
+          "dependencies": [
+            {
+              "evidence": {
+                "detail": "dependencies.gcode_core.path;sha256=a33759dee456342d",
+                "discovered_at": "2026-08-11T12:18:07.660653+00:00",
+                "path": "flutter_study/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "kind": "path_dependency",
+              "source": "flutter_study:.",
+              "target": "flutter_study:packages/gcode_core"
+            },
+            {
+              "evidence": {
+                "detail": "dependencies.flutter_study_learning.path;sha256=a33759dee456342d",
+                "discovered_at": "2026-08-11T12:18:07.660700+00:00",
+                "path": "flutter_study/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "kind": "path_dependency",
+              "source": "flutter_study:.",
+              "target": "flutter_study:packages/flutter_study_learning"
+            },
+            {
+              "evidence": {
+                "detail": "dependencies.file_picker_bridge.path;sha256=a33759dee456342d",
+                "discovered_at": "2026-08-11T12:18:07.660745+00:00",
+                "path": "flutter_study/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "kind": "path_dependency",
+              "source": "flutter_study:.",
+              "target": "flutter_study:packages/file_picker_bridge"
+            },
+            {
+              "evidence": {
+                "detail": "dependencies.flutter_ioc_core.path;sha256=a33759dee456342d",
+                "discovered_at": "2026-08-11T12:18:07.660789+00:00",
+                "path": "flutter_study/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "kind": "path_dependency",
+              "source": "flutter_study:.",
+              "target": "flutter_study:packages/flutter_ioc_core"
+            }
+          ],
+          "dependents": [],
+          "evidence": [
+            {
+              "detail": "dart_flutter;sha256=a33759dee456342d",
+              "discovered_at": "2026-08-11T12:18:07.624031+00:00",
+              "path": "flutter_study/pubspec.yaml",
+              "source": "filesystem"
+            }
+          ],
+          "freshness": "2026-08-11T12:18:07.551446+00:00",
+          "manifests": [
+            "flutter_study/pubspec.yaml"
+          ],
+          "relative_path": ".",
+          "repo_id": "flutter_study",
+          "rule_files": [
+            {
+              "path": "flutter_study/AGENTS.md",
+              "provenance": "filesystem",
+              "scope": "flutter_study"
+            }
+          ],
+          "unit_id": "flutter_study:.",
+          "unit_type": "application",
+          "validation": [
+            {
+              "available": true,
+              "category": "format",
+              "command": "dart format .",
+              "commands": [
+                "dart format ."
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=a33759dee456342d",
+                "discovered_at": "2026-08-11T12:18:07.623825+00:00",
+                "path": "flutter_study/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "flutter_study"
+            },
+            {
+              "available": true,
+              "category": "analyze",
+              "command": "flutter analyze",
+              "commands": [
+                "flutter analyze"
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=a33759dee456342d",
+                "discovered_at": "2026-08-11T12:18:07.623917+00:00",
+                "path": "flutter_study/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "flutter_study"
+            },
+            {
+              "available": true,
+              "category": "test",
+              "command": "flutter test",
+              "commands": [
+                "flutter test"
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=a33759dee456342d",
+                "discovered_at": "2026-08-11T12:18:07.623996+00:00",
+                "path": "flutter_study/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "flutter_study"
+            }
+          ]
+        },
+        {
+          "capabilities": [
+            "unknown"
+          ],
+          "dependencies": [],
+          "dependents": [],
+          "evidence": [
+            {
+              "detail": "cmake;sha256=c4cc59714ae8f896",
+              "discovered_at": "2026-08-11T12:18:07.624744+00:00",
+              "path": "flutter_study/windows/CMakeLists.txt",
+              "source": "filesystem"
+            }
+          ],
+          "freshness": "2026-08-11T12:18:07.551446+00:00",
+          "manifests": [
+            "flutter_study/windows/CMakeLists.txt"
+          ],
+          "relative_path": "windows",
+          "repo_id": "flutter_study",
+          "rule_files": [],
+          "unit_id": "flutter_study:windows",
+          "unit_type": "native component",
+          "validation": []
+        },
+        {
+          "capabilities": [
+            "unknown"
+          ],
+          "dependencies": [],
+          "dependents": [],
+          "evidence": [
+            {
+              "detail": "cmake;sha256=1fe418971b6f41bb",
+              "discovered_at": "2026-08-11T12:18:07.625242+00:00",
+              "path": "flutter_study/windows/flutter/CMakeLists.txt",
+              "source": "filesystem"
+            }
+          ],
+          "freshness": "2026-08-11T12:18:07.551446+00:00",
+          "manifests": [
+            "flutter_study/windows/flutter/CMakeLists.txt"
+          ],
+          "relative_path": "windows/flutter",
+          "repo_id": "flutter_study",
+          "rule_files": [],
+          "unit_id": "flutter_study:windows/flutter",
+          "unit_type": "native component",
+          "validation": []
+        },
+        {
+          "capabilities": [
+            "unknown"
+          ],
+          "dependencies": [],
+          "dependents": [],
+          "evidence": [
+            {
+              "detail": "cmake;sha256=34119ec122e36940",
+              "discovered_at": "2026-08-11T12:18:07.625416+00:00",
+              "path": "flutter_study/windows/runner/CMakeLists.txt",
+              "source": "filesystem"
+            }
+          ],
+          "freshness": "2026-08-11T12:18:07.551446+00:00",
+          "manifests": [
+            "flutter_study/windows/runner/CMakeLists.txt"
+          ],
+          "relative_path": "windows/runner",
+          "repo_id": "flutter_study",
+          "rule_files": [],
+          "unit_id": "flutter_study:windows/runner",
+          "unit_type": "native component",
+          "validation": []
+        }
+      ],
+      "evidence": [
+        {
+          "detail": "git metadata",
+          "discovered_at": "2026-08-11T12:18:07.643206+00:00",
+          "path": "flutter_study",
+          "source": "filesystem"
+        }
+      ],
+      "freshness": "2026-08-11T12:18:07.551446+00:00",
+      "git_root": "/Users/forest/code/langGraph/flutter_study",
+      "manifests": [
+        "flutter_study/pubspec.yaml",
+        "flutter_study/packages/gcode_core/pubspec.yaml",
+        "flutter_study/packages/gcode_core/example/pubspec.yaml",
+        "flutter_study/packages/flutter_ioc_core/pubspec.yaml",
+        "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+        "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+        "flutter_study/windows/CMakeLists.txt",
+        "flutter_study/windows/runner/CMakeLists.txt",
+        "flutter_study/windows/flutter/CMakeLists.txt"
+      ],
+      "path": "/Users/forest/code/langGraph/flutter_study",
+      "platform_constraints": [],
+      "repo_id": "flutter_study",
+      "repo_type": "git_repository",
+      "rule_files": [
+        {
+          "path": "flutter_study/AGENTS.md",
+          "provenance": "filesystem",
+          "scope": "flutter_study"
+        }
+      ],
+      "runtime": [
+        "cmake",
+        "dart_flutter"
+      ],
+      "validation": [
+        {
+          "available": true,
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c",
+            "discovered_at": "2026-08-11T12:18:07.596613+00:00",
+            "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "flutter_study/packages/file_picker_bridge"
+        },
+        {
+          "available": true,
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c",
+            "discovered_at": "2026-08-11T12:18:07.596704+00:00",
+            "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "flutter_study/packages/file_picker_bridge"
+        },
+        {
+          "available": true,
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c",
+            "discovered_at": "2026-08-11T12:18:07.596788+00:00",
+            "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "flutter_study/packages/file_picker_bridge"
+        },
+        {
+          "available": true,
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=59812493697a03ce",
+            "discovered_at": "2026-08-11T12:18:07.597393+00:00",
+            "path": "flutter_study/packages/flutter_ioc_core/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "flutter_study/packages/flutter_ioc_core"
+        },
+        {
+          "available": true,
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=59812493697a03ce",
+            "discovered_at": "2026-08-11T12:18:07.597476+00:00",
+            "path": "flutter_study/packages/flutter_ioc_core/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "flutter_study/packages/flutter_ioc_core"
+        },
+        {
+          "available": true,
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=59812493697a03ce",
+            "discovered_at": "2026-08-11T12:18:07.597554+00:00",
+            "path": "flutter_study/packages/flutter_ioc_core/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "flutter_study/packages/flutter_ioc_core"
+        },
+        {
+          "available": true,
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72",
+            "discovered_at": "2026-08-11T12:18:07.598242+00:00",
+            "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "flutter_study/packages/flutter_study_learning"
+        },
+        {
+          "available": true,
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72",
+            "discovered_at": "2026-08-11T12:18:07.598325+00:00",
+            "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "flutter_study/packages/flutter_study_learning"
+        },
+        {
+          "available": true,
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72",
+            "discovered_at": "2026-08-11T12:18:07.598405+00:00",
+            "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "flutter_study/packages/flutter_study_learning"
+        },
+        {
+          "available": true,
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=8f4a33b15f10090c",
+            "discovered_at": "2026-08-11T12:18:07.601342+00:00",
+            "path": "flutter_study/packages/gcode_core/example/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "flutter_study/packages/gcode_core/example"
+        },
+        {
+          "available": true,
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=8f4a33b15f10090c",
+            "discovered_at": "2026-08-11T12:18:07.601464+00:00",
+            "path": "flutter_study/packages/gcode_core/example/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "flutter_study/packages/gcode_core/example"
+        },
+        {
+          "available": true,
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=8f4a33b15f10090c",
+            "discovered_at": "2026-08-11T12:18:07.601558+00:00",
+            "path": "flutter_study/packages/gcode_core/example/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "flutter_study/packages/gcode_core/example"
+        },
+        {
+          "available": true,
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68",
+            "discovered_at": "2026-08-11T12:18:07.605140+00:00",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "flutter_study/packages/gcode_core"
+        },
+        {
+          "available": true,
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68",
+            "discovered_at": "2026-08-11T12:18:07.605235+00:00",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "flutter_study/packages/gcode_core"
+        },
+        {
+          "available": true,
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68",
+            "discovered_at": "2026-08-11T12:18:07.605320+00:00",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "flutter_study/packages/gcode_core"
+        },
+        {
+          "available": true,
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=a33759dee456342d",
+            "discovered_at": "2026-08-11T12:18:07.623825+00:00",
+            "path": "flutter_study/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "flutter_study"
+        },
+        {
+          "available": true,
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=a33759dee456342d",
+            "discovered_at": "2026-08-11T12:18:07.623917+00:00",
+            "path": "flutter_study/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "flutter_study"
+        },
+        {
+          "available": true,
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=a33759dee456342d",
+            "discovered_at": "2026-08-11T12:18:07.623996+00:00",
+            "path": "flutter_study/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "flutter_study"
+        }
+      ]
+    },
+    {
+      "dependencies": [
+        {
+          "evidence": {
+            "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c",
+            "discovered_at": "2026-08-11T12:18:07.661678+00:00",
+            "path": "gcode_core/example/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "kind": "path_dependency",
+          "source": "gcode_core:example",
+          "target": "gcode_core:."
+        }
+      ],
+      "dependents": [
+        {
+          "evidence": {
+            "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c",
+            "discovered_at": "2026-08-11T12:18:07.661678+00:00",
+            "path": "gcode_core/example/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "kind": "path_dependency",
+          "source": "gcode_core:example",
+          "target": "gcode_core:."
+        }
+      ],
+      "development_units": [
+        {
+          "capabilities": [
+            "example"
+          ],
+          "dependencies": [
+            {
+              "evidence": {
+                "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c",
+                "discovered_at": "2026-08-11T12:18:07.661678+00:00",
+                "path": "gcode_core/example/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "kind": "path_dependency",
+              "source": "gcode_core:example",
+              "target": "gcode_core:."
+            }
+          ],
+          "dependents": [],
+          "evidence": [
+            {
+              "detail": "dart_flutter;sha256=8f4a33b15f10090c",
+              "discovered_at": "2026-08-11T12:18:07.647779+00:00",
+              "path": "gcode_core/example/pubspec.yaml",
+              "source": "filesystem"
+            }
+          ],
+          "freshness": "2026-08-11T12:18:07.551446+00:00",
+          "manifests": [
+            "gcode_core/example/pubspec.yaml"
+          ],
+          "relative_path": "example",
+          "repo_id": "gcode_core",
+          "rule_files": [],
+          "unit_id": "gcode_core:example",
+          "unit_type": "application",
+          "validation": [
+            {
+              "available": true,
+              "category": "format",
+              "command": "dart format .",
+              "commands": [
+                "dart format ."
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=8f4a33b15f10090c",
+                "discovered_at": "2026-08-11T12:18:07.647547+00:00",
+                "path": "gcode_core/example/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "gcode_core/example"
+            },
+            {
+              "available": true,
+              "category": "analyze",
+              "command": "flutter analyze",
+              "commands": [
+                "flutter analyze"
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=8f4a33b15f10090c",
+                "discovered_at": "2026-08-11T12:18:07.647649+00:00",
+                "path": "gcode_core/example/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "gcode_core/example"
+            },
+            {
+              "available": true,
+              "category": "test",
+              "command": "flutter test",
+              "commands": [
+                "flutter test"
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=8f4a33b15f10090c",
+                "discovered_at": "2026-08-11T12:18:07.647741+00:00",
+                "path": "gcode_core/example/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "gcode_core/example"
+            }
+          ]
+        },
+        {
+          "capabilities": [
+            "gcode_core"
+          ],
+          "dependencies": [],
+          "dependents": [
+            {
+              "evidence": {
+                "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c",
+                "discovered_at": "2026-08-11T12:18:07.661678+00:00",
+                "path": "gcode_core/example/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "kind": "path_dependency",
+              "source": "gcode_core:example",
+              "target": "gcode_core:."
+            }
+          ],
+          "evidence": [
+            {
+              "detail": "dart_flutter;sha256=9d03878954175d90",
+              "discovered_at": "2026-08-11T12:18:07.652503+00:00",
+              "path": "gcode_core/pubspec.yaml",
+              "source": "filesystem"
+            }
+          ],
+          "freshness": "2026-08-11T12:18:07.551446+00:00",
+          "manifests": [
+            "gcode_core/pubspec.yaml"
+          ],
+          "relative_path": ".",
+          "repo_id": "gcode_core",
+          "rule_files": [],
+          "unit_id": "gcode_core:.",
+          "unit_type": "library/package",
+          "validation": [
+            {
+              "available": true,
+              "category": "format",
+              "command": "dart format .",
+              "commands": [
+                "dart format ."
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=9d03878954175d90",
+                "discovered_at": "2026-08-11T12:18:07.652290+00:00",
+                "path": "gcode_core/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "gcode_core"
+            },
+            {
+              "available": true,
+              "category": "analyze",
+              "command": "flutter analyze",
+              "commands": [
+                "flutter analyze"
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=9d03878954175d90",
+                "discovered_at": "2026-08-11T12:18:07.652396+00:00",
+                "path": "gcode_core/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "gcode_core"
+            },
+            {
+              "available": true,
+              "category": "test",
+              "command": "flutter test",
+              "commands": [
+                "flutter test"
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=9d03878954175d90",
+                "discovered_at": "2026-08-11T12:18:07.652472+00:00",
+                "path": "gcode_core/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "gcode_core"
+            }
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "detail": "git metadata",
+          "discovered_at": "2026-08-11T12:18:07.656259+00:00",
+          "path": "gcode_core",
+          "source": "filesystem"
+        }
+      ],
+      "freshness": "2026-08-11T12:18:07.551446+00:00",
+      "git_root": "/Users/forest/code/langGraph/gcode_core",
+      "manifests": [
+        "gcode_core/pubspec.yaml",
+        "gcode_core/example/pubspec.yaml"
+      ],
+      "path": "/Users/forest/code/langGraph/gcode_core",
+      "platform_constraints": [],
+      "repo_id": "gcode_core",
+      "repo_type": "git_repository",
+      "rule_files": [],
+      "runtime": [
+        "dart_flutter"
+      ],
+      "validation": [
+        {
+          "available": true,
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=8f4a33b15f10090c",
+            "discovered_at": "2026-08-11T12:18:07.647547+00:00",
+            "path": "gcode_core/example/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "gcode_core/example"
+        },
+        {
+          "available": true,
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=8f4a33b15f10090c",
+            "discovered_at": "2026-08-11T12:18:07.647649+00:00",
+            "path": "gcode_core/example/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "gcode_core/example"
+        },
+        {
+          "available": true,
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=8f4a33b15f10090c",
+            "discovered_at": "2026-08-11T12:18:07.647741+00:00",
+            "path": "gcode_core/example/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "gcode_core/example"
+        },
+        {
+          "available": true,
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=9d03878954175d90",
+            "discovered_at": "2026-08-11T12:18:07.652290+00:00",
+            "path": "gcode_core/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "gcode_core"
+        },
+        {
+          "available": true,
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=9d03878954175d90",
+            "discovered_at": "2026-08-11T12:18:07.652396+00:00",
+            "path": "gcode_core/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "gcode_core"
+        },
+        {
+          "available": true,
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=9d03878954175d90",
+            "discovered_at": "2026-08-11T12:18:07.652472+00:00",
+            "path": "gcode_core/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "gcode_core"
+        }
+      ]
+    },
+    {
+      "dependencies": [],
+      "dependents": [],
+      "development_units": [
+        {
+          "capabilities": [
+            "flutter_study_learning"
+          ],
+          "dependencies": [],
+          "dependents": [],
+          "evidence": [
+            {
+              "detail": "dart_flutter;sha256=c1ecfc5bc59f0727",
+              "discovered_at": "2026-08-11T12:18:07.657223+00:00",
+              "path": "flutter_study_learning/pubspec.yaml",
+              "source": "filesystem"
+            }
+          ],
+          "freshness": "2026-08-11T12:18:07.551446+00:00",
+          "manifests": [
+            "flutter_study_learning/pubspec.yaml"
+          ],
+          "relative_path": ".",
+          "repo_id": "flutter_study_learning",
+          "rule_files": [],
+          "unit_id": "flutter_study_learning:.",
+          "unit_type": "library/package",
+          "validation": [
+            {
+              "available": true,
+              "category": "format",
+              "command": "dart format .",
+              "commands": [
+                "dart format ."
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=c1ecfc5bc59f0727",
+                "discovered_at": "2026-08-11T12:18:07.657108+00:00",
+                "path": "flutter_study_learning/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "flutter_study_learning"
+            },
+            {
+              "available": true,
+              "category": "analyze",
+              "command": "flutter analyze",
+              "commands": [
+                "flutter analyze"
+              ],
+              "evidence": {
+                "detail": "pubspec.yaml runtime;sha256=c1ecfc5bc59f0727",
+                "discovered_at": "2026-08-11T12:18:07.657188+00:00",
+                "path": "flutter_study_learning/pubspec.yaml",
+                "source": "filesystem"
+              },
+              "platform": "any",
+              "working_directory": "flutter_study_learning"
+            }
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "detail": "manifest outside git repository",
+          "discovered_at": "2026-08-11T12:18:07.657389+00:00",
+          "path": "flutter_study_learning",
+          "source": "filesystem"
+        }
+      ],
+      "freshness": "2026-08-11T12:18:07.551446+00:00",
+      "git_root": null,
+      "manifests": [
+        "flutter_study_learning/pubspec.yaml"
+      ],
+      "path": "/Users/forest/code/langGraph/flutter_study_learning",
+      "platform_constraints": [],
+      "repo_id": "flutter_study_learning",
+      "repo_type": "standalone_project",
+      "rule_files": [],
+      "runtime": [
+        "dart_flutter"
+      ],
+      "validation": [
+        {
+          "available": true,
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=c1ecfc5bc59f0727",
+            "discovered_at": "2026-08-11T12:18:07.657108+00:00",
+            "path": "flutter_study_learning/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "flutter_study_learning"
+        },
+        {
+          "available": true,
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "evidence": {
+            "detail": "pubspec.yaml runtime;sha256=c1ecfc5bc59f0727",
+            "discovered_at": "2026-08-11T12:18:07.657188+00:00",
+            "path": "flutter_study_learning/pubspec.yaml",
+            "source": "filesystem"
+          },
+          "platform": "any",
+          "working_directory": "flutter_study_learning"
+        }
+      ]
+    }
+  ],
+  "schema_version": "workspace-registry.v2",
+  "workspace_root": "/Users/forest/code/langGraph"
+}
