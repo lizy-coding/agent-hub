@@ -3,6 +3,9 @@
     "."
   ],
   "graphs": {
-    "workspace_bootstrap": "./src/agent_hub/graphs/registered.py:graph"
+    "workspace_bootstrap": "./src/agent_hub/graphs/registered.py:graph",
+    "context_analysis": "./src/agent_hub/graphs/registered_context.py:graph",
+    "capability_analysis": "./src/agent_hub/graphs/registered_capability.py:graph",
+    "shadow_benchmark": "./src/agent_hub/graphs/registered_benchmark.py:graph"
   }
 }

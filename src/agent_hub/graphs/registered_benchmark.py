@@ -1,0 +1,3 @@
+from agent_hub.graphs.shadow_benchmark import build_shadow_benchmark_graph
+from agent_hub.graphs.registered import _load_config
+graph=build_shadow_benchmark_graph(_load_config())

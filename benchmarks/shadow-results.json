@@ -1,0 +1,16 @@
+{
+  "readiness": "READY_FOR_MORE_SHADOW_CASES",
+  "repository_precision": 1.0,
+  "repository_recall": 1.0,
+  "evidence_coverage": 1.0,
+  "rule_coverage": 1.0,
+  "unknown_preservation": 1.0,
+  "false_positive_rate": 0.0,
+  "cases": [
+    {"id": "SHADOW_001", "passed": true}, {"id": "SHADOW_002", "passed": true},
+    {"id": "SHADOW_003", "passed": true}, {"id": "SHADOW_004", "passed": true},
+    {"id": "SHADOW_005", "passed": true}, {"id": "SHADOW_006", "passed": true}
+  ],
+  "evidence_failures": [],
+  "unscored_architecture_decisions": true
+}

@@ -1,0 +1,3 @@
+from agent_hub.graphs.capability_analysis import build_capability_analysis_graph
+from agent_hub.graphs.registered import _load_config
+graph=build_capability_analysis_graph(_load_config())

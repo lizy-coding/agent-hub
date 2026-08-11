@@ -99,3 +99,112 @@ class Workspace(BaseModel):
     refreshed_at: str = "unknown"
     schema_version: str = "workspace-registry.v2"
     manual_overrides: dict[str, object] = Field(default_factory=dict)
+
+
+class ContextCandidate(BaseModel):
+    id: str
+    classification: str
+    confidence: str
+    reasons: list[str] = Field(default_factory=list)
+    evidence_refs: list[str] = Field(default_factory=list)
+
+
+class ContextFile(BaseModel):
+    absolute_path: str
+    relative_path: str
+    repo_id: str
+    unit_id: str
+    relevance: str
+    evidence_refs: list[str] = Field(default_factory=list)
+
+
+class ContextSymbol(BaseModel):
+    name: str
+    kind: str
+    file: str
+    line: int
+    evidence_refs: list[str] = Field(default_factory=list)
+
+
+class ContextRule(BaseModel):
+    path: str
+    scope: str
+    applies_to: str
+
+
+class ContextUnknown(BaseModel):
+    subject: str
+    reason: str
+    required_evidence: str
+
+
+class ContextPackage(BaseModel):
+    request: dict[str, object]
+    scope: dict[str, list[str]]
+    candidates: list[ContextCandidate] = Field(default_factory=list)
+    files: list[ContextFile] = Field(default_factory=list)
+    symbols: list[ContextSymbol] = Field(default_factory=list)
+    rules: list[ContextRule] = Field(default_factory=list)
+    dependencies: list[Dependency] = Field(default_factory=list)
+    unknowns: list[ContextUnknown] = Field(default_factory=list)
+    confidence: str = "LOW"
+    metrics: dict[str, int] = Field(default_factory=dict)
+
+
+class CouplingProfile(BaseModel):
+    ui: str = "UNKNOWN"
+    application_state: str = "UNKNOWN"
+    platform: str = "UNKNOWN"
+    external_contract: str = "UNKNOWN"
+
+
+class CapabilityNode(BaseModel):
+    capability_id: str
+    label: str
+    target_repo: str
+    development_units: list[str]
+    files: list[str] = Field(default_factory=list)
+    symbols: list[str] = Field(default_factory=list)
+    responsibilities: list[str] = Field(default_factory=list)
+    ownership: str = "unknown"
+    coupling: CouplingProfile = Field(default_factory=CouplingProfile)
+    dependencies: list[Dependency] = Field(default_factory=list)
+    evidence_refs: list[str] = Field(default_factory=list)
+    confidence: str = "LOW"
+    unknowns: list[str] = Field(default_factory=list)
+
+
+class WorkspaceCapabilityMatch(BaseModel):
+    source_capability_id: str
+    target_repo: str
+    target_unit: str
+    match_type: str
+    matched_contracts: list[str] = Field(default_factory=list)
+    matched_symbols: list[str] = Field(default_factory=list)
+    evidence_refs: list[str] = Field(default_factory=list)
+    confidence: str = "LOW"
+
+
+class ExtractionAssessment(BaseModel):
+    capability_id: str
+    decision: str
+    target_repo: str | None = None
+    target_unit: str | None = None
+    reasons: list[str] = Field(default_factory=list)
+    blockers: list[str] = Field(default_factory=list)
+    evidence_refs: list[str] = Field(default_factory=list)
+    confidence: str = "LOW"
+
+
+class CapabilityAnalysis(BaseModel):
+    requirement: str
+    target_repository: str
+    context_ref: dict[str, object]
+    capabilities: list[CapabilityNode] = Field(default_factory=list)
+    workspace_matches: list[WorkspaceCapabilityMatch] = Field(default_factory=list)
+    extraction_assessments: list[ExtractionAssessment] = Field(default_factory=list)
+    keep_in_application: list[str] = Field(default_factory=list)
+    extraction_candidates: list[str] = Field(default_factory=list)
+    unknowns: list[str] = Field(default_factory=list)
+    evidence_summary: dict[str, int] = Field(default_factory=dict)
+    metrics: dict[str, int] = Field(default_factory=dict)
