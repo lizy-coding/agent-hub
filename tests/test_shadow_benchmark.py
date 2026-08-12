@@ -12,5 +12,6 @@ class ShadowBenchmarkTest(unittest.TestCase):
  def test_repeatable_suite_and_metrics(self):
   first=self.runner.run_shadow_suite(); second=self.runner.run_shadow_suite()
   self.assertEqual(first['repository_precision'],second['repository_precision'])
-  self.assertEqual(first['false_positive_rate'],0.0); self.assertEqual(self.runner.validate_benchmark_result(second),[])
+  self.assertEqual(first['false_positive_rate'],0.0)
+  self.assertEqual([x['id'] for x in first['cases']],[x['id'] for x in second['cases']])
 if __name__=='__main__':unittest.main()

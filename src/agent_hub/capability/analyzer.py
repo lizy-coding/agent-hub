@@ -19,16 +19,33 @@ class CapabilityAnalyzer:
     def analyze_coupling(self, text: str) -> CouplingProfile:
         low=text.lower()
         return CouplingProfile(ui="HIGH" if any(x in low for x in ('widget','build(','custompaint')) else "NONE", application_state="HIGH" if any(x in low for x in ('provider','riverpod','bloc','navigator','router','controller')) else "LOW" if 'state' in low else "NONE", platform="HIGH" if any(x in low for x in ('methodchannel','ffi','platform')) else "NONE", external_contract="MEDIUM" if any(x in low for x in ('abstract class','interface','service')) else "NONE")
-    def classify_ownership(self, text: str, coupling: CouplingProfile) -> str:
+    def classify_ownership(self, text: str, coupling: CouplingProfile, public_widget: bool = False) -> str:
         low=text.lower()
+        if 'gorouter' in low or ('controller' in low and sum(x in low for x in ('service','pipeline','repository')) >= 2): return 'application_orchestration'
+        if 'controller' in low and 'service' in low and ('final _' in low or 'state' in low): return 'adapter'
         if coupling.platform == 'HIGH': return 'platform_plugin'
-        if 'adapter' in low: return 'adapter'
-        if coupling.application_state == 'HIGH': return 'application_orchestration'
-        if coupling.ui == 'HIGH' and coupling.application_state == 'NONE': return 'ui_only'
+        if coupling.ui == 'HIGH': return 'reusable_capability' if public_widget else 'ui_only'
         if any(x in low for x in ('parser','algorithm','model','transform')) and coupling.ui == 'NONE': return 'shared_core'
         return 'unknown'
+    def _is_public_export(self, unit_id: str, source_path: str) -> bool:
+        unit=registry_api.get_development_unit(self.config,unit_id); repo=registry_api.get_repository(self.config,unit.repo_id) if unit else None
+        if not unit or not repo: return False
+        for entry in (repo.path/unit.relative_path/'lib').glob('*.dart'):
+            if "export 'src/" in self._text_file(entry): return True
+        return False
+    def _text_file(self,path:Path)->str:
+        try: return path.read_text(encoding='utf-8')[:12000] if is_allowed_business_path(path,self.config) else ''
+        except (OSError,UnicodeDecodeError): return ''
     def match_workspace_capabilities(self, node: CapabilityNode, context: ContextPackage):
         matches=[]
+        unit_id=node.development_units[0]
+        unit=registry_api.get_development_unit(self.config,unit_id)
+        # A public contract in a registered unit plus an incoming manifest path edge
+        # is a strong existing-unit match, including workspace-member packages.
+        incoming=[edge for repo in registry_api.list_repositories(self.config) for edge in registry_api.get_dependencies(self.config,repo.repo_id) if edge.target==unit_id]
+        if unit and self._is_public_export(unit_id,node.files[0]) and incoming:
+            edge=incoming[0]
+            matches.append(WorkspaceCapabilityMatch(source_capability_id=node.capability_id,target_repo=unit.repo_id,target_unit=unit_id,match_type='existing_unit_strong_match',matched_contracts=node.files,matched_symbols=node.symbols,evidence_refs=[edge.evidence.path]+node.evidence_refs,confidence='HIGH'))
         for edge in node.dependencies:
             target=registry_api.get_development_unit(self.config, edge.target)
             if target and target.repo_id != node.target_repo:
@@ -39,24 +56,29 @@ class CapabilityAnalyzer:
     def assess_extraction(self,node:CapabilityNode,matches):
         strong=next((m for m in matches if m.match_type=='existing_unit_strong_match'),None)
         if node.ownership=='application_orchestration': decision='KEEP_IN_APPLICATION'; target=None
-        elif strong: decision='MOVE_TO_EXISTING_UNIT'; target=strong
+        elif node.ownership=='adapter': decision='ADAPTER_ONLY'; target=None
+        elif node.ownership=='unknown': decision='NOT_ENOUGH_EVIDENCE'; target=None
+        elif strong: decision='EXTEND_EXISTING_UNIT' if node.ownership=='reusable_capability' else 'MOVE_TO_EXISTING_UNIT'; target=strong
         elif node.ownership=='shared_core' and node.coupling.ui in ('NONE','LOW') and node.coupling.application_state in ('NONE','LOW'): decision='NEW_SHARED_CORE_CANDIDATE'; target=None
         elif node.ownership=='platform_plugin': decision='NEW_PLUGIN_CANDIDATE'; target=None
-        elif node.ownership=='adapter': decision='ADAPTER_ONLY'; target=None
         else: decision='NOT_ENOUGH_EVIDENCE'; target=None
         return ExtractionAssessment(capability_id=node.capability_id,decision=decision,target_repo=target.target_repo if target else None,target_unit=target.target_unit if target else None,reasons=[f'ownership={node.ownership}'],blockers=node.unknowns,evidence_refs=node.evidence_refs,confidence=node.confidence)
     def analyze_capabilities(self, requirement:str, target_repository:str) -> CapabilityAnalysis:
         context=self.resolver.resolve_context(requirement,target_repository)
-        text_by_file=self._text(context); nodes=[]
-        for candidate in context.candidates:
-            if candidate.classification=='unknown': continue
-            unit_files=[f for f in context.files if f.unit_id==candidate.id]
-            unit_text='\n'.join(text_by_file.get(f.absolute_path,'') for f in unit_files)
-            coupling=self.analyze_coupling(unit_text); ownership=self.classify_ownership(unit_text,coupling)
+        nodes=[]
+        # Seed one bounded capability per source-evidence file rather than per unit.
+        for file in context.files:
+            unit=registry_api.get_development_unit(self.config,file.unit_id)
+            if not unit: continue
+            unit_text=self._text_file(Path(file.absolute_path))
+            if not unit_text: continue
+            symbols=[s.name for s in context.symbols if s.file==file.absolute_path]
+            coupling=self.analyze_coupling(unit_text); ownership=self.classify_ownership(unit_text,coupling,self._is_public_export(file.unit_id,file.absolute_path))
             unknowns=[] if ownership!='unknown' else ['Insufficient bounded source evidence for ownership.']
-            deps=[d for d in context.dependencies if d.source==candidate.id or d.target==candidate.id]
-            confidence='HIGH' if candidate.confidence=='HIGH' and ownership!='unknown' and unit_files else 'MEDIUM' if unit_files else 'LOW'
-            nodes.append(CapabilityNode(capability_id=f'capability:{candidate.id}',label='evidence_cluster',target_repo=target_repository,development_units=[candidate.id],files=[f.relative_path for f in unit_files],symbols=[s.name for s in context.symbols if any(s.file==f.absolute_path for f in unit_files)],responsibilities=['bounded evidence cluster'],ownership=ownership,coupling=coupling,dependencies=deps,evidence_refs=candidate.evidence_refs,confidence=confidence,unknowns=unknowns))
+            deps=registry_api.get_dependencies(self.config,file.unit_id)+registry_api.get_dependents(self.config,file.unit_id)
+            refs=list(dict.fromkeys(file.evidence_refs+[d.evidence.path for d in deps]))
+            confidence='HIGH' if refs and ownership!='unknown' else 'MEDIUM' if refs else 'LOW'
+            nodes.append(CapabilityNode(capability_id=f'capability:{file.unit_id}:{Path(file.absolute_path).name}',label='evidence_anchor',target_repo=target_repository,development_units=[file.unit_id],files=[file.relative_path],symbols=symbols,responsibilities=['source evidence anchor'],ownership=ownership,coupling=coupling,dependencies=deps,evidence_refs=refs,confidence=confidence,unknowns=unknowns))
         matches=[m for n in nodes for m in self.match_workspace_capabilities(n,context)]
         assessments=[self.assess_extraction(n,[m for m in matches if m.source_capability_id==n.capability_id]) for n in nodes]
         unknowns=list(context.unknowns[i].reason for i in range(len(context.unknowns)))+[u for n in nodes for u in n.unknowns]

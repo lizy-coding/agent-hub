@@ -1,6 +1,6 @@
 # Architecture golden candidate review
 
-All eight entries are **pending_review**. Their proposed ownership and extraction values are candidate questions, not benchmark truth. Review each using the listed bounded file/symbol/callsite/manifest evidence; do not use the Analyzer comparison as approval evidence.
+The original candidate file remains an immutable pre-review proposal set. Human-approved truth is recorded separately in [review decisions](../benchmarks/architecture_goldens/review-decisions.json), preserving the distinction between proposal and approval. Do not use the Analyzer comparison as approval evidence.
 
 ## Review instructions
 
@@ -38,3 +38,16 @@ The machine-readable candidate file provides alternatives and evidence needed to
 Ownership coverage: application orchestration, reusable capability, shared core, platform plugin, adapter, UI-only, and unknown are all represented. Extraction coverage: KEEP, MOVE, EXTEND, ADAPTER_ONLY, and NOT_ENOUGH_EVIDENCE are represented.
 
 `NEW_SHARED_CORE_CANDIDATE` and `NEW_PLUGIN_CANDIDATE` are intentionally missing. Existing package boundaries already cover the evidenced parser/platform contract cases, and CMake presence alone is insufficient for a new-plugin proposal. No evidence-supported candidate should be invented solely to complete a category matrix.
+
+## Preparation report
+
+- Candidate count: 8 (within the requested 8–12 range).
+- Every candidate has a traceable source, public-contract, manifest, or exact-callsite anchor.
+- Analyzer comparison: 2 direct matches and 6 disagreements; disagreements are review prompts, not failures or automatic truth changes.
+- Unresolved: GCode player lifecycle breadth, GcodeCanvas reuse breadth, and the Windows native public boundary are explicitly retained in candidate records.
+- Tests: 15 Agent Hub tests passed; four existing LangGraph graphs still validate.
+- Business integrity: Git porcelain counts before/after are unchanged at `0 / 3 / 15`.
+
+## Human review outcome
+
+GOLDEN_001–006 and GOLDEN_008 accepted both proposed values. GOLDEN_007 accepts `ui_only` ownership but sets extraction to `UNKNOWN`; `EXTEND_EXISTING_UNIT` is explicitly not golden truth. This records human truth only; no planner or migration action is authorized by this update.

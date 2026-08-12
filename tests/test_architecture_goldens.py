@@ -14,4 +14,8 @@ class ArchitectureGoldensTest(unittest.TestCase):
   text=(Path(__file__).parents[1]/'benchmarks/architecture_goldens/candidates.json').read_text()
   self.assertNotIn('reviewed',text)
   self.assertNotIn('CapabilityAnalysis',text)
+ def test_human_review_decisions_are_complete_and_do_not_promote_golden_007(self):
+  decisions=json.loads((Path(__file__).parents[1]/'benchmarks/architecture_goldens/review-decisions.json').read_text())
+  self.assertEqual(len(decisions),8)
+  self.assertEqual(next(x for x in decisions if x['id']=='GOLDEN_007')['accepted_extraction'],'UNKNOWN')
 if __name__=='__main__':unittest.main()
