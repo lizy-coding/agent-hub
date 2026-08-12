@@ -1,0 +1,28 @@
+{
+  "capability_id": "capability:flutter_study:.:flutter_export_environment.sh",
+  "prior_block_reason": "extraction decision=UNKNOWN",
+  "terminal_state": "NO_MIGRATION_REQUIRED",
+  "current_owner_repo": null,
+  "current_owner_unit": null,
+  "intended_owner_repo": null,
+  "intended_owner_unit": null,
+  "source_paths": [
+    "/Users/forest/code/langGraph/flutter_study/macos/Flutter/ephemeral/flutter_export_environment.sh"
+  ],
+  "destination_paths": [],
+  "consumer_paths": [],
+  "public_contract_paths": [],
+  "dependency_evidence": [],
+  "callsite_evidence": [],
+  "applicable_rules": [],
+  "validation_evidence": [],
+  "migration_delta": null,
+  "missing_evidence": [
+    "Artifact is context only, not a migratable capability."
+  ],
+  "confidence": "HIGH",
+  "evidence_refs": [
+    "flutter_study/macos/Flutter/ephemeral/flutter_export_environment.sh:4",
+    "flutter_study/pubspec.yaml"
+  ]
+}

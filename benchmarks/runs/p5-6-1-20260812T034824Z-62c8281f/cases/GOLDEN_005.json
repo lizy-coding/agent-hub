@@ -1,0 +1,42 @@
+{
+  "run_id": "p5-6-1-20260812T034824Z-62c8281f",
+  "case_id": "GOLDEN_005",
+  "status": "COMPLETE",
+  "started_at": "2026-08-12T03:49:33.695132+00:00",
+  "completed_at": "2026-08-12T03:49:38.856346+00:00",
+  "duration_seconds": 5.161,
+  "input_identity": "af5322808dc72f05debd2208a753677f4311b79d25f119ce9757cb1ad7c357d6",
+  "prediction": {
+    "id": "GOLDEN_005",
+    "predicted_ownership": "application_orchestration",
+    "accepted_ownership": "application_orchestration",
+    "ownership_match": true,
+    "predicted_extraction": "KEEP_IN_APPLICATION",
+    "accepted_extraction": "KEEP_IN_APPLICATION",
+    "extraction_match": true,
+    "predicted_target_unit": null,
+    "accepted_target_unit": null,
+    "target_scored": false,
+    "target_match": null,
+    "unsupported_promotion": false,
+    "evidence_used": [
+      "flutter_study/lib/app/router/app_router.dart:8",
+      "flutter_study/pubspec.yaml"
+    ],
+    "failure_classification": null
+  },
+  "truth_assertions": {
+    "id": "GOLDEN_005",
+    "state": "approved",
+    "accepted_ownership": "application_orchestration",
+    "accepted_extraction": "KEEP_IN_APPLICATION",
+    "note": "根路由组合属于 Application Composition Root，保留在主应用。"
+  },
+  "metrics": {},
+  "evidence_refs": [
+    "flutter_study/lib/app/router/app_router.dart:8",
+    "flutter_study/pubspec.yaml"
+  ],
+  "failures": [],
+  "result_hash": "c027b52cf4266d7454055b7e8763c592121dc0ba9f35e634149e0b041577fa83"
+}

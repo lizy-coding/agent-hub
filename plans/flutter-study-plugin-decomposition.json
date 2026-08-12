@@ -1,0 +1,3309 @@
+{
+  "plan_id": "migration-4acbfd7b5ac2",
+  "requirement": "对 flutter_study 进行插件化拆解规划。基于现有 Workspace Registry、Context Resolver 与 Capability Analyzer，识别应保留在主工程的 application orchestration、adapter，应迁移或扩展到已有 plugin/package 的能力，可创建的新 shared core/plugin 候选，以及证据不足必须 BLOCKED 的能力。输出可执行但本阶段绝不执行的 MigrationTask DAG。",
+  "target_repository": "flutter_study",
+  "source_analysis_ref": {
+    "requirement": "对 flutter_study 进行插件化拆解规划。基于现有 Workspace Registry、Context Resolver 与 Capability Analyzer，识别应保留在主工程的 application orchestration、adapter，应迁移或扩展到已有 plugin/package 的能力，可创建的新 shared core/plugin 候选，以及证据不足必须 BLOCKED 的能力。输出可执行但本阶段绝不执行的 MigrationTask DAG。",
+    "context_ref": {
+      "confidence": "HIGH",
+      "metrics": {
+        "searched_repositories": 1,
+        "searched_files": 9,
+        "selected_files": 40,
+        "evidence_count": 81,
+        "context_size_estimate": 122
+      }
+    },
+    "metrics": {
+      "bounded_files_read": 40,
+      "capabilities": 40,
+      "matches": 114
+    }
+  },
+  "architecture_invariants": [
+    "application_orchestration_remains_in_application",
+    "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+    "adapter_is_application_integration_boundary",
+    "UNKNOWN_never_promoted_by_Planner",
+    "current_file_location_does_not_prove_future_owner",
+    "source_cleanup_occurs_only_after_replacement_and_validation",
+    "breaking_public_API_change_must_be_explicit",
+    "cross_repo_dependency_change_must_be_explicit_task"
+  ],
+  "migration_tasks": [
+    {
+      "task_id": "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:contract",
+      "title": "Define or extend target contract",
+      "action_type": "DEFINE_CONTRACT",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "target_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core/lib/src/data/readers/file_gcode_line_reader.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core"
+      ],
+      "context_refs": [
+        "flutter_study/packages/gcode_core/lib/src/data/readers/file_gcode_line_reader.dart:7",
+        "flutter_study/packages/gcode_core/example/pubspec.yaml",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605140+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605235+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605320+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "HIGH",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:implementation",
+      "title": "Move evidence-backed implementation",
+      "action_type": "MOVE_PLATFORM_IMPLEMENTATION",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "target_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core/lib/src/data/readers/file_gcode_line_reader.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core"
+      ],
+      "context_refs": [
+        "flutter_study/packages/gcode_core/lib/src/data/readers/file_gcode_line_reader.dart:7",
+        "flutter_study/packages/gcode_core/example/pubspec.yaml",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [
+        "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:contract"
+      ],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605140+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605235+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605320+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "HIGH",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:caller-switch",
+      "title": "Update callers after target implementation",
+      "action_type": "UPDATE_CALLER",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "target_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core/lib/src/data/readers/file_gcode_line_reader.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core"
+      ],
+      "context_refs": [
+        "flutter_study/packages/gcode_core/lib/src/data/readers/file_gcode_line_reader.dart:7",
+        "flutter_study/packages/gcode_core/example/pubspec.yaml",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [
+        "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:implementation"
+      ],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605140+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605235+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605320+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "MEDIUM",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:validate-target",
+      "title": "Validate target boundary",
+      "action_type": "VALIDATE_TARGET",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "target_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core/lib/src/data/readers/file_gcode_line_reader.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core"
+      ],
+      "context_refs": [
+        "flutter_study/packages/gcode_core/lib/src/data/readers/file_gcode_line_reader.dart:7",
+        "flutter_study/packages/gcode_core/example/pubspec.yaml",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [
+        "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:implementation"
+      ],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605140+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605235+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605320+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "MEDIUM",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:validate-integration",
+      "title": "Validate integration before cleanup",
+      "action_type": "VALIDATE_INTEGRATION",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "target_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core/lib/src/data/readers/file_gcode_line_reader.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core"
+      ],
+      "context_refs": [
+        "flutter_study/packages/gcode_core/lib/src/data/readers/file_gcode_line_reader.dart:7",
+        "flutter_study/packages/gcode_core/example/pubspec.yaml",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [
+        "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:caller-switch",
+        "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:validate-target"
+      ],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605140+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605235+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605320+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "MEDIUM",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:cleanup",
+      "title": "Remove superseded source only after validation",
+      "action_type": "REMOVE_OLD_IMPLEMENTATION",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "target_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core/lib/src/data/readers/file_gcode_line_reader.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core"
+      ],
+      "context_refs": [
+        "flutter_study/packages/gcode_core/lib/src/data/readers/file_gcode_line_reader.dart:7",
+        "flutter_study/packages/gcode_core/example/pubspec.yaml",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [
+        "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:validate-integration"
+      ],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605140+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605235+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605320+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "HIGH",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/gcode_core:gcode_parser.dart:contract",
+      "title": "Define or extend target contract",
+      "action_type": "DEFINE_CONTRACT",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "target_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core/lib/src/parser/gcode_parser.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core"
+      ],
+      "context_refs": [
+        "flutter_study/packages/gcode_core/lib/src/parser/gcode_parser.dart:6",
+        "flutter_study/packages/gcode_core/example/pubspec.yaml",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605140+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605235+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605320+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "MEDIUM",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/gcode_core:gcode_parser.dart:implementation",
+      "title": "Move evidence-backed implementation",
+      "action_type": "MOVE_CORE_LOGIC",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "target_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core/lib/src/parser/gcode_parser.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core"
+      ],
+      "context_refs": [
+        "flutter_study/packages/gcode_core/lib/src/parser/gcode_parser.dart:6",
+        "flutter_study/packages/gcode_core/example/pubspec.yaml",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [
+        "capability:flutter_study:packages/gcode_core:gcode_parser.dart:contract"
+      ],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605140+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605235+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605320+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "MEDIUM",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/gcode_core:gcode_parser.dart:caller-switch",
+      "title": "Update callers after target implementation",
+      "action_type": "UPDATE_CALLER",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "target_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core/lib/src/parser/gcode_parser.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core"
+      ],
+      "context_refs": [
+        "flutter_study/packages/gcode_core/lib/src/parser/gcode_parser.dart:6",
+        "flutter_study/packages/gcode_core/example/pubspec.yaml",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [
+        "capability:flutter_study:packages/gcode_core:gcode_parser.dart:implementation"
+      ],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605140+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605235+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605320+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "MEDIUM",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/gcode_core:gcode_parser.dart:validate-target",
+      "title": "Validate target boundary",
+      "action_type": "VALIDATE_TARGET",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "target_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core/lib/src/parser/gcode_parser.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core"
+      ],
+      "context_refs": [
+        "flutter_study/packages/gcode_core/lib/src/parser/gcode_parser.dart:6",
+        "flutter_study/packages/gcode_core/example/pubspec.yaml",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [
+        "capability:flutter_study:packages/gcode_core:gcode_parser.dart:implementation"
+      ],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605140+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605235+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605320+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "MEDIUM",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/gcode_core:gcode_parser.dart:validate-integration",
+      "title": "Validate integration before cleanup",
+      "action_type": "VALIDATE_INTEGRATION",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "target_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core/lib/src/parser/gcode_parser.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core"
+      ],
+      "context_refs": [
+        "flutter_study/packages/gcode_core/lib/src/parser/gcode_parser.dart:6",
+        "flutter_study/packages/gcode_core/example/pubspec.yaml",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [
+        "capability:flutter_study:packages/gcode_core:gcode_parser.dart:caller-switch",
+        "capability:flutter_study:packages/gcode_core:gcode_parser.dart:validate-target"
+      ],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605140+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605235+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605320+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "MEDIUM",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/gcode_core:gcode_parser.dart:cleanup",
+      "title": "Remove superseded source only after validation",
+      "action_type": "REMOVE_OLD_IMPLEMENTATION",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "target_units": [
+        "flutter_study:packages/gcode_core"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core/lib/src/parser/gcode_parser.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/gcode_core"
+      ],
+      "context_refs": [
+        "flutter_study/packages/gcode_core/lib/src/parser/gcode_parser.dart:6",
+        "flutter_study/packages/gcode_core/example/pubspec.yaml",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [
+        "capability:flutter_study:packages/gcode_core:gcode_parser.dart:validate-integration"
+      ],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605140+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605235+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/gcode_core",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.605320+00:00",
+            "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "HIGH",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:contract",
+      "title": "Define or extend target contract",
+      "action_type": "DEFINE_CONTRACT",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/file_picker_bridge"
+      ],
+      "target_units": [
+        "flutter_study:packages/file_picker_bridge"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/file_picker_bridge/lib/src/method_channel_file_picker.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/file_picker_bridge"
+      ],
+      "context_refs": [
+        "flutter_study/packages/file_picker_bridge/lib/src/method_channel_file_picker.dart:5",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/file_picker_bridge",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.596613+00:00",
+            "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/file_picker_bridge",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.596704+00:00",
+            "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/file_picker_bridge",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.596788+00:00",
+            "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "HIGH",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:implementation",
+      "title": "Move evidence-backed implementation",
+      "action_type": "MOVE_PLATFORM_IMPLEMENTATION",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/file_picker_bridge"
+      ],
+      "target_units": [
+        "flutter_study:packages/file_picker_bridge"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/file_picker_bridge/lib/src/method_channel_file_picker.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/file_picker_bridge"
+      ],
+      "context_refs": [
+        "flutter_study/packages/file_picker_bridge/lib/src/method_channel_file_picker.dart:5",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [
+        "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:contract"
+      ],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/file_picker_bridge",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.596613+00:00",
+            "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/file_picker_bridge",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.596704+00:00",
+            "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/file_picker_bridge",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.596788+00:00",
+            "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "HIGH",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:caller-switch",
+      "title": "Update callers after target implementation",
+      "action_type": "UPDATE_CALLER",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/file_picker_bridge"
+      ],
+      "target_units": [
+        "flutter_study:packages/file_picker_bridge"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/file_picker_bridge/lib/src/method_channel_file_picker.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/file_picker_bridge"
+      ],
+      "context_refs": [
+        "flutter_study/packages/file_picker_bridge/lib/src/method_channel_file_picker.dart:5",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [
+        "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:implementation"
+      ],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/file_picker_bridge",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.596613+00:00",
+            "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/file_picker_bridge",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.596704+00:00",
+            "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/file_picker_bridge",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.596788+00:00",
+            "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "MEDIUM",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:validate-target",
+      "title": "Validate target boundary",
+      "action_type": "VALIDATE_TARGET",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/file_picker_bridge"
+      ],
+      "target_units": [
+        "flutter_study:packages/file_picker_bridge"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/file_picker_bridge/lib/src/method_channel_file_picker.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/file_picker_bridge"
+      ],
+      "context_refs": [
+        "flutter_study/packages/file_picker_bridge/lib/src/method_channel_file_picker.dart:5",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [
+        "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:implementation"
+      ],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/file_picker_bridge",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.596613+00:00",
+            "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/file_picker_bridge",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.596704+00:00",
+            "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/file_picker_bridge",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.596788+00:00",
+            "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "MEDIUM",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:validate-integration",
+      "title": "Validate integration before cleanup",
+      "action_type": "VALIDATE_INTEGRATION",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/file_picker_bridge"
+      ],
+      "target_units": [
+        "flutter_study:packages/file_picker_bridge"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/file_picker_bridge/lib/src/method_channel_file_picker.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/file_picker_bridge"
+      ],
+      "context_refs": [
+        "flutter_study/packages/file_picker_bridge/lib/src/method_channel_file_picker.dart:5",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [
+        "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:caller-switch",
+        "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:validate-target"
+      ],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/file_picker_bridge",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.596613+00:00",
+            "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/file_picker_bridge",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.596704+00:00",
+            "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/file_picker_bridge",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.596788+00:00",
+            "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "MEDIUM",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:cleanup",
+      "title": "Remove superseded source only after validation",
+      "action_type": "REMOVE_OLD_IMPLEMENTATION",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/file_picker_bridge"
+      ],
+      "target_units": [
+        "flutter_study:packages/file_picker_bridge"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/file_picker_bridge/lib/src/method_channel_file_picker.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/file_picker_bridge"
+      ],
+      "context_refs": [
+        "flutter_study/packages/file_picker_bridge/lib/src/method_channel_file_picker.dart:5",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [
+        "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:validate-integration"
+      ],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/file_picker_bridge",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.596613+00:00",
+            "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/file_picker_bridge",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.596704+00:00",
+            "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/file_picker_bridge",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.596788+00:00",
+            "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "HIGH",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:contract",
+      "title": "Define or extend target contract",
+      "action_type": "EXTEND_CONTRACT",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/flutter_study_learning"
+      ],
+      "target_units": [
+        "flutter_study:packages/flutter_study_learning"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/flutter_study_learning/lib/src/learning_scaffold.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/flutter_study_learning"
+      ],
+      "context_refs": [
+        "flutter_study/packages/flutter_study_learning/lib/src/learning_scaffold.dart:5",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/flutter_study_learning",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.598242+00:00",
+            "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/flutter_study_learning",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.598325+00:00",
+            "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/flutter_study_learning",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.598405+00:00",
+            "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "MEDIUM",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:implementation",
+      "title": "Move evidence-backed implementation",
+      "action_type": "MOVE_CORE_LOGIC",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/flutter_study_learning"
+      ],
+      "target_units": [
+        "flutter_study:packages/flutter_study_learning"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/flutter_study_learning/lib/src/learning_scaffold.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/flutter_study_learning"
+      ],
+      "context_refs": [
+        "flutter_study/packages/flutter_study_learning/lib/src/learning_scaffold.dart:5",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [
+        "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:contract"
+      ],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/flutter_study_learning",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.598242+00:00",
+            "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/flutter_study_learning",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.598325+00:00",
+            "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/flutter_study_learning",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.598405+00:00",
+            "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "MEDIUM",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:caller-switch",
+      "title": "Update callers after target implementation",
+      "action_type": "UPDATE_CALLER",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/flutter_study_learning"
+      ],
+      "target_units": [
+        "flutter_study:packages/flutter_study_learning"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/flutter_study_learning/lib/src/learning_scaffold.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/flutter_study_learning"
+      ],
+      "context_refs": [
+        "flutter_study/packages/flutter_study_learning/lib/src/learning_scaffold.dart:5",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [
+        "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:implementation"
+      ],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/flutter_study_learning",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.598242+00:00",
+            "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/flutter_study_learning",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.598325+00:00",
+            "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/flutter_study_learning",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.598405+00:00",
+            "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "MEDIUM",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:validate-target",
+      "title": "Validate target boundary",
+      "action_type": "VALIDATE_TARGET",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/flutter_study_learning"
+      ],
+      "target_units": [
+        "flutter_study:packages/flutter_study_learning"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/flutter_study_learning/lib/src/learning_scaffold.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/flutter_study_learning"
+      ],
+      "context_refs": [
+        "flutter_study/packages/flutter_study_learning/lib/src/learning_scaffold.dart:5",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [
+        "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:implementation"
+      ],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/flutter_study_learning",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.598242+00:00",
+            "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/flutter_study_learning",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.598325+00:00",
+            "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/flutter_study_learning",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.598405+00:00",
+            "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "MEDIUM",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:validate-integration",
+      "title": "Validate integration before cleanup",
+      "action_type": "VALIDATE_INTEGRATION",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/flutter_study_learning"
+      ],
+      "target_units": [
+        "flutter_study:packages/flutter_study_learning"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/flutter_study_learning/lib/src/learning_scaffold.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/flutter_study_learning"
+      ],
+      "context_refs": [
+        "flutter_study/packages/flutter_study_learning/lib/src/learning_scaffold.dart:5",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [
+        "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:caller-switch",
+        "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:validate-target"
+      ],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/flutter_study_learning",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.598242+00:00",
+            "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/flutter_study_learning",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.598325+00:00",
+            "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/flutter_study_learning",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.598405+00:00",
+            "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "MEDIUM",
+      "status": "PLANNED"
+    },
+    {
+      "task_id": "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:cleanup",
+      "title": "Remove superseded source only after validation",
+      "action_type": "REMOVE_OLD_IMPLEMENTATION",
+      "source_repo": "flutter_study",
+      "target_repo": "flutter_study",
+      "source_units": [
+        "flutter_study:packages/flutter_study_learning"
+      ],
+      "target_units": [
+        "flutter_study:packages/flutter_study_learning"
+      ],
+      "allowed_paths": [
+        "/Users/forest/code/langGraph/flutter_study/packages/flutter_study_learning/lib/src/learning_scaffold.dart",
+        "/Users/forest/code/langGraph/flutter_study/packages/flutter_study_learning"
+      ],
+      "context_refs": [
+        "flutter_study/packages/flutter_study_learning/lib/src/learning_scaffold.dart:5",
+        "flutter_study/pubspec.yaml"
+      ],
+      "applicable_rules": [],
+      "dependency_tasks": [
+        "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:validate-integration"
+      ],
+      "preconditions": [
+        "Use only evidence-bearing bounded context."
+      ],
+      "expected_changes": [
+        "Plan only: no change is authorized by this artifact."
+      ],
+      "invariants": [
+        "application_orchestration_remains_in_application",
+        "WorkspaceSession/editor/navigation/dialog/application_lifecycle_coordination_not_auto_pluginized",
+        "adapter_is_application_integration_boundary",
+        "UNKNOWN_never_promoted_by_Planner",
+        "current_file_location_does_not_prove_future_owner",
+        "source_cleanup_occurs_only_after_replacement_and_validation",
+        "breaking_public_API_change_must_be_explicit",
+        "cross_repo_dependency_change_must_be_explicit_task"
+      ],
+      "acceptance": [
+        "Required evidence remains traceable."
+      ],
+      "validation": [
+        {
+          "category": "format",
+          "command": "dart format .",
+          "commands": [
+            "dart format ."
+          ],
+          "working_directory": "flutter_study/packages/flutter_study_learning",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.598242+00:00",
+            "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72"
+          }
+        },
+        {
+          "category": "analyze",
+          "command": "flutter analyze",
+          "commands": [
+            "flutter analyze"
+          ],
+          "working_directory": "flutter_study/packages/flutter_study_learning",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.598325+00:00",
+            "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72"
+          }
+        },
+        {
+          "category": "test",
+          "command": "flutter test",
+          "commands": [
+            "flutter test"
+          ],
+          "working_directory": "flutter_study/packages/flutter_study_learning",
+          "platform": "any",
+          "available": true,
+          "evidence": {
+            "source": "filesystem",
+            "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+            "discovered_at": "2026-08-11T12:18:07.598405+00:00",
+            "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72"
+          }
+        }
+      ],
+      "rollback_boundary": "No execution in P6; discard this task plan if review rejects it.",
+      "risk": "HIGH",
+      "status": "PLANNED"
+    }
+  ],
+  "dependency_dag": {
+    "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:contract": [],
+    "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:implementation": [
+      "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:contract"
+    ],
+    "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:caller-switch": [
+      "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:implementation"
+    ],
+    "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:validate-target": [
+      "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:implementation"
+    ],
+    "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:validate-integration": [
+      "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:caller-switch",
+      "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:validate-target"
+    ],
+    "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:cleanup": [
+      "capability:flutter_study:packages/gcode_core:file_gcode_line_reader.dart:validate-integration"
+    ],
+    "capability:flutter_study:packages/gcode_core:gcode_parser.dart:contract": [],
+    "capability:flutter_study:packages/gcode_core:gcode_parser.dart:implementation": [
+      "capability:flutter_study:packages/gcode_core:gcode_parser.dart:contract"
+    ],
+    "capability:flutter_study:packages/gcode_core:gcode_parser.dart:caller-switch": [
+      "capability:flutter_study:packages/gcode_core:gcode_parser.dart:implementation"
+    ],
+    "capability:flutter_study:packages/gcode_core:gcode_parser.dart:validate-target": [
+      "capability:flutter_study:packages/gcode_core:gcode_parser.dart:implementation"
+    ],
+    "capability:flutter_study:packages/gcode_core:gcode_parser.dart:validate-integration": [
+      "capability:flutter_study:packages/gcode_core:gcode_parser.dart:caller-switch",
+      "capability:flutter_study:packages/gcode_core:gcode_parser.dart:validate-target"
+    ],
+    "capability:flutter_study:packages/gcode_core:gcode_parser.dart:cleanup": [
+      "capability:flutter_study:packages/gcode_core:gcode_parser.dart:validate-integration"
+    ],
+    "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:contract": [],
+    "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:implementation": [
+      "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:contract"
+    ],
+    "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:caller-switch": [
+      "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:implementation"
+    ],
+    "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:validate-target": [
+      "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:implementation"
+    ],
+    "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:validate-integration": [
+      "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:caller-switch",
+      "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:validate-target"
+    ],
+    "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:cleanup": [
+      "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker.dart:validate-integration"
+    ],
+    "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:contract": [],
+    "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:implementation": [
+      "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:contract"
+    ],
+    "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:caller-switch": [
+      "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:implementation"
+    ],
+    "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:validate-target": [
+      "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:implementation"
+    ],
+    "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:validate-integration": [
+      "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:caller-switch",
+      "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:validate-target"
+    ],
+    "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:cleanup": [
+      "capability:flutter_study:packages/flutter_study_learning:learning_scaffold.dart:validate-integration"
+    ]
+  },
+  "blocked_items": [
+    {
+      "capability_id": "capability:flutter_study:.:media_kit_player_adapter.dart",
+      "reason": "extraction decision=NOT_ENOUGH_EVIDENCE",
+      "missing_evidence": [
+        "Insufficient bounded source evidence for ownership."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/lib/modules/platform/online_video_player/state/media_kit_player_adapter.dart:29",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:.:context_menu_demo.dart",
+      "reason": "extraction decision=UNKNOWN",
+      "missing_evidence": [
+        "Evidence-backed destination or replacement contract."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/lib/modules/popup_table/popup_widgets/widgets/context_menu_demo.dart:3",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:.:online_video_player_test.dart",
+      "reason": "NEW_PLUGIN_CANDIDATE requires human-approved target boundary before planning executable work.",
+      "missing_evidence": [
+        "Approved destination unit boundary and contract migration scope."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/test/modules/platform/online_video_player/online_video_player_test.dart:65",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:.:app.dart",
+      "reason": "extraction decision=UNKNOWN",
+      "missing_evidence": [
+        "Evidence-backed destination or replacement contract."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/lib/app/app.dart:5",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:packages/gcode_core:string_gcode_line_reader.dart",
+      "reason": "extraction decision=NOT_ENOUGH_EVIDENCE",
+      "missing_evidence": [
+        "Insufficient bounded source evidence for ownership."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/packages/gcode_core/lib/src/data/readers/string_gcode_line_reader.dart:4",
+        "flutter_study/packages/gcode_core/example/pubspec.yaml",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:packages/gcode_core:command_timeline.dart",
+      "reason": "extraction decision=UNKNOWN",
+      "missing_evidence": [
+        "Evidence-backed destination or replacement contract."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/packages/gcode_core/lib/src/widgets/command_timeline.dart:6",
+        "flutter_study/packages/gcode_core/example/pubspec.yaml",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:packages/flutter_ioc_core:container.dart",
+      "reason": "extraction decision=NOT_ENOUGH_EVIDENCE",
+      "missing_evidence": [
+        "Insufficient bounded source evidence for ownership."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/packages/flutter_ioc_core/lib/src/container.dart:43",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:packages/flutter_ioc_core:types.dart",
+      "reason": "extraction decision=NOT_ENOUGH_EVIDENCE",
+      "missing_evidence": [
+        "Insufficient bounded source evidence for ownership."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/packages/flutter_ioc_core/lib/src/types.dart:17",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:packages/file_picker_bridge:file_picker_service.dart",
+      "reason": "extraction decision=NOT_ENOUGH_EVIDENCE",
+      "missing_evidence": [
+        "Insufficient bounded source evidence for ownership."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/packages/file_picker_bridge/lib/src/file_picker_service.dart:11",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:packages/file_picker_bridge:method_channel_file_picker_test.dart",
+      "reason": "NEW_PLUGIN_CANDIDATE requires human-approved target boundary before planning executable work.",
+      "missing_evidence": [
+        "Approved destination unit boundary and contract migration scope."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/packages/file_picker_bridge/test/method_channel_file_picker_test.dart:8",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:packages/gcode_core/example:main.dart",
+      "reason": "extraction decision=UNKNOWN",
+      "missing_evidence": [
+        "Evidence-backed destination or replacement contract."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/packages/gcode_core/example/lib/main.dart:11",
+        "flutter_study/packages/gcode_core/example/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:.:AGENTS.md",
+      "reason": "NEW_PLUGIN_CANDIDATE requires human-approved target boundary before planning executable work.",
+      "missing_evidence": [
+        "Approved destination unit boundary and contract migration scope."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/AGENTS.md:78",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:.:AI_ANALYSIS.md",
+      "reason": "extraction decision=NOT_ENOUGH_EVIDENCE",
+      "missing_evidence": [
+        "Insufficient bounded source evidence for ownership."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/AI_ANALYSIS.md:5",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:.:AI_ANALYSIS_SCHEMA.json",
+      "reason": "NEW_PLUGIN_CANDIDATE requires human-approved target boundary before planning executable work.",
+      "missing_evidence": [
+        "Approved destination unit boundary and contract migration scope."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/AI_ANALYSIS_SCHEMA.json:2",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:.:AI_PROJECT_CONTEXT.md",
+      "reason": "NEW_PLUGIN_CANDIDATE requires human-approved target boundary before planning executable work.",
+      "missing_evidence": [
+        "Approved destination unit boundary and contract migration scope."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/AI_PROJECT_CONTEXT.md:2",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:.:README.md",
+      "reason": "NEW_PLUGIN_CANDIDATE requires human-approved target boundary before planning executable work.",
+      "missing_evidence": [
+        "Approved destination unit boundary and contract migration scope."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/README.md:3",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:.:REFACTOR_PLAN.md",
+      "reason": "NEW_PLUGIN_CANDIDATE requires human-approved target boundary before planning executable work.",
+      "missing_evidence": [
+        "Approved destination unit boundary and contract migration scope."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/REFACTOR_PLAN.md:2",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:.:flutterguard.yaml",
+      "reason": "extraction decision=NOT_ENOUGH_EVIDENCE",
+      "missing_evidence": [
+        "Insufficient bounded source evidence for ownership."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/flutterguard.yaml:30",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:.:GeneratedPluginRegistrant.swift",
+      "reason": "extraction decision=NOT_ENOUGH_EVIDENCE",
+      "missing_evidence": [
+        "Insufficient bounded source evidence for ownership."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/macos/Flutter/GeneratedPluginRegistrant.swift:15",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:.:FlutterInputs.xcfilelist",
+      "reason": "NEW_SHARED_CORE_CANDIDATE requires human-approved target boundary before planning executable work.",
+      "missing_evidence": [
+        "Approved destination unit boundary and contract migration scope."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/macos/Flutter/ephemeral/FlutterInputs.xcfilelist:2",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:.:FlutterOutputs.xcfilelist",
+      "reason": "extraction decision=NOT_ENOUGH_EVIDENCE",
+      "missing_evidence": [
+        "Insufficient bounded source evidence for ownership."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/macos/Flutter/ephemeral/FlutterOutputs.xcfilelist:1",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:.:flutter_export_environment.sh",
+      "reason": "extraction decision=UNKNOWN",
+      "missing_evidence": [
+        "Evidence-backed destination or replacement contract."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/macos/Flutter/ephemeral/flutter_export_environment.sh:4",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:.:MainFlutterWindow.swift",
+      "reason": "extraction decision=NOT_ENOUGH_EVIDENCE",
+      "missing_evidence": [
+        "Insufficient bounded source evidence for ownership."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/macos/Runner/MainFlutterWindow.swift:12",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:.:pubspec.lock",
+      "reason": "NEW_PLUGIN_CANDIDATE requires human-approved target boundary before planning executable work.",
+      "missing_evidence": [
+        "Approved destination unit boundary and contract migration scope."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/pubspec.lock:12",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:.:app_bootstrap.dart",
+      "reason": "extraction decision=UNKNOWN",
+      "missing_evidence": [
+        "Evidence-backed destination or replacement contract."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/lib/app/app_bootstrap.dart:6",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:.:online-video-player-macos.codex.json",
+      "reason": "NEW_PLUGIN_CANDIDATE requires human-approved target boundary before planning executable work.",
+      "missing_evidence": [
+        "Approved destination unit boundary and contract migration scope."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/.hermes/online-video-player-macos.codex.json:99",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:.:pubspec.yaml",
+      "reason": "extraction decision=NOT_ENOUGH_EVIDENCE",
+      "missing_evidence": [
+        "Insufficient bounded source evidence for ownership."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:windows:CMakeLists.txt",
+      "reason": "extraction decision=NOT_ENOUGH_EVIDENCE",
+      "missing_evidence": [
+        "Insufficient bounded source evidence for ownership."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/windows/CMakeLists.txt"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:windows/runner:CMakeLists.txt",
+      "reason": "extraction decision=NOT_ENOUGH_EVIDENCE",
+      "missing_evidence": [
+        "Insufficient bounded source evidence for ownership."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/windows/runner/CMakeLists.txt"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:windows/flutter:CMakeLists.txt",
+      "reason": "NEW_PLUGIN_CANDIDATE requires human-approved target boundary before planning executable work.",
+      "missing_evidence": [
+        "Approved destination unit boundary and contract migration scope."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/windows/flutter/CMakeLists.txt"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:packages/gcode_core:pubspec.yaml",
+      "reason": "extraction decision=UNKNOWN",
+      "missing_evidence": [
+        "Evidence-backed destination or replacement contract."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/packages/gcode_core/pubspec.yaml",
+        "flutter_study/packages/gcode_core/example/pubspec.yaml",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:packages/flutter_ioc_core:pubspec.yaml",
+      "reason": "extraction decision=NOT_ENOUGH_EVIDENCE",
+      "missing_evidence": [
+        "Insufficient bounded source evidence for ownership."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/packages/flutter_ioc_core/pubspec.yaml",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:packages/file_picker_bridge:pubspec.yaml",
+      "reason": "NEW_PLUGIN_CANDIDATE requires human-approved target boundary before planning executable work.",
+      "missing_evidence": [
+        "Approved destination unit boundary and contract migration scope."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:packages/gcode_core/example:pubspec.yaml",
+      "reason": "NEW_PLUGIN_CANDIDATE requires human-approved target boundary before planning executable work.",
+      "missing_evidence": [
+        "Approved destination unit boundary and contract migration scope."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/packages/gcode_core/example/pubspec.yaml"
+      ]
+    },
+    {
+      "capability_id": "capability:flutter_study:packages/flutter_study_learning:pubspec.yaml",
+      "reason": "extraction decision=UNKNOWN",
+      "missing_evidence": [
+        "Evidence-backed destination or replacement contract."
+      ],
+      "prohibited_decisions": [
+        "MOVE_TO_EXISTING_UNIT",
+        "EXTEND_EXISTING_UNIT",
+        "REMOVE_OLD_IMPLEMENTATION"
+      ],
+      "evidence_refs": [
+        "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+        "flutter_study/pubspec.yaml"
+      ]
+    }
+  ],
+  "unknowns": [
+    "No exact symbol, callsite, or registry dependency evidence matched the requirement.",
+    "No exact symbol, callsite, or registry dependency evidence matched the requirement.",
+    "No exact symbol, callsite, or registry dependency evidence matched the requirement.",
+    "Insufficient bounded source evidence for ownership.",
+    "Insufficient bounded source evidence for ownership.",
+    "Insufficient bounded source evidence for ownership.",
+    "Insufficient bounded source evidence for ownership.",
+    "Insufficient bounded source evidence for ownership.",
+    "Insufficient bounded source evidence for ownership.",
+    "Insufficient bounded source evidence for ownership.",
+    "Insufficient bounded source evidence for ownership.",
+    "Insufficient bounded source evidence for ownership.",
+    "Insufficient bounded source evidence for ownership.",
+    "Insufficient bounded source evidence for ownership.",
+    "Insufficient bounded source evidence for ownership.",
+    "Insufficient bounded source evidence for ownership.",
+    "Insufficient bounded source evidence for ownership."
+  ],
+  "validation_strategy": [
+    {
+      "category": "format",
+      "command": "dart format .",
+      "commands": [
+        "dart format ."
+      ],
+      "working_directory": "flutter_study/packages/file_picker_bridge",
+      "platform": "any",
+      "available": true,
+      "evidence": {
+        "source": "filesystem",
+        "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+        "discovered_at": "2026-08-11T12:18:07.596613+00:00",
+        "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c"
+      }
+    },
+    {
+      "category": "analyze",
+      "command": "flutter analyze",
+      "commands": [
+        "flutter analyze"
+      ],
+      "working_directory": "flutter_study/packages/file_picker_bridge",
+      "platform": "any",
+      "available": true,
+      "evidence": {
+        "source": "filesystem",
+        "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+        "discovered_at": "2026-08-11T12:18:07.596704+00:00",
+        "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c"
+      }
+    },
+    {
+      "category": "test",
+      "command": "flutter test",
+      "commands": [
+        "flutter test"
+      ],
+      "working_directory": "flutter_study/packages/file_picker_bridge",
+      "platform": "any",
+      "available": true,
+      "evidence": {
+        "source": "filesystem",
+        "path": "flutter_study/packages/file_picker_bridge/pubspec.yaml",
+        "discovered_at": "2026-08-11T12:18:07.596788+00:00",
+        "detail": "pubspec.yaml runtime;sha256=2a42bfa513ec4d1c"
+      }
+    },
+    {
+      "category": "format",
+      "command": "dart format .",
+      "commands": [
+        "dart format ."
+      ],
+      "working_directory": "flutter_study/packages/flutter_ioc_core",
+      "platform": "any",
+      "available": true,
+      "evidence": {
+        "source": "filesystem",
+        "path": "flutter_study/packages/flutter_ioc_core/pubspec.yaml",
+        "discovered_at": "2026-08-11T12:18:07.597393+00:00",
+        "detail": "pubspec.yaml runtime;sha256=59812493697a03ce"
+      }
+    },
+    {
+      "category": "analyze",
+      "command": "flutter analyze",
+      "commands": [
+        "flutter analyze"
+      ],
+      "working_directory": "flutter_study/packages/flutter_ioc_core",
+      "platform": "any",
+      "available": true,
+      "evidence": {
+        "source": "filesystem",
+        "path": "flutter_study/packages/flutter_ioc_core/pubspec.yaml",
+        "discovered_at": "2026-08-11T12:18:07.597476+00:00",
+        "detail": "pubspec.yaml runtime;sha256=59812493697a03ce"
+      }
+    },
+    {
+      "category": "test",
+      "command": "flutter test",
+      "commands": [
+        "flutter test"
+      ],
+      "working_directory": "flutter_study/packages/flutter_ioc_core",
+      "platform": "any",
+      "available": true,
+      "evidence": {
+        "source": "filesystem",
+        "path": "flutter_study/packages/flutter_ioc_core/pubspec.yaml",
+        "discovered_at": "2026-08-11T12:18:07.597554+00:00",
+        "detail": "pubspec.yaml runtime;sha256=59812493697a03ce"
+      }
+    },
+    {
+      "category": "format",
+      "command": "dart format .",
+      "commands": [
+        "dart format ."
+      ],
+      "working_directory": "flutter_study/packages/flutter_study_learning",
+      "platform": "any",
+      "available": true,
+      "evidence": {
+        "source": "filesystem",
+        "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+        "discovered_at": "2026-08-11T12:18:07.598242+00:00",
+        "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72"
+      }
+    },
+    {
+      "category": "analyze",
+      "command": "flutter analyze",
+      "commands": [
+        "flutter analyze"
+      ],
+      "working_directory": "flutter_study/packages/flutter_study_learning",
+      "platform": "any",
+      "available": true,
+      "evidence": {
+        "source": "filesystem",
+        "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+        "discovered_at": "2026-08-11T12:18:07.598325+00:00",
+        "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72"
+      }
+    },
+    {
+      "category": "test",
+      "command": "flutter test",
+      "commands": [
+        "flutter test"
+      ],
+      "working_directory": "flutter_study/packages/flutter_study_learning",
+      "platform": "any",
+      "available": true,
+      "evidence": {
+        "source": "filesystem",
+        "path": "flutter_study/packages/flutter_study_learning/pubspec.yaml",
+        "discovered_at": "2026-08-11T12:18:07.598405+00:00",
+        "detail": "pubspec.yaml runtime;sha256=bee0f16de6ac1d72"
+      }
+    },
+    {
+      "category": "format",
+      "command": "dart format .",
+      "commands": [
+        "dart format ."
+      ],
+      "working_directory": "flutter_study/packages/gcode_core/example",
+      "platform": "any",
+      "available": true,
+      "evidence": {
+        "source": "filesystem",
+        "path": "flutter_study/packages/gcode_core/example/pubspec.yaml",
+        "discovered_at": "2026-08-11T12:18:07.601342+00:00",
+        "detail": "pubspec.yaml runtime;sha256=8f4a33b15f10090c"
+      }
+    },
+    {
+      "category": "analyze",
+      "command": "flutter analyze",
+      "commands": [
+        "flutter analyze"
+      ],
+      "working_directory": "flutter_study/packages/gcode_core/example",
+      "platform": "any",
+      "available": true,
+      "evidence": {
+        "source": "filesystem",
+        "path": "flutter_study/packages/gcode_core/example/pubspec.yaml",
+        "discovered_at": "2026-08-11T12:18:07.601464+00:00",
+        "detail": "pubspec.yaml runtime;sha256=8f4a33b15f10090c"
+      }
+    },
+    {
+      "category": "test",
+      "command": "flutter test",
+      "commands": [
+        "flutter test"
+      ],
+      "working_directory": "flutter_study/packages/gcode_core/example",
+      "platform": "any",
+      "available": true,
+      "evidence": {
+        "source": "filesystem",
+        "path": "flutter_study/packages/gcode_core/example/pubspec.yaml",
+        "discovered_at": "2026-08-11T12:18:07.601558+00:00",
+        "detail": "pubspec.yaml runtime;sha256=8f4a33b15f10090c"
+      }
+    },
+    {
+      "category": "format",
+      "command": "dart format .",
+      "commands": [
+        "dart format ."
+      ],
+      "working_directory": "flutter_study/packages/gcode_core",
+      "platform": "any",
+      "available": true,
+      "evidence": {
+        "source": "filesystem",
+        "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+        "discovered_at": "2026-08-11T12:18:07.605140+00:00",
+        "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+      }
+    },
+    {
+      "category": "analyze",
+      "command": "flutter analyze",
+      "commands": [
+        "flutter analyze"
+      ],
+      "working_directory": "flutter_study/packages/gcode_core",
+      "platform": "any",
+      "available": true,
+      "evidence": {
+        "source": "filesystem",
+        "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+        "discovered_at": "2026-08-11T12:18:07.605235+00:00",
+        "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+      }
+    },
+    {
+      "category": "test",
+      "command": "flutter test",
+      "commands": [
+        "flutter test"
+      ],
+      "working_directory": "flutter_study/packages/gcode_core",
+      "platform": "any",
+      "available": true,
+      "evidence": {
+        "source": "filesystem",
+        "path": "flutter_study/packages/gcode_core/pubspec.yaml",
+        "discovered_at": "2026-08-11T12:18:07.605320+00:00",
+        "detail": "pubspec.yaml runtime;sha256=60279b8182644c68"
+      }
+    },
+    {
+      "category": "format",
+      "command": "dart format .",
+      "commands": [
+        "dart format ."
+      ],
+      "working_directory": "flutter_study",
+      "platform": "any",
+      "available": true,
+      "evidence": {
+        "source": "filesystem",
+        "path": "flutter_study/pubspec.yaml",
+        "discovered_at": "2026-08-11T12:18:07.623825+00:00",
+        "detail": "pubspec.yaml runtime;sha256=a33759dee456342d"
+      }
+    },
+    {
+      "category": "analyze",
+      "command": "flutter analyze",
+      "commands": [
+        "flutter analyze"
+      ],
+      "working_directory": "flutter_study",
+      "platform": "any",
+      "available": true,
+      "evidence": {
+        "source": "filesystem",
+        "path": "flutter_study/pubspec.yaml",
+        "discovered_at": "2026-08-11T12:18:07.623917+00:00",
+        "detail": "pubspec.yaml runtime;sha256=a33759dee456342d"
+      }
+    },
+    {
+      "category": "test",
+      "command": "flutter test",
+      "commands": [
+        "flutter test"
+      ],
+      "working_directory": "flutter_study",
+      "platform": "any",
+      "available": true,
+      "evidence": {
+        "source": "filesystem",
+        "path": "flutter_study/pubspec.yaml",
+        "discovered_at": "2026-08-11T12:18:07.623996+00:00",
+        "detail": "pubspec.yaml runtime;sha256=a33759dee456342d"
+      }
+    }
+  ],
+  "risk_summary": {
+    "LOW": 0,
+    "MEDIUM": 16,
+    "HIGH": 8,
+    "BLOCKED": 0
+  },
+  "metrics": {
+    "task_count": 24,
+    "blocked_count": 35,
+    "context_evidence": 81
+  },
+  "status": "READY_FOR_HUMAN_PLAN_REVIEW"
+}

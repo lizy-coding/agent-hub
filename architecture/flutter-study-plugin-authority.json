@@ -1,0 +1,36 @@
+{
+  "provenance": "HUMAN_REVIEW_P6_3",
+  "target_repository": "flutter_study",
+  "principles": [
+    "application composition/orchestration stays in flutter_study",
+    "application adapters stay in flutter_study",
+    "feature-local UI stays in flutter_study unless an approved reusable public boundary exists",
+    "example/test/generated/ephemeral artifacts are not migration capabilities",
+    "no approved target means KEEP_CURRENT_BOUNDARY"
+  ],
+  "canonical_targets": [
+    {"source_candidate":"flutter_study:packages/gcode_core","canonical_repository":"gcode_core","role":"reusable_gcode_core"},
+    {"source_candidate":"flutter_study:packages/file_picker_bridge","canonical_repository":"file_picker_bridge","role":"platform_file_picker_plugin"}
+  ],
+  "decisions": {
+    "capability:flutter_study:.:app.dart":"KEEP_IN_APPLICATION",
+    "capability:flutter_study:packages/gcode_core:command_timeline.dart":"KEEP_CURRENT_BOUNDARY",
+    "capability:flutter_study:packages/gcode_core/example:main.dart":"NO_MIGRATION_REQUIRED",
+    "capability:flutter_study:.:granular_grid.dart":"KEEP_IN_APPLICATION",
+    "capability:flutter_study:.:drawing_board.dart":"KEEP_IN_APPLICATION",
+    "capability:flutter_study:.:drawing_canvas.dart":"KEEP_IN_APPLICATION",
+    "capability:flutter_study:.:gcode_visualizer_page.dart":"KEEP_IN_APPLICATION",
+    "capability:flutter_study:.:media_kit_player_adapter.dart":"KEEP_IN_APPLICATION",
+    "capability:flutter_study:.:module_home_page.dart":"KEEP_IN_APPLICATION",
+    "capability:flutter_study:.:task_manager.dart":"KEEP_CURRENT_BOUNDARY",
+    "capability:flutter_study:.:event_log.dart":"KEEP_CURRENT_BOUNDARY",
+    "capability:flutter_study:.:mock_server.dart":"KEEP_CURRENT_BOUNDARY",
+    "capability:flutter_study:.:error_interceptor.dart":"KEEP_CURRENT_BOUNDARY",
+    "capability:flutter_study:.:usb_device_info.dart":"KEEP_CURRENT_BOUNDARY",
+    "capability:flutter_study:.:module_root.dart":"KEEP_IN_APPLICATION",
+    "capability:flutter_study:.:font_catalog.dart":"KEEP_CURRENT_BOUNDARY",
+    "capability:flutter_study:.:drawing_element.dart":"KEEP_CURRENT_BOUNDARY",
+    "capability:flutter_study:packages/flutter_ioc_core:container.dart":"KEEP_CURRENT_BOUNDARY",
+    "capability:flutter_study:packages/flutter_ioc_core:types.dart":"KEEP_CURRENT_BOUNDARY"
+  }
+}

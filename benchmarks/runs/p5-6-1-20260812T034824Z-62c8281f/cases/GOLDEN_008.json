@@ -1,0 +1,40 @@
+{
+  "run_id": "p5-6-1-20260812T034824Z-62c8281f",
+  "case_id": "GOLDEN_008",
+  "status": "COMPLETE",
+  "started_at": "2026-08-12T03:49:49.598404+00:00",
+  "completed_at": "2026-08-12T03:49:54.937280+00:00",
+  "duration_seconds": 5.339,
+  "input_identity": "e14953aa8d21aa645ee57eb844b089db885a6104b9acb637564e66424a90ca92",
+  "prediction": {
+    "id": "GOLDEN_008",
+    "predicted_ownership": "unknown",
+    "accepted_ownership": "unknown",
+    "ownership_match": true,
+    "predicted_extraction": "NOT_ENOUGH_EVIDENCE",
+    "accepted_extraction": "NOT_ENOUGH_EVIDENCE",
+    "extraction_match": true,
+    "predicted_target_unit": null,
+    "accepted_target_unit": null,
+    "target_scored": false,
+    "target_match": null,
+    "unsupported_promotion": false,
+    "evidence_used": [
+      "flutter_study/windows/CMakeLists.txt"
+    ],
+    "failure_classification": null
+  },
+  "truth_assertions": {
+    "id": "GOLDEN_008",
+    "state": "approved",
+    "accepted_ownership": "unknown",
+    "accepted_extraction": "NOT_ENOUGH_EVIDENCE",
+    "note": "目前只有 CMake descriptor，没有 MethodChannel/FFI/host contract 证据；禁止因 CMake 目录存在而推断 platform plugin。"
+  },
+  "metrics": {},
+  "evidence_refs": [
+    "flutter_study/windows/CMakeLists.txt"
+  ],
+  "failures": [],
+  "result_hash": "c756391d88bda82b0e69e14d1c5d246c556d5d1c94d13e9ee16a8e9dad398568"
+}

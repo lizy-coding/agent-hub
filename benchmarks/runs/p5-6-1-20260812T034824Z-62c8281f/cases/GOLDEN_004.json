@@ -1,0 +1,42 @@
+{
+  "run_id": "p5-6-1-20260812T034824Z-62c8281f",
+  "case_id": "GOLDEN_004",
+  "status": "COMPLETE",
+  "started_at": "2026-08-12T03:49:28.311325+00:00",
+  "completed_at": "2026-08-12T03:49:33.694374+00:00",
+  "duration_seconds": 5.383,
+  "input_identity": "3ea59f1e3797537e0157232cc0d4a0abbf5644224f1114be5694d797799ed7e4",
+  "prediction": {
+    "id": "GOLDEN_004",
+    "predicted_ownership": "adapter",
+    "accepted_ownership": "adapter",
+    "ownership_match": true,
+    "predicted_extraction": "ADAPTER_ONLY",
+    "accepted_extraction": "ADAPTER_ONLY",
+    "extraction_match": true,
+    "predicted_target_unit": null,
+    "accepted_target_unit": null,
+    "target_scored": false,
+    "target_match": null,
+    "unsupported_promotion": false,
+    "evidence_used": [
+      "flutter_study/lib/modules/platform/file_picker/state/file_picker_controller.dart:14",
+      "flutter_study/pubspec.yaml"
+    ],
+    "failure_classification": null
+  },
+  "truth_assertions": {
+    "id": "GOLDEN_004",
+    "state": "approved",
+    "accepted_ownership": "adapter",
+    "accepted_extraction": "ADAPTER_ONLY",
+    "note": "controller 依赖抽象 service 并维护应用侧字段，符合 adapter 职责；不应继续向 platform plugin 下沉。"
+  },
+  "metrics": {},
+  "evidence_refs": [
+    "flutter_study/lib/modules/platform/file_picker/state/file_picker_controller.dart:14",
+    "flutter_study/pubspec.yaml"
+  ],
+  "failures": [],
+  "result_hash": "9fa197f0066b5167133e10e9015dea4c312238375ad14bbde182ba1b005e9755"
+}

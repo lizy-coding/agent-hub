@@ -10,6 +10,7 @@ from agent_hub.tools.path_guard import is_allowed_business_path, is_within
 from agent_hub.workspace.config import WorkspaceConfig
 
 EXCLUDED = {".git", "build", ".dart_tool", "node_modules", "generated", ".venv", ".langgraph_api"}
+SOURCE_SUFFIXES = {".dart", ".py", ".c", ".cc", ".cpp", ".h", ".hpp"}
 
 
 @dataclass(frozen=True)
@@ -21,12 +22,25 @@ class ContextLimits:
 
 
 STOP_TERMS = {"workspace", "current", "analysis", "capability", "package", "plugin", "existing", "related", "between", "with", "native", "flutter", "application"}
+SEMANTIC_QUERY_TERMS = {"controller", "service", "adapter", "router", "route", "parser", "model", "render", "widget", "channel", "ffi", "pipeline", "state"}
 def terms(requirement: str) -> list[str]:
     return [term for term in dict.fromkeys(term.lower() for term in re.findall(r"[A-Za-z_][A-Za-z0-9_]{2,}", requirement)) if term not in STOP_TERMS]
 
 
 class RepositorySearcher:
     def __init__(self, config: WorkspaceConfig): self.config = config
+    def _owns_path(self, unit: DevelopmentUnit, path: Path) -> bool:
+        """Keep parent repository scans from attributing nested units to itself."""
+        repo = registry_api.get_repository(self.config, unit.repo_id)
+        if not repo: return False
+        base = (repo.path / unit.relative_path).resolve()
+        for other in registry_api.list_development_units(self.config):
+            if other.repo_id != unit.repo_id or other.unit_id == unit.unit_id or other.relative_path == ".":
+                continue
+            nested = (repo.path / other.relative_path).resolve()
+            if is_within(nested, base) and is_within(path, nested):
+                return False
+        return True
     def search_symbols(self, unit: DevelopmentUnit, term_list: list[str], max_results: int):
         return self._search(unit, term_list, max_results, "symbol")
     def search_callsites(self, unit: DevelopmentUnit, term_list: list[str], max_results: int):
@@ -37,8 +51,7 @@ class RepositorySearcher:
         base = (repo.path / unit.relative_path).resolve()
         matches = []
         for path in base.rglob("*"):
-            if len(matches) >= max_results: break
-            if not path.is_file() or path.is_symlink() or any(part in EXCLUDED for part in path.parts) or not is_allowed_business_path(path, self.config): continue
+            if not path.is_file() or path.is_symlink() or any(part in EXCLUDED for part in path.parts) or not is_allowed_business_path(path, self.config) or not self._owns_path(unit, path): continue
             try: lines = path.read_text(encoding="utf-8").splitlines()
             except (OSError, UnicodeDecodeError): continue
             for line_number, line in enumerate(lines, 1):
@@ -49,7 +62,25 @@ class RepositorySearcher:
                     matches.append((path, line_number, term, kind))
                     break
                 if len(matches) >= max_results: break
-        return matches
+        # Source evidence is a more direct implementation signal than mentions in
+        # documentation, generated metadata, or tests.  This is ordering only:
+        # every selected result still has an exact textual evidence reference.
+        return sorted(matches, key=lambda item: (item[0].suffix not in SOURCE_SUFFIXES, str(item[0]), item[1]))[:max_results]
+    def semantic_anchors(self, unit: DevelopmentUnit, max_results: int, preferred_terms: list[str]):
+        """Return bounded source anchors independent of a requirement's wording."""
+        repo=registry_api.get_repository(self.config,unit.repo_id)
+        if not repo: return []
+        patterns=(r'abstract class ',r'implements ',r'class \w+Controller',r'GoRouter\s*\(',r'MethodChannel',r'class \w*(Parser|Model)',r'(StatelessWidget|StatefulWidget)')
+        found=[]
+        for path in (repo.path/unit.relative_path).rglob('*.dart'):
+            if path.is_symlink() or any(part in EXCLUDED for part in path.parts) or not is_allowed_business_path(path,self.config) or not self._owns_path(unit,path): continue
+            try: text=path.read_text(encoding='utf-8')
+            except (OSError,UnicodeDecodeError): continue
+            for number,line in enumerate(text.splitlines(),1):
+                if any(re.search(pattern,line) for pattern in patterns):
+                    score=sum(term in line.lower() or term in path.name.lower() for term in preferred_terms)
+                    found.append((score,path,number,'semantic_anchor','anchor')); break
+        return [(path,number,term,kind) for _,path,number,term,kind in sorted(found,key=lambda item:(-item[0],str(item[1])))[:max_results]]
 
 
 class RuleResolver:
@@ -85,6 +116,9 @@ class ContextResolver:
         else:
             selected_repos = repositories[:limits.max_candidate_repositories]
         units = [unit for repo in selected_repos for unit in repo.development_units]
+        # Root application units are composition boundaries; process them before
+        # nested packages so the bounded file budget cannot hide their anchors.
+        units.sort(key=lambda unit: (unit.relative_path != ".", len(unit.relative_path)))
         # Registry-backed neighborhood expansion never turns a neighbor into a required change.
         seen = {unit.unit_id for unit in units}
         frontier = list(units)
@@ -99,17 +133,32 @@ class ContextResolver:
             frontier = next_frontier
         candidates, files, symbols, rules, dependencies, unknowns = [], [], [], [], [], []
         searched_files = 0
+        # Reserve a small, per-unit share of the file budget for direct semantic
+        # definitions.  Broad lexical matches elsewhere must not hide a controller,
+        # router root, contract implementation, or widget composition anchor.
+        reserved_anchors = {}
+        for unit in units:
+            probe_symbols = self.searcher.search_symbols(unit, term_list, 1)
+            probe_calls = self.searcher.search_callsites(unit, term_list, 1)
+            hits = self.searcher.semantic_anchors(unit, 4, term_list) if (probe_symbols or probe_calls or set(term_list) & SEMANTIC_QUERY_TERMS) else []
+            reserved_anchors[unit.unit_id] = hits
+            for path, line, term, kind in hits:
+                if len(files) >= limits.max_files: break
+                if str(path) in {item.absolute_path for item in files}: continue
+                symbols.append(ContextSymbol(name=term, kind=kind, file=str(path), line=line, evidence_refs=[f"{path.relative_to(self.config.workspace_root)}:{line}"]))
+                files.append(ContextFile(absolute_path=str(path), relative_path=str(path.relative_to(self.config.workspace_root)), repo_id=unit.repo_id, unit_id=unit.unit_id, relevance=kind, evidence_refs=[f"{path.relative_to(self.config.workspace_root)}:{line}"]))
         for unit in units:
             deps = registry_api.get_dependencies(self.config, unit.unit_id) + registry_api.get_dependents(self.config, unit.unit_id)
             symbol_hits = self.searcher.search_symbols(unit, term_list, limits.max_symbols - len(symbols))
             call_hits = self.searcher.search_callsites(unit, term_list, limits.max_symbols - len(symbols))
+            anchor_hits = reserved_anchors[unit.unit_id]
             name_only = not symbol_hits and not call_hits and not deps
             unit_rules = self.rules.resolve_rules_for_path(unit.unit_id)
             classification = "required" if symbol_hits or call_hits else "context_only" if deps else "unknown"
             confidence = self.scorer.score(dependency_count=len(deps), symbol_count=len(symbol_hits), callsite_count=len(call_hits), rule_count=len(unit_rules), file_count=len(symbol_hits)+len(call_hits), name_only=name_only, unknown=classification == "unknown")
             refs = [f"{path.relative_to(self.config.workspace_root)}:{line}" for path, line, _, _ in symbol_hits + call_hits]
             candidates.append(ContextCandidate(id=unit.unit_id, classification=classification, confidence=confidence, reasons=["exact lexical evidence" if refs else "registry dependency evidence" if deps else "no supported evidence"], evidence_refs=refs + [edge.evidence.path for edge in deps]))
-            for path, line, term, kind in symbol_hits + call_hits:
+            for path, line, term, kind in anchor_hits + symbol_hits + call_hits:
                 if len(symbols) < limits.max_symbols: symbols.append(ContextSymbol(name=term, kind=kind, file=str(path), line=line, evidence_refs=[f"{path.relative_to(self.config.workspace_root)}:{line}"]))
                 if len(files) < limits.max_files and str(path) not in {item.absolute_path for item in files}:
                     repo = registry_api.get_repository(self.config, unit.repo_id); files.append(ContextFile(absolute_path=str(path), relative_path=str(path.relative_to(self.config.workspace_root)), repo_id=unit.repo_id, unit_id=unit.unit_id, relevance=kind, evidence_refs=[f"{path.relative_to(self.config.workspace_root)}:{line}"]))

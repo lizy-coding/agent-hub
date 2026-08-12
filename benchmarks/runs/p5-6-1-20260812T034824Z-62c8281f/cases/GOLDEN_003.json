@@ -1,0 +1,42 @@
+{
+  "run_id": "p5-6-1-20260812T034824Z-62c8281f",
+  "case_id": "GOLDEN_003",
+  "status": "COMPLETE",
+  "started_at": "2026-08-12T03:49:23.046030+00:00",
+  "completed_at": "2026-08-12T03:49:28.310580+00:00",
+  "duration_seconds": 5.265,
+  "input_identity": "0fa8711017724d1809f96f385cc645ebdb5df2af7555b171b0673bf1006ea9b2",
+  "prediction": {
+    "id": "GOLDEN_003",
+    "predicted_ownership": "platform_plugin",
+    "accepted_ownership": "platform_plugin",
+    "ownership_match": true,
+    "predicted_extraction": "MOVE_TO_EXISTING_UNIT",
+    "accepted_extraction": "MOVE_TO_EXISTING_UNIT",
+    "extraction_match": true,
+    "predicted_target_unit": "flutter_study:packages/file_picker_bridge",
+    "accepted_target_unit": "flutter_study:packages/file_picker_bridge",
+    "target_scored": true,
+    "target_match": true,
+    "unsupported_promotion": false,
+    "evidence_used": [
+      "flutter_study/packages/file_picker_bridge/lib/src/method_channel_file_picker.dart:5",
+      "flutter_study/pubspec.yaml"
+    ],
+    "failure_classification": null
+  },
+  "truth_assertions": {
+    "id": "GOLDEN_003",
+    "state": "approved",
+    "accepted_ownership": "platform_plugin",
+    "accepted_extraction": "MOVE_TO_EXISTING_UNIT",
+    "note": "MethodChannelFilePicker implements FilePickerService 且已有 file_picker_bridge manifest 边界，平台能力归已有 plugin 合理。"
+  },
+  "metrics": {},
+  "evidence_refs": [
+    "flutter_study/packages/file_picker_bridge/lib/src/method_channel_file_picker.dart:5",
+    "flutter_study/pubspec.yaml"
+  ],
+  "failures": [],
+  "result_hash": "36eaae4d9858d36c45665849f6298e2aa179e8a43a910c3f0fa8c2cc427e8f36"
+}

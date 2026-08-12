@@ -1,0 +1,25 @@
+{
+  "canonical_relative_ok": true,
+  "allowed_changes": [],
+  "forbidden_changes": [],
+  "scope_ok": true,
+  "run_id": "p7-gcode-adoption-20260812",
+  "status": "PILOT_VALIDATION_FAILED",
+  "approved_plan_id": "migration-4acbfd7b5ac2",
+  "approved_task_ids": [
+    "adoption:flutter_study:packages/gcode_core->gcode_core:adopt-dependency",
+    "adoption:flutter_study:packages/gcode_core->gcode_core:validate-host"
+  ],
+  "validation": [
+    {
+      "command": "flutter pub get",
+      "exit_code": 1,
+      "failure": "flutterguard_cli path dependency ../flutterguard does not exist; gcode_core resolution was not reached"
+    }
+  ],
+  "worktree_path": "/Users/forest/code/langGraph/flutter_study__agent_p7_gcode",
+  "changed_files": [
+    "pubspec.yaml"
+  ],
+  "rollback_boundary": "Original repositories untouched; preserve isolated worktree for review; no commit/push/merge/cleanup."
+}

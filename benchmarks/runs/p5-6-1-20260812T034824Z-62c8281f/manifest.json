@@ -1,0 +1,31 @@
+{
+  "run_id": "p5-6-1-20260812T034824Z-62c8281f",
+  "created_at": "2026-08-12T03:48:24.618984+00:00",
+  "status": "COMPLETE",
+  "stage": "P5.6.1",
+  "source_revision": "abcd32aecb05efb49598d1ec74d295a26161289c",
+  "analyzer_source_hash": "d6c76e12a206d128129ec4eef91fb6d3f3329804f6558de36864dd8395da8b98",
+  "resolver_source_hash": "be7f92f08b22054db5485fac72a315046a014ca67243b476ce81d34d50ae5fa4",
+  "benchmark_source_hash": "712cb22c82e4c853d7b153a0634f0a4d68ec9cdd03c568b5a92431d916af127c",
+  "benchmark_config_hash": "8378af9df8bc19d9efe5f05c01d435d038730014d8d0210966c4cf1cb58bfdc7",
+  "candidates_hash": "ae0faf43665d2286bc599205c34cafa4e910766b3765d57a92e44c9b730f42ba",
+  "review_decisions_hash": "caa64bbbbc022b1530ffd1bcb6f4b4fea2f55f228ca46509514f2f803d473d8d",
+  "registry_snapshot_identity": "202e5272fde17cfbeeed782b7d97d33528c1afc3f2cc6944b301e14febcd1b90",
+  "case_ids": [
+    "SHADOW_001",
+    "SHADOW_002",
+    "SHADOW_003",
+    "SHADOW_004",
+    "SHADOW_005",
+    "SHADOW_006",
+    "GOLDEN_001",
+    "GOLDEN_002",
+    "GOLDEN_003",
+    "GOLDEN_004",
+    "GOLDEN_005",
+    "GOLDEN_006",
+    "GOLDEN_007",
+    "GOLDEN_008"
+  ],
+  "completed_at": "2026-08-12T03:49:54.938163+00:00"
+}

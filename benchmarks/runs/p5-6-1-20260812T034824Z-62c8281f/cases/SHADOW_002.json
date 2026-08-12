@@ -1,0 +1,67 @@
+{
+  "run_id": "p5-6-1-20260812T034824Z-62c8281f",
+  "case_id": "SHADOW_002",
+  "status": "COMPLETE",
+  "started_at": "2026-08-12T03:48:32.770324+00:00",
+  "completed_at": "2026-08-12T03:48:40.974363+00:00",
+  "duration_seconds": 8.204,
+  "input_identity": "b22b5791bf88c112769632682ccec1eeb086149fb126f48db480f960cf58512a",
+  "prediction": {
+    "id": "SHADOW_002",
+    "passed": true,
+    "repository_precision": 1.0,
+    "repository_recall": 1.0,
+    "evidence_coverage": 1.0,
+    "rule_coverage": 1.0,
+    "unknown_preservation": 1.0,
+    "false_positive": 0,
+    "metrics": {
+      "searched_repositories": 1,
+      "searched_files": 9,
+      "selected_files": 25,
+      "evidence_count": 43,
+      "context_size_estimate": 69
+    },
+    "failures": [],
+    "review_state": "pending_review"
+  },
+  "truth_assertions": {
+    "repositories": {
+      "must_include": [
+        "flutter_study"
+      ],
+      "may_include": [],
+      "must_exclude": []
+    },
+    "evidence": {
+      "require_paths": [
+        "flutter_study/pubspec.yaml"
+      ]
+    },
+    "rules": {
+      "must_include": [
+        "flutter_study/AGENTS.md"
+      ]
+    },
+    "unknowns": {
+      "minimum_expected": 0,
+      "forbidden_promotions": []
+    },
+    "ownership": {
+      "scoring": "unscored"
+    },
+    "extraction": {
+      "scoring": "unscored"
+    }
+  },
+  "metrics": {
+    "searched_repositories": 1,
+    "searched_files": 9,
+    "selected_files": 25,
+    "evidence_count": 43,
+    "context_size_estimate": 69
+  },
+  "evidence_refs": [],
+  "failures": [],
+  "result_hash": "e261db8a5cc207aaa026ca1e72b5d1f096cf63080de1763c7edd154725af3cc9"
+}

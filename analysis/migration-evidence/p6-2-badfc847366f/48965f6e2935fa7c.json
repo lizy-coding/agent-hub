@@ -1,0 +1,116 @@
+{
+  "capability_id": "capability:flutter_study:.:event_log.dart",
+  "prior_block_reason": "extraction decision=NOT_ENOUGH_EVIDENCE",
+  "terminal_state": "NOT_ENOUGH_EVIDENCE",
+  "current_owner_repo": "flutter_study",
+  "current_owner_unit": "flutter_study:.",
+  "intended_owner_repo": null,
+  "intended_owner_unit": null,
+  "source_paths": [
+    "/Users/forest/code/langGraph/flutter_study/lib/modules/basic/microtask/models/event_log.dart"
+  ],
+  "destination_paths": [],
+  "consumer_paths": [
+    "flutter_study/lib/modules/basic/microtask/pages/microtask_queue_page.dart",
+    "flutter_study/lib/modules/basic/microtask/pages/event_queue_page.dart",
+    "flutter_study/lib/modules/basic/microtask/pages/advanced_examples_page.dart",
+    "flutter_study/lib/modules/basic/microtask/widgets/event_log_view.dart"
+  ],
+  "public_contract_paths": [],
+  "dependency_evidence": [
+    "flutter_study/pubspec.yaml"
+  ],
+  "callsite_evidence": [
+    "flutter_study/lib/modules/basic/microtask/pages/microtask_queue_page.dart:4",
+    "flutter_study/lib/modules/basic/microtask/pages/event_queue_page.dart:4",
+    "flutter_study/lib/modules/basic/microtask/pages/advanced_examples_page.dart:4",
+    "flutter_study/lib/modules/basic/microtask/widgets/event_log_view.dart:2"
+  ],
+  "applicable_rules": [
+    {
+      "path": "/Users/forest/code/langGraph/flutter_study/AGENTS.md",
+      "scope": "/Users/forest/code/langGraph/flutter_study",
+      "applies_to": "/Users/forest/code/langGraph/flutter_study/lib/modules/basic/microtask/models/event_log.dart",
+      "provenance": "filesystem_rule_scope"
+    }
+  ],
+  "validation_evidence": [
+    {
+      "category": "format",
+      "command": "dart format .",
+      "commands": [
+        "dart format ."
+      ],
+      "working_directory": "flutter_study",
+      "platform": "any",
+      "available": true,
+      "evidence": {
+        "source": "filesystem",
+        "path": "flutter_study/pubspec.yaml",
+        "discovered_at": "2026-08-11T12:18:07.623825+00:00",
+        "detail": "pubspec.yaml runtime;sha256=a33759dee456342d"
+      }
+    },
+    {
+      "category": "analyze",
+      "command": "flutter analyze",
+      "commands": [
+        "flutter analyze"
+      ],
+      "working_directory": "flutter_study",
+      "platform": "any",
+      "available": true,
+      "evidence": {
+        "source": "filesystem",
+        "path": "flutter_study/pubspec.yaml",
+        "discovered_at": "2026-08-11T12:18:07.623917+00:00",
+        "detail": "pubspec.yaml runtime;sha256=a33759dee456342d"
+      }
+    },
+    {
+      "category": "test",
+      "command": "flutter test",
+      "commands": [
+        "flutter test"
+      ],
+      "working_directory": "flutter_study",
+      "platform": "any",
+      "available": true,
+      "evidence": {
+        "source": "filesystem",
+        "path": "flutter_study/pubspec.yaml",
+        "discovered_at": "2026-08-11T12:18:07.623996+00:00",
+        "detail": "pubspec.yaml runtime;sha256=a33759dee456342d"
+      }
+    }
+  ],
+  "migration_delta": {
+    "capability_id": "capability:flutter_study:.:event_log.dart",
+    "current_owner_repo": "flutter_study",
+    "current_owner_unit": "flutter_study:.",
+    "current_paths": [
+      "/Users/forest/code/langGraph/flutter_study/lib/modules/basic/microtask/models/event_log.dart"
+    ],
+    "intended_owner_repo": null,
+    "intended_owner_unit": null,
+    "destination_paths": [],
+    "consumer_paths": [],
+    "contract_delta": [],
+    "implementation_delta": [],
+    "dependency_delta": [],
+    "cleanup_delta": [],
+    "evidence_refs": [
+      "flutter_study/lib/modules/basic/microtask/models/event_log.dart:15",
+      "flutter_study/pubspec.yaml"
+    ],
+    "status": "BLOCKED"
+  },
+  "missing_evidence": [
+    "No independent canonical target and distinct destination delta established."
+  ],
+  "confidence": "MEDIUM",
+  "evidence_refs": [
+    "flutter_study/lib/modules/basic/microtask/models/event_log.dart:15",
+    "flutter_study/pubspec.yaml"
+  ]
+}

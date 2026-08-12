@@ -1,0 +1,6 @@
+{
+  "must_runtime_resolve": ["WorkspaceConfig workspace_root", "RuntimeWorkspaceProvider repository runtime_path", "graph config environment overrides"],
+  "local_default_acceptable": ["workspace/config.json local runtime paths"],
+  "legacy_artifact_only": ["historical P6/P7 plans and reports"],
+  "corrected": ["core source no longer contains /Users/forest/code/langGraph architectural constants"]
+}

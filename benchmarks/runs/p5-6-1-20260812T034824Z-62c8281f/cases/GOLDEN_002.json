@@ -1,0 +1,42 @@
+{
+  "run_id": "p5-6-1-20260812T034824Z-62c8281f",
+  "case_id": "GOLDEN_002",
+  "status": "COMPLETE",
+  "started_at": "2026-08-12T03:49:17.688125+00:00",
+  "completed_at": "2026-08-12T03:49:23.045289+00:00",
+  "duration_seconds": 5.357,
+  "input_identity": "ffd0285ed0654738853bffaf5276caeeddd5ecb272f5284342988e66833a0021",
+  "prediction": {
+    "id": "GOLDEN_002",
+    "predicted_ownership": "application_orchestration",
+    "accepted_ownership": "application_orchestration",
+    "ownership_match": true,
+    "predicted_extraction": "KEEP_IN_APPLICATION",
+    "accepted_extraction": "KEEP_IN_APPLICATION",
+    "extraction_match": true,
+    "predicted_target_unit": null,
+    "accepted_target_unit": null,
+    "target_scored": false,
+    "target_match": null,
+    "unsupported_promotion": false,
+    "evidence_used": [
+      "flutter_study/lib/modules/ui/gcode_visualizer/state/gcode_player_controller.dart:28",
+      "flutter_study/pubspec.yaml"
+    ],
+    "failure_classification": null
+  },
+  "truth_assertions": {
+    "id": "GOLDEN_002",
+    "state": "approved",
+    "accepted_ownership": "application_orchestration",
+    "accepted_extraction": "KEEP_IN_APPLICATION",
+    "note": "controller 持有 picker/pipeline 协调职责，属于应用编排；保持在主工程。"
+  },
+  "metrics": {},
+  "evidence_refs": [
+    "flutter_study/lib/modules/ui/gcode_visualizer/state/gcode_player_controller.dart:28",
+    "flutter_study/pubspec.yaml"
+  ],
+  "failures": [],
+  "result_hash": "841a57e6f7bb34f480120a91a8b1ed63413d3c5a313d4aac7f84d5eeedaeb6fb"
+}

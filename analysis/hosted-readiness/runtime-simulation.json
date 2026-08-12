@@ -1,0 +1,7 @@
+{
+  "environment": "HOSTED",
+  "simulation": "temporary prechecked-out primary repository under agent-hub execution root",
+  "result": "DRY_RUN_REVIEW_READY",
+  "business_write": false,
+  "repository_identity": "flutter_study"
+}

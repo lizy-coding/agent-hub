@@ -6,6 +6,9 @@
     "workspace_bootstrap": "./src/agent_hub/graphs/registered.py:graph",
     "context_analysis": "./src/agent_hub/graphs/registered_context.py:graph",
     "capability_analysis": "./src/agent_hub/graphs/registered_capability.py:graph",
-    "shadow_benchmark": "./src/agent_hub/graphs/registered_benchmark.py:graph"
+    "shadow_benchmark": "./src/agent_hub/graphs/registered_benchmark.py:graph",
+    "migration_planning": "./src/agent_hub/graphs/registered_migration_planning.py:graph",
+    "migration_execution": "./src/agent_hub/graphs/registered_migration_execution.py:graph",
+    "development": "./src/agent_hub/graphs/registered_development.py:graph"
   }
 }

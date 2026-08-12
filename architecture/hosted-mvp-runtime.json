@@ -1,0 +1,12 @@
+{
+  "phase": "HOSTED_MVP",
+  "identity_rule": "repository_id is stable; runtime_path is ephemeral",
+  "primary_repository": {"repository_id": "flutter_study", "role": "PRIMARY", "managed": true, "writable": true},
+  "nested_packages": "internal development units of flutter_study transaction",
+  "external_references": [
+    {"repository_id": "gcode_core", "role": "REFERENCE", "managed": false, "writable": false},
+    {"repository_id": "file_picker_bridge", "role": "REFERENCE", "managed": false, "writable": false}
+  ],
+  "cross_repo_write": "BLOCKED_CROSS_REPO_MIGRATION",
+  "execution_level": "L1_ANALYZE"
+}

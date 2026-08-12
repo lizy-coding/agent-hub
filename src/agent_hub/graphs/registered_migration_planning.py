@@ -1,0 +1,3 @@
+from agent_hub.graphs.migration_planning import build_migration_planning_graph
+from agent_hub.graphs.registered import _load_config
+graph=build_migration_planning_graph(_load_config())

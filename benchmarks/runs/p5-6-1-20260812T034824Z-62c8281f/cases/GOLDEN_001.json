@@ -1,0 +1,44 @@
+{
+  "run_id": "p5-6-1-20260812T034824Z-62c8281f",
+  "case_id": "GOLDEN_001",
+  "status": "COMPLETE",
+  "started_at": "2026-08-12T03:49:12.010982+00:00",
+  "completed_at": "2026-08-12T03:49:16.826481+00:00",
+  "duration_seconds": 4.816,
+  "input_identity": "61688e737f73163fec6ae025288f9d1b95c3b3efb29f8e9df4eead9c3fc4705e",
+  "prediction": {
+    "id": "GOLDEN_001",
+    "predicted_ownership": "shared_core",
+    "accepted_ownership": "shared_core",
+    "ownership_match": true,
+    "predicted_extraction": "MOVE_TO_EXISTING_UNIT",
+    "accepted_extraction": "MOVE_TO_EXISTING_UNIT",
+    "extraction_match": true,
+    "predicted_target_unit": "flutter_study:packages/gcode_core",
+    "accepted_target_unit": "flutter_study:packages/gcode_core",
+    "target_scored": true,
+    "target_match": true,
+    "unsupported_promotion": false,
+    "evidence_used": [
+      "flutter_study/packages/gcode_core/lib/src/parser/gcode_parser.dart:6",
+      "flutter_study/packages/gcode_core/example/pubspec.yaml",
+      "flutter_study/pubspec.yaml"
+    ],
+    "failure_classification": null
+  },
+  "truth_assertions": {
+    "id": "GOLDEN_001",
+    "state": "approved",
+    "accepted_ownership": "shared_core",
+    "accepted_extraction": "MOVE_TO_EXISTING_UNIT",
+    "note": "现有 gcode_core public export + manifest path dependency 支持 shared core 与已有单元承载关系；后续迁移前仍需 Planner 验证具体实现是否存在 application/session coupling。"
+  },
+  "metrics": {},
+  "evidence_refs": [
+    "flutter_study/packages/gcode_core/lib/src/parser/gcode_parser.dart:6",
+    "flutter_study/packages/gcode_core/example/pubspec.yaml",
+    "flutter_study/pubspec.yaml"
+  ],
+  "failures": [],
+  "result_hash": "df21f7a1290c62b3c9d34254128a9e0860957ecc18194846bad848baaaafff50"
+}

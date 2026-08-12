@@ -1,0 +1,42 @@
+{
+  "run_id": "p5-6-1-20260812T034824Z-62c8281f",
+  "case_id": "GOLDEN_006",
+  "status": "COMPLETE",
+  "started_at": "2026-08-12T03:49:38.857128+00:00",
+  "completed_at": "2026-08-12T03:49:44.262398+00:00",
+  "duration_seconds": 5.405,
+  "input_identity": "9b922a9397208ae808794eb61d8ddf842287bc2caca1503df6d57f4849174e6f",
+  "prediction": {
+    "id": "GOLDEN_006",
+    "predicted_ownership": "reusable_capability",
+    "accepted_ownership": "reusable_capability",
+    "ownership_match": true,
+    "predicted_extraction": "EXTEND_EXISTING_UNIT",
+    "accepted_extraction": "EXTEND_EXISTING_UNIT",
+    "extraction_match": true,
+    "predicted_target_unit": "flutter_study:packages/flutter_study_learning",
+    "accepted_target_unit": "flutter_study:packages/flutter_study_learning",
+    "target_scored": true,
+    "target_match": true,
+    "unsupported_promotion": false,
+    "evidence_used": [
+      "flutter_study/packages/flutter_study_learning/lib/src/learning_scaffold.dart:5",
+      "flutter_study/pubspec.yaml"
+    ],
+    "failure_classification": null
+  },
+  "truth_assertions": {
+    "id": "GOLDEN_006",
+    "state": "approved",
+    "accepted_ownership": "reusable_capability",
+    "accepted_extraction": "EXTEND_EXISTING_UNIT",
+    "note": "LearningScaffold 已作为可复用导出 Widget 存在于明确 learning unit 边界，EXTEND_EXISTING_UNIT 有独立 manifest/export/callsite 支撑。"
+  },
+  "metrics": {},
+  "evidence_refs": [
+    "flutter_study/packages/flutter_study_learning/lib/src/learning_scaffold.dart:5",
+    "flutter_study/pubspec.yaml"
+  ],
+  "failures": [],
+  "result_hash": "eb53f3562557957257663a3dfffe8d41394a4b442d5e62006be8265460a425c4"
+}

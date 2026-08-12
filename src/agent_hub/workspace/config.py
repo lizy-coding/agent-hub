@@ -14,6 +14,7 @@ class WorkspaceConfig(BaseModel):
     excluded_paths: list[Path] = Field(default_factory=list)
     registry_path: Path
     registry_storage_path: Path | None = None
+    runtime: dict[str, object] = Field(default_factory=dict)
 
     @model_validator(mode="after")
     def normalize_and_validate_paths(self) -> "WorkspaceConfig":

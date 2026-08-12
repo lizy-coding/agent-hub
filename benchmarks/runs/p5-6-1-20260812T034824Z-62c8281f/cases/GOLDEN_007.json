@@ -1,0 +1,44 @@
+{
+  "run_id": "p5-6-1-20260812T034824Z-62c8281f",
+  "case_id": "GOLDEN_007",
+  "status": "COMPLETE",
+  "started_at": "2026-08-12T03:49:44.263157+00:00",
+  "completed_at": "2026-08-12T03:49:49.597591+00:00",
+  "duration_seconds": 5.334,
+  "input_identity": "85d9a9fd650f22aea9bff65a6ef4f4eb1909a86ef2f6e118014c2e06437eab83",
+  "prediction": {
+    "id": "GOLDEN_007",
+    "predicted_ownership": "ui_only",
+    "accepted_ownership": "ui_only",
+    "ownership_match": true,
+    "predicted_extraction": "UNKNOWN",
+    "accepted_extraction": "UNKNOWN",
+    "extraction_match": true,
+    "predicted_target_unit": null,
+    "accepted_target_unit": "flutter_study:packages/gcode_core",
+    "target_scored": false,
+    "target_match": null,
+    "unsupported_promotion": false,
+    "evidence_used": [
+      "flutter_study/packages/gcode_core/lib/src/widgets/gcode_canvas.dart:10",
+      "flutter_study/packages/gcode_core/example/pubspec.yaml",
+      "flutter_study/pubspec.yaml"
+    ],
+    "failure_classification": null
+  },
+  "truth_assertions": {
+    "id": "GOLDEN_007",
+    "state": "approved_with_unknown_extraction",
+    "accepted_ownership": "ui_only",
+    "accepted_extraction": "UNKNOWN",
+    "note": "StatelessWidget + visualizer callsite 足以支持 ui_only，但不足以证明 UI 应继续归属 gcode_core；需要确认职责边界、public API 与 Flutter rendering/UI 层持有策略。"
+  },
+  "metrics": {},
+  "evidence_refs": [
+    "flutter_study/packages/gcode_core/lib/src/widgets/gcode_canvas.dart:10",
+    "flutter_study/packages/gcode_core/example/pubspec.yaml",
+    "flutter_study/pubspec.yaml"
+  ],
+  "failures": [],
+  "result_hash": "8be4751193c81a9bdcfeb509cf0d17ba03c0966b6bcd9b0f6d079a6c3b2e962f"
+}
