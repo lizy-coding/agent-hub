@@ -1,10 +1,33 @@
+# Secrets / local config
 .env
 .env.*
+*.local
+
+# Python
 .venv/
 __pycache__/
 *.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# LangGraph runtime state (checkpoints are local-only)
 .langgraph_api/
+
+# Execution / integration worktrees (managed clones of business repos)
 .execution/
+.integration/
+
+# IDE / editor
+.idea/
+
+# Refactor program registry (generated state)
 workspace/registry.json
+
+# Logs and runtime artifacts
 *.log
 *.pid
+*.pckl
