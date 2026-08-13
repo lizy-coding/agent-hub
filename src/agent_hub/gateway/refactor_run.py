@@ -6,7 +6,7 @@ from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 from agent_hub.gateway.refactor_dashboard import fetch_state, render
 
-REQUIREMENT = "Continue flutter-study-refactor-program. Rescan all DevelopmentUnits, preserve DONE tasks, refresh evidence-backed tasks and the dependency DAG, and execute only frozen READY tasks through development graph -> Worker -> Codex -> ScopeGuard -> validation -> Reviewer. Do not commit, push, merge, release, or modify .hermes."
+REQUIREMENT = "Continue flutter-study-refactor-program. Rescan all DevelopmentUnits after reconciling the integration branch, preserve Git-proven DONE tasks, refresh evidence-backed tasks and the dependency DAG, and execute only frozen READY tasks through development graph -> Worker -> Codex -> ScopeGuard -> validation -> Reviewer -> integration validation -> local integration commit. Do not push, merge, release, or modify .hermes."
 
 def _call(method, url, payload=None):
     request=Request(url, data=json.dumps(payload).encode() if payload else None, headers={"Content-Type":"application/json"}, method=method)
@@ -17,7 +17,12 @@ def _ready(endpoint):
     try:
         with socket.create_connection(("127.0.0.1", _port(endpoint)), timeout=1): return True
     except OSError: return False
-def _active(state): return bool(state.get("next") or state.get("tasks"))
+def _active(state):
+    """A failed checkpoint is resumable history, not an active run."""
+    tasks = state.get("tasks") or []
+    if tasks and all(isinstance(task, dict) and task.get("error") for task in tasks):
+        return False
+    return bool(state.get("next") or tasks)
 
 def _start_worker(root, endpoint):
     env=os.environ.copy(); env["AGENT_HUB_CODE_WORKER_PORT"]=str(_port(endpoint))
@@ -27,14 +32,22 @@ def _start_worker(root, endpoint):
                 line=line.removeprefix("export ")
                 if "=" in line and not line.startswith("#"):
                     key,value=line.split("=",1); env.setdefault(key,value)
+    integration=root/".integration/flutter_study"
+    env["AGENT_HUB_PRIMARY_REPOSITORY_PATH"]=str(integration)
+    env["AGENT_HUB_INTEGRATION_WORKTREE"]=str(integration)
     return subprocess.Popen([str(root/".venv/bin/python"),"-m","agent_hub.gateway.code_worker"],cwd=root,env=env,start_new_session=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
 
 def refactor_run(server, thread_id, root, output=print):
+    root = Path(root)
     try:
         if not _call("GET",server.rstrip("/")+"/ok").get("ok"): raise OSError("health check failed")
     except (URLError,HTTPError,OSError,ValueError) as error:
         output(f"DISCONNECTED: LangGraph unavailable: {error}"); return 2
     endpoint=os.environ.get("AGENT_HUB_CODE_WORKER_ENDPOINT","http://127.0.0.1:8765/execute"); owned=None
+    os.environ.setdefault(
+        "AGENT_HUB_INTEGRATION_WORKTREE",
+        str(root / ".integration" / "flutter_study"),
+    )
     if not _ready(endpoint):
         owned=_start_worker(root,endpoint)
         for _ in range(20):
@@ -48,7 +61,7 @@ def refactor_run(server, thread_id, root, output=print):
         else:
             assistants=_call("POST",server.rstrip("/")+"/assistants/search",{"limit":50,"offset":0})
             assistant=next(x["assistant_id"] for x in assistants if x["graph_id"]=="development")
-            result=_call("POST",f"{server.rstrip('/')}/threads/{thread_id}/runs",{"assistant_id":assistant,"input":{"repository_id":"flutter_study","requirement":REQUIREMENT},"multitask_strategy":"reject"})
+            result=_call("POST",f"{server.rstrip('/')}/threads/{thread_id}/runs",{"assistant_id":assistant,"input":{"repository_id":"flutter_study","requirement":REQUIREMENT,"worker_endpoint":endpoint},"multitask_strategy":"reject"})
             output(f"Submitted run {result['run_id']}")
         while True:
             state=fetch_state(server,thread_id); print("\033[2J\033[H",end=""); output(render(state))

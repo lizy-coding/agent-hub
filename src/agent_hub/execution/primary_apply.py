@@ -2,6 +2,7 @@
 from __future__ import annotations
 import subprocess
 import os
+from datetime import UTC, datetime
 from pathlib import Path
 
 def _changed(root: Path) -> list[str]:
@@ -43,3 +44,14 @@ def validate_applied(root: Path, task: dict[str, object]) -> dict[str, object]:
     analyze=subprocess.run(["flutter","analyze"],cwd=root,text=True,capture_output=True)
     if analyze.returncode: return {"status":"PRIMARY_VALIDATION_FAILED","changed_files":changed,"validation":{"analyze":{"status":"FAIL","output":analyze.stdout[-2000:]+analyze.stderr[-2000:]}}}
     return {"status":"APPLIED","changed_files":changed,"scope_guard":"PASS","validation":{"analyze":{"status":"PASS"}},"applied_to_primary":True}
+
+def commit_approved(root: Path, task: dict[str, object], worker: dict[str, object]) -> dict[str, object]:
+    result=apply_approved(root,task,worker)
+    if result.get("status") != "APPLIED": return result
+    paths=list(task.get("allowed_paths", []))
+    subprocess.run(["git","add","--",*paths],cwd=root,check=True,capture_output=True)
+    subprocess.run(["git","add","-u","--",*{str(Path(path).parent) for path in paths}],cwd=root,check=True,capture_output=True)
+    message=f"refactor: {task.get('task_id', 'approved task')} [{task.get('task_id', 'task')}]"
+    committed=subprocess.run(["git","commit","--no-verify","-m",message],cwd=root,text=True,capture_output=True)
+    if committed.returncode: return {"status":"COMMIT_FAILED","stderr":committed.stderr[-2000:],**result}
+    return {"status":"COMMITTED","commit_hash":subprocess.check_output(["git","rev-parse","HEAD"],cwd=root,text=True).strip(),"committed_at":datetime.now(UTC).isoformat(),**result}

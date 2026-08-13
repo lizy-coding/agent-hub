@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from collections.abc import Callable
 from urllib.error import URLError
 from urllib.request import urlopen
@@ -25,7 +26,7 @@ def render(state: dict[str, object]) -> str:
     values = state.get("values", {})
     program = values.get("program", {})
     worker = values.get("worker_result") or {}
-    primary = values.get("primary_apply") or {}
+    integration = values.get("integration_apply") or values.get("primary_apply") or {}
     task = values.get("development_task") or {}
     metadata = state.get("metadata") or {}
     graph_tasks = state.get("tasks") or []
@@ -34,11 +35,17 @@ def render(state: dict[str, object]) -> str:
     done = [item for item in tasks if item.get("status") == "DONE"]
     ready = [item for item in tasks if item.get("status") == "READY"]
     blocked = [item for item in tasks if item.get("status") == "BLOCKED"] + list(program.get("blocked_tasks", []))
+    decisions = program.get("human_decisions", [])
+    decision_rows = ", ".join(
+        f"{item.get('decision_id')}={item.get('choice')}" for item in decisions
+    ) or "—"
     total = len(tasks)
     progress = 100 if total and len(done) == total else (round(100 * len(done) / total) if total else 0)
+    inventory_done = sum(1 for unit in program.get("development_units", []) if unit.get("inventory_completed"))
     graph_active = bool(next_nodes or graph_tasks)
     overall = f"PROGRAM {program.get('status', 'UNKNOWN')} / GRAPH {'ACTIVE' if graph_active else 'IDLE'}"
     execute_done = worker.get("status") == "SUCCESS" and worker.get("review") == "APPROVED"
+    integration_done = bool(next((item for item in done if item.get("commit_hash")), None))
     pipeline = [
         ("Context", bool(program)),
         ("Plan", bool(program.get("tasks") is not None)),
@@ -47,8 +54,8 @@ def render(state: dict[str, object]) -> str:
         ("ScopeGuard", worker.get("scope_guard") == "PASS"),
         ("Validation", (worker.get("validation") or {}).get("analyze", {}).get("status") == "PASS"),
         ("Review", worker.get("review") == "APPROVED"),
-        ("Apply PRIMARY", primary.get("status") == "APPLIED"),
-        ("PRIMARY Validate", (primary.get("validation") or {}).get("analyze", {}).get("status") == "PASS"),
+        ("Commit Integration", integration_done or integration.get("status") == "COMMITTED"),
+        ("Integration Validate", integration_done or (integration.get("validation") or {}).get("analyze", {}).get("status") == "PASS"),
     ]
     task_rows = lambda items: ", ".join(item.get("task_id", "unknown") for item in items) or "—"
     current = program.get("current_task") or "—"
@@ -59,23 +66,27 @@ def render(state: dict[str, object]) -> str:
         f"Thread ID: {metadata.get('thread_id', '—')}",
         f"Run ID: {metadata.get('run_id', '—')} | Graph step: {metadata.get('step', '—')}",
         f"Overall: {overall}",
+        f"Integration: {program.get('integration_branch', 'refactor/langgraph-global')} @ {program.get('base_revision', '—')}",
         "",
-        f"Units: {len(program.get('development_units', []))} | Tasks: {total} | DONE: {len(done)} | READY: {len(ready)} | BLOCKED: {len(blocked)} | Progress: {progress}%",
+        f"Inventory: {inventory_done}/{len(program.get('development_units', []))} | Tasks: {total} | DONE: {len(done)} | READY: {len(ready)} | BLOCKED: {len(blocked)} | Progress: {progress}%",
         f"Current: {current} | Last task: {last_task}",
         "Pipeline: " + " -> ".join(f"{name}={'RUNNING' if name == 'Execute Code' and active and not execute_done else _state(active)}" for name, active in pipeline),
         "",
         f"Workstreams: {', '.join(program.get('workstreams', [])) or '—'}",
         f"Completed: {task_rows(done)}",
+        f"Last commit: {next((item.get('commit_hash') for item in reversed(done) if item.get('commit_hash')), '—')}",
         f"Ready: {task_rows(ready)}",
         f"Blocked decisions: {task_rows(blocked)}",
+        f"Resolved decisions: {decision_rows}",
         f"Next node: {', '.join(next_nodes) or '—'}",
         "",
         "Last execution:",
         f"  Worker: {worker.get('status', '—')} | exit_code: {worker.get('exit_code', '—')} | ScopeGuard: {worker.get('scope_guard', '—')}",
         f"  flutter analyze: {(worker.get('validation') or {}).get('analyze', {}).get('status', worker.get('analyze', {}).get('status', '—'))} | Review: {worker.get('review', '—')}",
         f"  Changed files: {', '.join(worker.get('changed_files', [])) or '—'}",
-        f"  PRIMARY apply: {primary.get('status', '—')} | PRIMARY changed: {', '.join(primary.get('changed_files', [])) or '—'}",
+        f"  Integration commit: {integration.get('status', '—')} | changed: {', '.join(integration.get('changed_files', [])) or '—'}",
     ]
+    if program.get("status") == "PROGRAM_BLOCKED": lines.append("  Use ./agent refactor-decide --decision-id <id> --choice <choice> to resume.")
     if task:
         lines.extend([f"  Allowed paths: {', '.join(task.get('allowed_paths', [])) or '—'}", f"  Base revision: {task.get('base_revision', '—')}"])
     return "\n".join(lines)

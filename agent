@@ -8,19 +8,27 @@ import time
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 from agent_hub.gateway.refactor_dashboard import DEFAULT_SERVER, DEFAULT_THREAD_ID, status
 from agent_hub.gateway.refactor_run import refactor_run
+from agent_hub.gateway.refactor_decide import refactor_decide
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Read-only Agent Hub refactor dashboard.")
-    parser.add_argument("command", choices=("refactor-status", "refactor-watch", "refactor-run"))
+    parser.add_argument("command", choices=("refactor-status", "refactor-watch", "refactor-run", "refactor-decide"))
     parser.add_argument("--thread-id", default=DEFAULT_THREAD_ID)
     parser.add_argument("--server", default=DEFAULT_SERVER)
     parser.add_argument("--verbose", action="store_true")
+    parser.add_argument("--decision-id")
+    parser.add_argument("--choice")
+    parser.add_argument("--reason", default="")
     args = parser.parse_args()
     if args.command == "refactor-status":
         return status(args.server, args.thread_id)
     if args.command == "refactor-run":
         return refactor_run(args.server, args.thread_id, os.path.dirname(os.path.abspath(__file__)))
+    if args.command == "refactor-decide":
+        if not args.decision_id or not args.choice:
+            parser.error("refactor-decide requires --decision-id and --choice")
+        return refactor_decide(args.server, args.thread_id, args.decision_id, args.choice, args.reason)
     try:
         while True:
             print("\033[2J\033[H", end="")
