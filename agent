@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+"""Local Agent Hub command entrypoint."""
+import argparse
+import os
+import sys
+import time
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
+from agent_hub.gateway.refactor_dashboard import DEFAULT_SERVER, DEFAULT_THREAD_ID, status
+from agent_hub.gateway.refactor_run import refactor_run
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Read-only Agent Hub refactor dashboard.")
+    parser.add_argument("command", choices=("refactor-status", "refactor-watch", "refactor-run"))
+    parser.add_argument("--thread-id", default=DEFAULT_THREAD_ID)
+    parser.add_argument("--server", default=DEFAULT_SERVER)
+    parser.add_argument("--verbose", action="store_true")
+    args = parser.parse_args()
+    if args.command == "refactor-status":
+        return status(args.server, args.thread_id)
+    if args.command == "refactor-run":
+        return refactor_run(args.server, args.thread_id, os.path.dirname(os.path.abspath(__file__)))
+    try:
+        while True:
+            print("\033[2J\033[H", end="")
+            status(args.server, args.thread_id)
+            time.sleep(2)
+    except KeyboardInterrupt:
+        print("\nStopped.")
+        return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

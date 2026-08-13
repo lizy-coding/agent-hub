@@ -1,0 +1,10 @@
+.env
+.env.*
+.venv/
+__pycache__/
+*.py[cod]
+.langgraph_api/
+.execution/
+workspace/registry.json
+*.log
+*.pid

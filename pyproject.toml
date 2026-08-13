@@ -17,6 +17,7 @@ dependencies = [
 
 [project.scripts]
 agent-hub-bootstrap = "agent_hub.gateway.cli:main"
+agent-hub-code-worker = "agent_hub.gateway.code_worker:run"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/agent_hub"]
