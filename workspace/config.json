@@ -11,9 +11,7 @@
     "runtime_id": "local-development",
     "primary_repository_id": "flutter_study",
     "repositories": {
-      "flutter_study": {"runtime_path": "/Users/forest/code/langGraph/flutter_study", "role": "PRIMARY", "managed": true, "writable": true, "source_type": "LOCAL_PATH"},
-      "gcode_core": {"runtime_path": "/Users/forest/code/langGraph/gcode_core", "role": "REFERENCE", "managed": false, "writable": false, "source_type": "LOCAL_PATH"},
-      "file_picker_bridge": {"runtime_path": "/Users/forest/code/langGraph/file_picker_bridge", "role": "REFERENCE", "managed": false, "writable": false, "source_type": "LOCAL_PATH"}
+      "flutter_study": {"runtime_path": "/Users/forest/code/langGraph/flutter_study", "role": "PRIMARY", "managed": true, "writable": true, "source_type": "LOCAL_PATH"}
     }
   }
 }
