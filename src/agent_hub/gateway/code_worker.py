@@ -7,6 +7,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from agent_hub.execution.code_worker import LocalCodeExecutor, execute_request
+from agent_hub.execution.decomposition_worker import DecompositionCodeExecutor
 
 
 class CodeWorkerHandler(BaseHTTPRequestHandler):
@@ -19,7 +20,7 @@ class CodeWorkerHandler(BaseHTTPRequestHandler):
         try:
             length = int(self.headers.get("Content-Length", "0"))
             payload = json.loads(self.rfile.read(length))
-            result = execute_request(payload, self.executor)
+            result = DecompositionCodeExecutor().execute(payload) if payload.get("execution_kind") == "decomposition_migration" else execute_request(payload, self.executor)
             body = json.dumps(result).encode()
             self.send_response(200)
             self.send_header("Content-Type", "application/json")

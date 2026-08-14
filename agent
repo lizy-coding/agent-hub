@@ -21,6 +21,7 @@ def main() -> int:
     parser.add_argument("--decision-id")
     parser.add_argument("--choice")
     parser.add_argument("--reason", default="")
+    parser.add_argument("--execute", action="store_true", help="Allow decomposition-run to enter real migration execution.")
     args = parser.parse_args()
     refactor_thread = args.thread_id or DEFAULT_THREAD_ID
     if args.command == "refactor-status":
@@ -31,10 +32,16 @@ def main() -> int:
         if not args.decision_id or not args.choice:
             parser.error("refactor-decide requires --decision-id and --choice")
         return refactor_decide(args.server, refactor_thread, args.decision_id, args.choice, args.reason)
-    if args.command == "decomposition-plan": return decomposition.plan(args.server, args.thread_id)
-    if args.command == "decomposition-status": return decomposition.status(args.server,args.thread_id)
-    if args.command == "decomposition-run": return decomposition.run(output=print)
-    if args.command == "decomposition-decide": return decomposition.decide(args.server,args.thread_id,args.decision_id,args.choice,args.reason)
+    if args.command == "decomposition-plan":
+        return decomposition.plan(server=args.server, thread_id=args.thread_id, output=print)
+    if args.command == "decomposition-status":
+        return decomposition.status(server=args.server, thread_id=args.thread_id, output=print)
+    if args.command == "decomposition-run":
+        return decomposition.run(server=args.server, thread_id=args.thread_id, execute=args.execute, output=print)
+    if args.command == "decomposition-decide":
+        if not args.decision_id or not args.choice:
+            parser.error("decomposition-decide requires --decision-id and --choice")
+        return decomposition.decide(server=args.server, thread_id=args.thread_id, decision_id=args.decision_id, choice=args.choice, reason=args.reason, output=print)
     try:
         while True:
             print("\033[2J\033[H", end="")

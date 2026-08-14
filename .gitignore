@@ -20,6 +20,7 @@ htmlcov/
 # Execution / integration worktrees (managed clones of business repos)
 .execution/
 .integration/
+.decomposition/
 
 # IDE / editor
 .idea/
