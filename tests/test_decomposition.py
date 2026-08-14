@@ -51,6 +51,10 @@ class DecompositionTest(unittest.TestCase):
  def test_file_picker_contract_derives_only_source_and_target_writable_repositories(self):
   roles=_mutation_repositories({"source_units":["file_picker_bridge"],"target_units":["flutter_study/packages/file_picker_bridge"],"allowed_operations":["DELETE","PACKAGE_MERGE"]})
   self.assertEqual(roles,{"file_picker_bridge":"source","flutter_study":"target"})
+ def test_package_unit_task_resolves_to_primary_repository(self):
+  task={"source_units":[],"target_units":["packages/gcode_core","packages/file_picker_bridge","packages/flutter_study_learning","packages/flutter_ioc_core"]}
+  self.assertEqual(_repositories_for(task),["flutter_study"])
+  self.assertEqual(_mutation_repositories({**task,"allowed_operations":[]}),{"flutter_study":"target"})
  def test_worker_scope_requires_declared_allowed_paths(self):
   from agent_hub.execution.decomposition_worker import DecompositionCodeExecutor
   scope,error=DecompositionCodeExecutor._writable_scope({"allowed_paths_by_repository":{"file_picker_bridge":["lib"]},"writable_repositories":[{"repository":"file_picker_bridge","role":"source","writable":True,"allowed_paths":["lib"]}]})
