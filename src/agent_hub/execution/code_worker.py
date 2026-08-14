@@ -18,6 +18,7 @@ from pathlib import Path
 
 PRIMARY_REPOSITORY = "flutter_study"
 CODEX_TIMEOUT_SECONDS = int(os.environ.get("AGENT_HUB_CODEX_TIMEOUT_SECONDS", "900"))
+CODEX_PROFILE = os.environ.get("AGENT_HUB_CODEX_PROFILE", "")
 
 
 @dataclass(frozen=True)
@@ -88,7 +89,10 @@ class LocalCodeExecutor:
         return {"status": status, "task_id": getattr(request, "task_id", ""), "repository": request.repository, "base_revision": request.base_revision, "exit_code": values.pop("exit_code", None), "changed_files": values.pop("changed_files", []), "diff": values.pop("diff", ""), "validation": values.pop("validation", {}), "scope_guard": values.pop("scope_guard", "NOT_RUN"), "stdout_tail": values.pop("stdout_tail", ""), "stderr_tail": values.pop("stderr_tail", ""), **values}
 
     def _codex_run(self, worktree: Path, request: WorkerRequest) -> tuple[str, int | None, str, str]:
-        command = [self.codex_binary, "exec", "--sandbox", "workspace-write", "--skip-git-repo-check", "--cd", str(worktree), self._codex_prompt(request)]
+        command = [self.codex_binary, "exec"]
+        if CODEX_PROFILE:
+            command.extend(["--profile", CODEX_PROFILE])
+        command.extend(["--sandbox", "workspace-write", "--skip-git-repo-check", "--cd", str(worktree), self._codex_prompt(request)])
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, start_new_session=True)
         try:
             stdout, stderr = process.communicate(timeout=CODEX_TIMEOUT_SECONDS)

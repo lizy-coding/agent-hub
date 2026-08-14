@@ -6,7 +6,9 @@ more than one isolated Git worktree.
 """
 from __future__ import annotations
 
+import os
 import shutil
+import signal
 import subprocess
 import tempfile
 from datetime import UTC, datetime
@@ -15,18 +17,21 @@ from uuid import uuid4
 
 
 CLUSTER_ROOT = Path("/Users/forest/code/langGraph")
+CODEX_PROFILE = os.environ.get("AGENT_HUB_CODEX_PROFILE", "")
+CODEX_TIMEOUT_SECONDS = int(os.environ.get("AGENT_HUB_CODEX_TIMEOUT_SECONDS", "1800"))
 
 
-def _changed(worktree: Path) -> list[str]:
-    tracked = subprocess.check_output(["git", "diff", "--name-only"], cwd=worktree, text=True).splitlines()
-    untracked = subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard"], cwd=worktree, text=True).splitlines()
-    return sorted(set(tracked + untracked))
-
-
-def _diff(worktree: Path) -> str:
+def _snapshot(worktree: Path) -> tuple[list[str], str]:
+    # Normalize the index so staged moves, untracked additions and deletions
+    # are all captured by the diff we hand to integration.  Rename detection
+    # must stay off: a collapsed R100 hides the deleted source path, which the
+    # integration/architecture guards rely on to prove the source is gone.
+    subprocess.run(["git", "add", "-A"], cwd=worktree, check=True, capture_output=True, text=True)
+    changed = subprocess.check_output(["git", "diff", "--cached", "--no-renames", "--name-only", "HEAD"], cwd=worktree, text=True).splitlines()
     # Integration applies the Worker artifact to a managed worktree.  Binary
     # application/host assets require Git's complete binary patch form.
-    return subprocess.check_output(["git", "diff", "--binary", "--"], cwd=worktree, text=True)
+    diff = subprocess.check_output(["git", "diff", "--cached", "--no-renames", "--binary", "HEAD"], cwd=worktree, text=True)
+    return sorted(set(changed)), diff
 
 
 class DecompositionCodeExecutor:
@@ -61,17 +66,39 @@ class DecompositionCodeExecutor:
                 subprocess.run(["git", "worktree", "add", "--detach", str(worktree), base], cwd=source, check=True, capture_output=True, text=True)
                 worktrees[repository] = worktree
             prompt = self._prompt(payload, worktrees)
-            command = [self.codex_binary, "exec", "--sandbox", "workspace-write", "--skip-git-repo-check", "--cd", str(root)]
+            command = [self.codex_binary, "exec"]
+            if CODEX_PROFILE:
+                command.extend(["--profile", CODEX_PROFILE])
+            command.extend(["--sandbox", "workspace-write", "--skip-git-repo-check", "--cd", str(root)])
             for repository in sorted(scope):
                 command.extend(["--add-dir", str(worktrees[repository])])
-            process = subprocess.run([*command, prompt], capture_output=True, text=True, timeout=int(payload.get("timeout_seconds", 900)))
-            results = {name: {"changed_files": _changed(worktree), "diff": _diff(worktree)} for name, worktree in worktrees.items()}
-            if process.returncode:
-                return self._result(task_id, "CODEX_EXECUTION_FAILED", "codex", execution_id, root, process.returncode, results, process.stdout, process.stderr)
+            process = subprocess.Popen([*command, prompt], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, start_new_session=True)
+            try:
+                stdout, stderr = process.communicate(timeout=int(payload.get("timeout_seconds", CODEX_TIMEOUT_SECONDS)))
+                exit_code = process.returncode
+            except subprocess.TimeoutExpired:
+                # Kill the entire session so a leaked codex/unified-exec child
+                # cannot keep writing into a worktree we are about to remove.
+                try:
+                    os.killpg(process.pid, signal.SIGTERM)
+                except ProcessLookupError:
+                    pass
+                try:
+                    stdout, stderr = process.communicate(timeout=10)
+                except subprocess.TimeoutExpired:
+                    try:
+                        os.killpg(process.pid, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+                    stdout, stderr = process.communicate()
+                return self._result(task_id, "CODEX_EXECUTION_TIMEOUT", "timeout", execution_id, root, process.returncode, {}, (stdout or "")[-2000:], (stderr or "")[-2000:])
+            results = {name: {"changed_files": changed, "diff": diff} for name, worktree in worktrees.items() for changed, diff in [_snapshot(worktree)]}
+            if exit_code:
+                return self._result(task_id, "CODEX_EXECUTION_FAILED", "codex", execution_id, root, exit_code, results, stdout, stderr)
             unauthorized = self._unauthorized(payload, results)
             if unauthorized:
-                return self._result(task_id, "SCOPE_VIOLATION", "migration_scope_guard", execution_id, root, process.returncode, results, process.stdout, process.stderr, unauthorized)
-            return self._result(task_id, "SUCCESS", "", execution_id, root, process.returncode, results, process.stdout, process.stderr)
+                return self._result(task_id, "SCOPE_VIOLATION", "migration_scope_guard", execution_id, root, process.returncode, results, stdout, stderr, unauthorized)
+            return self._result(task_id, "SUCCESS", "", execution_id, root, process.returncode, results, stdout, stderr)
         except subprocess.TimeoutExpired as error:
             return self._result(task_id, "CODEX_EXECUTION_TIMEOUT", "timeout", execution_id, root, None, {}, getattr(error, "stdout", "") or "", getattr(error, "stderr", "") or "")
         except Exception as error:
@@ -110,7 +137,11 @@ class DecompositionCodeExecutor:
                 + ", ".join(worktrees) + ". Allowed paths: " + places + ". "
                 + "Frozen roles: " + role_text + ". "
                 + "Task: " + str(payload.get("requirement", "")) + ". Execution instructions: " + instruction_text + ". "
-                + "Do not commit, push, merge, release, modify manifests outside the stated task, or touch ordinary user worktrees.")
+                + "Do not commit, push, merge, release, modify manifests outside the stated task, or touch ordinary user worktrees. "
+                + "Move files with `git mv` (never copy); every file moved or deleted from a source path MUST appear in `git status` as deleted at the source AND added at the destination. "
+                + "After the move, verify with `git status --porcelain` that the source app directories (for example root lib/main.dart and root lib/app) no longer exist and no duplicates remain. "
+                + "When rewriting manifest paths, keep every other declared workspace member (packages/*, plugins/*) untouched at the workspace root. "
+                + "If verification fails or a file cannot be moved, keep working until `git status --porcelain` shows exactly the intended moved set; do not stop early.")
 
     @staticmethod
     def _unauthorized(payload: dict[str, object], results: dict[str, object]) -> list[str]:

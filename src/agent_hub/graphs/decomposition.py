@@ -17,6 +17,27 @@ CLUSTER = Path("/Users/forest/code/langGraph")
 MANAGED_ROOT = Path(__file__).resolve().parents[3] / ".decomposition"
 LOGGER = logging.getLogger(__name__)
 
+# Terminal Worker/guard outcomes that carry no integration result to apply,
+# so a task-scoped human retry may safely return the task to READY.  Worker
+# execution failures (codex non-zero/timeout) are external and resumable too.
+RETRYABLE_BLOCKERS = frozenset({
+    "MIGRATION_NO_EFFECT",
+    "source_deleted_without_target_owner",
+    "WORKER_DISPATCH_FAILED",
+    "WORKER_DISPATCH_TIMEOUT",
+    "WORKER_SCOPE_CONFIGURATION_ERROR",
+    "INTEGRATION_FAILED",
+    "CODEX_EXECUTION_FAILED",
+    "CODEX_EXECUTION_TIMEOUT",
+    "app_target_missing",
+    "root_app_owner_retained",
+    "root_flutter_application_manifest_retained",
+    "workspace_package_owner_missing",
+    "workspace_capability_moved_into_app",
+    "missing_repository_results",
+    "merge_task_has_no_target_units",
+})
+
 
 class State(TypedDict, total=False):
     decomposition_program: dict[str, object]
@@ -77,7 +98,7 @@ def _stage_validated_changes(root: Path, changed: list[str]) -> dict[str, object
     staged = subprocess.run(command, cwd=root, capture_output=True, text=True)
     if staged.returncode:
         return {"status": "INTEGRATION_STAGING_FAILED", "command": command, "exit_code": staged.returncode, "stderr": staged.stderr[-2000:], "changed_files": changed}
-    cached = subprocess.check_output(["git", "diff", "--cached", "--name-only"], cwd=root, text=True).splitlines()
+    cached = subprocess.check_output(["git", "diff", "--cached", "--no-renames", "--name-only"], cwd=root, text=True).splitlines()
     if sorted(cached) != sorted(changed):
         return {"status": "INTEGRATION_STAGING_MISMATCH", "changed_files": changed, "staged_files": cached}
     return {"status": "STAGED", "changed_files": changed}
@@ -91,7 +112,7 @@ def _allowed(task: dict[str, object], repository: str) -> list[str]:
     known = {
         "merge-gcode-core-owners": {"flutter_study": ["packages/gcode_core"], "gcode_core": ["lib", "test", "pubspec.yaml", "analysis_options.yaml"]},
         "merge-file-picker-bridge-owners": {"flutter_study": ["packages/file_picker_bridge"], "file_picker_bridge": ["lib", "test", "pubspec.yaml", "analysis_options.yaml", "android", "ios", "macos", "windows", "linux"]},
-        "relocate-flutter-study-app": {"flutter_study": ["lib/app", "lib", "pubspec.yaml"]},
+        "relocate-flutter-study-app": {"flutter_study": ["lib/app", "lib", "pubspec.yaml", "flutterguard.yaml"]},
     }
     return known.get(task_id, {}).get(repository, [])
 
@@ -134,7 +155,7 @@ def _worker(request: dict[str, object], endpoint: str | None) -> dict[str, objec
     url = endpoint.rstrip("/") + ("" if endpoint.rstrip("/").endswith("/execute") else "/execute")
     try:
         call = Request(url, data=json.dumps(request).encode(), headers={"Content-Type": "application/json"}, method="POST")
-        with urlopen(call, timeout=920) as response:
+        with urlopen(call, timeout=int(os.environ.get("AGENT_HUB_CODEX_TIMEOUT_SECONDS", "1800")) + 60) as response:
             return json.loads(response.read())
     except TimeoutError as error:
         return {"status": "WORKER_DISPATCH_TIMEOUT", "reason": "code_worker_timeout", "detail": str(error)}
@@ -176,7 +197,7 @@ def _app_relocation_contract() -> dict[str, object]:
         "depends_on": ["merge-gcode-core-owners", "merge-file-picker-bridge-owners"],
         "allowed_operations": ["MOVE", "RENAME", "DEPENDENCY_REWRITE", "API_BREAK"],
         "target_creation_allowed": True,
-        "allowed_paths_by_repository": {"flutter_study": ["apps/flutter_study", "lib", "macos", "windows", "android", "ios", "linux", "web", "assets", "test", "integration_test", "pubspec.yaml", "pubspec.lock", ".metadata", "analysis_options.yaml", "l10n.yaml"]},
+        "allowed_paths_by_repository": {"flutter_study": ["apps/flutter_study", "lib", "macos", "windows", "android", "ios", "linux", "web", "assets", "test", "integration_test", "pubspec.yaml", "pubspec.lock", ".metadata", "analysis_options.yaml", "l10n.yaml", "flutterguard.yaml"]},
         "dependency_constraints": ["apps/flutter_study may depend on packages/* and plugins/*", "packages/* and plugins/* must not depend on apps/flutter_study", "workspace dependency cycles must remain zero"],
         "execution_instructions": ["Create apps/flutter_study as a Flutter application with pubspec.yaml and lib/main.dart.", "Move only app-owned runtime sources, hosts, assets, tests and configuration after inspecting ownership; do not move packages/* or plugins/*.", "Rewrite app package paths relative to apps/flutter_study and retain root pubspec.yaml only as a workspace/container manifest without Flutter Application ownership.", "Move the existing macos and windows hosts; move other platform hosts only when they exist."],
         "acceptance": ["apps/flutter_study/pubspec.yaml and apps/flutter_study/lib/main.dart exist", "root has no lib/main.dart or lib/app duplicate App owner", "packages/* and plugins/* remain at workspace root", "app package paths resolve from apps/flutter_study", "changed repository receives one integration commit"],
@@ -308,9 +329,8 @@ def build_decomposition_graph():
             decision_id = str(decision.get("decision_id", ""))
             task_id = decision_id.removeprefix("retry:")
             blocker = program.get("execution_blocker")
-            retryable = {"MIGRATION_NO_EFFECT", "source_deleted_without_target_owner", "WORKER_DISPATCH_FAILED", "WORKER_DISPATCH_TIMEOUT", "WORKER_SCOPE_CONFIGURATION_ERROR", "INTEGRATION_FAILED"}
             task = next((item for item in program.get("migration_tasks", []) if item.get("task_id") == task_id and item.get("status") == "BLOCKED_DECISION"), None)
-            if isinstance(blocker, dict) and isinstance(task, dict) and blocker.get("task_id") == task_id and blocker.get("status") in retryable:
+            if isinstance(blocker, dict) and isinstance(task, dict) and blocker.get("task_id") == task_id and blocker.get("status") in RETRYABLE_BLOCKERS:
                 task.pop("worker_execution", None)
                 task["status"] = "READY"
                 program["status"] = "PLANNING_COMPLETE"
@@ -321,8 +341,7 @@ def build_decomposition_graph():
         # Older checkpoints predate explicit retry metadata.  Normalize only
         # the known, safely retryable terminal outcomes; no task state changes.
         blocker = program.get("execution_blocker")
-        retryable = {"MIGRATION_NO_EFFECT", "source_deleted_without_target_owner", "WORKER_DISPATCH_FAILED", "WORKER_DISPATCH_TIMEOUT", "WORKER_SCOPE_CONFIGURATION_ERROR", "INTEGRATION_FAILED"}
-        if isinstance(blocker, dict) and blocker.get("status") in retryable and not blocker.get("decision_id"):
+        if isinstance(blocker, dict) and blocker.get("status") in RETRYABLE_BLOCKERS and not blocker.get("decision_id"):
             blocked = next((item for item in program.get("migration_tasks", []) if item.get("task_id") == blocker.get("task_id") and item.get("status") == "BLOCKED_DECISION"), None)
             if isinstance(blocked, dict):
                 program["execution_blocker"] = {**blocker, "decision_id": f"retry:{blocked['task_id']}", "choices": ["retry"]}
@@ -568,7 +587,7 @@ def build_decomposition_graph():
         if set(roles) != set(repositories):
             program.update({"status": "PROGRAM_BLOCKED", "current_migration_task": task["task_id"], "execution_blocker": {"status": "WORKER_SCOPE_CONFIGURATION_ERROR", "task_id": task["task_id"], "reason": "Frozen mutation repositories do not match the frozen workspace repositories."}})
             return {"decomposition_program": program}
-        request = {"execution_kind": "decomposition_migration", "task_id": task["task_id"], "requirement": str(task.get("title", task["task_id"])) + ". Source units: " + ", ".join(task["source_units"]) + ". Target units: " + ", ".join(task["target_units"]), "source_units": task["source_units"], "target_units": task["target_units"], "allowed_operations": task["allowed_operations"], "target_creation_allowed": bool(task.get("target_creation_allowed", False)), "dependency_constraints": task.get("dependency_constraints", []), "execution_instructions": task.get("execution_instructions", []), "architecture_preflight": task.get("architecture_preflight", {}), "allowed_paths_by_repository": allowed, "writable_repositories": [{"repository": repository, "role": roles[repository], "writable": True, "allowed_paths": allowed[repository]} for repository in repositories], "repositories": [{"repository": item["repository"], "base_revision": item["head"], "role": roles[item["repository"]], "writable": True, "allowed_paths": allowed[item["repository"]]} for item in managed]}
+        request = {"execution_kind": "decomposition_migration", "task_id": task["task_id"], "requirement": str(task.get("title", task["task_id"])) + ". Source units: " + ", ".join(task["source_units"]) + ". Target units: " + ", ".join(task["target_units"]), "source_units": task["source_units"], "target_units": task["target_units"], "allowed_operations": task["allowed_operations"], "target_creation_allowed": bool(task.get("target_creation_allowed", False)), "dependency_constraints": task.get("dependency_constraints", []), "execution_instructions": task.get("execution_instructions", []), "architecture_preflight": task.get("architecture_preflight", {}), "timeout_seconds": int(os.environ.get("AGENT_HUB_CODEX_TIMEOUT_SECONDS", "1800")), "allowed_paths_by_repository": allowed, "writable_repositories": [{"repository": repository, "role": roles[repository], "writable": True, "allowed_paths": allowed[repository]} for repository in repositories], "repositories": [{"repository": item["repository"], "base_revision": item["head"], "role": roles[item["repository"]], "writable": True, "allowed_paths": allowed[item["repository"]]} for item in managed]}
         return {"decomposition_program": program, "migration_request": request}
 
     def dispatch(state: State):

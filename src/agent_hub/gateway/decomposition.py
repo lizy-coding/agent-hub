@@ -11,6 +11,7 @@ from urllib.error import HTTPError, URLError
 from agent_hub.gateway.refactor_dashboard import fetch_state
 from agent_hub.gateway.refactor_run import _call
 from agent_hub.gateway.decomposition_state import load as load_snapshot, save as save_snapshot, validate as validate_snapshot
+from agent_hub.graphs.decomposition import RETRYABLE_BLOCKERS
 
 PROGRAM_ID = "flutter-study-decomposition-program"
 CLUSTER_ROOT = "/Users/forest/code/langGraph"
@@ -191,8 +192,7 @@ def _needs_blocked_decision_metadata(state):
     if not isinstance(program, dict):
         return False
     blocker = program.get("execution_blocker")
-    retryable = {"MIGRATION_NO_EFFECT", "source_deleted_without_target_owner", "WORKER_DISPATCH_FAILED", "WORKER_DISPATCH_TIMEOUT", "WORKER_SCOPE_CONFIGURATION_ERROR", "INTEGRATION_FAILED"}
-    return isinstance(blocker, dict) and blocker.get("status") in retryable and not blocker.get("decision_id") and any(item.get("task_id") == blocker.get("task_id") and item.get("status") == "BLOCKED_DECISION" for item in program.get("migration_tasks", []))
+    return isinstance(blocker, dict) and blocker.get("status") in RETRYABLE_BLOCKERS and not blocker.get("decision_id") and any(item.get("task_id") == blocker.get("task_id") and item.get("status") == "BLOCKED_DECISION" for item in program.get("migration_tasks", []))
 
 
 def _has_active_run(server, thread_id):

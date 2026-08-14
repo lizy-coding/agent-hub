@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch
-from agent_hub.gateway.decomposition import _needs_app_guard_reconciliation, _needs_done_reconciliation, _needs_ready_dirty_reconciliation, _needs_zero_change_reconciliation, plan, render, run, status
+from agent_hub.gateway.decomposition import _needs_app_guard_reconciliation, _needs_blocked_decision_metadata, _needs_done_reconciliation, _needs_ready_dirty_reconciliation, _needs_zero_change_reconciliation, plan, render, run, status
 from agent_hub.gateway.decomposition_state import load as load_snapshot, save as save_snapshot, validate as validate_snapshot
 from agent_hub.graphs.decomposition import _allowed, _app_relocation_contract, _classify_managed_dirty, _mutation_repositories, _repositories_for, _restore_agent_owned_dirty, _stage_validated_changes, build_decomposition_graph
 class DecompositionTest(unittest.TestCase):
@@ -55,15 +55,17 @@ class DecompositionTest(unittest.TestCase):
   from agent_hub.execution.decomposition_worker import DecompositionCodeExecutor
   scope,error=DecompositionCodeExecutor._writable_scope({"allowed_paths_by_repository":{"file_picker_bridge":["lib"]},"writable_repositories":[{"repository":"file_picker_bridge","role":"source","writable":True,"allowed_paths":["lib"]}]})
   self.assertEqual(error,""); self.assertEqual(scope,{"file_picker_bridge":["lib"]})
- def test_worker_diff_emits_applyable_binary_patch(self):
-  import os, tempfile
-  from pathlib import Path
-  from agent_hub.execution.decomposition_worker import _diff
-  with tempfile.TemporaryDirectory() as raw:
-   root=Path(raw); os.system(f"git init -q {root}"); os.system(f"git -C {root} config user.email test@example.com"); os.system(f"git -C {root} config user.name test")
-   (root/"icon.bin").write_bytes(b"\x00\x01\x02"); os.system(f"git -C {root} add icon.bin && git -C {root} commit -qm base")
-   (root/"icon.bin").write_bytes(b"\x03\x04\x05")
-   self.assertIn("literal",_diff(root))
+  def test_worker_diff_emits_applyable_binary_patch(self):
+   import os, tempfile
+   from pathlib import Path
+   from agent_hub.execution.decomposition_worker import _snapshot
+   with tempfile.TemporaryDirectory() as raw:
+    root=Path(raw); os.system(f"git init -q {root}"); os.system(f"git -C {root} config user.email test@example.com"); os.system(f"git -C {root} config user.name test")
+    (root/"icon.bin").write_bytes(b"\x00\x01\x02"); os.system(f"git -C {root} add icon.bin && git -C {root} commit -qm base")
+    (root/"icon.bin").write_bytes(b"\x03\x04\x05")
+    changed,diff=_snapshot(root)
+    self.assertEqual(changed,["icon.bin"])
+    self.assertIn("literal",diff)
  def test_frozen_allowed_paths_override_task_defaults(self):
   self.assertEqual(_allowed({"task_id":"merge-file-picker-bridge-owners","allowed_paths_by_repository":{"flutter_study":["packages/file_picker_bridge","pubspec.yaml"]}},"flutter_study"),["packages/file_picker_bridge","pubspec.yaml"])
  def test_app_relocation_contract_creates_a_scoped_app_target(self):
@@ -83,10 +85,33 @@ class DecompositionTest(unittest.TestCase):
   ensure.return_value=(Path("/missing"),"decomposition/flutter_study")
   guard=_architecture_guard(_app_relocation_contract(),{"repositories":{"flutter_study":{"changed_files":["apps/flutter_study/pubspec.yaml","apps/flutter_study/lib/main.dart","lib/main.dart","pubspec.yaml"]}}},{})
   self.assertEqual(guard["status"],"PASS")
- def test_retry_decision_returns_only_matching_blocked_task_to_ready(self):
-  program=build_decomposition_graph().invoke({"reconcile_only":True,"decision":{"decision_id":"retry:merge-file-picker-bridge-owners","choice":"retry","reason":"fixed scope"},"worker_result":{"task_id":"merge-file-picker-bridge-owners","architecture_verdict":"REJECTED"},"decomposition_program":{"status":"PROGRAM_BLOCKED","current_migration_task":"merge-file-picker-bridge-owners","execution_blocker":{"status":"MIGRATION_NO_EFFECT","task_id":"merge-file-picker-bridge-owners"},"migration_tasks":[{"task_id":"merge-file-picker-bridge-owners","status":"BLOCKED_DECISION"}]}})["decomposition_program"]
-  self.assertEqual(program["migration_tasks"][0]["status"],"READY")
-  self.assertEqual(program["human_decisions"][-1]["status"],"APPLIED")
+  def test_retry_decision_returns_only_matching_blocked_task_to_ready(self):
+   program=build_decomposition_graph().invoke({"reconcile_only":True,"decision":{"decision_id":"retry:merge-file-picker-bridge-owners","choice":"retry","reason":"fixed scope"},"worker_result":{"task_id":"merge-file-picker-bridge-owners","architecture_verdict":"REJECTED"},"decomposition_program":{"status":"PROGRAM_BLOCKED","current_migration_task":"merge-file-picker-bridge-owners","execution_blocker":{"status":"MIGRATION_NO_EFFECT","task_id":"merge-file-picker-bridge-owners"},"migration_tasks":[{"task_id":"merge-file-picker-bridge-owners","status":"BLOCKED_DECISION"}]}})["decomposition_program"]
+   self.assertEqual(program["migration_tasks"][0]["status"],"READY")
+   self.assertEqual(program["human_decisions"][-1]["status"],"APPLIED")
+  def test_retry_consumes_codex_execution_failed_blocker_to_ready(self):
+   program=build_decomposition_graph().invoke({"reconcile_only":True,"decision":{"decision_id":"retry:relocate-flutter-study-app","choice":"retry","reason":"codex out of credits"},"worker_result":{"task_id":"relocate-flutter-study-app","status":"CODEX_EXECUTION_FAILED"},"decomposition_program":{"status":"PROGRAM_BLOCKED","current_migration_task":None,"execution_blocker":{"status":"CODEX_EXECUTION_FAILED","task_id":"relocate-flutter-study-app","reason":"codex"},"migration_tasks":[{"task_id":"relocate-flutter-study-app","status":"BLOCKED_DECISION","worker_execution":{"worker_execution_id":"migration-old"}}]}})["decomposition_program"]
+   task=program["migration_tasks"][0]
+   self.assertEqual(task["status"],"READY")
+   self.assertNotIn("worker_execution",task)
+   self.assertIsNone(program.get("execution_blocker"))
+   self.assertEqual(program["status"],"PLANNING_COMPLETE")
+   self.assertEqual(program["current_migration_task"],"relocate-flutter-study-app")
+   self.assertEqual(program["human_decisions"][-1]["status"],"APPLIED")
+  def test_retry_decision_is_idempotent_across_replays(self):
+   base={"reconcile_only":True,"decision":{"decision_id":"retry:relocate-flutter-study-app","choice":"retry"},"decomposition_program":{"status":"PROGRAM_BLOCKED","current_migration_task":None,"execution_blocker":{"status":"CODEX_EXECUTION_FAILED","task_id":"relocate-flutter-study-app"},"human_decisions":[],"migration_tasks":[{"task_id":"relocate-flutter-study-app","status":"BLOCKED_DECISION","worker_execution":{"worker_execution_id":"migration-old"}}]}}
+   first=build_decomposition_graph().invoke(base)["decomposition_program"]
+   self.assertEqual(first["migration_tasks"][0]["status"],"READY")
+   self.assertEqual(len(first["human_decisions"]),1)
+   replayed=build_decomposition_graph().invoke({**base,"decomposition_program":first})["decomposition_program"]
+   self.assertEqual(replayed["migration_tasks"][0]["status"],"READY")
+   self.assertEqual(len(replayed["human_decisions"]),1)
+   self.assertIsNone(replayed.get("execution_blocker"))
+  def test_codex_execution_failed_blocker_gets_retry_metadata(self):
+   self.assertTrue(_needs_blocked_decision_metadata({"values":{"decomposition_program":{"execution_blocker":{"status":"CODEX_EXECUTION_FAILED","task_id":"relocate-flutter-study-app"},"migration_tasks":[{"task_id":"relocate-flutter-study-app","status":"BLOCKED_DECISION"}]}}}))
+  def test_codex_execution_timeout_is_retryable(self):
+   program=build_decomposition_graph().invoke({"reconcile_only":True,"decision":{"decision_id":"retry:relocate-flutter-study-app","choice":"retry"},"decomposition_program":{"status":"PROGRAM_BLOCKED","current_migration_task":None,"execution_blocker":{"status":"CODEX_EXECUTION_TIMEOUT","task_id":"relocate-flutter-study-app"},"migration_tasks":[{"task_id":"relocate-flutter-study-app","status":"BLOCKED_DECISION"}]}})["decomposition_program"]
+   self.assertEqual(program["migration_tasks"][0]["status"],"READY")
  def test_zero_change_migration_is_not_approved(self):
   self.assertTrue(_needs_done_reconciliation({"values":{"worker_result":{"task_id":"relocate-flutter-study-app","status":"SUCCESS","scope_guard":"PASS","architecture_verdict":"APPROVED","repositories":{"flutter_study":{"changed_files":[]}},"validation":{"architecture_guard":{"status":"PASS"}}},"decomposition_program":{"migration_tasks":[{"task_id":"relocate-flutter-study-app","status":"DONE"}]}}}))
  def test_zero_change_running_task_requires_reconciliation(self):
