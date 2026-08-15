@@ -46,11 +46,11 @@ class DecompositionTest(unittest.TestCase):
   self.assertEqual(run("http://server","decomposition-thread",True,output.append),0)
   submit.assert_called_once_with("http://server","decomposition-thread",{"execute":True,"worker_endpoint":"http://127.0.0.1:8766/execute","reconcile_only":False})
   self.assertIn("Mode: EXECUTE",output[0])
- def test_cross_repo_task_includes_flutter_study_and_gcode_core(self):
-  self.assertEqual(_repositories_for({"source_units":["flutter_study/packages/gcode_core","gcode_core"],"target_units":["packages/gcode_core"]}),["flutter_study","gcode_core"])
- def test_file_picker_contract_derives_only_source_and_target_writable_repositories(self):
-  roles=_mutation_repositories({"source_units":["file_picker_bridge"],"target_units":["flutter_study/packages/file_picker_bridge"],"allowed_operations":["DELETE","PACKAGE_MERGE"]})
-  self.assertEqual(roles,{"file_picker_bridge":"source","flutter_study":"target"})
+  def test_package_task_maps_only_to_flutter_study(self):
+   self.assertEqual(_repositories_for({"source_units":["flutter_study/packages/gcode_core"],"target_units":["packages/gcode_core"]}),["flutter_study"])
+  def test_file_picker_contract_derives_only_flutter_study(self):
+   roles=_mutation_repositories({"source_units":["flutter_study/packages/file_picker_bridge"],"target_units":["packages/file_picker_bridge"],"allowed_operations":[]})
+   self.assertEqual(roles,{"flutter_study":"source_target"})
  def test_package_unit_task_resolves_to_primary_repository(self):
   task={"source_units":[],"target_units":["packages/gcode_core","packages/file_picker_bridge","packages/flutter_study_learning","packages/flutter_ioc_core"]}
   self.assertEqual(_repositories_for(task),["flutter_study"])
@@ -160,7 +160,7 @@ class DecompositionTest(unittest.TestCase):
   ensure.side_effect=lambda repo:(Path("/tmp") / repo,"decomposition/"+repo)
   with patch("agent_hub.graphs.decomposition.subprocess.check_output",return_value="base\n"):
    worker.return_value={"status":"WORKER_DISPATCH_FAILED","reason":"unreachable"}
-   program=build_decomposition_graph().invoke({"cluster_root":"/tmp","execute":True,"decomposition_program":{"migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core","gcode_core"],"target_units":["packages/gcode_core"],"depends_on":[],"allowed_operations":[],"status":"READY"}]}})["decomposition_program"]
+   program=build_decomposition_graph().invoke({"cluster_root":"/tmp","execute":True,"decomposition_program":{"migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core"],"target_units":["packages/gcode_core"],"depends_on":[],"allowed_operations":[],"status":"READY"}]}})["decomposition_program"]
   self.assertEqual(program["migration_tasks"][0]["status"],"BLOCKED_DECISION")
   self.assertEqual(program["execution_blocker"]["status"],"WORKER_DISPATCH_FAILED")
  @patch("agent_hub.graphs.decomposition._ensure_worktree")
@@ -172,7 +172,7 @@ class DecompositionTest(unittest.TestCase):
   ensure.side_effect=lambda repo:(Path("/tmp") / repo,"decomposition/"+repo)
   worker.return_value={"status":"SUCCESS","scope_guard":"PASS","worker_execution_id":"execution-1","worker_workspace":"/tmp/agent-hub-worker-1","dispatched_at":"now","repositories":{}}
   with patch("agent_hub.graphs.decomposition.subprocess.check_output",return_value="base\n"):
-   program=build_decomposition_graph().invoke({"cluster_root":"/tmp","execute":True,"decomposition_program":{"migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core","gcode_core"],"target_units":["packages/gcode_core"],"depends_on":[],"allowed_operations":[],"status":"READY"}]}})["decomposition_program"]
+   program=build_decomposition_graph().invoke({"cluster_root":"/tmp","execute":True,"decomposition_program":{"migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core"],"target_units":["packages/gcode_core"],"depends_on":[],"allowed_operations":[],"status":"READY"}]}})["decomposition_program"]
   task=program["migration_tasks"][0]
   self.assertEqual(task["status"],"BLOCKED_DECISION")
   self.assertEqual(task["worker_execution"]["worker_execution_id"],"execution-1")
@@ -181,14 +181,14 @@ class DecompositionTest(unittest.TestCase):
  def test_stale_running_without_evidence_returns_to_ready(self, changes, ensure):
   from pathlib import Path
   ensure.side_effect=lambda repo:(Path("/tmp") / repo,"decomposition/"+repo)
-  program=build_decomposition_graph().invoke({"decomposition_program":{"status":"RUNNING","current_migration_task":"merge-gcode-core-owners","migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core","gcode_core"],"target_units":["packages/gcode_core"],"status":"RUNNING"}]}})["decomposition_program"]
+  program=build_decomposition_graph().invoke({"decomposition_program":{"status":"RUNNING","current_migration_task":"merge-gcode-core-owners","migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core"],"target_units":["packages/gcode_core"],"status":"RUNNING"}]}})["decomposition_program"]
   self.assertEqual(program["migration_tasks"][0]["status"],"READY")
  @patch("agent_hub.graphs.decomposition._ensure_worktree")
  @patch("agent_hub.graphs.decomposition._changes",return_value=[])
  def test_stale_dispatching_without_evidence_returns_to_ready(self, changes, ensure):
   from pathlib import Path
   ensure.side_effect=lambda repo:(Path("/tmp") / repo,"decomposition/"+repo)
-  program=build_decomposition_graph().invoke({"reconcile_only":True,"decomposition_program":{"status":"DISPATCHING","current_migration_task":"merge-gcode-core-owners","migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core","gcode_core"],"target_units":["packages/gcode_core"],"status":"DISPATCHING"}]}})["decomposition_program"]
+  program=build_decomposition_graph().invoke({"reconcile_only":True,"decomposition_program":{"status":"DISPATCHING","current_migration_task":"merge-gcode-core-owners","migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core"],"target_units":["packages/gcode_core"],"status":"DISPATCHING"}]}})["decomposition_program"]
   self.assertEqual(program["migration_tasks"][0]["status"],"READY")
   self.assertEqual(program["status"],"PLANNING_COMPLETE")
  @patch("agent_hub.graphs.decomposition._ensure_worktree")
@@ -196,7 +196,7 @@ class DecompositionTest(unittest.TestCase):
  def test_dispatching_with_execution_evidence_is_blocked(self, changes, ensure):
   from pathlib import Path
   ensure.side_effect=lambda repo:(Path("/tmp") / repo,"decomposition/"+repo)
-  program=build_decomposition_graph().invoke({"reconcile_only":True,"decomposition_program":{"status":"DISPATCHING","current_migration_task":"merge-gcode-core-owners","migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core","gcode_core"],"target_units":["packages/gcode_core"],"status":"DISPATCHING","worker_execution":{"worker_execution_id":"live"}}]}})["decomposition_program"]
+  program=build_decomposition_graph().invoke({"reconcile_only":True,"decomposition_program":{"status":"DISPATCHING","current_migration_task":"merge-gcode-core-owners","migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core"],"target_units":["packages/gcode_core"],"status":"DISPATCHING","worker_execution":{"worker_execution_id":"live"}}]}})["decomposition_program"]
   self.assertEqual(program["migration_tasks"][0]["status"],"BLOCKED_DECISION")
   self.assertEqual(program["execution_blocker"]["status"],"STALE_DISPATCHING_CONFLICT")
  @patch("agent_hub.graphs.decomposition._ensure_worktree")
@@ -204,7 +204,7 @@ class DecompositionTest(unittest.TestCase):
  def test_dispatching_with_persisted_worker_result_is_not_returned_to_ready(self, changes, ensure):
   from pathlib import Path
   ensure.side_effect=lambda repo:(Path("/tmp") / repo,"decomposition/"+repo)
-  program=build_decomposition_graph().invoke({"reconcile_only":True,"worker_result":{"task_id":"merge-gcode-core-owners","status":"CODEX_EXECUTION_FAILED"},"decomposition_program":{"status":"DISPATCHING","current_migration_task":"merge-gcode-core-owners","migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core","gcode_core"],"target_units":["packages/gcode_core"],"status":"DISPATCHING"}]}})["decomposition_program"]
+  program=build_decomposition_graph().invoke({"reconcile_only":True,"worker_result":{"task_id":"merge-gcode-core-owners","status":"CODEX_EXECUTION_FAILED"},"decomposition_program":{"status":"DISPATCHING","current_migration_task":"merge-gcode-core-owners","migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core"],"target_units":["packages/gcode_core"],"status":"DISPATCHING"}]}})["decomposition_program"]
   self.assertEqual(program["migration_tasks"][0]["status"],"BLOCKED_DECISION")
   self.assertEqual(program["execution_blocker"]["status"],"STALE_DISPATCHING_CONFLICT")
  @patch("agent_hub.graphs.decomposition._ensure_worktree")
@@ -212,7 +212,7 @@ class DecompositionTest(unittest.TestCase):
  def test_dispatching_with_unknown_dirty_is_blocked(self, changes, ensure):
   from pathlib import Path
   ensure.side_effect=lambda repo:(Path("/tmp") / repo,"decomposition/"+repo)
-  program=build_decomposition_graph().invoke({"reconcile_only":True,"decomposition_program":{"status":"DISPATCHING","current_migration_task":"merge-gcode-core-owners","migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core","gcode_core"],"target_units":["packages/gcode_core"],"status":"DISPATCHING"}]}})["decomposition_program"]
+  program=build_decomposition_graph().invoke({"reconcile_only":True,"decomposition_program":{"status":"DISPATCHING","current_migration_task":"merge-gcode-core-owners","migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core"],"target_units":["packages/gcode_core"],"status":"DISPATCHING"}]}})["decomposition_program"]
   self.assertEqual(program["execution_blocker"]["status"],"STALE_DISPATCHING_CONFLICT")
  @patch("agent_hub.graphs.decomposition._ensure_worktree")
  @patch("agent_hub.graphs.decomposition._changes",return_value=[])
@@ -221,7 +221,7 @@ class DecompositionTest(unittest.TestCase):
   from pathlib import Path
   ensure.side_effect=lambda repo:(Path("/tmp") / repo,"decomposition/"+repo)
   with patch("agent_hub.graphs.decomposition.subprocess.check_output",return_value="base\n"):
-   program=build_decomposition_graph().invoke({"cluster_root":"/tmp","execute":True,"worker_endpoint":"http://worker/execute","decomposition_program":{"migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core","gcode_core"],"target_units":["packages/gcode_core"],"depends_on":[],"allowed_operations":[],"status":"READY"}]}})["decomposition_program"]
+   program=build_decomposition_graph().invoke({"cluster_root":"/tmp","execute":True,"worker_endpoint":"http://worker/execute","decomposition_program":{"migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core"],"target_units":["packages/gcode_core"],"depends_on":[],"allowed_operations":[],"status":"READY"}]}})["decomposition_program"]
   self.assertEqual(program["migration_tasks"][0]["status"],"BLOCKED_DECISION")
   self.assertEqual(program["execution_blocker"]["status"],"WORKER_DISPATCH_FAILED")
  def test_staging_uses_actual_deleted_paths_not_fixed_flutter_paths(self):
@@ -262,15 +262,15 @@ class DecompositionTest(unittest.TestCase):
   import os, tempfile
   from pathlib import Path
   with tempfile.TemporaryDirectory() as raw:
-   root=Path(raw); os.system(f"git init -q {root}"); os.system(f"git -C {root} config user.email test@example.com"); os.system(f"git -C {root} config user.name test"); (root/'lib').mkdir(); (root/'lib/a.dart').write_text('a'); os.system(f"git -C {root} add . && git -C {root} commit -qm base && git -C {root} checkout -qb decomposition/gcode_core")
-   head=os.popen(f"git -C {root} rev-parse HEAD").read().strip(); (root/'lib/a.dart').unlink()
-   task={"task_id":"merge-gcode-core-owners"}
-   self.assertEqual(_classify_managed_dirty(task,'gcode_core',root,head)["classification"],"AGENT_STALE_DIRTY")
-   self.assertEqual(_restore_agent_owned_dirty(root,head,['lib/a.dart'])["status"],"RESTORED")
+    root=Path(raw); os.system(f"git init -q {root}"); os.system(f"git -C {root} config user.email test@example.com"); os.system(f"git -C {root} config user.name test"); (root/'packages/gcode_core/lib').mkdir(parents=True); (root/'packages/gcode_core/lib/a.dart').write_text('a'); os.system(f"git -C {root} add . && git -C {root} commit -qm base && git -C {root} checkout -qb decomposition/flutter_study")
+    head=os.popen(f"git -C {root} rev-parse HEAD").read().strip(); (root/'packages/gcode_core/lib/a.dart').unlink()
+    task={"task_id":"merge-gcode-core-owners"}
+    self.assertEqual(_classify_managed_dirty(task,'flutter_study',root,head)["classification"],"AGENT_STALE_DIRTY")
+    self.assertEqual(_restore_agent_owned_dirty(root,head,['packages/gcode_core/lib/a.dart'])["status"],"RESTORED")
  def test_unknown_dirty_is_not_agent_owned(self):
   import os, tempfile
   from pathlib import Path
   with tempfile.TemporaryDirectory() as raw:
-   root=Path(raw); os.system(f"git init -q {root}"); os.system(f"git -C {root} config user.email test@example.com"); os.system(f"git -C {root} config user.name test"); (root/'README.md').write_text('a'); os.system(f"git -C {root} add . && git -C {root} commit -qm base && git -C {root} checkout -qb decomposition/gcode_core")
-   head=os.popen(f"git -C {root} rev-parse HEAD").read().strip(); (root/'README.md').write_text('user')
-   self.assertEqual(_classify_managed_dirty({"task_id":"merge-gcode-core-owners"},'gcode_core',root,head)["classification"],"USER_UNKNOWN_DIRTY")
+    root=Path(raw); os.system(f"git init -q {root}"); os.system(f"git -C {root} config user.email test@example.com"); os.system(f"git -C {root} config user.name test"); (root/'README.md').write_text('a'); os.system(f"git -C {root} add . && git -C {root} commit -qm base && git -C {root} checkout -qb decomposition/flutter_study")
+    head=os.popen(f"git -C {root} rev-parse HEAD").read().strip(); (root/'README.md').write_text('user')
+    self.assertEqual(_classify_managed_dirty({"task_id":"merge-gcode-core-owners"},'flutter_study',root,head)["classification"],"USER_UNKNOWN_DIRTY")

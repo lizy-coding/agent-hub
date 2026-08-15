@@ -64,13 +64,7 @@ def _repositories_for(task: dict[str, object]) -> list[str]:
         text = str(unit)
         if text.startswith(("packages/", "plugins/")):
             names.append("flutter_study")
-        elif text.startswith("flutter_study/") or text.startswith("apps/flutter_study"):
-            names.append("flutter_study")
-        elif "gcode_core" in text:
-            names.append("gcode_core")
-        elif "file_picker_bridge" in text:
-            names.append("file_picker_bridge")
-        elif "flutter_study" in text or text.startswith("apps/"):
+        elif text.startswith("flutter_study/") or text.startswith("apps/"):
             names.append("flutter_study")
     return sorted(set(names))
 
@@ -112,8 +106,8 @@ def _allowed(task: dict[str, object], repository: str) -> list[str]:
         return [str(path) for path in frozen[repository]]
     task_id = str(task.get("task_id", ""))
     known = {
-        "merge-gcode-core-owners": {"flutter_study": ["packages/gcode_core"], "gcode_core": ["lib", "test", "pubspec.yaml", "analysis_options.yaml"]},
-        "merge-file-picker-bridge-owners": {"flutter_study": ["packages/file_picker_bridge"], "file_picker_bridge": ["lib", "test", "pubspec.yaml", "analysis_options.yaml", "android", "ios", "macos", "windows", "linux"]},
+        "merge-gcode-core-owners": {"flutter_study": ["packages/gcode_core"]},
+        "merge-file-picker-bridge-owners": {"flutter_study": ["packages/file_picker_bridge"]},
         "relocate-flutter-study-app": {"flutter_study": ["lib/app", "lib", "pubspec.yaml", "flutterguard.yaml"]},
     }
     return known.get(task_id, {}).get(repository, [])
@@ -183,8 +177,8 @@ def _program(root: Path) -> dict[str, object]:
     ]
     candidates = [{"package_id":"packages/gcode_core","package_type":"FLUTTER_PACKAGE","target_path":"packages/gcode_core","owned_capabilities":["gcode-parser-toolpath"],"dependencies":[],"public_api_intent":"parser and toolpath API","migration_priority":1},{"package_id":"packages/file_picker_bridge","package_type":"FLUTTER_PACKAGE","target_path":"packages/file_picker_bridge","owned_capabilities":["file-picker-platform-bridge"],"dependencies":[],"public_api_intent":"platform-neutral file picker API","migration_priority":1},{"package_id":"packages/flutter_ioc_core","package_type":"FLUTTER_PACKAGE","target_path":"packages/flutter_ioc_core","owned_capabilities":["ioc-composition-services"],"dependencies":[],"public_api_intent":"composition IoC services","migration_priority":2},{"package_id":"packages/flutter_study_learning","package_type":"FLUTTER_PACKAGE","target_path":"packages/flutter_study_learning","owned_capabilities":["learning-scaffold"],"dependencies":[],"public_api_intent":"learning UI templates","migration_priority":2},{"package_id":"apps/flutter_study","package_type":"APP_ONLY","target_path":"apps/flutter_study","owned_capabilities":["app-composition-routing"],"dependencies":["packages/gcode_core","packages/file_picker_bridge","packages/flutter_study_learning","packages/flutter_ioc_core"],"public_api_intent":"bootstrap and composition only","migration_priority":3}]
     tasks = [
-        {"task_id":"merge-gcode-core-owners","title":"Choose and consolidate the G-code package owner","source_units":["flutter_study/packages/gcode_core","gcode_core"],"target_units":["packages/gcode_core"],"depends_on":[],"allowed_operations":["MOVE","DELETE","API_BREAK","DEPENDENCY_REWRITE","PACKAGE_MERGE"],"acceptance":["single owner","consumers migrate before legacy deletion"],"status":"DONE","evidence":["two pubspec owners discovered","standalone owner removed into packages/gcode_core"]},
-        {"task_id":"merge-file-picker-bridge-owners","title":"Remove the duplicate standalone file picker bridge owner","source_units":["file_picker_bridge"],"target_units":["flutter_study/packages/file_picker_bridge"],"depends_on":[],"allowed_operations":["DELETE","PACKAGE_MERGE"],"allowed_paths_by_repository":{"file_picker_bridge":["lib","test","pubspec.yaml","analysis_options.yaml"],"flutter_study":["packages/file_picker_bridge","pubspec.yaml","lib/modules/platform/file_picker","lib/modules/ui/gcode_visualizer/state/gcode_player_controller.dart","lib/modules/ui/font_picker"]},"target_creation_allowed":False,"dependency_constraints":["flutter_study depends only on packages/file_picker_bridge","file_picker_bridge must not depend on flutter_study","no dependency cycle"],"acceptance":["exactly one reusable file picker owner","workspace package pubspec/lib/public API remain present","standalone duplicate owner is removed","all app call sites resolve package:file_picker_bridge/file_picker_bridge.dart","changed repositories receive integration commits"],"status":"DONE","evidence":["flutter_study/pubspec.yaml workspace and path dependency point to packages/file_picker_bridge","three app consumers import package:file_picker_bridge/file_picker_bridge.dart","standalone duplicate owner removed"]},
+        {"task_id":"merge-gcode-core-owners","title":"Confirm the G-code package owner","source_units":["flutter_study/packages/gcode_core"],"target_units":["packages/gcode_core"],"depends_on":[],"allowed_operations":[],"allowed_paths_by_repository":{"flutter_study":["packages/gcode_core"]},"acceptance":["single owner remains packages/gcode_core"],"status":"DONE","evidence":["registry discovers packages/gcode_core only inside flutter_study","standalone owner was removed before this program state"]},
+        {"task_id":"merge-file-picker-bridge-owners","title":"Confirm the file picker bridge package owner","source_units":["flutter_study/packages/file_picker_bridge"],"target_units":["packages/file_picker_bridge"],"depends_on":[],"allowed_operations":[],"allowed_paths_by_repository":{"flutter_study":["packages/file_picker_bridge"]},"target_creation_allowed":False,"dependency_constraints":["flutter_study depends only on packages/file_picker_bridge","packages/file_picker_bridge must not depend on apps/flutter_study","no dependency cycle"],"acceptance":["exactly one reusable file picker owner remains packages/file_picker_bridge","workspace package pubspec/lib/public API remain present","all app call sites resolve package:file_picker_bridge/file_picker_bridge.dart"],"status":"DONE","evidence":["registry discovers packages/file_picker_bridge only inside flutter_study","flutter_study/pubspec.yaml workspace and path dependency point to packages/file_picker_bridge","three app consumers import package:file_picker_bridge/file_picker_bridge.dart"]},
         {**_app_relocation_contract(), "status": "DONE"},
         {"task_id":"establish-package-boundary-contracts","title":"Add per-package ownership contracts, independent test entries, and version pins","source_units":[],"target_units":["packages/gcode_core","packages/file_picker_bridge","packages/flutter_study_learning","packages/flutter_ioc_core"],"depends_on":["relocate-flutter-study-app"],"allowed_operations":[],"allowed_paths_by_repository":{"flutter_study":["packages/gcode_core","packages/file_picker_bridge","packages/flutter_study_learning","packages/flutter_ioc_core"]},"target_creation_allowed":False,"dependency_constraints":["packages/* and plugins/* must not depend on apps/flutter_study","workspace dependency cycles must remain zero"],"execution_instructions":["For each of packages/gcode_core, packages/file_picker_bridge, packages/flutter_study_learning and packages/flutter_ioc_core: create OWNERS.md at the package root declaring the package name, its public contract (boundary: public API intent and what it must not own) and its maintenance owners.","Ensure each package has an independent runnable test entry under packages/<package>/test/ (create test/<package>_test.dart only when the package has no test file).","Ensure each package pubspec.yaml declares an explicit semver version field (do not publish).","Do not modify apps/flutter_study or any existing lib/ source; only add contract/test/version content inside the four package directories.","Do not delete or move any existing file."],"acceptance":["each of the four packages has a boundary contract file (OWNERS.md)","each package has an independent runnable test entry","each package pubspec.yaml declares an explicit version","no apps/flutter_study or lib/ source changes","changed repository receives one integration commit"],"status":"READY","evidence":["workspace declares four package members consumed only by apps/flutter_study","registry lists each package as a development unit"]},
     ]
@@ -284,20 +278,16 @@ def _architecture_guard(task: dict[str, object], worker: dict[str, object], prog
     if source_deleted and not retained:
         return {"status": "REJECT", "reason": "source_deleted_without_target_owner", "source_deleted_paths": deleted}
     if task.get("task_id") == "merge-file-picker-bridge-owners":
-        duplicate = _ensure_worktree("file_picker_bridge")[0]
-        duplicate_exists = (duplicate / "pubspec.yaml").is_file() and (duplicate / "lib").is_dir()
-        source_delta = (repositories.get("file_picker_bridge") or {}).get("changed_files", []) if isinstance(repositories.get("file_picker_bridge"), dict) else []
-        if duplicate_exists and not source_delta:
-            return {"status": "REJECT", "reason": "MIGRATION_NO_EFFECT", "capability_owner_before": ["flutter_study/packages/file_picker_bridge", "file_picker_bridge"], "capability_owner_after": "flutter_study/packages/file_picker_bridge", "duplicate_sources_to_remove": ["file_picker_bridge/lib", "file_picker_bridge/test", "file_picker_bridge/pubspec.yaml"], "target_package_root": "packages/file_picker_bridge", "expected_repository_deltas": {"file_picker_bridge": ["lib", "test", "pubspec.yaml"]}}
+        target = _ensure_worktree("flutter_study")[0] / "packages/file_picker_bridge"
+        if not ((target / "pubspec.yaml").is_file() and (target / "lib").is_dir()):
+            return {"status": "REJECT", "reason": "workspace_package_owner_missing", "target_package_root": "packages/file_picker_bridge"}
     return {"status": "PASS", "capability_owner_before": list(task.get("source_units", [])), "capability_owner_after": target_units, "source_deleted_paths": deleted, "target_added_or_retained_paths": retained, "package_survival": "PASS", "dependency_direction": "PASS"}
 
 
 def _file_picker_contract_preflight() -> dict[str, object]:
     target = _ensure_worktree("flutter_study")[0] / "packages/file_picker_bridge"
-    duplicate = _ensure_worktree("file_picker_bridge")[0]
     target_ready = (target / "pubspec.yaml").is_file() and (target / "lib").is_dir()
-    duplicate_exists = (duplicate / "pubspec.yaml").is_file() and (duplicate / "lib").is_dir()
-    return {"status": "PASS" if target_ready and duplicate_exists else "REJECT", "capability_owner_before": ["flutter_study/packages/file_picker_bridge", "file_picker_bridge"], "desired_capability_owner_after": "flutter_study/packages/file_picker_bridge", "duplicate_sources_to_remove": ["file_picker_bridge/lib", "file_picker_bridge/test", "file_picker_bridge/pubspec.yaml"], "target_package_root": "packages/file_picker_bridge", "required_dependency_rewrites": [], "expected_repository_deltas": {"file_picker_bridge": ["lib", "test", "pubspec.yaml"]} if duplicate_exists else {}, "reason": "target owner is present and the standalone duplicate must be removed" if target_ready and duplicate_exists else "target owner or duplicate source cannot be proven"}
+    return {"status": "PASS" if target_ready else "REJECT", "capability_owner": "flutter_study/packages/file_picker_bridge", "target_package_root": "packages/file_picker_bridge", "required_dependency_rewrites": [], "reason": "workspace package owner is present" if target_ready else "workspace package owner cannot be proven"}
 
 
 def build_decomposition_graph():

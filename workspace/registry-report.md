@@ -16,30 +16,19 @@ Each discovered record has evidence (`source`, workspace-relative evidence path,
 
 ## Current discovery
 
-After the flutter_study migration and the removal of the standalone husk repositories (`gcode_core`, `file_picker_bridge`, `flutter_study_learning` at the workspace root), discovery reports:
+After the flutter_study migration, the removal of the standalone husk repositories (`gcode_core`, `file_picker_bridge`, `flutter_study_learning` at the workspace root), and the exclusion of the archival snapshot (`flutter_study__agent_p7_gcode`) via `config.json` `excluded_paths`, discovery reports:
 
 | Repository | Type | Development units |
 |---|---|---:|
 | `flutter_study` | Git repository | 10 |
-| `flutter_study__agent_p7_gcode` | standalone manifest project (archival snapshot) | 9 |
-| `file_picker_bridge` | standalone project inside the archive snapshot | 1 |
-| `flutter_ioc_core` | standalone project inside the archive snapshot | 1 |
-| `flutter_study_learning` | standalone project inside the archive snapshot | 1 |
-| `gcode_core` | standalone project inside the archive snapshot | 2 |
-| `example` | standalone project inside the archive snapshot | 1 |
-| `windows` | standalone project inside the archive snapshot | 3 |
-| `flutter` | standalone project inside the archive snapshot | 1 |
-| `runner` | standalone project inside the archive snapshot | 1 |
 
-The managed repository boundary now contains a single Git repository (`flutter_study`) with 10 development units (the `apps/flutter_study` app, its four `packages/*` workspace members, plus manifest-backed Windows/example components). The `flutter_study__agent_p7_gcode` tree is a read-only archival snapshot of an earlier repo layout. The 30 total units include Pub/Flutter units and the manifest-backed Windows CMake components.
+The managed repository boundary contains a single Git repository (`flutter_study`) with 10 development units (the `apps/flutter_study` app, its four `packages/*` workspace members, plus manifest-backed Windows/example components). The obsolete archival snapshot `flutter_study__agent_p7_gcode` has been removed from the workspace and is also listed in `excluded_paths` so it cannot re-enter discovery if restored locally.
 
 ## Dependency overview
 
-Ten direct `path_dependency` edges were discovered, all with a manifest evidence path:
+Four direct `path_dependency` edges were discovered, all with a manifest evidence path:
 
 - `flutter_study:.` -> its four declared Pub workspace path packages.
-- `flutter_study__agent_p7_gcode:.` -> the four packages inside the archival snapshot.
-- `gcode_core:.` and `example:.` -> `gcode_core:.` within the archival snapshot.
 
 No dependency is inferred from a repository or directory name. Reverse `dependents` are derived from those same evidence-bearing edges.
 
@@ -47,7 +36,7 @@ No dependency is inferred from a repository or directory name. Reverse `dependen
 
 - Rule discovery found `flutter_study/AGENTS.md`, stored only with its path, directory scope, and `filesystem` provenance.
 - No `AGENTS.override.md` was found.
-- Dart/Flutter manifest units expose format/analyze/test candidates when their runtime/test evidence exists. The standalone learning package has no discovered test directory, so no test command is guessed.
+- Dart/Flutter manifest units expose format/analyze/test candidates when their runtime/test evidence exists.
 - CMake units have no guessed validation command.
 
 ## Unknown and ambiguous facts
@@ -63,12 +52,12 @@ The test suite creates temporary workspace changes and verifies:
 - a newly discovered repository appears in `added`;
 - a removed repository appears in `removed`;
 - manifest content changes appear in `changed` through content-hash provenance;
-- an unchanged second refresh reports the four current repositories in `unchanged`.
+- an unchanged second refresh reports the same repositories in `unchanged`.
 
-Current stable refresh result (after husk removal):
+Current stable refresh result (after husk removal and snapshot exclusion):
 
 ```json
-{"added": [], "removed": ["file_picker_bridge-40241", "flutter_study_learning-95758", "gcode_core-23952"], "changed": ["example", "file_picker_bridge", "flutter_study", "flutter_study__agent_p7_gcode", "gcode_core"], "unchanged": ["flutter", "flutter_ioc_core", "flutter_study_learning", "runner", "windows"], "ambiguous": []}
+{"added": [], "removed": ["example", "file_picker_bridge", "flutter", "flutter_ioc_core", "flutter_study__agent_p7_gcode", "flutter_study_learning", "gcode_core", "runner", "windows"], "changed": [], "unchanged": ["flutter_study"], "ambiguous": []}
 ```
 
 ## Test results
