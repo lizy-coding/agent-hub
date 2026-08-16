@@ -1,0 +1,39 @@
+{
+  "task_id": "replace-media-plugin-with-video-player",
+  "title": "Replace managed media plugin with video_player",
+  "intent": "将 flutter_study 当前实际使用的媒体/播放器插件替换为 video_player，并更新所有相关调用、生命周期管理、平台配置和测试。",
+  "source_units": [
+    "flutter_study/media_playback"
+  ],
+  "target_units": [
+    "flutter_study/media_playback"
+  ],
+  "allowed_operations": [
+    "DEPENDENCY_REWRITE",
+    "API_BREAK",
+    "CREATE",
+    "DELETE"
+  ],
+  "required_discovery": [
+    "识别 pubspec.yaml、workspace manifests 与 lockfile 中当前 media/playback 依赖。",
+    "识别所有当前媒体插件的直接 import、初始化、播放、暂停、seek、dispose、错误处理与状态同步调用。",
+    "识别 controller/provider/runtime/read-model/widget 的 ownership。",
+    "识别 Android、iOS、macOS、Windows、Web 等实际存在平台的配置与权限影响。",
+    "识别现有单元、widget、integration 测试及可保持的行为不变量。"
+  ],
+  "invariants": [
+    "UI 不得直接持有第三方播放器实现，除非既有 architecture 明确允许。",
+    "播放、暂停、进度、错误、资源释放与页面生命周期语义必须被保留或明确列为 BLOCKED_DECISION。",
+    "不得修改不相关 package、插件仓库或用户普通 working tree。",
+    "不得 commit、push、merge 或 release。",
+    "所有业务变更只能写入 managed integration worktree。"
+  ],
+  "acceptance": [
+    "video_player 成为唯一已批准的播放后端。",
+    "旧媒体插件依赖与 imports 仅在替换调用完成后移除。",
+    "目标应用 scoped format、targeted tests 与 flutter analyze 均通过。",
+    "Reviewer APPROVED。",
+    "integration worktree validation 通过并形成一个本地 integration commit。",
+    "任务状态最终为 DONE。"
+  ]
+}

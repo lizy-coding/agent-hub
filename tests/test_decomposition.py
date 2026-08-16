@@ -1,9 +1,64 @@
 import unittest
 from unittest.mock import patch
-from agent_hub.gateway.decomposition import _needs_app_guard_reconciliation, _needs_blocked_decision_metadata, _needs_done_reconciliation, _needs_ready_dirty_reconciliation, _needs_zero_change_reconciliation, plan, render, run, status
+from agent_hub.gateway.decomposition import _needs_app_guard_reconciliation, _needs_blocked_decision_metadata, _needs_done_reconciliation, _needs_ready_dirty_reconciliation, _needs_zero_change_reconciliation, plan, propose, render, run, status
 from agent_hub.gateway.decomposition_state import load as load_snapshot, save as save_snapshot, validate as validate_snapshot
-from agent_hub.graphs.decomposition import _allowed, _app_relocation_contract, _classify_managed_dirty, _mutation_repositories, _repositories_for, _restore_agent_owned_dirty, _stage_validated_changes, build_decomposition_graph
+from agent_hub.graphs.decomposition import _allowed, _app_relocation_contract, _classify_managed_dirty, _mutation_repositories, _proposal_inventory, _repositories_for, _restore_agent_owned_dirty, _stage_validated_changes, build_decomposition_graph
 class DecompositionTest(unittest.TestCase):
+ def test_proposal_inventory_freezes_exact_evidence_backed_paths(self):
+  import tempfile
+  from pathlib import Path
+  with tempfile.TemporaryDirectory() as raw:
+   root=Path(raw); (root/'apps/flutter_study/lib/modules/platform/online_video_player/state').mkdir(parents=True); (root/'apps/flutter_study/lib/app').mkdir(parents=True); (root/'apps/flutter_study/test/modules').mkdir(parents=True)
+   files={
+    'apps/flutter_study/pubspec.yaml':'  media_kit: ^1.0.0\n',
+    'pubspec.lock':'media_kit:\n',
+    'apps/flutter_study/lib/modules/platform/online_video_player/state/media_kit_player_adapter.dart':'import package:media_kit/media_kit.dart;',
+    'apps/flutter_study/lib/modules/platform/online_video_player/module_root.dart':'online_video_player media_kit_video',
+    'apps/flutter_study/lib/app/app_bootstrap.dart':'MediaKit.ensureInitialized();',
+    'apps/flutter_study/test/modules/player_test.dart':'online_video_player',
+   }
+   for name, content in files.items(): (root/name).write_text(content)
+   with patch('agent_hub.graphs.decomposition.subprocess.check_output',return_value='\n'.join(files)):
+    task=_proposal_inventory({'repositories':[{'repository_id':'flutter_study','path':str(root)}]}, {'task_id':'media','title':'Media'})
+  self.assertEqual(task['status'],'READY')
+  self.assertEqual(task['candidate_paths'],task['allowed_paths_by_repository']['flutter_study'])
+  self.assertTrue(all(not path.endswith('/') for path in task['candidate_paths']))
+  self.assertTrue(task['evidence'])
+
+ def test_proposal_without_required_evidence_is_blocked(self):
+  import tempfile
+  from pathlib import Path
+  with tempfile.TemporaryDirectory() as raw, patch('agent_hub.graphs.decomposition.subprocess.check_output',return_value=''):
+   task=_proposal_inventory({'repositories':[{'repository_id':'flutter_study','path':raw}]}, {'task_id':'media','title':'Media'})
+  self.assertEqual(task['status'],'BLOCKED_DECISION')
+  self.assertEqual(task['allowed_paths_by_repository'],{})
+
+ def test_duplicate_proposal_is_idempotent(self):
+  existing={'task_id':'media','status':'READY','evidence':['frozen']}
+  program=build_decomposition_graph().invoke({'proposal_spec':{'task_id':'media','title':'Media'},'decomposition_program':{'migration_tasks':[existing]}})['decomposition_program']
+  self.assertEqual(program['migration_tasks'],[existing])
+  self.assertTrue(program['last_proposal']['idempotent'])
+
+ @patch('agent_hub.gateway.decomposition._submit')
+ @patch('agent_hub.gateway.decomposition._resolve_thread',return_value=('thread',None))
+ def test_propose_submits_read_only_graph_input_without_execute(self, resolve, submit):
+  import json, tempfile
+  from pathlib import Path
+  submit.return_value={'run_id':'run'}; output=[]
+  with tempfile.TemporaryDirectory() as raw:
+   path=Path(raw)/'task.json'; path.write_text(json.dumps({'task_id':'media','title':'Media'}))
+   self.assertEqual(propose('http://server','thread',path,output.append),0)
+  payload=submit.call_args.args[2]
+  self.assertFalse(payload['execute'])
+  self.assertNotIn('worker_endpoint',payload)
+
+ def test_propose_rejects_caller_owned_allowed_paths(self):
+  import json, tempfile
+  from pathlib import Path
+  with tempfile.TemporaryDirectory() as raw:
+   path=Path(raw)/'task.json'; path.write_text(json.dumps({'task_id':'media','title':'Media','allowed_paths':['lib']})); output=[]
+   self.assertEqual(propose('http://server','thread',path,output.append),2)
+  self.assertIn('graph-owned fields',output[0])
  def test_dashboard_shows_plan_only(self):
   text=render({"values":{"decomposition_program":{"program_id":"p","execution_mode":"PLAN_ONLY","capabilities":[{"classification":"MERGE"}],"migration_tasks":[{"status":"READY"}],"package_candidates":[],"target_dependency_graph":{"nodes":[],"edges":[],"cycles":[]}}}})
   self.assertIn("PLAN_ONLY",text)

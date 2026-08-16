@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import os
+import json
 import socket
 import subprocess
 import time
@@ -235,6 +236,36 @@ def plan(server, thread_id=None, output=print):
         output(f"DISCONNECTED: {error}")
     except Exception as error:
         output(f"DECOMPOSITION_ERROR: {error}")
+    return 2
+
+
+def propose(server, thread_id, spec_path, output=print):
+    """Submit a read-only custom task proposal; never dispatch a Worker."""
+    try:
+        spec = json.loads(Path(spec_path).read_text(encoding="utf-8"))
+        if not isinstance(spec, dict) or not spec.get("task_id") or not spec.get("title"):
+            output("PROPOSAL_ERROR: spec requires task_id and title")
+            return 2
+        # The graph owns discovery and freezes exact paths.  A caller cannot
+        # smuggle a broad mutation scope into a pending proposal.
+        forbidden = {"allowed_paths", "allowed_paths_by_repository", "candidate_paths"} & set(spec)
+        if forbidden:
+            output(f"PROPOSAL_ERROR: graph-owned fields are not accepted: {', '.join(sorted(forbidden))}")
+            return 2
+        if thread_id:
+            thread_id, error = _resolve_thread(server, thread_id)
+            if error:
+                output(error)
+                return 2
+        else:
+            thread_id = _call("POST", f"{server.rstrip('/')}/threads", {"metadata": {"program_type": "decomposition", "program_id": PROGRAM_ID, "cluster_root": CLUSTER_ROOT}})["thread_id"]
+        run = _submit(server, thread_id, {"cluster_root": CLUSTER_ROOT, "execute": False, "reconcile_only": False, "proposal_spec": spec})
+        output(f"Program ID: {PROGRAM_ID}\nThread ID: {thread_id}\nRun ID: {run['run_id']}\nTask ID: {spec['task_id']}\nMode: PROPOSAL_READ_ONLY\nStatus: PROPOSAL_SUBMITTED")
+        return 0
+    except (OSError, ValueError) as error:
+        output(f"PROPOSAL_ERROR: {error}")
+    except (URLError, HTTPError) as error:
+        output(f"DISCONNECTED: {error}")
     return 2
 
 

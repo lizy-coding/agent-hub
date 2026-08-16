@@ -49,6 +49,7 @@ class State(TypedDict, total=False):
     worker_result: dict[str, object]
     integration_result: dict[str, object]
     reconcile_only: bool
+    proposal_spec: dict[str, object]
 
 
 def _pubspec(path: Path) -> tuple[str, list[str]]:
@@ -288,6 +289,70 @@ def _file_picker_contract_preflight() -> dict[str, object]:
     target = _ensure_worktree("flutter_study")[0] / "packages/file_picker_bridge"
     target_ready = (target / "pubspec.yaml").is_file() and (target / "lib").is_dir()
     return {"status": "PASS" if target_ready else "REJECT", "capability_owner": "flutter_study/packages/file_picker_bridge", "target_package_root": "packages/file_picker_bridge", "required_dependency_rewrites": [], "reason": "workspace package owner is present" if target_ready else "workspace package owner cannot be proven"}
+
+
+def _proposal_inventory(program: dict[str, object], spec: dict[str, object]) -> dict[str, object]:
+    """Build a frozen task from tracked-file evidence without touching a worktree."""
+    repository = next((item for item in program.get("repositories", []) if item.get("repository_id") == "flutter_study"), None)
+    root = Path(str(repository.get("path"))) if isinstance(repository, dict) else Path(str(program.get("cluster_root", CLUSTER))) / "flutter_study"
+    if not root.is_dir():
+        return {"task_id": spec.get("task_id"), "title": spec.get("title"), "status": "BLOCKED_DECISION", "evidence": [], "candidate_paths": [], "allowed_paths_by_repository": {}, "blocked_decisions": ["flutter_study repository is unavailable for read-only discovery"]}
+    tracked = subprocess.check_output(["git", "ls-files"], cwd=root, text=True).splitlines()
+    needles = ("media_kit", "media_kit_video", "media_kit_libs_video", "online_video_player")
+    candidates: list[str] = []
+    evidence: list[str] = []
+    for relative in tracked:
+        path = root / relative
+        try:
+            content = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            continue
+        matches = sorted({needle for needle in needles if needle in content})
+        if matches:
+            candidates.append(relative)
+            evidence.append(f"{relative}: references {', '.join(matches)}")
+    # The replacement adapter is an exact, anticipated CREATE target.  No
+    # directory prefix is frozen, so ScopeGuard still rejects unrelated files.
+    adapter = "apps/flutter_study/lib/modules/platform/online_video_player/state/video_player_adapter.dart"
+    if adapter not in candidates:
+        candidates.append(adapter)
+    candidates = sorted(set(candidates))
+    blocked: list[str] = []
+    required_groups = {
+        "dependency manifest": lambda p: p == "apps/flutter_study/pubspec.yaml",
+        "lockfile": lambda p: p == "pubspec.lock",
+        "direct media API": lambda p: p.endswith("media_kit_player_adapter.dart"),
+        "lifecycle/bootstrap": lambda p: p.endswith("app_bootstrap.dart") or p.endswith("module_root.dart"),
+        "tests": lambda p: "/test/" in f"/{p}" or p.startswith("test/"),
+    }
+    for label, predicate in required_groups.items():
+        if not any(predicate(path) for path in candidates):
+            blocked.append(f"missing {label} evidence")
+    contract = {
+        "task_id": str(spec.get("task_id", "")),
+        "title": str(spec.get("title", "")),
+        "intent": str(spec.get("intent", "")),
+        "source_units": list(spec.get("source_units", ["flutter_study/media_playback"])),
+        "target_units": list(spec.get("target_units", ["flutter_study/media_playback"])),
+        "depends_on": list(spec.get("depends_on", [])),
+        "allowed_operations": list(spec.get("allowed_operations", ["DEPENDENCY_REWRITE", "API_BREAK", "CREATE", "DELETE"])),
+        "candidate_paths": candidates,
+        "allowed_paths_by_repository": {"flutter_study": candidates} if candidates and not blocked else {},
+        "evidence": evidence,
+        "discovery": list(spec.get("required_discovery", [])),
+        "invariants": list(spec.get("invariants", [])),
+        "acceptance": list(spec.get("acceptance", [])),
+        "risks": [
+            "media_kit stream subscriptions map to video_player ValueNotifier/controller listeners with different error and readiness semantics",
+            "volume and playback speed support must be verified on every enabled platform",
+            "global MediaKit.ensureInitialized removal and controller initialization/disposal ordering are lifecycle-sensitive",
+            "generated plugin registrants and platform lockfiles may change only as dependency-resolution effects",
+        ],
+        "blocked_decisions": blocked,
+        "proposal": {"status": "FROZEN" if candidates and not blocked else "PENDING_EVIDENCE", "read_only": True},
+        "status": "READY" if candidates and not blocked else "BLOCKED_DECISION",
+    }
+    return contract
 
 
 def build_decomposition_graph():
@@ -541,6 +606,26 @@ def build_decomposition_graph():
                 return {"decomposition_program": program}
         return {"decomposition_program": program}
 
+    def propose_task(state: State):
+        program = dict(state.get("decomposition_program") or {})
+        program["execution_mode"] = "PLAN_ONLY"
+        spec = state.get("proposal_spec")
+        if not isinstance(spec, dict):
+            return {"decomposition_program": program}
+        tasks = list(program.get("migration_tasks", []))
+        task_id = str(spec.get("task_id", ""))
+        existing = next((task for task in tasks if task.get("task_id") == task_id), None)
+        if existing is None:
+            frozen = _proposal_inventory(program, spec)
+            tasks.append(frozen)
+            program["migration_tasks"] = tasks
+            if frozen.get("status") == "READY" and not program.get("current_migration_task"):
+                program["current_migration_task"] = task_id
+            program["last_proposal"] = {"task_id": task_id, "status": frozen.get("status"), "idempotent": False}
+        else:
+            program["last_proposal"] = {"task_id": task_id, "status": existing.get("status"), "idempotent": True}
+        return {"decomposition_program": program, "proposal_spec": {}}
+
     def freeze(state: State):
         program = state["decomposition_program"]
         if state.get("reconcile_only"):
@@ -676,6 +761,7 @@ def build_decomposition_graph():
             return {"decomposition_program": program, "integration_result": {"status": "INTEGRATION_FAILED", "reason": str(error)}}
 
     graph.add_node("reconcile", reconcile)
+    graph.add_node("propose_task", propose_task)
     graph.add_node("freeze", freeze)
     graph.add_node("dispatch", dispatch)
     graph.add_node("receive", receive)
@@ -683,7 +769,8 @@ def build_decomposition_graph():
     graph.add_node("review", review)
     graph.add_node("integrate", integrate)
     graph.add_edge(START, "reconcile")
-    graph.add_conditional_edges("reconcile", lambda state: END if state.get("reconcile_only") else "integrate" if isinstance(state.get("decomposition_program"), dict) and state["decomposition_program"].get("current_migration_task") and isinstance(state.get("worker_result"), dict) and state["worker_result"].get("status") == "SUCCESS" else "freeze", {END: END, "integrate": "integrate", "freeze": "freeze"})
+    graph.add_conditional_edges("reconcile", lambda state: END if state.get("reconcile_only") else "propose_task" if isinstance(state.get("proposal_spec"), dict) and state.get("proposal_spec") else "integrate" if isinstance(state.get("decomposition_program"), dict) and state["decomposition_program"].get("current_migration_task") and isinstance(state.get("worker_result"), dict) and state["worker_result"].get("status") == "SUCCESS" else "freeze", {END: END, "propose_task": "propose_task", "integrate": "integrate", "freeze": "freeze"})
+    graph.add_edge("propose_task", END)
     graph.add_conditional_edges("freeze", lambda state: "dispatch" if state.get("migration_request") else END, {"dispatch": "dispatch", END: END})
     graph.add_edge("dispatch", "receive")
     graph.add_conditional_edges("receive", lambda state: "validate" if (state.get("worker_result") or {}).get("status") == "SUCCESS" else END, {"validate": "validate", END: END})

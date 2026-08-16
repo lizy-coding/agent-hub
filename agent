@@ -5,6 +5,11 @@ import os
 import sys
 import time
 
+if sys.version_info < (3, 11):
+    local_python = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".venv", "bin", "python")
+    if os.path.isfile(local_python):
+        os.execv(local_python, [local_python, *sys.argv])
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 from agent_hub.gateway.refactor_dashboard import DEFAULT_SERVER, DEFAULT_THREAD_ID, status
 from agent_hub.gateway.refactor_run import refactor_run
@@ -14,7 +19,7 @@ from agent_hub.gateway import decomposition
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Read-only Agent Hub refactor dashboard.")
-    parser.add_argument("command", choices=("refactor-status", "refactor-watch", "refactor-run", "refactor-decide", "decomposition-plan", "decomposition-status", "decomposition-run", "decomposition-decide"))
+    parser.add_argument("command", choices=("refactor-status", "refactor-watch", "refactor-run", "refactor-decide", "decomposition-plan", "decomposition-propose", "decomposition-status", "decomposition-run", "decomposition-decide"))
     parser.add_argument("--thread-id")
     parser.add_argument("--server", default=DEFAULT_SERVER)
     parser.add_argument("--verbose", action="store_true")
@@ -22,6 +27,7 @@ def main() -> int:
     parser.add_argument("--choice")
     parser.add_argument("--reason", default="")
     parser.add_argument("--execute", action="store_true", help="Allow decomposition-run to enter real migration execution.")
+    parser.add_argument("--spec", type=str, help="MigrationTask proposal JSON file (proposal input only; allowed paths are discovered and frozen by the graph).")
     args = parser.parse_args()
     refactor_thread = args.thread_id or DEFAULT_THREAD_ID
     if args.command == "refactor-status":
@@ -34,6 +40,10 @@ def main() -> int:
         return refactor_decide(args.server, refactor_thread, args.decision_id, args.choice, args.reason)
     if args.command == "decomposition-plan":
         return decomposition.plan(server=args.server, thread_id=args.thread_id, output=print)
+    if args.command == "decomposition-propose":
+        if not args.spec:
+            parser.error("decomposition-propose requires --spec")
+        return decomposition.propose(server=args.server, thread_id=args.thread_id, spec_path=args.spec, output=print)
     if args.command == "decomposition-status":
         return decomposition.status(server=args.server, thread_id=args.thread_id, output=print)
     if args.command == "decomposition-run":
