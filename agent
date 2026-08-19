@@ -18,8 +18,8 @@ from agent_hub.gateway import decomposition
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Read-only Agent Hub refactor dashboard.")
-    parser.add_argument("command", choices=("refactor-status", "refactor-watch", "refactor-run", "refactor-decide", "decomposition-plan", "decomposition-propose", "decomposition-status", "decomposition-run", "decomposition-decide"))
+    parser = argparse.ArgumentParser(description="Agent Hub local LangGraph orchestration CLI.")
+    parser.add_argument("command", choices=("refactor-status", "refactor-watch", "refactor-run", "refactor-decide", "decomposition-plan", "decomposition-propose", "decomposition-sync", "decomposition-status", "decomposition-run", "decomposition-decide"))
     parser.add_argument("--thread-id")
     parser.add_argument("--server", default=DEFAULT_SERVER)
     parser.add_argument("--verbose", action="store_true")
@@ -28,34 +28,37 @@ def main() -> int:
     parser.add_argument("--reason", default="")
     parser.add_argument("--execute", action="store_true", help="Allow decomposition-run to enter real migration execution.")
     parser.add_argument("--spec", type=str, help="MigrationTask proposal JSON file (proposal input only; allowed paths are discovered and frozen by the graph).")
+    parser.add_argument("--project", help="Registered decomposition project id (default: registry default_project).")
     args = parser.parse_args()
     refactor_thread = args.thread_id or DEFAULT_THREAD_ID
     if args.command == "refactor-status":
-        return status(args.server, refactor_thread)
+        return status(args.server, refactor_thread, project_id=args.project)
     if args.command == "refactor-run":
-        return refactor_run(args.server, refactor_thread, os.path.dirname(os.path.abspath(__file__)))
+        return refactor_run(args.server, refactor_thread, os.path.dirname(os.path.abspath(__file__)), project_id=args.project)
     if args.command == "refactor-decide":
         if not args.decision_id or not args.choice:
             parser.error("refactor-decide requires --decision-id and --choice")
-        return refactor_decide(args.server, refactor_thread, args.decision_id, args.choice, args.reason)
+        return refactor_decide(args.server, refactor_thread, args.decision_id, args.choice, args.reason, project_id=args.project)
     if args.command == "decomposition-plan":
-        return decomposition.plan(server=args.server, thread_id=args.thread_id, output=print)
+        return decomposition.plan(server=args.server, thread_id=args.thread_id, output=print, project_id=args.project)
     if args.command == "decomposition-propose":
         if not args.spec:
             parser.error("decomposition-propose requires --spec")
-        return decomposition.propose(server=args.server, thread_id=args.thread_id, spec_path=args.spec, output=print)
+        return decomposition.propose(server=args.server, thread_id=args.thread_id, spec_path=args.spec, output=print, project_id=args.project)
+    if args.command == "decomposition-sync":
+        return decomposition.sync(server=args.server, thread_id=args.thread_id, root=os.path.dirname(os.path.abspath(__file__)), output=print, project_id=args.project)
     if args.command == "decomposition-status":
-        return decomposition.status(server=args.server, thread_id=args.thread_id, output=print)
+        return decomposition.status(server=args.server, thread_id=args.thread_id, output=print, project_id=args.project)
     if args.command == "decomposition-run":
-        return decomposition.run(server=args.server, thread_id=args.thread_id, execute=args.execute, output=print)
+        return decomposition.run(server=args.server, thread_id=args.thread_id, execute=args.execute, output=print, project_id=args.project)
     if args.command == "decomposition-decide":
         if not args.decision_id or not args.choice:
             parser.error("decomposition-decide requires --decision-id and --choice")
-        return decomposition.decide(server=args.server, thread_id=args.thread_id, decision_id=args.decision_id, choice=args.choice, reason=args.reason, output=print)
+        return decomposition.decide(server=args.server, thread_id=args.thread_id, decision_id=args.decision_id, choice=args.choice, reason=args.reason, output=print, project_id=args.project)
     try:
         while True:
             print("\033[2J\033[H", end="")
-            status(args.server, refactor_thread)
+            status(args.server, refactor_thread, project_id=args.project)
             time.sleep(2)
     except KeyboardInterrupt:
         print("\nStopped.")

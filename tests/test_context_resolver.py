@@ -20,10 +20,10 @@ class ContextResolverTest(unittest.TestCase):
         self.assertEqual(self.resolver.validate_context_package(package), [])
 
     def test_symbol_callsite_rules_and_dependency_queries(self):
-        unit_id = "flutter_study:."
+        unit_id = "flutter_study:apps/flutter_study"
         self.assertTrue(self.resolver.search_symbols(unit_id, "gcode"))
         self.assertTrue(self.resolver.search_callsites(unit_id, "gcode_core"))
-        self.assertTrue(self.resolver.resolve_rules_for_path(unit_id))
+        self.assertTrue(self.resolver.resolve_rules_for_path("flutter_study:."))
 
     def test_name_only_is_not_confirmed(self):
         package = self.resolver.resolve_context("unmatched_term_xyz", "flutter_study")

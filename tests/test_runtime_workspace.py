@@ -9,3 +9,9 @@ class RuntimeWorkspaceTest(unittest.TestCase):
  def test_identity_is_independent_of_runtime_root_and_permissions_apply(self):
   with tempfile.TemporaryDirectory() as raw:
    provider=RuntimeWorkspaceProvider.from_config(self.config(Path(raw)));self.assertEqual(provider.get_primary_repository().repository_id,'flutter_study');self.assertEqual(provider.resolve_path('flutter_study','lib/x.dart'),(Path(raw)/'flutter_study/lib/x.dart').resolve());self.assertRaises(PermissionError,provider.assert_writable,'ref','x');self.assertRaises(ValueError,provider.resolve_path,'flutter_study','../escape')
+ def test_file_paths_resolve_relative_to_config_location(self):
+  with tempfile.TemporaryDirectory() as raw:
+   base=Path(raw); (base/'workspace').mkdir(); (base/'repo').mkdir(); config_path=base/'workspace/config.json'
+   config_path.write_text(json.dumps({'workspace_root':'..','registry_path':'registry.json','registry_storage_path':'generated.json','runtime':{'primary_repository_id':'repo','repositories':{'repo':{'runtime_path':'../repo','managed':True,'writable':True}}}}))
+   config=WorkspaceConfig.from_file(config_path); provider=RuntimeWorkspaceProvider.from_config(config)
+   self.assertEqual(config.workspace_root,base.resolve()); self.assertEqual(config.registry_path,(base/'workspace/registry.json').resolve()); self.assertEqual(provider.get_primary_repository().runtime_path,(base/'repo').resolve())

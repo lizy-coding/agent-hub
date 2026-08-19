@@ -14,9 +14,10 @@ import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
+from agent_hub.projects.decomposition_config import load_decomposition_project
 
 
-CLUSTER_ROOT = Path("/Users/forest/code/langGraph")
+CLUSTER_ROOT = Path(os.environ.get("AGENT_HUB_DECOMPOSITION_CLUSTER_ROOT", str(load_decomposition_project().cluster_root)))
 CODEX_PROFILE = os.environ.get("AGENT_HUB_CODEX_PROFILE", "")
 CODEX_TIMEOUT_SECONDS = int(os.environ.get("AGENT_HUB_CODEX_TIMEOUT_SECONDS", "1800"))
 
@@ -37,8 +38,9 @@ def _snapshot(worktree: Path) -> tuple[list[str], str]:
 class DecompositionCodeExecutor:
     """Run one frozen multi-repository task outside all managed worktrees."""
 
-    def __init__(self, cluster_root: Path = CLUSTER_ROOT, codex_binary: str = "codex") -> None:
-        self.cluster_root = cluster_root.resolve()
+    def __init__(self, cluster_root: Path | None = None, codex_binary: str = "codex") -> None:
+        selected_root = cluster_root or Path(os.environ.get("AGENT_HUB_DECOMPOSITION_CLUSTER_ROOT", str(CLUSTER_ROOT)))
+        self.cluster_root = selected_root.resolve()
         self.codex_binary = codex_binary
 
     def execute(self, payload: dict[str, object]) -> dict[str, object]:

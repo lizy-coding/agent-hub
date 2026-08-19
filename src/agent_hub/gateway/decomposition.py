@@ -13,9 +13,31 @@ from agent_hub.gateway.refactor_dashboard import fetch_state
 from agent_hub.gateway.refactor_run import _call
 from agent_hub.gateway.decomposition_state import load as load_snapshot, save as save_snapshot, validate as validate_snapshot
 from agent_hub.graphs.decomposition import RETRYABLE_BLOCKERS
+from agent_hub.projects.decomposition_config import DecompositionProjectConfig, load_decomposition_project
 
-PROGRAM_ID = "flutter-study-decomposition-program"
-CLUSTER_ROOT = "/Users/forest/code/langGraph"
+_DEFAULT_PROJECT = load_decomposition_project()
+PROGRAM_ID = _DEFAULT_PROJECT.program_id
+CLUSTER_ROOT = str(_DEFAULT_PROJECT.cluster_root)
+
+
+def _project(project_id: str | None = None) -> DecompositionProjectConfig:
+    return load_decomposition_project(project_id)
+
+
+def _metadata(project: DecompositionProjectConfig) -> dict[str, object]:
+    return {
+        "program_type": "decomposition",
+        "program_id": project.program_id,
+        "project_id": project.project_id,
+        "cluster_root": str(project.cluster_root),
+    }
+
+
+def _graph_payload(project: DecompositionProjectConfig) -> dict[str, object]:
+    return {
+        "cluster_root": str(project.cluster_root),
+        "project_context": project.graph_input(),
+    }
 
 
 def _worker_ready(endpoint):
@@ -27,13 +49,15 @@ def _worker_ready(endpoint):
         return False
 
 
-def _start_worker(endpoint):
+def _start_worker(endpoint, project: DecompositionProjectConfig | None = None):
     root = Path(__file__).resolve().parents[3]
+    project = project or _project()
     env = os.environ.copy()
     env["AGENT_HUB_CODE_WORKER_PORT"] = endpoint.split(":")[2].split("/")[0]
     # The legacy executor still needs a primary path at server construction;
     # decomposition requests are dispatched to its dedicated multi-repo adapter.
-    env["AGENT_HUB_PRIMARY_REPOSITORY_PATH"] = str(root / ".decomposition" / "flutter_study")
+    env["AGENT_HUB_PRIMARY_REPOSITORY_PATH"] = str(root / ".decomposition" / project.primary_repository_id)
+    env["AGENT_HUB_DECOMPOSITION_CLUSTER_ROOT"] = str(project.cluster_root)
     return subprocess.Popen([str(root / ".venv/bin/python"), "-m", "agent_hub.gateway.code_worker"], cwd=root, env=env, start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
@@ -50,32 +74,34 @@ def _thread(server, thread_id):
         raise
 
 
-def _resolve_thread(server, thread_id=None):
+def _resolve_thread(server, thread_id=None, project: DecompositionProjectConfig | None = None):
+    project = project or _project()
     if thread_id:
         thread = _thread(server, thread_id)
         if thread is None:
-            restored, error = _rehydrate(server, thread_id)
+            restored, error = _rehydrate(server, thread_id, project)
             if error:
                 return None, error
             thread = restored
-        if (thread.get("metadata") or {}).get("program_id") != PROGRAM_ID:
+        if (thread.get("metadata") or {}).get("program_id") != project.program_id:
             return None, "WRONG_PROGRAM_TYPE"
         return thread_id, None
     threads = _call("POST", f"{server.rstrip('/')}/threads/search", {"limit": 100, "offset": 0})
-    candidates = [thread for thread in threads if (thread.get("metadata") or {}).get("program_id") == PROGRAM_ID]
+    candidates = [thread for thread in threads if (thread.get("metadata") or {}).get("program_id") == project.program_id and (thread.get("metadata") or {}).get("project_id", project.project_id) == project.project_id]
     if not candidates:
         return None, "NO_DECOMPOSITION_PROGRAM"
     return max(candidates, key=lambda item: item.get("updated_at", ""))["thread_id"], None
 
 
-def _rehydrate(server, thread_id):
-    snapshot = load_snapshot(thread_id)
+def _rehydrate(server, thread_id, project: DecompositionProjectConfig | None = None):
+    project = project or _project()
+    snapshot = load_snapshot(thread_id, project.snapshot_namespace)
     if snapshot is None:
         return None, "THREAD_NOT_FOUND"
-    error = validate_snapshot(snapshot, thread_id, CLUSTER_ROOT)
+    error = validate_snapshot(snapshot, thread_id, str(project.cluster_root), project.program_id, project.snapshot_namespace)
     if error:
         return None, error
-    metadata = {"program_type": "decomposition", "program_id": PROGRAM_ID, "cluster_root": CLUSTER_ROOT, "rehydrated_from_local_snapshot": True}
+    metadata = {**_metadata(project), "rehydrated_from_local_snapshot": True}
     try:
         _call("POST", f"{server.rstrip('/')}/threads", {"thread_id": thread_id, "metadata": metadata, "if_exists": "do_nothing"})
         # A just-created Thread has no graph assignment, so initialise a
@@ -86,7 +112,7 @@ def _rehydrate(server, thread_id):
         _call("POST", f"{server.rstrip('/')}/threads/{thread_id}/state", {"values": values})
         restored = _thread(server, thread_id)
         state = fetch_state(server, thread_id)
-        if restored is None or (state.get("values") or {}).get("decomposition_program", {}).get("program_id") != PROGRAM_ID:
+        if restored is None or (state.get("values") or {}).get("decomposition_program", {}).get("program_id") != project.program_id:
             return None, "STATE_UNRECOVERABLE"
         return restored, None
     except (HTTPError, URLError, OSError, ValueError):
@@ -221,16 +247,17 @@ def _submit(server, thread_id, payload):
     return _call("POST", f"{server.rstrip('/')}/threads/{thread_id}/runs", {"assistant_id": _assistant(server), "input": payload, "multitask_strategy": "reject"})
 
 
-def plan(server, thread_id=None, output=print):
+def plan(server, thread_id=None, output=print, project_id=None):
     try:
+        project = _project(project_id)
         if thread_id:
-            thread_id, error = _resolve_thread(server, thread_id)
+            thread_id, error = _resolve_thread(server, thread_id, project)
             if error:
                 output(error); return 2
         else:
-            thread_id = _call("POST", f"{server.rstrip('/')}/threads", {"metadata": {"program_type": "decomposition", "program_id": PROGRAM_ID, "cluster_root": CLUSTER_ROOT}})["thread_id"]
-        run = _submit(server, thread_id, {"cluster_root": CLUSTER_ROOT})
-        output(f"Program ID: {PROGRAM_ID}\nThread ID: {thread_id}\nRun ID: {run['run_id']}\nCluster: {CLUSTER_ROOT}\nMode: PLAN_ONLY\nStatus: PLAN_SUBMITTED")
+            thread_id = _call("POST", f"{server.rstrip('/')}/threads", {"metadata": _metadata(project)})["thread_id"]
+        run = _submit(server, thread_id, _graph_payload(project))
+        output(f"Project ID: {project.project_id}\nProgram ID: {project.program_id}\nThread ID: {thread_id}\nRun ID: {run['run_id']}\nCluster: {project.cluster_root}\nMode: PLAN_ONLY\nStatus: PLAN_SUBMITTED")
         return 0
     except (URLError, OSError) as error:
         output(f"DISCONNECTED: {error}")
@@ -239,9 +266,10 @@ def plan(server, thread_id=None, output=print):
     return 2
 
 
-def propose(server, thread_id, spec_path, output=print):
+def propose(server, thread_id, spec_path, output=print, project_id=None):
     """Submit a read-only custom task proposal; never dispatch a Worker."""
     try:
+        project = _project(project_id)
         spec = json.loads(Path(spec_path).read_text(encoding="utf-8"))
         if not isinstance(spec, dict) or not spec.get("task_id") or not spec.get("title"):
             output("PROPOSAL_ERROR: spec requires task_id and title")
@@ -253,20 +281,41 @@ def propose(server, thread_id, spec_path, output=print):
             output(f"PROPOSAL_ERROR: graph-owned fields are not accepted: {', '.join(sorted(forbidden))}")
             return 2
         if thread_id:
-            thread_id, error = _resolve_thread(server, thread_id)
+            thread_id, error = _resolve_thread(server, thread_id, project)
             if error:
                 output(error)
                 return 2
         else:
-            thread_id = _call("POST", f"{server.rstrip('/')}/threads", {"metadata": {"program_type": "decomposition", "program_id": PROGRAM_ID, "cluster_root": CLUSTER_ROOT}})["thread_id"]
-        run = _submit(server, thread_id, {"cluster_root": CLUSTER_ROOT, "execute": False, "reconcile_only": False, "proposal_spec": spec})
-        output(f"Program ID: {PROGRAM_ID}\nThread ID: {thread_id}\nRun ID: {run['run_id']}\nTask ID: {spec['task_id']}\nMode: PROPOSAL_READ_ONLY\nStatus: PROPOSAL_SUBMITTED")
+            thread_id = _call("POST", f"{server.rstrip('/')}/threads", {"metadata": _metadata(project)})["thread_id"]
+        run = _submit(server, thread_id, {**_graph_payload(project), "execute": False, "reconcile_only": False, "proposal_spec": spec})
+        output(f"Project ID: {project.project_id}\nProgram ID: {project.program_id}\nThread ID: {thread_id}\nRun ID: {run['run_id']}\nTask ID: {spec['task_id']}\nMode: PROPOSAL_READ_ONLY\nStatus: PROPOSAL_SUBMITTED")
         return 0
-    except (OSError, ValueError) as error:
+    except (OSError, ValueError, KeyError) as error:
         output(f"PROPOSAL_ERROR: {error}")
     except (URLError, HTTPError) as error:
         output(f"DISCONNECTED: {error}")
     return 2
+
+
+def sync(server, thread_id, root, output=print, project_id=None):
+    """Fast-forward a clean managed decomposition base to a verified integration HEAD."""
+    try:
+        project = _project(project_id)
+        thread_id, error = _resolve_thread(server, thread_id, project)
+        if error:
+            output(error); return 2
+        integration = Path(root).resolve() / ".integration" / project.primary_repository_id
+        if not integration.is_dir():
+            output("SYNC_ERROR: integration worktree not found"); return 2
+        changed = subprocess.check_output(["git", "status", "--porcelain"], cwd=integration, text=True).splitlines()
+        if changed:
+            output("SYNC_ERROR: integration worktree is dirty"); return 3
+        target = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=integration, text=True).strip()
+        run = _submit(server, thread_id, {**_graph_payload(project), "execute": False, "reconcile_only": False, "sync_base": {"repository": project.primary_repository_id, "target_revision": target}})
+        output(f"Project ID: {project.project_id}\nThread ID: {thread_id}\nRun ID: {run['run_id']}\nTarget revision: {target}\nStatus: SYNC_SUBMITTED")
+        return 0
+    except (OSError, ValueError, KeyError, URLError, HTTPError) as error:
+        output(f"SYNC_ERROR: {error}"); return 2
 
 
 def render(state):
@@ -277,36 +326,40 @@ def render(state):
     managed_rows=", ".join(f"{item.get('repository')}@{item.get('branch')}" for item in managed) or "—"
     current=next((item for item in tasks if item.get("task_id")==p.get("current_migration_task")),{})
     execution=current.get("worker_execution",{}) if isinstance(current,dict) else {}
-    return "\n".join(["Flutter Study Decomposition Program",f"Program ID: {p.get('program_id','—')}",f"Thread ID: {(state.get('metadata') or {}).get('thread_id','—')}",f"Cluster: {p.get('cluster_root','—')}",f"Execution mode: {p.get('execution_mode','—')} | Status: {p.get('status','PLANNING')}",f"Repositories: {', '.join(item.get('repository_id','—') for item in p.get('repositories',[])) or '—'}",f"Managed worktrees: {managed_rows}",f"Capabilities: {len(caps)} | Classified: {sum(bool(item.get('classification')) for item in caps)} | Blocked: {sum(item.get('classification')=='BLOCKED_DECISION' for item in caps)}",f"Package candidates: {counts}",f"Migration tasks: {len(tasks)} | READY: {sum(item.get('status')=='READY' for item in tasks)} | DISPATCHING: {sum(item.get('status')=='DISPATCHING' for item in tasks)} | RUNNING: {sum(item.get('status')=='RUNNING' for item in tasks)} | BLOCKED: {sum(item.get('status')=='BLOCKED_DECISION' for item in tasks)} | DONE: {sum(item.get('status')=='DONE' for item in tasks)}",f"Current migration task: {p.get('current_migration_task','—')}",f"Worker execution: {execution.get('worker_execution_id','—')} | workspace: {execution.get('worker_workspace','—')} | started: {execution.get('dispatched_at','—')}",f"Execution blocker: {blocker.get('status','—')} | {blocker.get('reason','—')}",f"Dirty repositories: {dirty}",f"Target graph: {len(graph.get('nodes',[]))} nodes / {len(graph.get('edges',[]))} edges | Cycles: {graph.get('cycles',[])}",f"Next node: {', '.join(state.get('next',[])) or '—'}"])
+    return "\n".join(["Decomposition Program",f"Project ID: {p.get('project_id','flutter-study')}",f"Program ID: {p.get('program_id','—')}",f"Thread ID: {(state.get('metadata') or {}).get('thread_id','—')}",f"Cluster: {p.get('cluster_root','—')}",f"Execution mode: {p.get('execution_mode','—')} | Status: {p.get('status','PLANNING')}",f"Repositories: {', '.join(item.get('repository_id','—') for item in p.get('repositories',[])) or '—'}",f"Managed worktrees: {managed_rows}",f"Capabilities: {len(caps)} | Classified: {sum(bool(item.get('classification')) for item in caps)} | Blocked: {sum(item.get('classification')=='BLOCKED_DECISION' for item in caps)}",f"Package candidates: {counts}",f"Migration tasks: {len(tasks)} | READY: {sum(item.get('status')=='READY' for item in tasks)} | DISPATCHING: {sum(item.get('status')=='DISPATCHING' for item in tasks)} | RUNNING: {sum(item.get('status')=='RUNNING' for item in tasks)} | BLOCKED: {sum(item.get('status')=='BLOCKED_DECISION' for item in tasks)} | DONE: {sum(item.get('status')=='DONE' for item in tasks)}",f"Current migration task: {p.get('current_migration_task','—')}",f"Worker execution: {execution.get('worker_execution_id','—')} | workspace: {execution.get('worker_workspace','—')} | started: {execution.get('dispatched_at','—')}",f"Execution blocker: {blocker.get('status','—')} | {blocker.get('reason','—')}",f"Dirty repositories: {dirty}",f"Target graph: {len(graph.get('nodes',[]))} nodes / {len(graph.get('edges',[]))} edges | Cycles: {graph.get('cycles',[])}",f"Next node: {', '.join(state.get('next',[])) or '—'}"])
 
 
-def status(server, thread_id=None, output=print):
+def status(server, thread_id=None, output=print, project_id=None):
     try:
-        thread_id, error = _resolve_thread(server, thread_id)
+        project = _project(project_id)
+        thread_id, error = _resolve_thread(server, thread_id, project)
         if error:
             output(error + ("; run ./agent decomposition-plan" if error == "NO_DECOMPOSITION_PROGRAM" else "")); return 2
         state = fetch_state(server, thread_id)
         program = (state.get("values") or {}).get("decomposition_program")
-        if not isinstance(program, dict) or program.get("program_id") != PROGRAM_ID:
-            _, error = _rehydrate(server, thread_id)
+        if not isinstance(program, dict) or program.get("program_id") != project.program_id:
+            _, error = _rehydrate(server, thread_id, project)
             if error:
                 output("STATE_NOT_LOADED: Thread exists but no compatible DecompositionProgram checkpoint is available.")
                 return 2
             state = fetch_state(server, thread_id)
         else:
-            save_snapshot(thread_id, state)
+            save_snapshot(thread_id, state, project.snapshot_namespace)
         state = _reconcile_stale_dispatching(server, thread_id, state)
-        save_snapshot(thread_id, state)
+        save_snapshot(thread_id, state, project.snapshot_namespace)
         output(render(state)); return 0
+    except (ValueError, KeyError) as error:
+        output(f"PROJECT_CONFIG_ERROR: {error}"); return 2
     except (URLError, OSError) as error:
         output(f"DISCONNECTED: {error}"); return 2
     except HTTPError as error:
         output("THREAD_NOT_FOUND" if error.code == 404 else f"DECOMPOSITION_ERROR: {error}"); return 2
 
 
-def run(server, thread_id=None, execute=False, output=print):
+def run(server, thread_id=None, execute=False, output=print, project_id=None):
     try:
-        thread_id, error = _resolve_thread(server, thread_id)
+        project = _project(project_id)
+        thread_id, error = _resolve_thread(server, thread_id, project)
         if error: output(error); return 2
         if not execute:
             output(f"PLAN_ONLY: decomposition-run is armed for Thread ID: {thread_id}; pass --execute to allow a MigrationTask run."); return 3
@@ -314,26 +367,26 @@ def run(server, thread_id=None, execute=False, output=print):
         state = fetch_state(server, thread_id)
         values = state.get("values") or {}
         program = values.get("decomposition_program") if isinstance(values, dict) else None
-        payload = {"execute": True, "worker_endpoint": endpoint}
-        if not isinstance(program, dict) or program.get("program_id") != PROGRAM_ID:
-            _, error = _rehydrate(server, thread_id)
+        payload = {**_graph_payload(project), "execute": True, "worker_endpoint": endpoint}
+        if not isinstance(program, dict) or program.get("program_id") != project.program_id:
+            _, error = _rehydrate(server, thread_id, project)
             if error:
                 output("STATE_UNRECOVERABLE: no compatible durable DecompositionProgram snapshot; refusing to dispatch or re-plan.")
                 return 2
             state = fetch_state(server, thread_id)
             program = (state.get("values") or {}).get("decomposition_program")
-            if not isinstance(program, dict) or program.get("program_id") != PROGRAM_ID:
+            if not isinstance(program, dict) or program.get("program_id") != project.program_id:
                 output("STATE_UNRECOVERABLE: rehydration did not create a compatible checkpoint.")
                 return 2
         else:
-            save_snapshot(thread_id, state)
+            save_snapshot(thread_id, state, project.snapshot_namespace)
         state = _reconcile_stale_dispatching(server, thread_id, state)
         program = (state.get("values") or {}).get("decomposition_program")
         if not isinstance(program, dict) or program.get("status") == "PROGRAM_BLOCKED":
             output("PROGRAM_BLOCKED: stale dispatch reconciliation requires an explicit decision.")
             return 3
         if not _worker_ready(endpoint):
-            process = _start_worker(endpoint)
+            process = _start_worker(endpoint, project)
             for _ in range(20):
                 if _worker_ready(endpoint):
                     break
@@ -343,18 +396,19 @@ def run(server, thread_id=None, execute=False, output=print):
                 return 3
             output(f"Worker started (pid={process.pid})")
         run = _submit(server, thread_id, {**payload, "reconcile_only": False})
-        output(f"Program ID: {PROGRAM_ID}\nThread ID: {thread_id}\nRun ID: {run['run_id']}\nMode: EXECUTE\nStatus: EXECUTION_SUBMITTED"); return 0
+        output(f"Project ID: {project.project_id}\nProgram ID: {project.program_id}\nThread ID: {thread_id}\nRun ID: {run['run_id']}\nMode: EXECUTE\nStatus: EXECUTION_SUBMITTED"); return 0
     except (URLError, OSError) as error: output(f"DISCONNECTED: {error}")
     except Exception as error: output(f"DECOMPOSITION_ERROR: {error}")
     return 2
 
 
-def decide(server, thread_id, decision_id, choice, reason="", output=print):
+def decide(server, thread_id, decision_id, choice, reason="", output=print, project_id=None):
     try:
-        thread_id, error = _resolve_thread(server, thread_id)
+        project = _project(project_id)
+        thread_id, error = _resolve_thread(server, thread_id, project)
         if error: output(error); return 2
         if not decision_id or not choice: output("DECISION_ERROR: --decision-id and --choice are required"); return 2
-        run = _submit(server, thread_id, {"cluster_root": CLUSTER_ROOT, "execute": False, "reconcile_only": True, "decision": {"decision_id": decision_id, "choice": choice, "reason": reason, "source": "human"}})
+        run = _submit(server, thread_id, {**_graph_payload(project), "execute": False, "reconcile_only": choice != "retry", "decision": {"decision_id": decision_id, "choice": choice, "reason": reason, "source": "human"}})
         output(f"Thread ID: {thread_id}\nRun ID: {run['run_id']}\nStatus: DECISION_SUBMITTED"); return 0
     except (URLError, OSError) as error: output(f"DISCONNECTED: {error}")
     except Exception as error: output(f"DECISION_ERROR: {error}")

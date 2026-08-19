@@ -21,15 +21,15 @@ class CodeWorkerRequestTest(unittest.TestCase):
 
     def test_rejects_invalid_repository_and_unbounded_paths(self):
         with self.assertRaisesRegex(ValueError, "invalid_repository"):
-            WorkerRequest.from_json(self.payload(repository="other"))
+            WorkerRequest.from_json(self.payload(repository="other"), "flutter_study")
         with self.assertRaisesRegex(ValueError, "invalid_allowed_paths"):
-            WorkerRequest.from_json(self.payload(allowed_paths=[]))
+            WorkerRequest.from_json(self.payload(allowed_paths=[]), "flutter_study")
         with self.assertRaisesRegex(ValueError, "invalid_allowed_paths"):
-            WorkerRequest.from_json(self.payload(allowed_paths=["../outside.dart"]))
+            WorkerRequest.from_json(self.payload(allowed_paths=["../outside.dart"]), "flutter_study")
 
     def test_rejects_arbitrary_shell(self):
         with self.assertRaisesRegex(ValueError, "arbitrary_shell_forbidden"):
-            WorkerRequest.from_json(self.payload(validation=["rm -rf /"]))
+            WorkerRequest.from_json(self.payload(validation=["rm -rf /"]), "flutter_study")
 
     def test_collects_untracked_changes_in_complete_diff(self):
         with tempfile.TemporaryDirectory() as raw:
@@ -48,7 +48,7 @@ class CodeWorkerRequestTest(unittest.TestCase):
             self.assertIn("a/new.txt", diff)
 
     def test_invalid_request_has_terminal_structured_response(self):
-        result = execute_request({}, LocalCodeExecutor(Path.cwd()))
+        result = execute_request({}, LocalCodeExecutor(Path.cwd(), repository_id="flutter_study"))
         self.assertEqual(result["status"], "CODEX_EXECUTION_FAILED")
         self.assertIn("stderr_tail", result)
 
@@ -63,7 +63,7 @@ class CodeWorkerProcessTest(unittest.TestCase):
             returncode = 7
             def communicate(self, timeout=None): return ("out", "err")
         with patch("agent_hub.execution.code_worker.subprocess.Popen", return_value=Process()):
-            outcome, code, stdout, stderr = LocalCodeExecutor(Path.cwd())._codex_run(Path.cwd(), self.request())
+            outcome, code, stdout, stderr = LocalCodeExecutor(Path.cwd(), repository_id="flutter_study")._codex_run(Path.cwd(), self.request())
         self.assertEqual((outcome, code, stdout, stderr), ("completed", 7, "out", "err"))
 
     def test_codex_timeout_terminates_process_group_and_returns(self):
@@ -77,9 +77,29 @@ class CodeWorkerProcessTest(unittest.TestCase):
                 return ("out", "err")
         process = Process()
         with patch("agent_hub.execution.code_worker.subprocess.Popen", return_value=process), patch("agent_hub.execution.code_worker.os.killpg") as killpg:
-            outcome, code, stdout, stderr = LocalCodeExecutor(Path.cwd())._codex_run(Path.cwd(), self.request())
+            outcome, code, stdout, stderr = LocalCodeExecutor(Path.cwd(), repository_id="flutter_study")._codex_run(Path.cwd(), self.request())
         self.assertEqual((outcome, code, stdout, stderr), ("timeout", -15, "out", "err"))
         killpg.assert_called_once()
+
+    def test_workspace_member_external_path_dependency_is_linked(self):
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            source = root / "source"
+            worktree = root / "isolated" / "flutter_study"
+            provider = root / "flutterguard"
+            (source / "apps/app").mkdir(parents=True)
+            (worktree / "apps/app").mkdir(parents=True)
+            provider.mkdir()
+            manifest = "dev_dependencies:\n  flutterguard_cli:\n    path: ../../../flutterguard\n"
+            (source / "apps/app/pubspec.yaml").write_text(manifest)
+            (worktree / "apps/app/pubspec.yaml").write_text(manifest)
+            subprocess.run(["git", "init", "-q"], cwd=worktree)
+            subprocess.run(["git", "add", "apps/app/pubspec.yaml"], cwd=worktree)
+            executor = LocalCodeExecutor(source, repository_id="flutter_study")
+            with patch.dict(os.environ, {"AGENT_HUB_PATH_DEPENDENCY_FLUTTERGUARD_CLI": str(provider)}):
+                executor._link_path_dependencies(worktree, worktree.parent)
+            self.assertEqual((worktree / "apps/app/../../../flutterguard").resolve(), provider.resolve())
+            self.assertTrue((worktree / "apps/app/../../../flutterguard").is_symlink())
 
 
 class _Worker(BaseHTTPRequestHandler):

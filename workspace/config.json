@@ -1,19 +1,19 @@
 {
-  "workspace_root": "/Users/forest/code/langGraph",
+  "workspace_root": "../../langGraph",
   "allowed_paths": [
-    "/Users/forest/code/langGraph"
+    "../../langGraph"
   ],
   "excluded_paths": [
-    "/Users/forest/code/langGraph/flutter_study__agent_p7_gcode"
+    "../../langGraph/flutter_study__agent_p7_gcode"
   ],
-  "registry_path": "/Users/forest/code/workspace-bootstrap.json",
-  "registry_storage_path": "/Users/forest/code/agent-hub/workspace/registry.json",
+  "registry_path": "../../workspace-bootstrap.json",
+  "registry_storage_path": "registry.json",
   "runtime": {
     "environment": "LOCAL",
     "runtime_id": "local-development",
     "primary_repository_id": "flutter_study",
     "repositories": {
-      "flutter_study": {"runtime_path": "/Users/forest/code/langGraph/flutter_study", "role": "PRIMARY", "managed": true, "writable": true, "source_type": "LOCAL_PATH"}
+      "flutter_study": {"runtime_path": "../../langGraph/flutter_study", "role": "PRIMARY", "managed": true, "writable": true, "source_type": "LOCAL_PATH"}
     }
   }
 }

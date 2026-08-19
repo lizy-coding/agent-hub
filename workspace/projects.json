@@ -1,0 +1,12 @@
+{
+  "default_project": "flutter-study",
+  "projects": {
+    "flutter-study": {
+      "adapter": "flutter_study",
+      "program_id": "flutter-study-decomposition-program",
+      "refactor_program_id": "flutter-study-refactor-program",
+      "snapshot_namespace": "flutter-study",
+      "workspace_config": "workspace/config.json"
+    }
+  }
+}

@@ -12,8 +12,12 @@ from typing import TypedDict
 from urllib.request import Request, urlopen
 
 from langgraph.graph import END, START, StateGraph
+from agent_hub.projects.decomposition_config import load_decomposition_project
 
-CLUSTER = Path("/Users/forest/code/langGraph")
+_DEFAULT_PROJECT = load_decomposition_project()
+CLUSTER = _DEFAULT_PROJECT.cluster_root
+DEFAULT_PRIMARY_REPOSITORY = _DEFAULT_PROJECT.primary_repository_id
+DEFAULT_PROJECT_ID = _DEFAULT_PROJECT.project_id
 MANAGED_ROOT = Path(__file__).resolve().parents[3] / ".decomposition"
 LOGGER = logging.getLogger(__name__)
 
@@ -42,6 +46,7 @@ RETRYABLE_BLOCKERS = frozenset({
 class State(TypedDict, total=False):
     decomposition_program: dict[str, object]
     cluster_root: str
+    project_context: dict[str, object]
     decision: dict[str, object]
     execute: bool
     worker_endpoint: str
@@ -50,6 +55,9 @@ class State(TypedDict, total=False):
     integration_result: dict[str, object]
     reconcile_only: bool
     proposal_spec: dict[str, object]
+    sync_base: dict[str, object]
+    sync_result: dict[str, object]
+    revalidate_worker: bool
 
 
 def _pubspec(path: Path) -> tuple[str, list[str]]:
@@ -59,22 +67,33 @@ def _pubspec(path: Path) -> tuple[str, list[str]]:
     return (name.group(1) if name else path.parent.name, deps)
 
 
-def _repositories_for(task: dict[str, object]) -> list[str]:
+def _primary_repository(program: dict[str, object] | None = None) -> str:
+    return str((program or {}).get("primary_repository_id") or DEFAULT_PRIMARY_REPOSITORY)
+
+
+def _repositories_for(task: dict[str, object], program: dict[str, object] | None = None) -> list[str]:
+    primary = _primary_repository(program)
     names: list[str] = []
     for unit in [*task.get("source_units", []), *task.get("target_units", [])]:
         text = str(unit)
         if text.startswith(("packages/", "plugins/")):
-            names.append("flutter_study")
-        elif text.startswith("flutter_study/") or text.startswith("apps/"):
-            names.append("flutter_study")
+            names.append(primary)
+        elif text.startswith("apps/"):
+            names.append(primary)
+        elif "/" in text:
+            names.append(text.split("/", 1)[0])
     return sorted(set(names))
 
 
-def _ensure_worktree(repository: str) -> tuple[Path, str]:
-    source, target, branch = CLUSTER / repository, MANAGED_ROOT / repository, f"decomposition/{repository}"
+def _ensure_worktree(repository: str, program: dict[str, object] | None = None) -> tuple[Path, str]:
+    context = program or {}
+    cluster = Path(str(context.get("cluster_root") or CLUSTER)).resolve()
+    project_id = str(context.get("project_id") or DEFAULT_PROJECT_ID)
+    managed_root = MANAGED_ROOT if project_id == DEFAULT_PROJECT_ID else MANAGED_ROOT / project_id
+    source, target, branch = cluster / repository, managed_root / repository, f"decomposition/{repository}"
     if target.is_dir():
         return target, branch
-    MANAGED_ROOT.mkdir(parents=True, exist_ok=True)
+    managed_root.mkdir(parents=True, exist_ok=True)
     exists = bool(subprocess.check_output(["git", "branch", "--list", branch], cwd=source, text=True).strip())
     command = ["git", "worktree", "add"] + ([] if exists else ["-b", branch]) + [str(target), branch if exists else "HEAD"]
     subprocess.run(command, cwd=source, check=True, capture_output=True, text=True)
@@ -162,9 +181,13 @@ def _worker(request: dict[str, object], endpoint: str | None) -> dict[str, objec
         return {"status": "WORKER_DISPATCH_FAILED", "reason": "code_worker_unreachable", "detail": str(error)}
 
 
-def _program(root: Path) -> dict[str, object]:
+def _program(root: Path, project_context: dict[str, object] | None = None) -> dict[str, object]:
+    context = project_context or {}
+    primary_repository = str(context.get("primary_repository_id") or "flutter_study")
+    repository_paths = context.get("repository_paths") if isinstance(context.get("repository_paths"), dict) else {}
+    primary_path = Path(str(repository_paths.get(primary_repository) or root / primary_repository))
     repos = []
-    for directory in (root / "flutter_study",):
+    for directory in (primary_path,):
         pubspec = directory / "pubspec.yaml"
         if pubspec.is_file():
             name, deps = _pubspec(pubspec)
@@ -183,7 +206,7 @@ def _program(root: Path) -> dict[str, object]:
         {**_app_relocation_contract(), "status": "DONE"},
         {"task_id":"establish-package-boundary-contracts","title":"Add per-package ownership contracts, independent test entries, and version pins","source_units":[],"target_units":["packages/gcode_core","packages/file_picker_bridge","packages/flutter_study_learning","packages/flutter_ioc_core"],"depends_on":["relocate-flutter-study-app"],"allowed_operations":[],"allowed_paths_by_repository":{"flutter_study":["packages/gcode_core","packages/file_picker_bridge","packages/flutter_study_learning","packages/flutter_ioc_core"]},"target_creation_allowed":False,"dependency_constraints":["packages/* and plugins/* must not depend on apps/flutter_study","workspace dependency cycles must remain zero"],"execution_instructions":["For each of packages/gcode_core, packages/file_picker_bridge, packages/flutter_study_learning and packages/flutter_ioc_core: create OWNERS.md at the package root declaring the package name, its public contract (boundary: public API intent and what it must not own) and its maintenance owners.","Ensure each package has an independent runnable test entry under packages/<package>/test/ (create test/<package>_test.dart only when the package has no test file).","Ensure each package pubspec.yaml declares an explicit semver version field (do not publish).","Do not modify apps/flutter_study or any existing lib/ source; only add contract/test/version content inside the four package directories.","Do not delete or move any existing file."],"acceptance":["each of the four packages has a boundary contract file (OWNERS.md)","each package has an independent runnable test entry","each package pubspec.yaml declares an explicit version","no apps/flutter_study or lib/ source changes","changed repository receives one integration commit"],"status":"READY","evidence":["workspace declares four package members consumed only by apps/flutter_study","registry lists each package as a development unit"]},
     ]
-    return {"program_id":"flutter-study-decomposition-program","cluster_root":str(root),"repositories":repos,"capabilities":capabilities,"package_candidates":candidates,"target_dependency_graph":{"nodes":[x["package_id"] for x in candidates],"edges":[["apps/flutter_study",x] for x in ["packages/gcode_core","packages/file_picker_bridge","packages/flutter_study_learning","packages/flutter_ioc_core"]],"cycles":[]},"migration_tasks":tasks,"human_decisions":[],"integration_head":None,"execution_mode":"PLAN_ONLY","status":"PLANNING_COMPLETE"}
+    return {"project_id":str(context.get("project_id") or "flutter-study"),"program_id":str(context.get("program_id") or "flutter-study-decomposition-program"),"adapter":str(context.get("adapter") or "flutter_study"),"primary_repository_id":primary_repository,"cluster_root":str(root),"repositories":repos,"capabilities":capabilities,"package_candidates":candidates,"target_dependency_graph":{"nodes":[x["package_id"] for x in candidates],"edges":[["apps/flutter_study",x] for x in ["packages/gcode_core","packages/file_picker_bridge","packages/flutter_study_learning","packages/flutter_ioc_core"]],"cycles":[]},"migration_tasks":tasks,"human_decisions":[],"integration_head":None,"execution_mode":"PLAN_ONLY","status":"PLANNING_COMPLETE"}
 
 
 def _app_relocation_contract() -> dict[str, object]:
@@ -210,10 +233,11 @@ def _select(program: dict[str, object]) -> dict[str, object] | None:
     return next((task for task in program.get("migration_tasks", []) if task.get("status") == "READY" and set(task.get("depends_on", [])).issubset(done)), None)
 
 
-def _mutation_repositories(task: dict[str, object]) -> dict[str, str]:
+def _mutation_repositories(task: dict[str, object], program: dict[str, object] | None = None) -> dict[str, str]:
     """Derive writable repository roles solely from the frozen task contract."""
-    sources = _repositories_for({"source_units": task.get("source_units", []), "target_units": []})
-    targets = ["flutter_study" if str(unit).startswith(("packages/", "plugins/", "apps/flutter_study")) else repository for unit in task.get("target_units", []) for repository in _repositories_for({"source_units": [unit], "target_units": []})]
+    primary = _primary_repository(program)
+    sources = _repositories_for({"source_units": task.get("source_units", []), "target_units": []}, program)
+    targets = [primary if str(unit).startswith(("packages/", "plugins/", "apps/")) else repository for unit in task.get("target_units", []) for repository in _repositories_for({"source_units": [unit], "target_units": []}, program)]
     targets = sorted(set(targets))
     operations = set(task.get("allowed_operations", []))
     roles: dict[str, str] = {}
@@ -239,14 +263,45 @@ def _architecture_guard(task: dict[str, object], worker: dict[str, object], prog
         return {"status": "REJECT", "reason": "merge_task_has_no_target_units"}
     deleted = [path for result in repositories.values() if isinstance(result, dict) for path in result.get("changed_files", [])]
     source_deleted = bool(deleted)
+    primary = _primary_repository(program)
+    if task.get("task_id") == "replace-media-plugin-with-video-player":
+        changed = _worker_change_set(worker, primary)
+        required = {
+            "apps/flutter_study/pubspec.yaml",
+            "apps/flutter_study/lib/modules/platform/online_video_player/module_root.dart",
+            "apps/flutter_study/lib/modules/platform/online_video_player/state/media_kit_player_adapter.dart",
+            "apps/flutter_study/lib/modules/platform/online_video_player/state/video_player_adapter.dart",
+            "apps/flutter_study/test/modules/platform/online_video_player/online_video_player_test.dart",
+        }
+        missing = sorted(required - set(changed))
+        if missing:
+            return {"status": "REJECT", "reason": "backend_replacement_incomplete", "missing_changed_paths": missing, "changed_files": changed}
+        if any(path.startswith(("packages/", "plugins/")) for path in changed):
+            return {"status": "REJECT", "reason": "backend_replacement_crossed_package_boundary", "changed_files": changed}
+        diff = str((worker.get("repositories") or {}).get(primary, {}).get("diff", ""))
+        if "video_player" not in diff or "media_kit_player_adapter.dart" not in diff:
+            return {"status": "REJECT", "reason": "backend_replacement_evidence_missing"}
+        return {"status": "PASS", "guard_kind": "backend_replacement", "capability_owner_before": list(task.get("source_units", [])), "capability_owner_after": list(task.get("target_units", [])), "required_changed_paths": sorted(required), "package_boundary": "PASS", "dependency_rewrite": "PRESENT"}
+    if task.get("task_id") == "rename-main-app-package":
+        changed = _worker_change_set(worker, primary)
+        required = {"apps/flutter_study/pubspec.yaml", ".run/Flutter_Study_macOS.run.xml"}
+        if not required.issubset(set(changed)):
+            return {"status": "REJECT", "reason": "package_rename_incomplete", "missing_changed_paths": sorted(required - set(changed))}
+        if any(path.startswith(("packages/", "plugins/")) for path in changed):
+            return {"status": "REJECT", "reason": "package_rename_crossed_package_boundary", "changed_files": changed}
+        diff = str((worker.get("repositories") or {}).get(primary, {}).get("diff", ""))
+        added = "\n".join(line for line in diff.splitlines() if line.startswith("+") and not line.startswith("+++"))
+        if "name: flutter_study_app" not in added or "package:flutter_study_app/" not in added or "package:main_app/" in added:
+            return {"status": "REJECT", "reason": "package_rename_evidence_missing"}
+        return {"status": "PASS", "guard_kind": "dart_package_rename", "capability_owner_before": ["main_app"], "capability_owner_after": ["flutter_study_app"], "run_configuration": "PRESENT", "package_boundary": "PASS"}
     if task.get("task_id") == "relocate-flutter-study-app":
-        root = _ensure_worktree("flutter_study")[0]
+        root = _ensure_worktree(primary, program)[0]
         target = root / "apps/flutter_study"
         target_pubspec, target_main = target / "pubspec.yaml", target / "lib/main.dart"
         root_pubspec = root / "pubspec.yaml"
         root_manifest = root_pubspec.read_text(encoding="utf-8") if root_pubspec.is_file() else ""
         packages_preserved = all((root / path).is_dir() for path in ("packages/gcode_core", "packages/file_picker_bridge", "packages/flutter_study_learning"))
-        app_changes = _worker_change_set(worker, "flutter_study")
+        app_changes = _worker_change_set(worker, primary)
         # Before integration, the verified target exists only in the isolated
         # Worker diff.  After integration, prove the same facts on disk.
         if not target_pubspec.is_file() or not target_main.is_file():
@@ -272,32 +327,65 @@ def _architecture_guard(task: dict[str, object], worker: dict[str, object], prog
         if unit.startswith("flutter_study/"):
             unit = unit.removeprefix("flutter_study/")
         if unit.startswith("packages/") or unit.startswith("plugins/"):
-            target = _ensure_worktree("flutter_study")[0] / unit
+            target = _ensure_worktree(primary, program)[0] / unit
             required = [target / "pubspec.yaml", target / "lib"]
             if all(path.exists() for path in required):
-                retained.extend(str(path.relative_to(_ensure_worktree("flutter_study")[0])) for path in required)
+                retained.extend(str(path.relative_to(_ensure_worktree(primary, program)[0])) for path in required)
     if source_deleted and not retained:
         return {"status": "REJECT", "reason": "source_deleted_without_target_owner", "source_deleted_paths": deleted}
     if task.get("task_id") == "merge-file-picker-bridge-owners":
-        target = _ensure_worktree("flutter_study")[0] / "packages/file_picker_bridge"
+        target = _ensure_worktree(primary, program)[0] / "packages/file_picker_bridge"
         if not ((target / "pubspec.yaml").is_file() and (target / "lib").is_dir()):
             return {"status": "REJECT", "reason": "workspace_package_owner_missing", "target_package_root": "packages/file_picker_bridge"}
     return {"status": "PASS", "capability_owner_before": list(task.get("source_units", [])), "capability_owner_after": target_units, "source_deleted_paths": deleted, "target_added_or_retained_paths": retained, "package_survival": "PASS", "dependency_direction": "PASS"}
 
 
-def _file_picker_contract_preflight() -> dict[str, object]:
-    target = _ensure_worktree("flutter_study")[0] / "packages/file_picker_bridge"
+def _file_picker_contract_preflight(program: dict[str, object] | None = None) -> dict[str, object]:
+    primary = _primary_repository(program)
+    target = _ensure_worktree(primary, program)[0] / "packages/file_picker_bridge"
     target_ready = (target / "pubspec.yaml").is_file() and (target / "lib").is_dir()
     return {"status": "PASS" if target_ready else "REJECT", "capability_owner": "flutter_study/packages/file_picker_bridge", "target_package_root": "packages/file_picker_bridge", "required_dependency_rewrites": [], "reason": "workspace package owner is present" if target_ready else "workspace package owner cannot be proven"}
 
 
 def _proposal_inventory(program: dict[str, object], spec: dict[str, object]) -> dict[str, object]:
     """Build a frozen task from tracked-file evidence without touching a worktree."""
-    repository = next((item for item in program.get("repositories", []) if item.get("repository_id") == "flutter_study"), None)
-    root = Path(str(repository.get("path"))) if isinstance(repository, dict) else Path(str(program.get("cluster_root", CLUSTER))) / "flutter_study"
+    primary_repository = str(program.get("primary_repository_id") or "flutter_study")
+    repository = next((item for item in program.get("repositories", []) if item.get("repository_id") == primary_repository), None)
+    root = Path(str(repository.get("path"))) if isinstance(repository, dict) else Path(str(program.get("cluster_root", CLUSTER))) / primary_repository
     if not root.is_dir():
         return {"task_id": spec.get("task_id"), "title": spec.get("title"), "status": "BLOCKED_DECISION", "evidence": [], "candidate_paths": [], "allowed_paths_by_repository": {}, "blocked_decisions": ["flutter_study repository is unavailable for read-only discovery"]}
     tracked = subprocess.check_output(["git", "ls-files"], cwd=root, text=True).splitlines()
+    if spec.get("task_id") == "rename-main-app-package":
+        candidates: list[str] = []
+        evidence: list[str] = []
+        for relative in tracked:
+            path = root / relative
+            try:
+                content = path.read_text(encoding="utf-8")
+            except (OSError, UnicodeDecodeError):
+                continue
+            if relative == "apps/flutter_study/pubspec.yaml" and re.search(r"^name:\s*main_app\s*$", content, re.M):
+                candidates.append(relative)
+                evidence.append(f"{relative}: declares name main_app")
+            elif relative.endswith(".dart") and "package:main_app/" in content:
+                candidates.append(relative)
+                evidence.append(f"{relative}: imports package:main_app")
+        run_config = ".run/Flutter_Study_macOS.run.xml"
+        candidates.append(run_config)
+        blocked: list[str] = []
+        if "apps/flutter_study/pubspec.yaml" not in candidates:
+            blocked.append("main_app pubspec declaration not found")
+        if not any(path.endswith(".dart") for path in candidates):
+            blocked.append("package:main_app callsites not found")
+        frozen = sorted(set(candidates))
+        return {
+            "task_id": str(spec.get("task_id", "")), "title": str(spec.get("title", "")), "intent": str(spec.get("intent", "")),
+            "source_units": list(spec.get("source_units", ["apps/flutter_study"])), "target_units": list(spec.get("target_units", ["apps/flutter_study"])),
+            "depends_on": list(spec.get("depends_on", [])), "allowed_operations": list(spec.get("allowed_operations", ["DEPENDENCY_REWRITE", "CREATE"])),
+            "candidate_paths": frozen, "allowed_paths_by_repository": {primary_repository: frozen} if not blocked else {}, "evidence": evidence,
+            "execution_instructions": list(spec.get("execution_instructions", [])), "invariants": list(spec.get("invariants", [])), "acceptance": list(spec.get("acceptance", [])),
+            "blocked_decisions": blocked, "proposal": {"status": "FROZEN" if not blocked else "PENDING_EVIDENCE", "read_only": True}, "status": "READY" if not blocked else "BLOCKED_DECISION",
+        }
     needles = ("media_kit", "media_kit_video", "media_kit_libs_video", "online_video_player")
     candidates: list[str] = []
     evidence: list[str] = []
@@ -311,12 +399,22 @@ def _proposal_inventory(program: dict[str, object], spec: dict[str, object]) -> 
         if matches:
             candidates.append(relative)
             evidence.append(f"{relative}: references {', '.join(matches)}")
+        elif relative.startswith("apps/flutter_study/") and (
+            relative.endswith("Podfile.lock")
+            or "GeneratedPluginRegistrant" in relative
+            or relative.endswith("generated_plugin_registrant.cc")
+            or relative.endswith("generated_plugin_registrant.h")
+            or relative.endswith("generated_plugins.cmake")
+        ):
+            candidates.append(relative)
+            evidence.append(f"{relative}: tracked generated platform plugin configuration")
     # The replacement adapter is an exact, anticipated CREATE target.  No
     # directory prefix is frozen, so ScopeGuard still rejects unrelated files.
     adapter = "apps/flutter_study/lib/modules/platform/online_video_player/state/video_player_adapter.dart"
     if adapter not in candidates:
         candidates.append(adapter)
     candidates = sorted(set(candidates))
+    allowed = [path for path in candidates if not path.startswith(".hermes/")]
     blocked: list[str] = []
     required_groups = {
         "dependency manifest": lambda p: p == "apps/flutter_study/pubspec.yaml",
@@ -337,7 +435,7 @@ def _proposal_inventory(program: dict[str, object], spec: dict[str, object]) -> 
         "depends_on": list(spec.get("depends_on", [])),
         "allowed_operations": list(spec.get("allowed_operations", ["DEPENDENCY_REWRITE", "API_BREAK", "CREATE", "DELETE"])),
         "candidate_paths": candidates,
-        "allowed_paths_by_repository": {"flutter_study": candidates} if candidates and not blocked else {},
+        "allowed_paths_by_repository": {"flutter_study": allowed} if allowed and not blocked else {},
         "evidence": evidence,
         "discovery": list(spec.get("required_discovery", [])),
         "invariants": list(spec.get("invariants", [])),
@@ -361,13 +459,14 @@ def build_decomposition_graph():
     def reconcile(state: State):
         program = state.get("decomposition_program")
         if not isinstance(program, dict):
+            context = state.get("project_context") if isinstance(state.get("project_context"), dict) else {}
             # Only decomposition-plan may initialise a Program.  An execute
             # or recovery Run without checkpoint state is not allowed to
             # silently invent a replacement plan.
             if state.get("execute"):
-                return {"decomposition_program": {"program_id": "flutter-study-decomposition-program", "status": "STATE_NOT_LOADED", "migration_tasks": [], "execution_blocker": {"status": "STATE_NOT_LOADED", "reason": "No persisted DecompositionProgram was supplied."}}}
+                return {"decomposition_program": {"project_id": context.get("project_id", "flutter-study"), "program_id": context.get("program_id", "flutter-study-decomposition-program"), "status": "STATE_NOT_LOADED", "migration_tasks": [], "execution_blocker": {"status": "STATE_NOT_LOADED", "reason": "No persisted DecompositionProgram was supplied."}}}
             root = Path(state.get("cluster_root") or CLUSTER)
-            return {"decomposition_program": _program(root)}
+            return {"decomposition_program": _program(root, context)}
         program = dict(program)
         # A retry is deliberately task-scoped: it can only release a terminal
         # no-effect/dispatch outcome that has no integration result to apply.
@@ -390,13 +489,21 @@ def build_decomposition_graph():
             blocker = program.get("execution_blocker")
             task = next((item for item in program.get("migration_tasks", []) if item.get("task_id") == task_id and item.get("status") == "BLOCKED_DECISION"), None)
             if isinstance(blocker, dict) and isinstance(task, dict) and blocker.get("task_id") == task_id and blocker.get("status") in RETRYABLE_BLOCKERS:
+                worker = state.get("worker_result")
+                if blocker.get("status") == "source_deleted_without_target_owner" and isinstance(worker, dict) and worker.get("task_id") == task_id and worker.get("status") == "SUCCESS":
+                    task["status"] = "RUNNING"
+                    program["status"] = "RUNNING"
+                    program["current_migration_task"] = task_id
+                    program.pop("execution_blocker", None)
+                    program.setdefault("human_decisions", []).append({"decision_id": decision_id, "choice": "retry", "task_id": task_id, "reason": str(decision.get("reason", "")), "status": "REVIEW_RETRY_APPLIED"})
+                    return {"decomposition_program": program, "decision": {}, "revalidate_worker": True}
                 task.pop("worker_execution", None)
                 task["status"] = "READY"
                 program["status"] = "PLANNING_COMPLETE"
                 program["current_migration_task"] = task_id
                 program.pop("execution_blocker", None)
                 program.setdefault("human_decisions", []).append({"decision_id": decision_id, "choice": "retry", "task_id": task_id, "reason": str(decision.get("reason", "")), "status": "APPLIED"})
-                return {"decomposition_program": program, "worker_result": {}, "integration_result": {"status": "RETRY_AUTHORIZED", "task_id": task_id}, "decision": {}}
+                return {"decomposition_program": program, "worker_result": {}, "migration_request": {}, "integration_result": {"status": "RETRY_AUTHORIZED", "task_id": task_id}, "decision": {}}
         # Older checkpoints predate explicit retry metadata.  Normalize only
         # the known, safely retryable terminal outcomes; no task state changes.
         blocker = program.get("execution_blocker")
@@ -409,12 +516,12 @@ def build_decomposition_graph():
         # is dispatched.  This is a contract recovery, not a re-plan.
         file_picker = next((item for item in program.get("migration_tasks", []) if item.get("task_id") == "merge-file-picker-bridge-owners" and item.get("status") == "READY"), None)
         if file_picker and file_picker.get("target_units") == ["plugins/file_picker_bridge"]:
-            recovered = _program(Path(str(program.get("cluster_root") or CLUSTER)))
+            recovered = _program(Path(str(program.get("cluster_root") or CLUSTER)), {key: program.get(key) for key in ("project_id", "program_id", "adapter", "primary_repository_id")})
             correct = next(item for item in recovered["migration_tasks"] if item.get("task_id") == "merge-file-picker-bridge-owners")
             file_picker.clear(); file_picker.update(correct)
             file_picker["contract_recovery"] = {"status": "FROZEN_CONTRACT_CORRECTED", "reason": "plugins/file_picker_bridge did not exist; the workspace owner is packages/file_picker_bridge."}
         if file_picker:
-            file_picker["architecture_preflight"] = _file_picker_contract_preflight()
+            file_picker["architecture_preflight"] = _file_picker_contract_preflight(program)
             if file_picker["architecture_preflight"]["status"] != "PASS":
                 program.update({"status": "PROGRAM_BLOCKED", "current_migration_task": file_picker["task_id"], "execution_blocker": {"status": "CONTRACT_PREFLIGHT_FAILED", "task_id": file_picker["task_id"], "detail": file_picker["architecture_preflight"]}})
                 return {"decomposition_program": program}
@@ -483,7 +590,7 @@ def build_decomposition_graph():
             unknown = []
             for managed in program.get("managed_worktrees", []):
                 repository = str(managed.get("repository", ""))
-                if repository not in _repositories_for(candidate):
+                if repository not in _repositories_for(candidate, program):
                     continue
                 worktree = Path(str(managed.get("worktree", "")))
                 if not worktree.is_dir():
@@ -524,11 +631,11 @@ def build_decomposition_graph():
                 if value
             }
             persisted_result = isinstance(worker, dict) and worker.get("task_id") == task_id
-            repositories = _repositories_for(task)
+            repositories = _repositories_for(task, program)
             dirty = [
-                {"repository": repository, "changed_files": _changes(_ensure_worktree(repository)[0])}
+                {"repository": repository, "changed_files": _changes(_ensure_worktree(repository, program)[0])}
                 for repository in repositories
-                if _changes(_ensure_worktree(repository)[0])
+                if _changes(_ensure_worktree(repository, program)[0])
             ]
             if not evidence and not persisted_result and not dirty:
                 task.pop("worker_execution", None)
@@ -562,8 +669,8 @@ def build_decomposition_graph():
         architecture = (worker.get("validation") or {}).get("architecture_guard", {}) if isinstance(worker, dict) and isinstance(worker.get("validation"), dict) else {}
         resumable = isinstance(worker, dict) and worker.get("status") == "SUCCESS" and worker.get("review") == "APPROVED" and worker.get("architecture_verdict") == "APPROVED" and architecture.get("status") == "PASS"
         if recovered and resumable:
-            repositories = _repositories_for(recovered)
-            matches = all(_changes(_ensure_worktree(repository)[0]) == _worker_change_set(worker, repository) for repository in repositories)
+            repositories = _repositories_for(recovered, program)
+            matches = all(_changes(_ensure_worktree(repository, program)[0]) == _worker_change_set(worker, repository) for repository in repositories)
             if matches:
                 recovered["status"] = "RUNNING"
                 program.update({"status": "RUNNING", "current_migration_task": recovered["task_id"]})
@@ -584,8 +691,8 @@ def build_decomposition_graph():
             evidence = task.get("worker_execution")
             if isinstance(evidence, dict) and evidence.get("worker_execution_id"):
                 continue
-            repositories = _repositories_for(task)
-            dirty = [{"repository": repo, "changed_files": _changes(_ensure_worktree(repo)[0])} for repo in repositories if _changes(_ensure_worktree(repo)[0])]
+            repositories = _repositories_for(task, program)
+            dirty = [{"repository": repo, "changed_files": _changes(_ensure_worktree(repo, program)[0])} for repo in repositories if _changes(_ensure_worktree(repo, program)[0])]
             if dirty:
                 task["status"] = "BLOCKED_DECISION"
                 program.update({"status": "PROGRAM_BLOCKED", "current_migration_task": task.get("task_id"), "execution_blocker": {"status": "STALE_RUNNING_PARTIAL_OUTPUT", "task_id": task.get("task_id"), "repositories": dirty, "reason": "A stale RUNNING task has unowned managed-worktree changes; it was not cleaned automatically."}})
@@ -623,8 +730,39 @@ def build_decomposition_graph():
                 program["current_migration_task"] = task_id
             program["last_proposal"] = {"task_id": task_id, "status": frozen.get("status"), "idempotent": False}
         else:
+            proposal = existing.get("proposal")
+            if isinstance(proposal, dict) and proposal.get("read_only") and existing.get("status") in {"READY", "BLOCKED_DECISION"} and not existing.get("worker_execution"):
+                frozen = _proposal_inventory(program, spec)
+                tasks[tasks.index(existing)] = frozen
+                program["migration_tasks"] = tasks
+                existing = frozen
             program["last_proposal"] = {"task_id": task_id, "status": existing.get("status"), "idempotent": True}
-        return {"decomposition_program": program, "proposal_spec": {}}
+        return {"decomposition_program": program, "proposal_spec": {}, "worker_result": {}, "migration_request": {}, "integration_result": {}}
+
+    def sync_base(state: State):
+        program = dict(state.get("decomposition_program") or {})
+        request = state.get("sync_base")
+        if not isinstance(request, dict):
+            return {"decomposition_program": program}
+        repository = str(request.get("repository") or _primary_repository(program))
+        target_revision = str(request.get("target_revision") or "")
+        worktree, branch = _ensure_worktree(repository, program)
+        current = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=worktree, text=True).strip()
+        changed = _changes(worktree)
+        if changed:
+            result = {"status": "SYNC_DIRTY", "repository": repository, "current_revision": current, "target_revision": target_revision, "changed_files": changed}
+        elif not target_revision or subprocess.run(["git", "cat-file", "-e", f"{target_revision}^{{commit}}"], cwd=worktree, capture_output=True).returncode:
+            result = {"status": "SYNC_TARGET_NOT_FOUND", "repository": repository, "current_revision": current, "target_revision": target_revision}
+        elif subprocess.run(["git", "merge-base", "--is-ancestor", current, target_revision], cwd=worktree).returncode:
+            result = {"status": "SYNC_DIVERGED", "repository": repository, "current_revision": current, "target_revision": target_revision}
+        else:
+            advanced = subprocess.run(["git", "merge", "--ff-only", target_revision], cwd=worktree, text=True, capture_output=True)
+            new_head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=worktree, text=True).strip()
+            result = {"status": "SYNCED" if advanced.returncode == 0 and new_head == target_revision else "SYNC_FAILED", "repository": repository, "branch": branch, "previous_revision": current, "target_revision": target_revision, "head": new_head, "stderr": advanced.stderr[-1000:]}
+            if result["status"] == "SYNCED":
+                program["base_sync"] = result
+                program["managed_worktrees"] = [{"repository": repository, "worktree": str(worktree), "branch": branch, "head": new_head}]
+        return {"decomposition_program": program, "sync_base": {}, "sync_result": result, "worker_result": {}, "migration_request": {}, "integration_result": {}}
 
     def freeze(state: State):
         program = state["decomposition_program"]
@@ -644,10 +782,10 @@ def build_decomposition_graph():
         if task is None:
             program["status"] = "PROGRAM_COMPLETED"
             return {"decomposition_program": program}
-        repositories = _repositories_for(task)
+        repositories = _repositories_for(task, program)
         managed, dirty = [], []
         for repository in repositories:
-            worktree, branch = _ensure_worktree(repository)
+            worktree, branch = _ensure_worktree(repository, program)
             changed = _changes(worktree)
             managed.append({"repository": repository, "worktree": str(worktree), "branch": branch, "head": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=worktree, text=True).strip()})
             if changed:
@@ -662,7 +800,7 @@ def build_decomposition_graph():
             return {"decomposition_program": program}
         task["status"] = "DISPATCHING"
         program.update({"status": "DISPATCHING", "current_migration_task": task["task_id"]})
-        roles = _mutation_repositories(task)
+        roles = _mutation_repositories(task, program)
         if set(roles) != set(repositories):
             program.update({"status": "PROGRAM_BLOCKED", "current_migration_task": task["task_id"], "execution_blocker": {"status": "WORKER_SCOPE_CONFIGURATION_ERROR", "task_id": task["task_id"], "reason": "Frozen mutation repositories do not match the frozen workspace repositories."}})
             return {"decomposition_program": program}
@@ -709,7 +847,7 @@ def build_decomposition_graph():
             guard = {"status": "REJECT", "reason": "MIGRATION_NO_EFFECT", "detail": "MigrationTask produced no repository changes; a move/create contract cannot be inferred or approved."}
         else:
             guard = _architecture_guard(task, worker, program) if isinstance(task, dict) and worker.get("status") == "SUCCESS" else {"status": "REJECT", "reason": "worker_not_successful"}
-        return {"worker_result": {**worker, "validation": {"scope_guard": "PASS" if worker.get("scope_guard") == "PASS" else "FAILED", "architecture_guard": guard}}}
+        return {"worker_result": {**worker, "validation": {"scope_guard": "PASS" if worker.get("scope_guard") == "PASS" else "FAILED", "architecture_guard": guard}}, "revalidate_worker": False}
 
     def review(state: State):
         worker = state.get("worker_result") or {}
@@ -730,7 +868,7 @@ def build_decomposition_graph():
         commits: dict[str, str] = {}
         try:
             for repository, result in worker.get("repositories", {}).items():
-                worktree, _ = _ensure_worktree(repository)
+                worktree, _ = _ensure_worktree(repository, program)
                 allowed, diff = _allowed(task, repository), str(result.get("diff", ""))
                 worker_changed = _worker_change_set(worker, repository)
                 changed = _changes(worktree)
@@ -762,6 +900,7 @@ def build_decomposition_graph():
 
     graph.add_node("reconcile", reconcile)
     graph.add_node("propose_task", propose_task)
+    graph.add_node("sync_base", sync_base)
     graph.add_node("freeze", freeze)
     graph.add_node("dispatch", dispatch)
     graph.add_node("receive", receive)
@@ -769,7 +908,24 @@ def build_decomposition_graph():
     graph.add_node("review", review)
     graph.add_node("integrate", integrate)
     graph.add_edge(START, "reconcile")
-    graph.add_conditional_edges("reconcile", lambda state: END if state.get("reconcile_only") else "propose_task" if isinstance(state.get("proposal_spec"), dict) and state.get("proposal_spec") else "integrate" if isinstance(state.get("decomposition_program"), dict) and state["decomposition_program"].get("current_migration_task") and isinstance(state.get("worker_result"), dict) and state["worker_result"].get("status") == "SUCCESS" else "freeze", {END: END, "propose_task": "propose_task", "integrate": "integrate", "freeze": "freeze"})
+    def route_after_reconcile(state: State):
+        if state.get("reconcile_only"):
+            return END
+        if isinstance(state.get("sync_base"), dict) and state.get("sync_base"):
+            return "sync_base"
+        if isinstance(state.get("proposal_spec"), dict) and state.get("proposal_spec"):
+            return "propose_task"
+        if state.get("revalidate_worker"):
+            return "validate"
+        program = state.get("decomposition_program")
+        worker = state.get("worker_result")
+        current = program.get("current_migration_task") if isinstance(program, dict) else None
+        if current and isinstance(worker, dict) and worker.get("status") == "SUCCESS" and worker.get("task_id") == current:
+            return "integrate"
+        return "freeze"
+
+    graph.add_conditional_edges("reconcile", route_after_reconcile, {END: END, "sync_base": "sync_base", "propose_task": "propose_task", "validate": "validate", "integrate": "integrate", "freeze": "freeze"})
+    graph.add_edge("sync_base", END)
     graph.add_edge("propose_task", END)
     graph.add_conditional_edges("freeze", lambda state: "dispatch" if state.get("migration_request") else END, {"dispatch": "dispatch", END: END})
     graph.add_edge("dispatch", "receive")

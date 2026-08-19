@@ -4,6 +4,26 @@ from agent_hub.gateway.decomposition import _needs_app_guard_reconciliation, _ne
 from agent_hub.gateway.decomposition_state import load as load_snapshot, save as save_snapshot, validate as validate_snapshot
 from agent_hub.graphs.decomposition import _allowed, _app_relocation_contract, _classify_managed_dirty, _mutation_repositories, _proposal_inventory, _repositories_for, _restore_agent_owned_dirty, _stage_validated_changes, build_decomposition_graph
 class DecompositionTest(unittest.TestCase):
+ def test_package_rename_inventory_freezes_pubspec_imports_and_run_config(self):
+  import tempfile
+  from pathlib import Path
+  with tempfile.TemporaryDirectory() as raw:
+   root=Path(raw); (root/'apps/flutter_study/lib').mkdir(parents=True); (root/'apps/flutter_study/test').mkdir(parents=True)
+   files={'apps/flutter_study/pubspec.yaml':'name: main_app\n','apps/flutter_study/lib/main.dart':"import 'package:main_app/app.dart';\n",'apps/flutter_study/test/app_test.dart':"import 'package:main_app/app.dart';\n"}
+   for name,content in files.items(): (root/name).write_text(content)
+   with patch('agent_hub.graphs.decomposition.subprocess.check_output',return_value='\n'.join(files)):
+    task=_proposal_inventory({'primary_repository_id':'flutter_study','repositories':[{'repository_id':'flutter_study','path':str(root)}]},{'task_id':'rename-main-app-package','title':'Rename'})
+  self.assertEqual(task['status'],'READY'); self.assertIn('.run/Flutter_Study_macOS.run.xml',task['allowed_paths_by_repository']['flutter_study']); self.assertEqual(len(task['evidence']),3)
+ def test_media_backend_replacement_guard_accepts_scoped_worker_diff(self):
+  from agent_hub.graphs.decomposition import _architecture_guard
+  paths=['apps/flutter_study/pubspec.yaml','apps/flutter_study/lib/modules/platform/online_video_player/module_root.dart','apps/flutter_study/lib/modules/platform/online_video_player/state/media_kit_player_adapter.dart','apps/flutter_study/lib/modules/platform/online_video_player/state/video_player_adapter.dart','apps/flutter_study/test/modules/platform/online_video_player/online_video_player_test.dart']
+  worker={'repositories':{'flutter_study':{'changed_files':paths,'diff':'video_player media_kit_player_adapter.dart'}}}
+  guard=_architecture_guard({'task_id':'replace-media-plugin-with-video-player','source_units':['media'],'target_units':['media']},worker,{'primary_repository_id':'flutter_study'})
+  self.assertEqual(guard['status'],'PASS')
+ def test_stale_success_from_other_task_is_not_integrated(self):
+  result=build_decomposition_graph().invoke({'decomposition_program':{'status':'PLANNING_COMPLETE','current_migration_task':'media','migration_tasks':[{'task_id':'media','status':'READY'}]},'worker_result':{'task_id':'old-task','status':'SUCCESS'}})
+  self.assertNotIn('integration_result',result)
+  self.assertEqual(result['decomposition_program']['migration_tasks'][0]['status'],'READY')
  def test_proposal_inventory_freezes_exact_evidence_backed_paths(self):
   import tempfile
   from pathlib import Path
@@ -21,7 +41,7 @@ class DecompositionTest(unittest.TestCase):
    with patch('agent_hub.graphs.decomposition.subprocess.check_output',return_value='\n'.join(files)):
     task=_proposal_inventory({'repositories':[{'repository_id':'flutter_study','path':str(root)}]}, {'task_id':'media','title':'Media'})
   self.assertEqual(task['status'],'READY')
-  self.assertEqual(task['candidate_paths'],task['allowed_paths_by_repository']['flutter_study'])
+  self.assertTrue(set(task['allowed_paths_by_repository']['flutter_study']).issubset(task['candidate_paths']))
   self.assertTrue(all(not path.endswith('/') for path in task['candidate_paths']))
   self.assertTrue(task['evidence'])
 
@@ -87,7 +107,7 @@ class DecompositionTest(unittest.TestCase):
   resolve.return_value=("decomposition-thread",None)
   output=[]
   self.assertEqual(run("http://server","decomposition-thread",False,output.append),3)
-  resolve.assert_called_once_with("http://server","decomposition-thread")
+  self.assertEqual(resolve.call_args.args[:2],("http://server","decomposition-thread"))
   self.assertIn("decomposition-thread",output[0])
  @patch("agent_hub.gateway.decomposition._submit")
  @patch("agent_hub.gateway.decomposition._reconcile_stale_dispatching", side_effect=lambda server, thread_id, state: state)
@@ -99,7 +119,9 @@ class DecompositionTest(unittest.TestCase):
   state.return_value={"values":{"decomposition_program":{"program_id":"flutter-study-decomposition-program"}}}
   output=[]
   self.assertEqual(run("http://server","decomposition-thread",True,output.append),0)
-  submit.assert_called_once_with("http://server","decomposition-thread",{"execute":True,"worker_endpoint":"http://127.0.0.1:8766/execute","reconcile_only":False})
+  payload=submit.call_args.args[2]
+  self.assertTrue(payload["execute"]); self.assertEqual(payload["worker_endpoint"],"http://127.0.0.1:8766/execute")
+  self.assertEqual(payload["project_context"]["project_id"],"flutter-study")
   self.assertIn("Mode: EXECUTE",output[0])
   def test_package_task_maps_only_to_flutter_study(self):
    self.assertEqual(_repositories_for({"source_units":["flutter_study/packages/gcode_core"],"target_units":["packages/gcode_core"]}),["flutter_study"])
@@ -212,7 +234,7 @@ class DecompositionTest(unittest.TestCase):
  @patch("agent_hub.graphs.decomposition._worker")
  def test_dispatch_evidence_precedes_running(self, worker, changes, ensure):
   from pathlib import Path
-  ensure.side_effect=lambda repo:(Path("/tmp") / repo,"decomposition/"+repo)
+  ensure.side_effect=lambda repo,*_:(Path("/tmp") / repo,"decomposition/"+repo)
   with patch("agent_hub.graphs.decomposition.subprocess.check_output",return_value="base\n"):
    worker.return_value={"status":"WORKER_DISPATCH_FAILED","reason":"unreachable"}
    program=build_decomposition_graph().invoke({"cluster_root":"/tmp","execute":True,"decomposition_program":{"migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core"],"target_units":["packages/gcode_core"],"depends_on":[],"allowed_operations":[],"status":"READY"}]}})["decomposition_program"]
@@ -224,7 +246,7 @@ class DecompositionTest(unittest.TestCase):
  @patch("agent_hub.graphs.decomposition._worker")
  def test_zero_change_success_is_not_marked_done(self, worker, architecture_guard, changes, ensure):
   from pathlib import Path
-  ensure.side_effect=lambda repo:(Path("/tmp") / repo,"decomposition/"+repo)
+  ensure.side_effect=lambda repo,*_:(Path("/tmp") / repo,"decomposition/"+repo)
   worker.return_value={"status":"SUCCESS","scope_guard":"PASS","worker_execution_id":"execution-1","worker_workspace":"/tmp/agent-hub-worker-1","dispatched_at":"now","repositories":{}}
   with patch("agent_hub.graphs.decomposition.subprocess.check_output",return_value="base\n"):
    program=build_decomposition_graph().invoke({"cluster_root":"/tmp","execute":True,"decomposition_program":{"migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core"],"target_units":["packages/gcode_core"],"depends_on":[],"allowed_operations":[],"status":"READY"}]}})["decomposition_program"]
@@ -235,14 +257,14 @@ class DecompositionTest(unittest.TestCase):
  @patch("agent_hub.graphs.decomposition._changes",return_value=[])
  def test_stale_running_without_evidence_returns_to_ready(self, changes, ensure):
   from pathlib import Path
-  ensure.side_effect=lambda repo:(Path("/tmp") / repo,"decomposition/"+repo)
+  ensure.side_effect=lambda repo,*_:(Path("/tmp") / repo,"decomposition/"+repo)
   program=build_decomposition_graph().invoke({"decomposition_program":{"status":"RUNNING","current_migration_task":"merge-gcode-core-owners","migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core"],"target_units":["packages/gcode_core"],"status":"RUNNING"}]}})["decomposition_program"]
   self.assertEqual(program["migration_tasks"][0]["status"],"READY")
  @patch("agent_hub.graphs.decomposition._ensure_worktree")
  @patch("agent_hub.graphs.decomposition._changes",return_value=[])
  def test_stale_dispatching_without_evidence_returns_to_ready(self, changes, ensure):
   from pathlib import Path
-  ensure.side_effect=lambda repo:(Path("/tmp") / repo,"decomposition/"+repo)
+  ensure.side_effect=lambda repo,*_:(Path("/tmp") / repo,"decomposition/"+repo)
   program=build_decomposition_graph().invoke({"reconcile_only":True,"decomposition_program":{"status":"DISPATCHING","current_migration_task":"merge-gcode-core-owners","migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core"],"target_units":["packages/gcode_core"],"status":"DISPATCHING"}]}})["decomposition_program"]
   self.assertEqual(program["migration_tasks"][0]["status"],"READY")
   self.assertEqual(program["status"],"PLANNING_COMPLETE")
@@ -250,7 +272,7 @@ class DecompositionTest(unittest.TestCase):
  @patch("agent_hub.graphs.decomposition._changes",return_value=[])
  def test_dispatching_with_execution_evidence_is_blocked(self, changes, ensure):
   from pathlib import Path
-  ensure.side_effect=lambda repo:(Path("/tmp") / repo,"decomposition/"+repo)
+  ensure.side_effect=lambda repo,*_:(Path("/tmp") / repo,"decomposition/"+repo)
   program=build_decomposition_graph().invoke({"reconcile_only":True,"decomposition_program":{"status":"DISPATCHING","current_migration_task":"merge-gcode-core-owners","migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core"],"target_units":["packages/gcode_core"],"status":"DISPATCHING","worker_execution":{"worker_execution_id":"live"}}]}})["decomposition_program"]
   self.assertEqual(program["migration_tasks"][0]["status"],"BLOCKED_DECISION")
   self.assertEqual(program["execution_blocker"]["status"],"STALE_DISPATCHING_CONFLICT")
@@ -258,7 +280,7 @@ class DecompositionTest(unittest.TestCase):
  @patch("agent_hub.graphs.decomposition._changes",return_value=[])
  def test_dispatching_with_persisted_worker_result_is_not_returned_to_ready(self, changes, ensure):
   from pathlib import Path
-  ensure.side_effect=lambda repo:(Path("/tmp") / repo,"decomposition/"+repo)
+  ensure.side_effect=lambda repo,*_:(Path("/tmp") / repo,"decomposition/"+repo)
   program=build_decomposition_graph().invoke({"reconcile_only":True,"worker_result":{"task_id":"merge-gcode-core-owners","status":"CODEX_EXECUTION_FAILED"},"decomposition_program":{"status":"DISPATCHING","current_migration_task":"merge-gcode-core-owners","migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core"],"target_units":["packages/gcode_core"],"status":"DISPATCHING"}]}})["decomposition_program"]
   self.assertEqual(program["migration_tasks"][0]["status"],"BLOCKED_DECISION")
   self.assertEqual(program["execution_blocker"]["status"],"STALE_DISPATCHING_CONFLICT")
@@ -266,7 +288,7 @@ class DecompositionTest(unittest.TestCase):
  @patch("agent_hub.graphs.decomposition._changes",return_value=["lib/partial.dart"])
  def test_dispatching_with_unknown_dirty_is_blocked(self, changes, ensure):
   from pathlib import Path
-  ensure.side_effect=lambda repo:(Path("/tmp") / repo,"decomposition/"+repo)
+  ensure.side_effect=lambda repo,*_:(Path("/tmp") / repo,"decomposition/"+repo)
   program=build_decomposition_graph().invoke({"reconcile_only":True,"decomposition_program":{"status":"DISPATCHING","current_migration_task":"merge-gcode-core-owners","migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core"],"target_units":["packages/gcode_core"],"status":"DISPATCHING"}]}})["decomposition_program"]
   self.assertEqual(program["execution_blocker"]["status"],"STALE_DISPATCHING_CONFLICT")
  @patch("agent_hub.graphs.decomposition._ensure_worktree")
@@ -274,7 +296,7 @@ class DecompositionTest(unittest.TestCase):
  @patch("agent_hub.graphs.decomposition._worker",side_effect=RuntimeError("bridge boom"))
  def test_dispatch_bridge_exception_becomes_terminal_blocker(self, worker, changes, ensure):
   from pathlib import Path
-  ensure.side_effect=lambda repo:(Path("/tmp") / repo,"decomposition/"+repo)
+  ensure.side_effect=lambda repo,*_:(Path("/tmp") / repo,"decomposition/"+repo)
   with patch("agent_hub.graphs.decomposition.subprocess.check_output",return_value="base\n"):
    program=build_decomposition_graph().invoke({"cluster_root":"/tmp","execute":True,"worker_endpoint":"http://worker/execute","decomposition_program":{"migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_study/packages/gcode_core"],"target_units":["packages/gcode_core"],"depends_on":[],"allowed_operations":[],"status":"READY"}]}})["decomposition_program"]
   self.assertEqual(program["migration_tasks"][0]["status"],"BLOCKED_DECISION")

@@ -1,6 +1,7 @@
 """Evidence-driven, bounded Context Resolver built on the Registry public API."""
 
 import re
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -28,13 +29,30 @@ def terms(requirement: str) -> list[str]:
 
 
 class RepositorySearcher:
-    def __init__(self, config: WorkspaceConfig): self.config = config
+    def __init__(self, config: WorkspaceConfig):
+        self.config = config
+        self.repositories = {repo.repo_id: repo for repo in registry_api.list_repositories(config)}
+        self.units_by_repo: dict[str, list[DevelopmentUnit]] = {}
+        for unit in registry_api.list_development_units(config):
+            self.units_by_repo.setdefault(unit.repo_id, []).append(unit)
+
+    def _source_files(self, base: Path):
+        for current, directories, files in os.walk(base):
+            current_path = Path(current)
+            directories[:] = [
+                name for name in directories
+                if name not in EXCLUDED and not (current_path / name).is_symlink()
+            ]
+            for name in files:
+                path = current_path / name
+                if path.suffix in SOURCE_SUFFIXES and not path.is_symlink():
+                    yield path
     def _owns_path(self, unit: DevelopmentUnit, path: Path) -> bool:
         """Keep parent repository scans from attributing nested units to itself."""
-        repo = registry_api.get_repository(self.config, unit.repo_id)
+        repo = self.repositories.get(unit.repo_id)
         if not repo: return False
         base = (repo.path / unit.relative_path).resolve()
-        for other in registry_api.list_development_units(self.config):
+        for other in self.units_by_repo.get(unit.repo_id, []):
             if other.repo_id != unit.repo_id or other.unit_id == unit.unit_id or other.relative_path == ".":
                 continue
             nested = (repo.path / other.relative_path).resolve()
@@ -46,12 +64,12 @@ class RepositorySearcher:
     def search_callsites(self, unit: DevelopmentUnit, term_list: list[str], max_results: int):
         return self._search(unit, term_list, max_results, "callsite")
     def _search(self, unit, term_list, max_results, kind):
-        repo = registry_api.get_repository(self.config, unit.repo_id)
+        repo = self.repositories.get(unit.repo_id)
         if not repo: return []
         base = (repo.path / unit.relative_path).resolve()
         matches = []
-        for path in base.rglob("*"):
-            if not path.is_file() or path.is_symlink() or any(part in EXCLUDED for part in path.parts) or not is_allowed_business_path(path, self.config) or not self._owns_path(unit, path): continue
+        for path in self._source_files(base):
+            if not is_allowed_business_path(path, self.config) or not self._owns_path(unit, path): continue
             try: lines = path.read_text(encoding="utf-8").splitlines()
             except (OSError, UnicodeDecodeError): continue
             for line_number, line in enumerate(lines, 1):
@@ -68,12 +86,12 @@ class RepositorySearcher:
         return sorted(matches, key=lambda item: (item[0].suffix not in SOURCE_SUFFIXES, str(item[0]), item[1]))[:max_results]
     def semantic_anchors(self, unit: DevelopmentUnit, max_results: int, preferred_terms: list[str]):
         """Return bounded source anchors independent of a requirement's wording."""
-        repo=registry_api.get_repository(self.config,unit.repo_id)
+        repo=self.repositories.get(unit.repo_id)
         if not repo: return []
         patterns=(r'abstract class ',r'implements ',r'class \w+Controller',r'GoRouter\s*\(',r'MethodChannel',r'class \w*(Parser|Model)',r'(StatelessWidget|StatefulWidget)')
         found=[]
-        for path in (repo.path/unit.relative_path).rglob('*.dart'):
-            if path.is_symlink() or any(part in EXCLUDED for part in path.parts) or not is_allowed_business_path(path,self.config) or not self._owns_path(unit,path): continue
+        for path in self._source_files(repo.path/unit.relative_path):
+            if path.suffix != '.dart' or not is_allowed_business_path(path,self.config) or not self._owns_path(unit,path): continue
             try: text=path.read_text(encoding='utf-8')
             except (OSError,UnicodeDecodeError): continue
             for number,line in enumerate(text.splitlines(),1):

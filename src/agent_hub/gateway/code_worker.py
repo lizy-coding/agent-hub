@@ -43,7 +43,8 @@ class CodeWorkerHandler(BaseHTTPRequestHandler):
 
 def run() -> None:
     repository = Path(os.environ["AGENT_HUB_PRIMARY_REPOSITORY_PATH"])
-    CodeWorkerHandler.executor = LocalCodeExecutor(repository)
+    repository_id = os.environ.get("AGENT_HUB_PRIMARY_REPOSITORY", repository.name)
+    CodeWorkerHandler.executor = LocalCodeExecutor(repository, repository_id=repository_id)
     ThreadingHTTPServer((os.environ.get("AGENT_HUB_CODE_WORKER_HOST", "127.0.0.1"), int(os.environ.get("AGENT_HUB_CODE_WORKER_PORT", "8787"))), CodeWorkerHandler).serve_forever()
 
 

@@ -32,6 +32,7 @@ class DevelopmentState(TypedDict, total=False):
     result: dict[str, object]
     decision: dict[str, object]
     worker_endpoint: str
+    retry_integration: bool
 
 
 def _git(root: Path, *args: str) -> str:
@@ -86,16 +87,30 @@ def _rules_for(path: Path, root: Path) -> list[str]:
     return sorted(set(rules))
 
 
+def _app_root(root: Path) -> Path:
+    relocated = root / "apps" / "flutter_study"
+    return relocated if (relocated / "pubspec.yaml").is_file() else root
+
+
+def _relative(root: Path, path: Path) -> str:
+    return path.relative_to(root).as_posix()
+
+
+def _program_id(repository_id: str) -> str:
+    return f"{repository_id.replace('_', '-')}-refactor-program"
+
+
 def _router_task(root: Path, repository_id: str, status: str = "READY") -> dict[str, object]:
-    app, router = root / "lib/app/app.dart", root / "lib/app/router/app_router.dart"
-    evidence = ["lib/app/app.dart:8", "lib/app/router/app_router.dart:8", "lib/app/router/app_router.dart:8"]
+    application = _app_root(root)
+    app, router = application / "lib/app/app.dart", application / "lib/app/router/app_router.dart"
+    evidence = [f"{_relative(root, app)}:8", f"{_relative(root, router)}:8", f"{_relative(root, router)}:8"]
     if app.is_file() and router.is_file():
         evidence = [_ref(app, root, "AppRouter.router"), _ref(router, root, "static final GoRouter router"), _ref(router, root, "AppRouteTable.routes")]
     return {
         "task_id": "app-router-private-facade", "title": "Inline the private AppRouter facade into the application shell",
         "development_unit": f"{repository_id}:.",
         "evidence": evidence,
-        "candidate_paths": ["lib/app/app.dart", "lib/app/router/app_router.dart"],
+        "candidate_paths": [_relative(root, app), _relative(root, router)],
         "expected_change": "Keep the same GoRouter configuration while removing the one-use forwarding facade.",
         "invariants": ["MaterialApp.router continues to receive AppRouteTable.routes", "No route path, module metadata, or public package API changes"],
         "validation": ["flutter_analyze"], "dependencies": [], "risk": "LOW", "status": status,
@@ -104,12 +119,13 @@ def _router_task(root: Path, repository_id: str, status: str = "READY") -> dict[
 
 
 def _gcode_task(root: Path, repository_id: str) -> dict[str, object]:
-    controller = root / "lib/modules/ui/gcode_visualizer/state/gcode_player_controller.dart"
+    application = _app_root(root)
+    controller = application / "lib/modules/ui/gcode_visualizer/state/gcode_player_controller.dart"
     return {
         "task_id": "gcode-controller-file-picking-capability", "title": "Move file-picking interaction out of the G-code preview controller",
         "development_unit": f"{repository_id}:.",
         "evidence": [_ref(controller, root, "pickFilePathAndLoad"), _ref(controller, root, "FilePickerService"), _ref(controller, root, "MethodChannelFilePicker")],
-        "candidate_paths": ["lib/modules/ui/gcode_visualizer/pages/gcode_visualizer_page.dart", "lib/modules/ui/gcode_visualizer/state/gcode_player_controller.dart"],
+        "candidate_paths": [_relative(root, application / "lib/modules/ui/gcode_visualizer/pages/gcode_visualizer_page.dart"), _relative(root, controller)],
         "expected_change": "Keep GcodePlayerController as the UI-facing preview orchestrator while moving platform file-selection interaction to the page boundary.",
         "invariants": ["File selection cancel and platform failure messages remain observable", "G-code parsing, playback, and UI interactions preserve current behavior", "No public package API or route metadata changes"],
         "validation": ["flutter_analyze"], "dependencies": [], "risk": "MEDIUM", "status": "READY", "rules": _rules_for(controller, root),
@@ -120,7 +136,7 @@ def _new_program(config: WorkspaceConfig, repository_id: str, completed: list[st
     registry_api.refresh(config)
     repository = registry_api.get_repository(config, repository_id)
     if repository is None:
-        return {"program_id": "flutter-study-refactor-program", "status": "BLOCKED_DECISION", "blocked_tasks": [{"task_id": "repository", "reason": "primary_repository_not_found", "decision_required": "Configure flutter_study."}]}
+        return {"program_id": _program_id(repository_id), "status": "BLOCKED_DECISION", "blocked_tasks": [{"task_id": "repository", "reason": "primary_repository_not_found", "decision_required": f"Configure {repository_id}."}]}
     root = _integration_root(config, repository_id)
     completed = completed or []
     unit_outcomes = {
@@ -135,18 +151,19 @@ def _new_program(config: WorkspaceConfig, repository_id: str, completed: list[st
         f"{repository_id}:windows/runner": {"outcome": "NO_ACTION", "reason": "Windows runner is host-owned and has no evidence-backed behavior-preserving candidate."},
     }
     units = [{"unit_id": unit.unit_id, "path": unit.relative_path, "type": unit.unit_type, "evidence": [item.path for item in unit.evidence], "inventory_completed": True, **unit_outcomes.get(unit.unit_id, {"outcome": "NO_ACTION", "reason": "No evidence-backed candidate found."})} for unit in repository.development_units]
-    app, router, table = root / "lib/app/app.dart", root / "lib/app/router/app_router.dart", root / "lib/app/router/app_route_table.dart"
+    application = _app_root(root)
+    app, router, table = application / "lib/app/app.dart", application / "lib/app/router/app_router.dart", application / "lib/app/router/app_route_table.dart"
     facade_present = app.is_file() and router.is_file() and "AppRouter.router" in app.read_text(encoding="utf-8") and "static final GoRouter router" in router.read_text(encoding="utf-8")
     tasks: list[dict[str, object]] = []
     if facade_present:
         tasks.append(_router_task(root, repository_id))
     elif "app-router-private-facade" in completed:
         tasks.append(_router_task(root, repository_id, "DONE"))
-    controller = root / "lib/modules/ui/gcode_visualizer/state/gcode_player_controller.dart"
+    controller = application / "lib/modules/ui/gcode_visualizer/state/gcode_player_controller.dart"
     issues = [
         {"issue_id": "app-router-private-facade", "issue": "private routing facade", "evidence": tasks[0]["evidence"] if tasks else ["lib/app/app.dart:8"], "status": "ACTIONABLE" if facade_present else "NO_ACTION"},
         {"issue_id": "gcode-controller-ownership", "issue": "G-code controller owns file picking, parsing, animation, and read-model state", "evidence": [_ref(controller, root, "class GcodePlayerController"), _ref(controller, root, "pickFilePathAndLoad"), _ref(controller, root, "AnimationController")], "status": "BLOCKED_DECISION", "reason": "A behavior-preserving split needs a decided owner for TickerProvider lifecycle and FilePicker error presentation.", "decision_required": "Choose whether animation lifecycle stays in the widget or becomes an injected runtime."},
-        {"issue_id": "category-navigation-boundary", "issue": "CategoryNavigation is a platform-navigation boundary", "evidence": [_ref(root / "lib/app/category_navigation.dart", root, "class CategoryNavigation")], "status": "NO_ACTION"},
+        {"issue_id": "category-navigation-boundary", "issue": "CategoryNavigation is a platform-navigation boundary", "evidence": [_ref(application / "lib/app/category_navigation.dart", root, "class CategoryNavigation")], "status": "NO_ACTION"},
     ]
     blocked = [{"task_id": issue["issue_id"], "issue_id": issue["issue_id"], "reason": issue["reason"], "decision_required": issue["decision_required"], "status": "BLOCKED_DECISION"} for issue in issues if issue["status"] == "BLOCKED_DECISION"]
     return {"program_id": "flutter-study-refactor-program", "repository": repository_id, "integration_branch": _git(root, "branch", "--show-current"), "base_revision": _git(root, "rev-parse", "HEAD"), "architecture_summary": "The app shell owns bootstrap/routing; modules own teaching capabilities; internal packages are manifest-backed DevelopmentUnits.", "development_units": units, "workstreams": ["app orchestration boundary", "module capability boundaries", "internal package call topology"], "architecture_issues": issues, "tasks": tasks, "dependency_dag": {str(t["task_id"]): t["dependencies"] for t in tasks}, "execution_order": [str(t["task_id"]) for t in tasks], "current_task": None, "completed_tasks": [str(t["task_id"]) for t in tasks if t["status"] == "DONE"], "blocked_tasks": blocked, "final_rescan_completed": False, "status": "READY" if any(t["status"] == "READY" for t in tasks) else "PLANNING"}
@@ -222,8 +239,9 @@ def apply_human_decision(program: dict[str, object], decision: dict[str, object]
 
 def _new_program_for_reconciliation(root: Path, repository_id: str, completed: list[str]) -> dict[str, object]:
     """Build a source inventory without reintroducing checkpoint artifacts."""
-    app = root / "lib/app/app.dart"
-    controller = root / "lib/modules/ui/gcode_visualizer/state/gcode_player_controller.dart"
+    application = _app_root(root)
+    app = application / "lib/app/app.dart"
+    controller = application / "lib/modules/ui/gcode_visualizer/state/gcode_player_controller.dart"
     task = _router_task(root, repository_id, "DONE")
     task.update({"commit_hash": _git(root, "log", "-1", "--format=%H", "--grep=app-router-private-facade"), "integration_base_revision": "930bd47fcf29171bbfc5d281fb21fda9b858453f"})
     return {"program_id": "flutter-study-refactor-program", "repository": repository_id, "integration_branch": _git(root, "branch", "--show-current"), "base_revision": _git(root, "rev-parse", "HEAD"), "architecture_summary": "The app shell owns bootstrap/routing; modules own teaching capabilities; internal packages are manifest-backed DevelopmentUnits.", "development_units": [], "workstreams": ["app orchestration boundary", "module capability boundaries", "internal package call topology"], "architecture_issues": [{"issue_id": "app-router-private-facade", "issue": "private routing facade", "evidence": ["lib/app/app.dart:8"], "status": "NO_ACTION"}, {"issue_id": "gcode-controller-ownership", "issue": "G-code controller owns file picking, parsing, animation, and read-model state", "evidence": [_ref(controller, root, "class GcodePlayerController"), _ref(controller, root, "pickFilePathAndLoad"), _ref(controller, root, "AnimationController")], "status": "BLOCKED_DECISION", "reason": "A behavior-preserving split needs a decided owner for TickerProvider lifecycle and FilePicker error presentation.", "decision_required": "Choose whether animation lifecycle stays in the widget or becomes an injected runtime."}], "tasks": [task], "dependency_dag": {"app-router-private-facade": []}, "execution_order": ["app-router-private-facade"], "current_task": None, "completed_tasks": ["app-router-private-facade"], "blocked_tasks": [{"task_id": "gcode-controller-ownership", "issue_id": "gcode-controller-ownership", "status": "BLOCKED_DECISION", "reason": "A behavior-preserving split needs a decided owner for TickerProvider lifecycle and FilePicker error presentation.", "decision_required": "Choose whether animation lifecycle stays in the widget or becomes an injected runtime."}], "final_rescan_completed": False, "status": "PLANNING", "_inventory_from_registry": True}
@@ -256,6 +274,14 @@ def build_development_graph(config: WorkspaceConfig):
             return {"program": {"program_id": "externally-frozen-task", "repository": repository_id, "development_units": [{"inventory_completed": True}], "architecture_issues": [], "tasks": [{"task_id": task_id, "expected_change": supplied.get("requirement", ""), "candidate_paths": supplied.get("allowed_paths", []), "validation": supplied.get("validation", []), "dependencies": [], "risk": "LOW", "status": "READY"}], "completed_tasks": [], "blocked_tasks": [], "current_task": None, "status": "READY"}}
         root = _integration_root(config, repository_id)
         existing = state.get("program") or {}
+        decision=state.get("decision")
+        worker=state.get("worker_result")
+        integration=state.get("integration_apply")
+        if isinstance(decision,dict) and decision.get("choice")=="retry" and isinstance(worker,dict) and worker.get("status")=="SUCCESS" and isinstance(integration,dict) and integration.get("status")=="PRIMARY_VALIDATION_FAILED":
+            task_id=str(worker.get("task_id","")); task=next((item for item in existing.get("tasks",[]) if item.get("task_id")==task_id),None)
+            if isinstance(task,dict):
+                task["status"]="APPROVED";existing["current_task"]=task_id;existing["status"]="READY";existing["blocked_tasks"]=[item for item in existing.get("blocked_tasks",[]) if item.get("task_id")!=task_id]
+                return {"program":existing,"retry_integration":True,"decision":{}}
         should_rescan = "rescan" in state.get("requirement", "").lower() or existing.get("status") in {"COMPLETED", "PROGRAM_COMPLETED", "BLOCKED_DECISION", "PROGRAM_BLOCKED"}
         program = _new_program(config, repository_id, list(existing.get("completed_tasks", []))) if should_rescan else (existing or _new_program(config, repository_id))
         if isinstance(state.get("decision"), dict):
@@ -320,7 +346,7 @@ def build_development_graph(config: WorkspaceConfig):
             task.update({"status": "DONE", "commit_hash": result.get("commit_hash"), "integration_base_revision": frozen["base_revision"], "committed_at": result.get("committed_at")}); program["completed_tasks"] = sorted(set([*program.get("completed_tasks", []), task["task_id"]])); program["current_task"] = None; program["base_revision"] = result["commit_hash"]
         elif task:
             task["status"] = "BLOCKED_DECISION"; program["blocked_tasks"].append({"task_id": task["task_id"], "status": "BLOCKED_DECISION", "reason": str(result.get("status")), "decision_required": "Resolve integration validation or apply failure."}); program["current_task"] = None
-        return {"program": program, "integration_apply": result}
+        return {"program": program, "integration_apply": result, "retry_integration": False}
 
     def final_rescan(state: DevelopmentState):
         program = state["program"]; program["final_rescan_completed"] = True
@@ -334,7 +360,7 @@ def build_development_graph(config: WorkspaceConfig):
     graph = StateGraph(DevelopmentState)
     for name, node in [("bootstrap_runtime", bootstrap_runtime), ("reconcile", reconcile), ("inventory", inventory), ("normalize", normalize), ("prepare", prepare), ("execute", execute), ("review", review), ("commit", commit), ("final_rescan", final_rescan), ("result", result)]: graph.add_node(name, node)
     graph.add_edge(START, "bootstrap_runtime"); graph.add_edge("bootstrap_runtime", "reconcile"); graph.add_edge("reconcile", "inventory"); graph.add_edge("inventory", "normalize")
-    graph.add_conditional_edges("normalize", lambda s: "prepare" if _select(s["program"]) else "final_rescan", {"prepare": "prepare", "final_rescan": "final_rescan"})
+    graph.add_conditional_edges("normalize", lambda s: "commit" if s.get("retry_integration") else "prepare" if _select(s["program"]) else "final_rescan", {"commit":"commit","prepare": "prepare", "final_rescan": "final_rescan"})
     graph.add_edge("prepare", "execute"); graph.add_edge("execute", "review")
     graph.add_conditional_edges("review", lambda s: "commit" if s["program"].get("current_task") else "reconcile", {"commit": "commit", "reconcile": "reconcile"})
     graph.add_edge("commit", "reconcile"); graph.add_edge("final_rescan", "result"); graph.add_edge("result", END)

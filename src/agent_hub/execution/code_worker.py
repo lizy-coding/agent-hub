@@ -14,9 +14,10 @@ import subprocess
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
+import yaml
 
 
-PRIMARY_REPOSITORY = "flutter_study"
+DEFAULT_PRIMARY_REPOSITORY = os.environ.get("AGENT_HUB_PRIMARY_REPOSITORY", "primary")
 CODEX_TIMEOUT_SECONDS = int(os.environ.get("AGENT_HUB_CODEX_TIMEOUT_SECONDS", "900"))
 CODEX_PROFILE = os.environ.get("AGENT_HUB_CODEX_PROFILE", "")
 
@@ -31,10 +32,10 @@ class WorkerRequest:
     validation: list[str]
 
     @classmethod
-    def from_json(cls, value: dict[str, object]) -> "WorkerRequest":
+    def from_json(cls, value: dict[str, object], expected_repository: str) -> "WorkerRequest":
         allowed = value.get("allowed_paths")
         validation = value.get("validation", [])
-        if value.get("repository") != PRIMARY_REPOSITORY:
+        if value.get("repository") != expected_repository:
             raise ValueError("invalid_repository")
         if not isinstance(allowed, list) or not allowed or not all(isinstance(p, str) for p in allowed):
             raise ValueError("invalid_allowed_paths")
@@ -48,7 +49,7 @@ class WorkerRequest:
         if any(command not in {"flutter_analyze"} and not command.startswith("flutter_test:") for command in validation):
             raise ValueError("arbitrary_shell_forbidden")
         return cls(
-            repository=PRIMARY_REPOSITORY,
+            repository=expected_repository,
             base_revision=str(value.get("base_revision", "")),
             task_id=str(value.get("task_id", "")),
             requirement=str(value.get("requirement", "")),
@@ -81,9 +82,10 @@ def _diagnostic_counts(output: str) -> tuple[int, int]:
 class LocalCodeExecutor:
     """MVP-L2 execution sequence, intentionally limited to one local primary."""
 
-    def __init__(self, repository_path: Path, codex_binary: str = "codex") -> None:
+    def __init__(self, repository_path: Path, codex_binary: str = "codex", repository_id: str = DEFAULT_PRIMARY_REPOSITORY) -> None:
         self.repository_path = repository_path.resolve()
         self.codex_binary = codex_binary
+        self.repository_id = repository_id
 
     def _result(self, request: WorkerRequest, status: str, **values: object) -> dict[str, object]:
         return {"status": status, "task_id": getattr(request, "task_id", ""), "repository": request.repository, "base_revision": request.base_revision, "exit_code": values.pop("exit_code", None), "changed_files": values.pop("changed_files", []), "diff": values.pop("diff", ""), "validation": values.pop("validation", {}), "scope_guard": values.pop("scope_guard", "NOT_RUN"), "stdout_tail": values.pop("stdout_tail", ""), "stderr_tail": values.pop("stderr_tail", ""), **values}
@@ -114,7 +116,7 @@ class LocalCodeExecutor:
         if subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=self.repository_path, text=True).strip() != request.base_revision:
             return self._result(request, "CODEX_EXECUTION_FAILED", reason="base_revision_mismatch")
         root = Path(tempfile.mkdtemp(prefix="agent-hub-worker-"))
-        worktree = root / PRIMARY_REPOSITORY
+        worktree = root / request.repository
         try:
             subprocess.run(["git", "worktree", "add", "--detach", str(worktree), request.base_revision], cwd=self.repository_path, check=True, capture_output=True, text=True)
             self._link_path_dependencies(worktree, root)
@@ -135,6 +137,9 @@ class LocalCodeExecutor:
             dart_files = [path for path in changed if path.endswith(".dart")]
             if dart_files:
                 subprocess.run(["dart", "format", *dart_files], cwd=worktree, check=True, capture_output=True, text=True)
+            # A frozen task may legitimately rewrite an explicitly allowed
+            # path dependency. Rebuild external topology before validation.
+            self._link_path_dependencies(worktree, root)
             changed = _changed_files(worktree)
             unauthorized = sorted(set(changed) - set(request.allowed_paths))
             if unauthorized:
@@ -163,30 +168,42 @@ class LocalCodeExecutor:
             shutil.rmtree(root, ignore_errors=True)
 
     def _link_path_dependencies(self, worktree: Path, root: Path) -> None:
-        # Only external sibling path dependencies need recreating. Internal paths travel with the worktree.
-        for line in (worktree / "pubspec.yaml").read_text(encoding="utf-8").splitlines():
-            if "path: ../" not in line:
-                continue
-            relative = line.split("path:", 1)[1].strip()
-            # The provider mapping is local-worker configuration, never graph
-            # input.  It avoids assuming that a hosted worktree has the same
-            # parent directory as the developer's checkout.
-            provider_name = Path(relative).name.upper().replace("-", "_")
-            configured = os.environ.get(f"AGENT_HUB_PATH_DEPENDENCY_{provider_name}")
-            source = Path(configured).resolve() if configured else (self.repository_path / relative).resolve()
-            target = (worktree / relative).resolve()
-            if source.is_dir() and not target.exists():
-                target.parent.mkdir(parents=True, exist_ok=True)
-                target.symlink_to(source, target_is_directory=True)
+        # Workspace members can declare external path dependencies too. Scan
+        # tracked manifests and recreate only dependencies that resolve outside
+        # the isolated repository; internal package paths travel with it.
+        manifests = subprocess.check_output(
+            ["git", "ls-files", "*/pubspec.yaml", "pubspec.yaml"],
+            cwd=worktree,
+            text=True,
+        ).splitlines()
+        for relative_manifest in manifests:
+            manifest = worktree / relative_manifest
+            payload = yaml.safe_load(manifest.read_text(encoding="utf-8")) or {}
+            for section in ("dependencies", "dev_dependencies", "dependency_overrides"):
+                for name, value in (payload.get(section) or {}).items():
+                    if not isinstance(value, dict) or not isinstance(value.get("path"), str):
+                        continue
+                    relative = value["path"]
+                    target = (manifest.parent / relative).resolve()
+                    if worktree == target or worktree in target.parents:
+                        continue
+                    configured = os.environ.get(
+                        f"AGENT_HUB_PATH_DEPENDENCY_{str(name).upper().replace('-', '_')}"
+                    )
+                    source_manifest = self.repository_path / relative_manifest
+                    source = Path(configured).resolve() if configured else (source_manifest.parent / relative).resolve()
+                    if source.is_dir() and not target.exists():
+                        target.parent.mkdir(parents=True, exist_ok=True)
+                        target.symlink_to(source, target_is_directory=True)
 
     @staticmethod
     def _codex_prompt(request: WorkerRequest) -> str:
-        return "Frozen DevelopmentTask. Modify only: " + ", ".join(request.allowed_paths) + ". Requirement: " + request.requirement + ". No commit, push, manifest, dependency, or shell-command changes."
+        return "Frozen DevelopmentTask. Modify only: " + ", ".join(request.allowed_paths) + ". Requirement: " + request.requirement + ". Manifest or dependency changes are allowed only when their exact files are frozen above. No commit, push, merge, release, or arbitrary shell-command changes."
 
 
 def execute_request(payload: dict[str, object], executor: LocalCodeExecutor) -> dict[str, object]:
     try:
-        request = WorkerRequest.from_json(payload)
+        request = WorkerRequest.from_json(payload, executor.repository_id)
     except ValueError as error:
         return {"status": "CODEX_EXECUTION_FAILED", "task_id": str(payload.get("task_id", "")), "repository": str(payload.get("repository", "")), "base_revision": str(payload.get("base_revision", "")), "exit_code": None, "changed_files": [], "diff": "", "validation": {}, "scope_guard": "NOT_RUN", "stdout_tail": "", "stderr_tail": str(error)}
     return executor.execute(request)

@@ -7,10 +7,31 @@ import os
 from collections.abc import Callable
 from urllib.error import URLError
 from urllib.request import urlopen
+from urllib.request import Request
+from agent_hub.projects.decomposition_config import load_decomposition_project
 
 
 DEFAULT_SERVER = "http://127.0.0.1:2024"
-DEFAULT_THREAD_ID = "019ff8bc-e2de-76d1-8386-4c08fdbaf5a6"
+DEFAULT_THREAD_ID = os.environ.get("AGENT_HUB_REFACTOR_THREAD_ID", "")
+
+
+def resolve_thread(server: str, thread_id: str | None = None, project_id: str | None = None) -> str | None:
+    if thread_id:
+        return thread_id
+    project = load_decomposition_project(project_id)
+    request = Request(
+        f"{server.rstrip('/')}/threads/search",
+        data=json.dumps({"limit": 100, "offset": 0}).encode(),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    with urlopen(request, timeout=5) as response:
+        threads = json.loads(response.read())
+    candidates = [
+        thread for thread in threads
+        if (thread.get("metadata") or {}).get("program_id") == project.refactor_program_id
+    ]
+    return max(candidates, key=lambda item: item.get("updated_at", ""))["thread_id"] if candidates else None
 
 
 def fetch_state(server: str, thread_id: str) -> dict[str, object]:
@@ -61,7 +82,7 @@ def render(state: dict[str, object]) -> str:
     current = program.get("current_task") or "—"
     last_task = task.get("task_id") or "—"
     lines = [
-        "Flutter Study Refactor Program",
+        "Refactor Program",
         f"Program ID: {program.get('program_id', '—')}",
         f"Thread ID: {metadata.get('thread_id', '—')}",
         f"Run ID: {metadata.get('run_id', '—')} | Graph step: {metadata.get('step', '—')}",
@@ -92,8 +113,12 @@ def render(state: dict[str, object]) -> str:
     return "\n".join(lines)
 
 
-def status(server: str, thread_id: str, output: Callable[[str], None] = print) -> int:
+def status(server: str, thread_id: str | None = None, output: Callable[[str], None] = print, project_id: str | None = None) -> int:
     try:
+        thread_id = resolve_thread(server, thread_id, project_id)
+        if not thread_id:
+            output("NO_REFACTOR_PROGRAM")
+            return 2
         output(render(fetch_state(server, thread_id)))
         return 0
     except (URLError, OSError, ValueError) as error:
