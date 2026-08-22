@@ -113,12 +113,123 @@ _PROTECTED_PACKAGING_FILES = frozenset({
     "tool/generate_agent_indexes.js",
 })
 
+# Historical agent-hub tasks that are already committed.  They are preserved
+# ONLY as completed records so orchestration reflects the live REFACTOR_PLAN
+# iteration queue instead of re-offering finished work.
+_LEGACY_COMPLETED_TASK_IDS = ("app-router-private-facade", "gcode-controller-file-picking-capability")
+
+# REFACTOR_PLAN work_queue entries carry change descriptions, not always
+# paths.  The orchestration keeps an explicit path map for the known entries so
+# candidate_paths stay root-relative and validation can be derived.
+_REFACTOR_TARGET_PATHS = {
+    "module_platform_contract": ["lib/module_registry/module_entry.dart", "lib/app/module_home_page.dart"],
+    "platform_plugin_audit": ["lib/app", "lib/modules/platform"],
+    "usb_platform_boundary": ["lib/modules/platform/usb_detector"],
+    "android_host": ["android/", "pubspec.yaml"],
+}
+
+_REFACTOR_TITLES = {
+    "module_platform_contract": "Add platform support contract to module metadata and availability state",
+    "platform_plugin_audit": "Audit platform plugins and fallbacks for an Android support matrix",
+    "usb_platform_boundary": "Move USB detection behind a platform-neutral boundary",
+    "android_host": "Generate the Android host with manifest capabilities and a debug APK build",
+    "mobile_layout_baseline": "Establish a mobile layout baseline (visual acceptance domain)",
+}
+
+
+def _app_relative(root: Path, target: str) -> str:
+    """Resolve an app-relative REFACTOR_PLAN target to a repo-root-relative path."""
+    application = _app_root(root)
+    prefix = _relative(root, application)
+    return f"{prefix}/{target.lstrip('/')}" if prefix != "." else target.lstrip("/")
+
+
+def _load_refactor_plan(root: Path) -> list[dict[str, object]] | None:
+    """Read the machine-parsable REFACTOR_PLAN work_queue.
+
+    Returns None when the file is absent or unparsable so generation falls
+    back to the hardcoded historical program (backward compatible).
+    """
+    plan = root / "REFACTOR_PLAN.md"
+    if not plan.is_file():
+        return None
+    try:
+        payload = json.loads(plan.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    entries = payload.get("work_queue") if isinstance(payload, dict) else None
+    if not isinstance(entries, list):
+        return None
+    return [entry for entry in entries if isinstance(entry, dict)]
+
+
+def _plan_candidate_paths(entry: dict[str, object]) -> list[str]:
+    task_id = str(entry.get("id", ""))
+    known = _REFACTOR_TARGET_PATHS.get(task_id)
+    if known:
+        return list(known)
+    targets = entry.get("targets")
+    if isinstance(targets, list) and all(isinstance(item, str) for item in targets):
+        return list(targets)
+    return []
+
+
+def _plan_task(entry: dict[str, object], root: Path, repository_id: str, completed: list[str]) -> dict[str, object]:
+    """Materialize one REFACTOR_PLAN work_queue entry as a DevelopmentTask.
+
+    mobile_layout_baseline is a visual-acceptance decision, so it is surfaced
+    as a blocked decision (BLOCKED_DECISION / visual_acceptance_required)
+    rather than a code task.  Tasks whose depends_on are not yet complete are
+    generated as BLOCKED_DECISION and unblock by reconcile_program once the
+    prerequisites land in completed_tasks.
+    """
+    task_id = str(entry.get("id", ""))
+    if task_id == "mobile_layout_baseline":
+        return {
+            "task_id": task_id,
+            "title": _REFACTOR_TITLES[task_id],
+            "status": "BLOCKED_DECISION",
+            "reason": "visual_acceptance_required",
+            "decision_required": "Resolve the mobile layout baseline (no_overflow/safe_area/keyboard_avoidance/touch_targets) via visual acceptance outside orchestration.",
+            "entry_type": "decision",
+        }
+    application = _app_root(root)
+    app_paths = _plan_candidate_paths(entry)
+    candidate_paths = [_app_relative(root, path) for path in app_paths]
+    deps = [str(item) for item in entry.get("depends_on", [])]
+    missing = [dep for dep in deps if dep not in set(completed)]
+    acceptance = [str(item) for item in entry.get("acceptance", [])]
+    rules = _rules_for(application / app_paths[0], root) if app_paths else []
+    task: dict[str, object] = {
+        "task_id": task_id,
+        "title": _REFACTOR_TITLES.get(task_id, f"Implement REFACTOR_PLAN work_queue entry {task_id}"),
+        "development_unit": f"{repository_id}:.",
+        "evidence": [f"{_app_relative(root, path)}:1" for path in app_paths],
+        "candidate_paths": candidate_paths,
+        "expected_change": f"Implement REFACTOR_PLAN {task_id} per acceptance: " + "; ".join(acceptance),
+        "invariants": ["Platform contract and route/module metadata keep their current public shape", "No protected packaging flow files are touched"],
+        "acceptance": acceptance,
+        "validation": _task_validation(candidate_paths),
+        "dependencies": deps,
+        "risk": "MEDIUM",
+        "status": "READY",
+        "rules": rules,
+    }
+    if missing:
+        task["status"] = "BLOCKED_DECISION"
+        task["reason"] = "depends_on_incomplete"
+        task["decision_required"] = "Complete prerequisites first: " + ", ".join(missing)
+    return task
+
 
 def _task_validation(candidate_paths: list[str]) -> list[str]:
     """Every task runs analyze; app-level tasks additionally smoke the macOS
-    packaging build so packaging-breaking changes fail inside agent-hub runs."""
+    packaging build and Android host tasks smoke a debug APK build so
+    packaging-breaking changes fail inside agent-hub runs."""
     validation = ["flutter_analyze"]
-    if any(any(fragment in candidate for fragment in _APP_LEVEL_PATH_FRAGMENTS) for candidate in candidate_paths):
+    if any("android/" in candidate for candidate in candidate_paths):
+        validation.append("flutter_build:apk")
+    elif any(any(fragment in candidate for fragment in _APP_LEVEL_PATH_FRAGMENTS) for candidate in candidate_paths):
         validation.append("flutter_build")
     return validation
 
@@ -197,21 +308,43 @@ def _new_program(config: WorkspaceConfig, repository_id: str, completed: list[st
     }
     units = [{"unit_id": unit.unit_id, "path": unit.relative_path, "type": unit.unit_type, "evidence": [item.path for item in unit.evidence], "inventory_completed": True, **unit_outcomes.get(unit.unit_id, {"outcome": "NO_ACTION", "reason": "No evidence-backed candidate found."})} for unit in repository.development_units]
     application = _app_root(root)
-    app, router, table = application / "lib/app/app.dart", application / "lib/app/router/app_router.dart", application / "lib/app/router/app_route_table.dart"
-    facade_present = app.is_file() and router.is_file() and "AppRouter.router" in app.read_text(encoding="utf-8") and "static final GoRouter router" in router.read_text(encoding="utf-8")
-    tasks: list[dict[str, object]] = []
-    if facade_present:
-        tasks.append(_apply_packaging_guard(_router_task(root, repository_id)))
-    elif "app-router-private-facade" in completed:
-        tasks.append(_apply_packaging_guard(_router_task(root, repository_id, "DONE")))
-    controller = application / "lib/modules/ui/gcode_visualizer/state/gcode_player_controller.dart"
-    issues = [
-        {"issue_id": "app-router-private-facade", "issue": "private routing facade", "evidence": tasks[0]["evidence"] if tasks else ["lib/app/app.dart:8"], "status": "ACTIONABLE" if facade_present else "NO_ACTION"},
-        {"issue_id": "gcode-controller-ownership", "issue": "G-code controller owns file picking, parsing, animation, and read-model state", "evidence": [_ref(controller, root, "class GcodePlayerController"), _ref(controller, root, "pickFilePathAndLoad"), _ref(controller, root, "AnimationController")], "status": "BLOCKED_DECISION", "reason": "A behavior-preserving split needs a decided owner for TickerProvider lifecycle and FilePicker error presentation.", "decision_required": "Choose whether animation lifecycle stays in the widget or becomes an injected runtime."},
-        {"issue_id": "category-navigation-boundary", "issue": "CategoryNavigation is a platform-navigation boundary", "evidence": [_ref(application / "lib/app/category_navigation.dart", root, "class CategoryNavigation")], "status": "NO_ACTION"},
-    ]
-    blocked = [{"task_id": issue["issue_id"], "issue_id": issue["issue_id"], "reason": issue["reason"], "decision_required": issue["decision_required"], "status": "BLOCKED_DECISION"} for issue in issues if issue["status"] == "BLOCKED_DECISION"]
-    return {"program_id": "flutter-forge-refactor-program", "repository": repository_id, "integration_branch": _git(root, "branch", "--show-current"), "base_revision": _git(root, "rev-parse", "HEAD"), "architecture_summary": "The app shell owns bootstrap/routing; modules own teaching capabilities; internal packages are manifest-backed DevelopmentUnits.", "development_units": units, "workstreams": ["app orchestration boundary", "module capability boundaries", "internal package call topology"], "architecture_issues": issues, "tasks": tasks, "dependency_dag": {str(t["task_id"]): t["dependencies"] for t in tasks}, "execution_order": [str(t["task_id"]) for t in tasks], "current_task": None, "completed_tasks": [str(t["task_id"]) for t in tasks if t["status"] == "DONE"], "blocked_tasks": blocked, "final_rescan_completed": False, "status": "READY" if any(t["status"] == "READY" for t in tasks) else "PLANNING"}
+    plan_entries = _load_refactor_plan(root)
+    if plan_entries:
+        tasks: list[dict[str, object]] = []
+        blocked: list[dict[str, object]] = []
+        completed_tasks = set(completed) | set(_LEGACY_COMPLETED_TASK_IDS)
+        for entry in plan_entries:
+            mapped = _apply_packaging_guard(_plan_task(entry, root, repository_id, sorted(completed_tasks)))
+            if mapped.get("entry_type") == "decision":
+                blocked.append({"task_id": str(mapped["task_id"]), "issue_id": str(mapped["task_id"]), "status": "BLOCKED_DECISION", "reason": str(mapped.get("reason", "")), "decision_required": str(mapped.get("decision_required", ""))})
+            else:
+                tasks.append(mapped)
+        blocked.extend({"task_id": str(task["task_id"]), "issue_id": str(task["task_id"]), "status": "BLOCKED_DECISION", "reason": str(task.get("reason", "")), "decision_required": str(task.get("decision_required", ""))} for task in tasks if task.get("status") == "BLOCKED_DECISION")
+        controller = application / "lib/modules/ui/gcode_visualizer/state/gcode_player_controller.dart"
+        category_navigation = application / "lib/app/category_navigation.dart"
+        issues = [
+            {"issue_id": "app-router-private-facade", "issue": "private routing facade", "evidence": ["lib/app/app.dart:8"], "status": "NO_ACTION", "reason": "Completed historically; preserved only in completed_tasks."},
+            {"issue_id": "gcode-controller-ownership", "issue": "G-code controller owns file picking, parsing, animation, and read-model state", "evidence": [_ref(controller, root, "class GcodePlayerController")] if controller.is_file() else ["lib/modules/ui/gcode_visualizer/state/gcode_player_controller.dart:1"], "status": "NO_ACTION", "reason": "File-picking moved to the page boundary historically; preserved only in completed_tasks."},
+            {"issue_id": "category-navigation-boundary", "issue": "CategoryNavigation is a platform-navigation boundary", "evidence": [_ref(category_navigation, root, "class CategoryNavigation")] if category_navigation.is_file() else ["lib/app/category_navigation.dart:1"], "status": "NO_ACTION"},
+        ]
+        completed_tasks = sorted(completed_tasks)
+    else:
+        tasks: list[dict[str, object]] = []
+        app, router, table = application / "lib/app/app.dart", application / "lib/app/router/app_router.dart", application / "lib/app/router/app_route_table.dart"
+        facade_present = app.is_file() and router.is_file() and "AppRouter.router" in app.read_text(encoding="utf-8") and "static final GoRouter router" in router.read_text(encoding="utf-8")
+        if facade_present:
+            tasks.append(_apply_packaging_guard(_router_task(root, repository_id)))
+        elif "app-router-private-facade" in completed:
+            tasks.append(_apply_packaging_guard(_router_task(root, repository_id, "DONE")))
+        controller = application / "lib/modules/ui/gcode_visualizer/state/gcode_player_controller.dart"
+        issues = [
+            {"issue_id": "app-router-private-facade", "issue": "private routing facade", "evidence": tasks[0]["evidence"] if tasks else ["lib/app/app.dart:8"], "status": "ACTIONABLE" if facade_present else "NO_ACTION"},
+            {"issue_id": "gcode-controller-ownership", "issue": "G-code controller owns file picking, parsing, animation, and read-model state", "evidence": [_ref(controller, root, "class GcodePlayerController"), _ref(controller, root, "pickFilePathAndLoad"), _ref(controller, root, "AnimationController")], "status": "BLOCKED_DECISION", "reason": "A behavior-preserving split needs a decided owner for TickerProvider lifecycle and FilePicker error presentation.", "decision_required": "Choose whether animation lifecycle stays in the widget or becomes an injected runtime."},
+            {"issue_id": "category-navigation-boundary", "issue": "CategoryNavigation is a platform-navigation boundary", "evidence": [_ref(application / "lib/app/category_navigation.dart", root, "class CategoryNavigation")], "status": "NO_ACTION"},
+        ]
+        blocked = [{"task_id": issue["issue_id"], "issue_id": issue["issue_id"], "reason": issue["reason"], "decision_required": issue["decision_required"], "status": "BLOCKED_DECISION"} for issue in issues if issue["status"] == "BLOCKED_DECISION"]
+        completed_tasks = [str(t["task_id"]) for t in tasks if t["status"] == "DONE"]
+    return {"program_id": "flutter-forge-refactor-program", "repository": repository_id, "integration_branch": _git(root, "branch", "--show-current"), "base_revision": _git(root, "rev-parse", "HEAD"), "architecture_summary": "The app shell owns bootstrap/routing; modules own teaching capabilities; internal packages are manifest-backed DevelopmentUnits.", "development_units": units, "workstreams": ["app orchestration boundary", "module capability boundaries", "internal package call topology"], "architecture_issues": issues, "tasks": tasks, "dependency_dag": {str(t["task_id"]): t["dependencies"] for t in tasks}, "execution_order": [str(t["task_id"]) for t in tasks], "current_task": None, "completed_tasks": completed_tasks, "blocked_tasks": blocked, "final_rescan_completed": False, "status": "READY" if any(t["status"] == "READY" for t in tasks) else "PLANNING"}
 
 
 def reconcile_program(program: dict[str, object], root: Path) -> dict[str, object]:
@@ -235,6 +368,19 @@ def reconcile_program(program: dict[str, object], root: Path) -> dict[str, objec
         recovered = _new_program_for_reconciliation(root, str(program.get("repository", "flutter_forge")), sorted(completed))
         program = recovered
         completed = set(program.get("completed_tasks", []))
+    # Plan-driven tasks blocked only on prerequisite completion unblock once
+    # those prerequisites land in the git-proven completed set.  Tasks blocked
+    # by a Worker/review failure keep a non-plan reason and stay blocked.
+    unblocked = {
+        str(task["task_id"])
+        for task in program.get("tasks", [])
+        if task.get("status") == "BLOCKED_DECISION"
+        and str(task.get("reason", "")).startswith("depends_on_incomplete")
+        and set(task.get("dependencies", [])).issubset(completed)
+    }
+    for task in program.get("tasks", []):
+        if task["task_id"] in unblocked:
+            task["status"] = "READY"
     program["completed_tasks"] = sorted(completed)
     program["integration_branch"] = _git(root, "branch", "--show-current")
     program["base_revision"] = _git(root, "rev-parse", "HEAD")
@@ -243,7 +389,7 @@ def reconcile_program(program: dict[str, object], root: Path) -> dict[str, objec
         if not isinstance(entry, dict):
             entry = {"reason": str(entry)}
         task_id = str(entry.get("task_id") or entry.get("issue_id") or f"legacy-blocked-{index + 1}")
-        if task_id in completed:
+        if task_id in completed or task_id in unblocked:
             continue
         normalized.append({"task_id": task_id, "issue_id": str(entry.get("issue_id") or task_id), "status": "BLOCKED_DECISION", "reason": str(entry.get("reason") or entry.get("status") or "legacy_checkpoint_requires_classification"), "decision_required": str(entry.get("decision_required") or "Review the recorded execution result and choose a retry or replacement task.")})
     program["blocked_tasks"] = normalized

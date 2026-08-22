@@ -23,6 +23,20 @@ CODEX_TIMEOUT_SECONDS = int(os.environ.get("AGENT_HUB_CODEX_TIMEOUT_SECONDS", "9
 CODEX_PROFILE = os.environ.get("AGENT_HUB_CODEX_PROFILE", "")
 BUILD_TIMEOUT_SECONDS = int(os.environ.get("AGENT_HUB_BUILD_TIMEOUT_SECONDS", "900"))
 
+_ALLOWED_VALIDATION_COMMANDS = {"flutter_analyze", "flutter_build", "flutter_build:macos", "flutter_build:windows", "flutter_build:apk"}
+
+_BUILD_COMMANDS = {
+    "macos": ["flutter", "build", "macos", "--debug"],
+    "windows": ["flutter", "build", "windows", "--debug"],
+    "apk": ["flutter", "build", "apk", "--debug"],
+}
+
+
+def _build_target(command: str) -> str:
+    """Map a validation token to a build target.  Bare flutter_build is the
+    macOS alias so pre-existing app-level tasks keep their current behavior."""
+    return "macos" if command == "flutter_build" else command.removeprefix("flutter_build:")
+
 
 @dataclass(frozen=True)
 class WorkerRequest:
@@ -48,7 +62,7 @@ class WorkerRequest:
             if candidate.is_absolute() or ".." in candidate.parts or path.startswith(".hermes/"):
                 raise ValueError("invalid_allowed_paths")
         # Commands are identifiers chosen by the DevelopmentTask, not shell.
-        if any(command not in {"flutter_analyze", "flutter_build"} and not command.startswith("flutter_test:") for command in validation):
+        if any(command not in _ALLOWED_VALIDATION_COMMANDS and not command.startswith("flutter_test:") for command in validation):
             raise ValueError("arbitrary_shell_forbidden")
         return cls(
             repository=expected_repository,
@@ -157,8 +171,9 @@ class LocalCodeExecutor:
                 errors, warnings = _diagnostic_counts(final.stdout + final.stderr)
                 analyze = {"new_errors": max(0, errors-baseline_errors), "new_warnings": max(0, warnings-baseline_warnings), "status": "PASS" if errors <= baseline_errors and warnings <= baseline_warnings else "FAIL_REGRESSION"}
             build = {"status": "NOT_REQUIRED"}
-            if "flutter_build" in request.validation:
-                build = self._run_build(worktree)
+            build_commands = [command for command in request.validation if command == "flutter_build" or command.startswith("flutter_build:")]
+            if build_commands:
+                build = self._run_builds(worktree, build_commands)
             if any(code != 0 for code in tests.values()):
                 return self._result(request, "VALIDATION_FAILED", exit_code=exit_code, changed_files=changed, diff=_complete_diff(worktree, changed), validation={"tests": tests, "analyze": analyze, "build": build}, scope_guard="PASS", stdout_tail=stdout[-2000:], stderr_tail=stderr[-2000:])
             if analyze["status"] == "FAIL_REGRESSION":
@@ -174,29 +189,60 @@ class LocalCodeExecutor:
                 subprocess.run(["git", "worktree", "remove", "--force", str(worktree)], cwd=self.repository_path, capture_output=True)
             shutil.rmtree(root, ignore_errors=True)
 
-    def _run_build(self, worktree: Path) -> dict[str, object]:
-        """Best-effort macOS packaging smoke test.
+    def _build_target_available(self, target: str) -> bool:
+        if target == "macos":
+            return platform.system() == "Darwin"
+        if target == "windows":
+            return platform.system() == "Windows"
+        if target == "apk":
+            return shutil.which("adb") is not None or shutil.which("java") is not None
+        return False
 
-        Non-Darwin hosts skip (BUILD_SKIPPED is non-fatal); CI remains the
-        authoritative packaging gate. A real build failure or timeout is fatal
-        (FAIL -> VALIDATION_FAILED) so packaging-breaking changes are caught
-        inside agent-hub runs instead of only at CI time.
+    def _build_unavailable_reason(self, target: str) -> str:
+        if target == "windows":
+            return "non_windows_host"
+        if target == "apk":
+            return "android_toolchain_unavailable"
+        return "non_darwin_host"
+
+    def _run_build(self, worktree: Path, target: str = "macos") -> dict[str, object]:
+        """Target-qualified packaging smoke test.
+
+        The host must be capable of the requested target.  Non-capable hosts
+        skip (SKIPPED is non-fatal); CI remains the authoritative packaging
+        gate.  A real build failure or timeout is fatal (FAIL ->
+        VALIDATION_FAILED) so packaging-breaking changes are caught inside
+        agent-hub runs instead of only at CI time.
         """
-        if platform.system() != "Darwin":
-            return {"status": "SKIPPED", "reason": "non_darwin_host"}
+        if target not in _BUILD_COMMANDS:
+            return {"status": "FAIL", "reason": "unsupported_build_target", "target": target}
+        if not self._build_target_available(target):
+            return {"status": "SKIPPED", "reason": self._build_unavailable_reason(target), "target": target}
         try:
             process = subprocess.run(
-                ["flutter", "build", "macos", "--debug"],
+                _BUILD_COMMANDS[target],
                 cwd=worktree,
                 capture_output=True,
                 text=True,
                 timeout=BUILD_TIMEOUT_SECONDS,
             )
         except subprocess.TimeoutExpired:
-            return {"status": "FAIL", "reason": "timeout", "exit_code": None}
+            return {"status": "FAIL", "reason": "timeout", "exit_code": None, "target": target}
         if process.returncode == 0:
-            return {"status": "PASS", "exit_code": 0}
-        return {"status": "FAIL", "exit_code": process.returncode, "stderr_tail": process.stderr[-2000:]}
+            return {"status": "PASS", "exit_code": 0, "target": target}
+        return {"status": "FAIL", "exit_code": process.returncode, "stderr_tail": process.stderr[-2000:], "target": target}
+
+    def _run_builds(self, worktree: Path, commands: list[str]) -> dict[str, object]:
+        """Aggregate a target-qualified build matrix.  Any target failing is a
+        validation failure; a build where every target is skipped is SKIPPED."""
+        results = [self._run_build(worktree, _build_target(command)) for command in commands]
+        if results and all(result.get("status") == "SKIPPED" for result in results):
+            return {"status": "SKIPPED", "reason": ";".join(sorted({str(result.get("reason")) for result in results})), "targets": [result.get("target") for result in results]}
+        failed = [result for result in results if result.get("status") == "FAIL"]
+        if failed:
+            first = failed[0]
+            return {"status": "FAIL", "exit_code": first.get("exit_code"), "stderr_tail": first.get("stderr_tail", ""), "target": first.get("target"), "results": results}
+        return {"status": "PASS", "exit_code": 0, "results": results}
 
     def _link_path_dependencies(self, worktree: Path, root: Path) -> None:
         # Workspace members can declare external path dependencies too. Scan

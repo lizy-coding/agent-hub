@@ -187,6 +187,7 @@ class ContextPackage(BaseModel):
     unknowns: list[ContextUnknown] = Field(default_factory=list)
     confidence: str = "LOW"
     metrics: dict[str, int] = Field(default_factory=dict)
+    planned_capabilities: list[dict[str, object]] = Field(default_factory=list)
 
 
 class CouplingProfile(BaseModel):
