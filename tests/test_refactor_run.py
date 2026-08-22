@@ -49,3 +49,17 @@ class RefactorRunTest(unittest.TestCase):
     def test_failed_checkpoint_is_not_treated_as_an_active_run(self):
         from agent_hub.gateway.refactor_run import _active
         self.assertFalse(_active({"next": ["reconcile"], "tasks": [{"error": "FileNotFoundError"}]}))
+
+    @patch("agent_hub.gateway.refactor_run.subprocess.Popen")
+    def test_worker_never_falls_back_to_legacy_repository(self, popen):
+        from agent_hub.gateway.refactor_run import _start_worker
+
+        project = type("Project", (), {"primary_repository_id": "flutter_forge"})()
+        with patch("pathlib.Path.is_dir", return_value=True):
+            _start_worker(Path("/tmp/agent-hub"), "http://127.0.0.1:8765/execute", project)
+
+        environment = popen.call_args.kwargs["env"]
+        self.assertEqual(
+            environment["AGENT_HUB_PRIMARY_REPOSITORY_PATH"],
+            "/tmp/agent-hub/.integration/flutter_forge",
+        )

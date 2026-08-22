@@ -16,25 +16,25 @@ Each discovered record has evidence (`source`, workspace-relative evidence path,
 
 ## Current discovery
 
-After the flutter_study migration, the removal of the standalone husk repositories (`gcode_core`, `file_picker_bridge`, `flutter_study_learning` at the workspace root), and the exclusion of the archival snapshot (`flutter_study__agent_p7_gcode`) via `config.json` `excluded_paths`, discovery reports:
+After the repository migration and rename, discovery reports:
 
 | Repository | Type | Development units |
 |---|---|---:|
-| `flutter_study` | Git repository | 10 |
+| `flutter_forge` | Git repository | 10 |
 
-The managed repository boundary contains a single Git repository (`flutter_study`) with 10 development units (the `apps/flutter_study` app, its four `packages/*` workspace members, plus manifest-backed Windows/example components). The obsolete archival snapshot `flutter_study__agent_p7_gcode` has been removed from the workspace and is also listed in `excluded_paths` so it cannot re-enter discovery if restored locally.
+The managed runtime boundary contains one primary Git repository (`flutter_forge`) with its application, four internal `packages/*` workspace members, and platform/example components. `workspace/config.json` names only `flutter_forge` as the managed, writable primary repository. The obsolete archival snapshot remains excluded so it cannot re-enter discovery if restored locally.
 
 ## Dependency overview
 
 Four direct `path_dependency` edges were discovered, all with a manifest evidence path:
 
-- `flutter_study:.` -> its four declared Pub workspace path packages.
+- `flutter_forge:.` -> its four declared Pub workspace path packages.
 
 No dependency is inferred from a repository or directory name. Reverse `dependents` are derived from those same evidence-bearing edges.
 
 ## Rule files and validation
 
-- Rule discovery found `flutter_study/AGENTS.md`, stored only with its path, directory scope, and `filesystem` provenance.
+- Rule discovery found `flutter_forge/AGENTS.md`, stored only with its path, directory scope, and `filesystem` provenance.
 - No `AGENTS.override.md` was found.
 - Dart/Flutter manifest units expose format/analyze/test candidates when their runtime/test evidence exists.
 - CMake units have no guessed validation command.
@@ -54,17 +54,13 @@ The test suite creates temporary workspace changes and verifies:
 - manifest content changes appear in `changed` through content-hash provenance;
 - an unchanged second refresh reports the same repositories in `unchanged`.
 
-Current stable refresh result (after husk removal and snapshot exclusion):
-
-```json
-{"added": [], "removed": ["example", "file_picker_bridge", "flutter", "flutter_ioc_core", "flutter_study__agent_p7_gcode", "flutter_study_learning", "gcode_core", "runner", "windows"], "changed": [], "unchanged": ["flutter_study"], "ambiguous": []}
-```
+The persisted `workspace/registry.json` is refreshed from this active boundary; historical migration and benchmark artifacts may still mention `flutter_study`, but they are not runtime repository registrations.
 
 ## Test results
 
-`python -m unittest discover -s tests -v` passed all 5 tests. Together they cover bootstrap compatibility; registry load/discovery; a multi-unit Git repository; dependency and dependent queries; AGENTS discovery; path lookup; refresh add/remove/change; invalid path dependencies; normal/escape/symlink path boundaries; and no guessed edge outside the workspace.
+The focused runtime, project configuration, refactor runner, and workspace registry suites pass. Together they cover bootstrap compatibility; registry load/discovery; a multi-unit Git repository; dependency and dependent queries; AGENTS discovery; path lookup; refresh add/remove/change; invalid path dependencies; normal/escape/symlink path boundaries; and no guessed edge outside the workspace.
 
-The existing `workspace_bootstrap` graph also ran successfully after Registry integration. Business Git status before and after remained unchanged: one clean repository, one repository with its existing three untracked files, and one repository with its existing 12 modified/staged plus 3 untracked entries.
+The bootstrap graph also succeeds with one registered repository: `flutter_forge`.
 
 ## Context Resolver readiness
 
