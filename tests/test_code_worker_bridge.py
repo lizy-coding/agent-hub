@@ -15,21 +15,21 @@ from agent_hub.workspace.config import WorkspaceConfig
 
 class CodeWorkerRequestTest(unittest.TestCase):
     def payload(self, **changes):
-        value = {"repository": "flutter_study", "base_revision": "abc", "requirement": "x", "allowed_paths": ["lib/x.dart"], "validation": ["flutter_test:test/x_test.dart"]}
+        value = {"repository": "flutter_forge", "base_revision": "abc", "requirement": "x", "allowed_paths": ["lib/x.dart"], "validation": ["flutter_test:test/x_test.dart"]}
         value.update(changes)
         return value
 
     def test_rejects_invalid_repository_and_unbounded_paths(self):
         with self.assertRaisesRegex(ValueError, "invalid_repository"):
-            WorkerRequest.from_json(self.payload(repository="other"), "flutter_study")
+            WorkerRequest.from_json(self.payload(repository="other"), "flutter_forge")
         with self.assertRaisesRegex(ValueError, "invalid_allowed_paths"):
-            WorkerRequest.from_json(self.payload(allowed_paths=[]), "flutter_study")
+            WorkerRequest.from_json(self.payload(allowed_paths=[]), "flutter_forge")
         with self.assertRaisesRegex(ValueError, "invalid_allowed_paths"):
-            WorkerRequest.from_json(self.payload(allowed_paths=["../outside.dart"]), "flutter_study")
+            WorkerRequest.from_json(self.payload(allowed_paths=["../outside.dart"]), "flutter_forge")
 
     def test_rejects_arbitrary_shell(self):
         with self.assertRaisesRegex(ValueError, "arbitrary_shell_forbidden"):
-            WorkerRequest.from_json(self.payload(validation=["rm -rf /"]), "flutter_study")
+            WorkerRequest.from_json(self.payload(validation=["rm -rf /"]), "flutter_forge")
 
     def test_collects_untracked_changes_in_complete_diff(self):
         with tempfile.TemporaryDirectory() as raw:
@@ -48,14 +48,14 @@ class CodeWorkerRequestTest(unittest.TestCase):
             self.assertIn("a/new.txt", diff)
 
     def test_invalid_request_has_terminal_structured_response(self):
-        result = execute_request({}, LocalCodeExecutor(Path.cwd(), repository_id="flutter_study"))
+        result = execute_request({}, LocalCodeExecutor(Path.cwd(), repository_id="flutter_forge"))
         self.assertEqual(result["status"], "CODEX_EXECUTION_FAILED")
         self.assertIn("stderr_tail", result)
 
 
 class CodeWorkerProcessTest(unittest.TestCase):
     def request(self):
-        return WorkerRequest(repository="flutter_study", base_revision="base", task_id="task", requirement="x", allowed_paths=["lib/x.dart"], validation=[])
+        return WorkerRequest(repository="flutter_forge", base_revision="base", task_id="task", requirement="x", allowed_paths=["lib/x.dart"], validation=[])
 
     def test_codex_nonzero_returns_after_process_exit(self):
         class Process:
@@ -63,7 +63,7 @@ class CodeWorkerProcessTest(unittest.TestCase):
             returncode = 7
             def communicate(self, timeout=None): return ("out", "err")
         with patch("agent_hub.execution.code_worker.subprocess.Popen", return_value=Process()):
-            outcome, code, stdout, stderr = LocalCodeExecutor(Path.cwd(), repository_id="flutter_study")._codex_run(Path.cwd(), self.request())
+            outcome, code, stdout, stderr = LocalCodeExecutor(Path.cwd(), repository_id="flutter_forge")._codex_run(Path.cwd(), self.request())
         self.assertEqual((outcome, code, stdout, stderr), ("completed", 7, "out", "err"))
 
     def test_codex_timeout_terminates_process_group_and_returns(self):
@@ -77,7 +77,7 @@ class CodeWorkerProcessTest(unittest.TestCase):
                 return ("out", "err")
         process = Process()
         with patch("agent_hub.execution.code_worker.subprocess.Popen", return_value=process), patch("agent_hub.execution.code_worker.os.killpg") as killpg:
-            outcome, code, stdout, stderr = LocalCodeExecutor(Path.cwd(), repository_id="flutter_study")._codex_run(Path.cwd(), self.request())
+            outcome, code, stdout, stderr = LocalCodeExecutor(Path.cwd(), repository_id="flutter_forge")._codex_run(Path.cwd(), self.request())
         self.assertEqual((outcome, code, stdout, stderr), ("timeout", -15, "out", "err"))
         killpg.assert_called_once()
 
@@ -85,7 +85,7 @@ class CodeWorkerProcessTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)
             source = root / "source"
-            worktree = root / "isolated" / "flutter_study"
+            worktree = root / "isolated" / "flutter_forge"
             provider = root / "flutterguard"
             (source / "apps/app").mkdir(parents=True)
             (worktree / "apps/app").mkdir(parents=True)
@@ -95,7 +95,7 @@ class CodeWorkerProcessTest(unittest.TestCase):
             (worktree / "apps/app/pubspec.yaml").write_text(manifest)
             subprocess.run(["git", "init", "-q"], cwd=worktree)
             subprocess.run(["git", "add", "apps/app/pubspec.yaml"], cwd=worktree)
-            executor = LocalCodeExecutor(source, repository_id="flutter_study")
+            executor = LocalCodeExecutor(source, repository_id="flutter_forge")
             with patch.dict(os.environ, {"AGENT_HUB_PATH_DEPENDENCY_FLUTTERGUARD_CLI": str(provider)}):
                 executor._link_path_dependencies(worktree, worktree.parent)
             self.assertEqual((worktree / "apps/app/../../../flutterguard").resolve(), provider.resolve())
@@ -121,7 +121,7 @@ class DevelopmentGraphWorkerTest(unittest.TestCase):
             with tempfile.TemporaryDirectory() as raw:
                 root = Path(raw)
                 config = WorkspaceConfig(workspace_root=root, allowed_paths=[root], registry_path=root / "registry.json")
-                result = build_development_graph(config).invoke({"development_task": {"repository": "flutter_study", "base_revision": "a", "requirement": "x", "allowed_paths": ["lib/x.dart"], "validation": []}})["result"]
+                result = build_development_graph(config).invoke({"development_task": {"repository": "flutter_forge", "base_revision": "a", "requirement": "x", "allowed_paths": ["lib/x.dart"], "validation": []}})["result"]
             self.assertEqual(result["status"], "READY_FOR_HUMAN_REVIEW")
             self.assertEqual(result["review"], "APPROVED")
         finally:

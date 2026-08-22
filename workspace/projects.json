@@ -1,11 +1,14 @@
 {
-  "default_project": "flutter-study",
+  "default_project": "flutter-forge",
+  "aliases": {
+    "flutter-study": "flutter-forge"
+  },
   "projects": {
-    "flutter-study": {
-      "adapter": "flutter_study",
-      "program_id": "flutter-study-decomposition-program",
-      "refactor_program_id": "flutter-study-refactor-program",
-      "snapshot_namespace": "flutter-study",
+    "flutter-forge": {
+      "adapter": "flutter_forge",
+      "program_id": "flutter-forge-decomposition-program",
+      "refactor_program_id": "flutter-forge-refactor-program",
+      "snapshot_namespace": "flutter-forge",
       "workspace_config": "workspace/config.json"
     }
   }

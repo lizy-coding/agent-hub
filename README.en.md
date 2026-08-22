@@ -18,7 +18,7 @@ Agent Hub does not contain, move, or copy business project code. It accepts an e
 | `workspace/projects.json` | Decomposition project registry |
 | `workspace/registry.json` | Normalized engineering-fact registry (generated read-only artifact) |
 | `agent` | Local CLI entrypoint (refactor / decomposition dashboard) |
-| `.integration/` | Development-refactor integration worktree (flutter_study, created at runtime by `refactor-run`) |
+| `.integration/` | Development-refactor integration worktree (flutter_forge, created at runtime by `refactor-run`) |
 | `.decomposition/` | Decomposition program worktrees and state snapshots |
 | `plans/` | Migration / decomposition plans and proposals (JSON) |
 | `tests/` | `unittest` suite |
@@ -122,7 +122,7 @@ The refactor program follows a **frozen-task** model: only one frozen `Developme
 ./agent decomposition-decide --decision-id <id> --choice <choice>
 ```
 
-- Decomposition programs are registered per project in `workspace/projects.json` (default project `flutter-study`).
+- Decomposition programs are registered per project in `workspace/projects.json` (default project `flutter-forge`).
 - The planning phase **never executes** a migration; execution requires an explicit `--execute`, and the Graph freezes exact Worker paths.
 - Custom proposals may not carry graph-owned fields such as `allowed_paths` / `candidate_paths`.
 

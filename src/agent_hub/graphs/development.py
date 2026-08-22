@@ -46,6 +46,12 @@ def _integration_root(config: WorkspaceConfig, repository_id: str) -> Path:
     managed = Path(__file__).resolve().parents[3] / ".integration" / repository_id
     if managed.is_dir():
         return managed.resolve()
+    # Reuse the pre-rename managed worktree until its active program has been
+    # reconciled into the canonical Flutter Forge identity.
+    if repository_id == "flutter_forge":
+        legacy = managed.parent / "flutter_study"
+        if legacy.is_dir():
+            return legacy.resolve()
     return registry_api.get_repository(config, repository_id).path.resolve()
 
 
@@ -88,8 +94,11 @@ def _rules_for(path: Path, root: Path) -> list[str]:
 
 
 def _app_root(root: Path) -> Path:
-    relocated = root / "apps" / "flutter_study"
-    return relocated if (relocated / "pubspec.yaml").is_file() else root
+    relocated = root / "apps" / "flutter_forge"
+    if (relocated / "pubspec.yaml").is_file():
+        return relocated
+    legacy = root / "apps" / "flutter_study"
+    return legacy if (legacy / "pubspec.yaml").is_file() else root
 
 
 def _relative(root: Path, path: Path) -> str:
@@ -166,7 +175,7 @@ def _new_program(config: WorkspaceConfig, repository_id: str, completed: list[st
         {"issue_id": "category-navigation-boundary", "issue": "CategoryNavigation is a platform-navigation boundary", "evidence": [_ref(application / "lib/app/category_navigation.dart", root, "class CategoryNavigation")], "status": "NO_ACTION"},
     ]
     blocked = [{"task_id": issue["issue_id"], "issue_id": issue["issue_id"], "reason": issue["reason"], "decision_required": issue["decision_required"], "status": "BLOCKED_DECISION"} for issue in issues if issue["status"] == "BLOCKED_DECISION"]
-    return {"program_id": "flutter-study-refactor-program", "repository": repository_id, "integration_branch": _git(root, "branch", "--show-current"), "base_revision": _git(root, "rev-parse", "HEAD"), "architecture_summary": "The app shell owns bootstrap/routing; modules own teaching capabilities; internal packages are manifest-backed DevelopmentUnits.", "development_units": units, "workstreams": ["app orchestration boundary", "module capability boundaries", "internal package call topology"], "architecture_issues": issues, "tasks": tasks, "dependency_dag": {str(t["task_id"]): t["dependencies"] for t in tasks}, "execution_order": [str(t["task_id"]) for t in tasks], "current_task": None, "completed_tasks": [str(t["task_id"]) for t in tasks if t["status"] == "DONE"], "blocked_tasks": blocked, "final_rescan_completed": False, "status": "READY" if any(t["status"] == "READY" for t in tasks) else "PLANNING"}
+    return {"program_id": "flutter-forge-refactor-program", "repository": repository_id, "integration_branch": _git(root, "branch", "--show-current"), "base_revision": _git(root, "rev-parse", "HEAD"), "architecture_summary": "The app shell owns bootstrap/routing; modules own teaching capabilities; internal packages are manifest-backed DevelopmentUnits.", "development_units": units, "workstreams": ["app orchestration boundary", "module capability boundaries", "internal package call topology"], "architecture_issues": issues, "tasks": tasks, "dependency_dag": {str(t["task_id"]): t["dependencies"] for t in tasks}, "execution_order": [str(t["task_id"]) for t in tasks], "current_task": None, "completed_tasks": [str(t["task_id"]) for t in tasks if t["status"] == "DONE"], "blocked_tasks": blocked, "final_rescan_completed": False, "status": "READY" if any(t["status"] == "READY" for t in tasks) else "PLANNING"}
 
 
 def reconcile_program(program: dict[str, object], root: Path) -> dict[str, object]:
@@ -187,7 +196,7 @@ def reconcile_program(program: dict[str, object], root: Path) -> dict[str, objec
             task.update({"status": "DONE", "commit_hash": by_task[task_id], "integration_base_revision": program.get("base_revision"), "applied_to_integration": True})
             completed.add(task_id)
     if stale_primary and "app-router-private-facade" in by_task:
-        recovered = _new_program_for_reconciliation(root, str(program.get("repository", "flutter_study")), sorted(completed))
+        recovered = _new_program_for_reconciliation(root, str(program.get("repository", "flutter_forge")), sorted(completed))
         program = recovered
         completed = set(program.get("completed_tasks", []))
     program["completed_tasks"] = sorted(completed)
@@ -244,7 +253,7 @@ def _new_program_for_reconciliation(root: Path, repository_id: str, completed: l
     controller = application / "lib/modules/ui/gcode_visualizer/state/gcode_player_controller.dart"
     task = _router_task(root, repository_id, "DONE")
     task.update({"commit_hash": _git(root, "log", "-1", "--format=%H", "--grep=app-router-private-facade"), "integration_base_revision": "930bd47fcf29171bbfc5d281fb21fda9b858453f"})
-    return {"program_id": "flutter-study-refactor-program", "repository": repository_id, "integration_branch": _git(root, "branch", "--show-current"), "base_revision": _git(root, "rev-parse", "HEAD"), "architecture_summary": "The app shell owns bootstrap/routing; modules own teaching capabilities; internal packages are manifest-backed DevelopmentUnits.", "development_units": [], "workstreams": ["app orchestration boundary", "module capability boundaries", "internal package call topology"], "architecture_issues": [{"issue_id": "app-router-private-facade", "issue": "private routing facade", "evidence": ["lib/app/app.dart:8"], "status": "NO_ACTION"}, {"issue_id": "gcode-controller-ownership", "issue": "G-code controller owns file picking, parsing, animation, and read-model state", "evidence": [_ref(controller, root, "class GcodePlayerController"), _ref(controller, root, "pickFilePathAndLoad"), _ref(controller, root, "AnimationController")], "status": "BLOCKED_DECISION", "reason": "A behavior-preserving split needs a decided owner for TickerProvider lifecycle and FilePicker error presentation.", "decision_required": "Choose whether animation lifecycle stays in the widget or becomes an injected runtime."}], "tasks": [task], "dependency_dag": {"app-router-private-facade": []}, "execution_order": ["app-router-private-facade"], "current_task": None, "completed_tasks": ["app-router-private-facade"], "blocked_tasks": [{"task_id": "gcode-controller-ownership", "issue_id": "gcode-controller-ownership", "status": "BLOCKED_DECISION", "reason": "A behavior-preserving split needs a decided owner for TickerProvider lifecycle and FilePicker error presentation.", "decision_required": "Choose whether animation lifecycle stays in the widget or becomes an injected runtime."}], "final_rescan_completed": False, "status": "PLANNING", "_inventory_from_registry": True}
+    return {"program_id": "flutter-forge-refactor-program", "repository": repository_id, "integration_branch": _git(root, "branch", "--show-current"), "base_revision": _git(root, "rev-parse", "HEAD"), "architecture_summary": "The app shell owns bootstrap/routing; modules own teaching capabilities; internal packages are manifest-backed DevelopmentUnits.", "development_units": [], "workstreams": ["app orchestration boundary", "module capability boundaries", "internal package call topology"], "architecture_issues": [{"issue_id": "app-router-private-facade", "issue": "private routing facade", "evidence": ["lib/app/app.dart:8"], "status": "NO_ACTION"}, {"issue_id": "gcode-controller-ownership", "issue": "G-code controller owns file picking, parsing, animation, and read-model state", "evidence": [_ref(controller, root, "class GcodePlayerController"), _ref(controller, root, "pickFilePathAndLoad"), _ref(controller, root, "AnimationController")], "status": "BLOCKED_DECISION", "reason": "A behavior-preserving split needs a decided owner for TickerProvider lifecycle and FilePicker error presentation.", "decision_required": "Choose whether animation lifecycle stays in the widget or becomes an injected runtime."}], "tasks": [task], "dependency_dag": {"app-router-private-facade": []}, "execution_order": ["app-router-private-facade"], "current_task": None, "completed_tasks": ["app-router-private-facade"], "blocked_tasks": [{"task_id": "gcode-controller-ownership", "issue_id": "gcode-controller-ownership", "status": "BLOCKED_DECISION", "reason": "A behavior-preserving split needs a decided owner for TickerProvider lifecycle and FilePicker error presentation.", "decision_required": "Choose whether animation lifecycle stays in the widget or becomes an injected runtime."}], "final_rescan_completed": False, "status": "PLANNING", "_inventory_from_registry": True}
 
 
 def _select(program: dict[str, object]) -> dict[str, object] | None:
@@ -267,7 +276,7 @@ def build_development_graph(config: WorkspaceConfig):
     def bootstrap_runtime(state: DevelopmentState): return {"result": {"runtime_workspace": provider.workspace.model_dump(mode="json")}}
 
     def reconcile(state: DevelopmentState):
-        repository_id = state.get("repository_id", "flutter_study")
+        repository_id = state.get("repository_id", "flutter_forge")
         if not state.get("program") and isinstance(state.get("development_task"), dict):
             supplied = state["development_task"]
             task_id = str(supplied.get("task_id", "externally-frozen-task"))
@@ -302,7 +311,7 @@ def build_development_graph(config: WorkspaceConfig):
         program = state["program"]
         if program.get("program_id") == "externally-frozen-task": return {"program": program}
         if not program.get("development_units"):
-            replacement = _new_program(config, str(program.get("repository", state.get("repository_id", "flutter_study"))), list(program.get("completed_tasks", [])))
+            replacement = _new_program(config, str(program.get("repository", state.get("repository_id", "flutter_forge"))), list(program.get("completed_tasks", [])))
             replacement["tasks"] = program.get("tasks", replacement["tasks"])
             replacement["completed_tasks"] = program.get("completed_tasks", [])
             program = replacement
@@ -310,7 +319,7 @@ def build_development_graph(config: WorkspaceConfig):
         return {"program": program}
 
     def normalize(state: DevelopmentState):
-        program = reconcile_program(state["program"], _integration_root(config, str(state["program"].get("repository", "flutter_study"))))
+        program = reconcile_program(state["program"], _integration_root(config, str(state["program"].get("repository", "flutter_forge"))))
         for issue in program.get("architecture_issues", []):
             if issue.get("status") == "RESOLVED_BY_DECISION": issue["status"] = "ACTIONABLE"
         return {"program": program}

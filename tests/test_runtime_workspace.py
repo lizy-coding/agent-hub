@@ -5,10 +5,10 @@ from agent_hub.workspace.runtime import RuntimeWorkspaceProvider
 
 class RuntimeWorkspaceTest(unittest.TestCase):
  def config(self,root):
-  (root/'flutter_study').mkdir();return WorkspaceConfig(workspace_root=root,allowed_paths=[root],registry_path=root/'bootstrap.json',runtime={'environment':'HOSTED','runtime_root':str(root),'checkout_root':str(root),'primary_repository_id':'flutter_study','repositories':{'flutter_study':{'runtime_path':str(root/'flutter_study'),'role':'PRIMARY','managed':True,'writable':True},'ref':{'runtime_path':str(root/'flutter_study'),'role':'REFERENCE','managed':False,'writable':False}}})
+  (root/'flutter_forge').mkdir();return WorkspaceConfig(workspace_root=root,allowed_paths=[root],registry_path=root/'bootstrap.json',runtime={'environment':'HOSTED','runtime_root':str(root),'checkout_root':str(root),'primary_repository_id':'flutter_forge','repositories':{'flutter_forge':{'runtime_path':str(root/'flutter_forge'),'role':'PRIMARY','managed':True,'writable':True},'ref':{'runtime_path':str(root/'flutter_forge'),'role':'REFERENCE','managed':False,'writable':False}}})
  def test_identity_is_independent_of_runtime_root_and_permissions_apply(self):
   with tempfile.TemporaryDirectory() as raw:
-   provider=RuntimeWorkspaceProvider.from_config(self.config(Path(raw)));self.assertEqual(provider.get_primary_repository().repository_id,'flutter_study');self.assertEqual(provider.resolve_path('flutter_study','lib/x.dart'),(Path(raw)/'flutter_study/lib/x.dart').resolve());self.assertRaises(PermissionError,provider.assert_writable,'ref','x');self.assertRaises(ValueError,provider.resolve_path,'flutter_study','../escape')
+   provider=RuntimeWorkspaceProvider.from_config(self.config(Path(raw)));self.assertEqual(provider.get_primary_repository().repository_id,'flutter_forge');self.assertEqual(provider.resolve_path('flutter_forge','lib/x.dart'),(Path(raw)/'flutter_forge/lib/x.dart').resolve());self.assertRaises(PermissionError,provider.assert_writable,'ref','x');self.assertRaises(ValueError,provider.resolve_path,'flutter_forge','../escape')
  def test_file_paths_resolve_relative_to_config_location(self):
   with tempfile.TemporaryDirectory() as raw:
    base=Path(raw); (base/'workspace').mkdir(); (base/'repo').mkdir(); config_path=base/'workspace/config.json'

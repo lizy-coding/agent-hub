@@ -34,7 +34,7 @@ class RefactorRunTest(unittest.TestCase):
             self.assertEqual(refactor_run("http://server", "thread", "/tmp/agent-hub", output.append), 0)
             self.assertEqual(
                 os.environ["AGENT_HUB_INTEGRATION_WORKTREE"],
-                "/tmp/agent-hub/.integration/flutter_study",
+                "/tmp/agent-hub/.integration/flutter_forge",
             )
 
     @patch("agent_hub.gateway.refactor_run._ready", return_value=False)

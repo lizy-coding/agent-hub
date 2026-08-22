@@ -35,6 +35,9 @@ def _start_worker(root, endpoint, project):
                 if "=" in line and not line.startswith("#"):
                     key,value=line.split("=",1); env.setdefault(key,value)
     integration=root/".integration"/project.primary_repository_id
+    legacy=root/".integration"/"flutter_study"
+    if project.primary_repository_id == "flutter_forge" and not integration.is_dir() and legacy.is_dir():
+        integration=legacy
     env["AGENT_HUB_PRIMARY_REPOSITORY_PATH"]=str(integration)
     env["AGENT_HUB_PRIMARY_REPOSITORY"]=project.primary_repository_id
     env["AGENT_HUB_INTEGRATION_WORKTREE"]=str(integration)
@@ -51,10 +54,11 @@ def refactor_run(server, thread_id, root, output=print, project_id=None):
     if not thread_id:
         thread_id = _call("POST", server.rstrip("/") + "/threads", {"metadata": {"program_type": "development", "program_id": project.refactor_program_id, "project_id": project.project_id, "repository_id": project.primary_repository_id}})["thread_id"]
     endpoint=os.environ.get("AGENT_HUB_CODE_WORKER_ENDPOINT","http://127.0.0.1:8765/execute"); owned=None
-    os.environ.setdefault(
-        "AGENT_HUB_INTEGRATION_WORKTREE",
-        str(root / ".integration" / project.primary_repository_id),
-    )
+    integration = root / ".integration" / project.primary_repository_id
+    legacy = root / ".integration" / "flutter_study"
+    if project.primary_repository_id == "flutter_forge" and not integration.is_dir() and legacy.is_dir():
+        integration = legacy
+    os.environ.setdefault("AGENT_HUB_INTEGRATION_WORKTREE", str(integration))
     if not _ready(endpoint):
         owned=_start_worker(root,endpoint,project)
         for _ in range(20):

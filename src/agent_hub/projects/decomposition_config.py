@@ -36,9 +36,9 @@ class DecompositionProjectConfig(BaseModel):
             raise ValueError(
                 f"primary repository is not configured: {self.primary_repository_id}"
             )
-        if self.adapter == "flutter_study" and self.primary_repository_id != "flutter_study":
+        if self.adapter == "flutter_forge" and self.primary_repository_id != "flutter_forge":
             raise ValueError(
-                "flutter_study adapter requires primary_repository_id=flutter_study"
+                "flutter_forge adapter requires primary_repository_id=flutter_forge"
             )
         return self
 
@@ -69,6 +69,9 @@ def load_decomposition_project(
     path = path.expanduser().resolve()
     payload = json.loads(path.read_text(encoding="utf-8"))
     selected = project_id or os.environ.get("AGENT_HUB_PROJECT") or payload.get("default_project")
+    aliases = payload.get("aliases", {})
+    if isinstance(aliases, dict):
+        selected = aliases.get(selected, selected)
     projects = payload.get("projects")
     if not selected or not isinstance(projects, dict) or selected not in projects:
         raise KeyError(f"unknown decomposition project: {selected or '<unset>'}")

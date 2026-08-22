@@ -5,8 +5,8 @@ from agent_hub.execution.path_dependencies import RelativePathDependencyAvailabi
 class MigrationExecutorTest(unittest.TestCase):
  def test_canonical_relative_path_guard(self):
   with tempfile.TemporaryDirectory() as raw:
-   root=Path(raw);(root/'flutter_study').mkdir();(root/'gcode_core').mkdir()
-   self.assertTrue(WorktreeManager(root/'flutter_study',root/'gcode_core').canonical_relative_ok())
+   root=Path(raw);(root/'flutter_forge').mkdir();(root/'gcode_core').mkdir()
+   self.assertTrue(WorktreeManager(root/'flutter_forge',root/'gcode_core').canonical_relative_ok())
  def test_missing_path_dependency_is_detected(self):
   with tempfile.TemporaryDirectory() as raw:
    root=Path(raw);(root/'pubspec.yaml').write_text('dependencies:\n  a:\n    path: ../a\n')

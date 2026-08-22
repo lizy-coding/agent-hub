@@ -18,7 +18,7 @@ Agent Hub 本身不提交业务项目源码。它接收“项目注册 + 工作�
 | `workspace/projects.json` | decomposition（拆解）项目注册表 |
 | `workspace/registry.json` | 刷新后的工程事实注册表（生成的只读产物） |
 | `agent` | 本地命令行入口（重构 / 拆解 dashboard） |
-| `.integration/` | development 重构集成 worktree（flutter_study，运行期由 `refactor-run` 创建） |
+| `.integration/` | development 重构集成 worktree（flutter_forge，运行期由 `refactor-run` 创建） |
 | `.decomposition/` | decomposition 拆解程序的工作树与状态快照 |
 | `plans/` | 迁移/拆解计划与提案（JSON） |
 | `tests/` | `unittest` 测试套件 |
@@ -122,7 +122,7 @@ python -c 'from pathlib import Path; from agent_hub.workspace.config import Work
 ./agent decomposition-decide --decision-id <id> --choice <choice>
 ```
 
-- 拆解程序在 `workspace/projects.json` 中按项目注册（默认项目 `flutter-study`）。
+- 拆解程序在 `workspace/projects.json` 中按项目注册（默认项目 `flutter-forge`）。
 - 规划阶段**绝不执行**任何迁移；执行必须显式传 `--execute`，且 Worker 派发由 Graph 冻结精确路径。
 - 自定义提案不允许携带 `allowed_paths` / `candidate_paths` 等 Graph 自有字段。
 

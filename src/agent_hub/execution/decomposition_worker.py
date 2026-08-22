@@ -39,8 +39,10 @@ class DecompositionCodeExecutor:
     """Run one frozen multi-repository task outside all managed worktrees."""
 
     def __init__(self, cluster_root: Path | None = None, codex_binary: str = "codex") -> None:
+        project = load_decomposition_project()
         selected_root = cluster_root or Path(os.environ.get("AGENT_HUB_DECOMPOSITION_CLUSTER_ROOT", str(CLUSTER_ROOT)))
         self.cluster_root = selected_root.resolve()
+        self.repository_paths = project.repository_paths
         self.codex_binary = codex_binary
 
     def execute(self, payload: dict[str, object]) -> dict[str, object]:
@@ -61,7 +63,7 @@ class DecompositionCodeExecutor:
                 if not isinstance(item, dict):
                     return self._result(task_id, "WORKER_DISPATCH_FAILED", "invalid_repository_entry", execution_id, root)
                 repository, base = str(item.get("repository", "")), str(item.get("base_revision", ""))
-                source = self.cluster_root / repository
+                source = self.repository_paths.get(repository, self.cluster_root / repository)
                 if not repository or not base or not source.is_dir():
                     return self._result(task_id, "WORKER_DISPATCH_FAILED", "invalid_repository_source", execution_id, root)
                 worktree = root / repository
@@ -107,7 +109,8 @@ class DecompositionCodeExecutor:
             return self._result(task_id, "WORKER_DISPATCH_FAILED", str(error), execution_id, root)
         finally:
             for repository, worktree in worktrees.items():
-                subprocess.run(["git", "worktree", "remove", "--force", str(worktree)], cwd=self.cluster_root / repository, capture_output=True)
+                source = self.repository_paths.get(repository, self.cluster_root / repository)
+                subprocess.run(["git", "worktree", "remove", "--force", str(worktree)], cwd=source, capture_output=True)
             shutil.rmtree(root, ignore_errors=True)
 
     @staticmethod
@@ -140,7 +143,7 @@ class DecompositionCodeExecutor:
                 + "Frozen roles: " + role_text + ". "
                 + "Task: " + str(payload.get("requirement", "")) + ". Execution instructions: " + instruction_text + ". "
                 + "Do not commit, push, merge, release, modify manifests outside the stated task, or touch ordinary user worktrees. "
-                + "Move files with `git mv` (never copy); every file moved or deleted from a source path MUST appear in `git status` as deleted at the source AND added at the destination. "
+                + "Move files without copying. Prefer `git mv`; when the isolated worktree sandbox cannot write the parent repository's worktree metadata, use a filesystem move instead. The Worker will stage and verify the resulting source deletions and destination additions after Codex exits. "
                 + "After the move, verify with `git status --porcelain` that the source app directories (for example root lib/main.dart and root lib/app) no longer exist and no duplicates remain. "
                 + "When rewriting manifest paths, keep every other declared workspace member (packages/*, plugins/*) untouched at the workspace root. "
                 + "If verification fails or a file cannot be moved, keep working until `git status --porcelain` shows exactly the intended moved set; do not stop early.")

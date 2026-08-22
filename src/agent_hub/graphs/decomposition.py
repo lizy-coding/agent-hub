@@ -90,7 +90,17 @@ def _ensure_worktree(repository: str, program: dict[str, object] | None = None) 
     cluster = Path(str(context.get("cluster_root") or CLUSTER)).resolve()
     project_id = str(context.get("project_id") or DEFAULT_PROJECT_ID)
     managed_root = MANAGED_ROOT if project_id == DEFAULT_PROJECT_ID else MANAGED_ROOT / project_id
-    source, target, branch = cluster / repository, managed_root / repository, f"decomposition/{repository}"
+    repositories = context.get("repositories")
+    configured = next(
+        (
+            item.get("path")
+            for item in repositories
+            if isinstance(item, dict) and item.get("repository_id") == repository
+        ),
+        None,
+    ) if isinstance(repositories, list) else None
+    source = Path(str(configured)).resolve() if configured else cluster / repository
+    target, branch = managed_root / repository, f"decomposition/{repository}"
     if target.is_dir():
         return target, branch
     managed_root.mkdir(parents=True, exist_ok=True)
@@ -126,9 +136,9 @@ def _allowed(task: dict[str, object], repository: str) -> list[str]:
         return [str(path) for path in frozen[repository]]
     task_id = str(task.get("task_id", ""))
     known = {
-        "merge-gcode-core-owners": {"flutter_study": ["packages/gcode_core"]},
-        "merge-file-picker-bridge-owners": {"flutter_study": ["packages/file_picker_bridge"]},
-        "relocate-flutter-study-app": {"flutter_study": ["lib/app", "lib", "pubspec.yaml", "flutterguard.yaml"]},
+        "merge-gcode-core-owners": {"flutter_forge": ["packages/gcode_core"]},
+        "merge-file-picker-bridge-owners": {"flutter_forge": ["packages/file_picker_bridge"]},
+        "relocate-flutter-forge-app": {"flutter_forge": ["lib/app", "lib", "pubspec.yaml", "flutterguard.yaml"]},
     }
     return known.get(task_id, {}).get(repository, [])
 
@@ -183,7 +193,7 @@ def _worker(request: dict[str, object], endpoint: str | None) -> dict[str, objec
 
 def _program(root: Path, project_context: dict[str, object] | None = None) -> dict[str, object]:
     context = project_context or {}
-    primary_repository = str(context.get("primary_repository_id") or "flutter_study")
+    primary_repository = str(context.get("primary_repository_id") or "flutter_forge")
     repository_paths = context.get("repository_paths") if isinstance(context.get("repository_paths"), dict) else {}
     primary_path = Path(str(repository_paths.get(primary_repository) or root / primary_repository))
     repos = []
@@ -191,38 +201,38 @@ def _program(root: Path, project_context: dict[str, object] | None = None) -> di
         pubspec = directory / "pubspec.yaml"
         if pubspec.is_file():
             name, deps = _pubspec(pubspec)
-            repos.append({"repository_id": directory.name, "path": str(directory), "role": "APP", "package_name": name, "pubspec": str(pubspec), "dependencies": deps, "consumers": []})
+            repos.append({"repository_id": primary_repository, "path": str(directory), "role": "APP", "package_name": name, "pubspec": str(pubspec), "dependencies": deps, "consumers": []})
     capabilities = [
-        {"capability_id":"gcode-parser-toolpath","current_owners":["flutter_study/packages/gcode_core"],"source_paths":["flutter_study/packages/gcode_core/lib"],"consumers":["flutter_study:gcode_visualizer"],"dependencies":["flutter"],"flutter_dependency":True,"platform_dependency":False,"native_dependency":False,"state_dependency":False,"reuse_scope":"cluster","classification":"KEEP_PACKAGE","target_package":"packages/gcode_core"},
-        {"capability_id":"file-picker-platform-bridge","current_owners":["flutter_study/packages/file_picker_bridge"],"source_paths":["flutter_study/packages/file_picker_bridge/lib"],"consumers":["flutter_study:file_picker","flutter_study:gcode_visualizer","flutter_study:font_picker"],"dependencies":["flutter/services"],"flutter_dependency":True,"platform_dependency":True,"native_dependency":False,"state_dependency":False,"reuse_scope":"cluster","classification":"KEEP_PACKAGE","target_package":"packages/file_picker_bridge"},
-        {"capability_id":"learning-scaffold","current_owners":["flutter_study/packages/flutter_study_learning"],"source_paths":["flutter_study/packages/flutter_study_learning/lib"],"consumers":["flutter_study:modules"],"dependencies":["flutter"],"flutter_dependency":True,"platform_dependency":False,"native_dependency":False,"state_dependency":False,"reuse_scope":"cluster","classification":"KEEP_PACKAGE","target_package":"packages/flutter_study_learning"},
-        {"capability_id":"ioc-composition-services","current_owners":["flutter_study/packages/flutter_ioc_core"],"source_paths":["flutter_study/packages/flutter_ioc_core/lib"],"consumers":["flutter_study:modules"],"dependencies":["flutter"],"flutter_dependency":True,"platform_dependency":False,"native_dependency":False,"state_dependency":False,"reuse_scope":"cluster","classification":"KEEP_PACKAGE","target_package":"packages/flutter_ioc_core"},
-        {"capability_id":"app-composition-routing","current_owners":["flutter_study/apps/flutter_study"],"source_paths":["flutter_study/apps/flutter_study/lib"],"consumers":[],"dependencies":["go_router","flutter"],"flutter_dependency":True,"platform_dependency":False,"native_dependency":False,"state_dependency":True,"reuse_scope":"app","classification":"KEEP_APP_ONLY","target_package":"apps/flutter_study"},
+        {"capability_id":"gcode-parser-toolpath","current_owners":["flutter_forge/packages/gcode_core"],"source_paths":["flutter_forge/packages/gcode_core/lib"],"consumers":["flutter_forge:gcode_visualizer"],"dependencies":["flutter"],"flutter_dependency":True,"platform_dependency":False,"native_dependency":False,"state_dependency":False,"reuse_scope":"cluster","classification":"KEEP_PACKAGE","target_package":"packages/gcode_core"},
+        {"capability_id":"file-picker-platform-bridge","current_owners":["flutter_forge/packages/file_picker_bridge"],"source_paths":["flutter_forge/packages/file_picker_bridge/lib"],"consumers":["flutter_forge:file_picker","flutter_forge:gcode_visualizer","flutter_forge:font_picker"],"dependencies":["flutter/services"],"flutter_dependency":True,"platform_dependency":True,"native_dependency":False,"state_dependency":False,"reuse_scope":"cluster","classification":"KEEP_PACKAGE","target_package":"packages/file_picker_bridge"},
+        {"capability_id":"learning-scaffold","current_owners":["flutter_forge/packages/flutter_study_learning"],"source_paths":["flutter_forge/packages/flutter_study_learning/lib"],"consumers":["flutter_forge:modules"],"dependencies":["flutter"],"flutter_dependency":True,"platform_dependency":False,"native_dependency":False,"state_dependency":False,"reuse_scope":"cluster","classification":"KEEP_PACKAGE","target_package":"packages/flutter_study_learning"},
+        {"capability_id":"ioc-composition-services","current_owners":["flutter_forge/packages/flutter_ioc_core"],"source_paths":["flutter_forge/packages/flutter_ioc_core/lib"],"consumers":["flutter_forge:modules"],"dependencies":["flutter"],"flutter_dependency":True,"platform_dependency":False,"native_dependency":False,"state_dependency":False,"reuse_scope":"cluster","classification":"KEEP_PACKAGE","target_package":"packages/flutter_ioc_core"},
+        {"capability_id":"app-composition-routing","current_owners":["flutter_forge/apps/flutter_forge"],"source_paths":["flutter_forge/apps/flutter_forge/lib"],"consumers":[],"dependencies":["go_router","flutter"],"flutter_dependency":True,"platform_dependency":False,"native_dependency":False,"state_dependency":True,"reuse_scope":"app","classification":"KEEP_APP_ONLY","target_package":"apps/flutter_forge"},
     ]
-    candidates = [{"package_id":"packages/gcode_core","package_type":"FLUTTER_PACKAGE","target_path":"packages/gcode_core","owned_capabilities":["gcode-parser-toolpath"],"dependencies":[],"public_api_intent":"parser and toolpath API","migration_priority":1},{"package_id":"packages/file_picker_bridge","package_type":"FLUTTER_PACKAGE","target_path":"packages/file_picker_bridge","owned_capabilities":["file-picker-platform-bridge"],"dependencies":[],"public_api_intent":"platform-neutral file picker API","migration_priority":1},{"package_id":"packages/flutter_ioc_core","package_type":"FLUTTER_PACKAGE","target_path":"packages/flutter_ioc_core","owned_capabilities":["ioc-composition-services"],"dependencies":[],"public_api_intent":"composition IoC services","migration_priority":2},{"package_id":"packages/flutter_study_learning","package_type":"FLUTTER_PACKAGE","target_path":"packages/flutter_study_learning","owned_capabilities":["learning-scaffold"],"dependencies":[],"public_api_intent":"learning UI templates","migration_priority":2},{"package_id":"apps/flutter_study","package_type":"APP_ONLY","target_path":"apps/flutter_study","owned_capabilities":["app-composition-routing"],"dependencies":["packages/gcode_core","packages/file_picker_bridge","packages/flutter_study_learning","packages/flutter_ioc_core"],"public_api_intent":"bootstrap and composition only","migration_priority":3}]
+    candidates = [{"package_id":"packages/gcode_core","package_type":"FLUTTER_PACKAGE","target_path":"packages/gcode_core","owned_capabilities":["gcode-parser-toolpath"],"dependencies":[],"public_api_intent":"parser and toolpath API","migration_priority":1},{"package_id":"packages/file_picker_bridge","package_type":"FLUTTER_PACKAGE","target_path":"packages/file_picker_bridge","owned_capabilities":["file-picker-platform-bridge"],"dependencies":[],"public_api_intent":"platform-neutral file picker API","migration_priority":1},{"package_id":"packages/flutter_ioc_core","package_type":"FLUTTER_PACKAGE","target_path":"packages/flutter_ioc_core","owned_capabilities":["ioc-composition-services"],"dependencies":[],"public_api_intent":"composition IoC services","migration_priority":2},{"package_id":"packages/flutter_study_learning","package_type":"FLUTTER_PACKAGE","target_path":"packages/flutter_study_learning","owned_capabilities":["learning-scaffold"],"dependencies":[],"public_api_intent":"learning UI templates","migration_priority":2},{"package_id":"apps/flutter_forge","package_type":"APP_ONLY","target_path":"apps/flutter_forge","owned_capabilities":["app-composition-routing"],"dependencies":["packages/gcode_core","packages/file_picker_bridge","packages/flutter_study_learning","packages/flutter_ioc_core"],"public_api_intent":"bootstrap and composition only","migration_priority":3}]
     tasks = [
-        {"task_id":"merge-gcode-core-owners","title":"Confirm the G-code package owner","source_units":["flutter_study/packages/gcode_core"],"target_units":["packages/gcode_core"],"depends_on":[],"allowed_operations":[],"allowed_paths_by_repository":{"flutter_study":["packages/gcode_core"]},"acceptance":["single owner remains packages/gcode_core"],"status":"DONE","evidence":["registry discovers packages/gcode_core only inside flutter_study","standalone owner was removed before this program state"]},
-        {"task_id":"merge-file-picker-bridge-owners","title":"Confirm the file picker bridge package owner","source_units":["flutter_study/packages/file_picker_bridge"],"target_units":["packages/file_picker_bridge"],"depends_on":[],"allowed_operations":[],"allowed_paths_by_repository":{"flutter_study":["packages/file_picker_bridge"]},"target_creation_allowed":False,"dependency_constraints":["flutter_study depends only on packages/file_picker_bridge","packages/file_picker_bridge must not depend on apps/flutter_study","no dependency cycle"],"acceptance":["exactly one reusable file picker owner remains packages/file_picker_bridge","workspace package pubspec/lib/public API remain present","all app call sites resolve package:file_picker_bridge/file_picker_bridge.dart"],"status":"DONE","evidence":["registry discovers packages/file_picker_bridge only inside flutter_study","flutter_study/pubspec.yaml workspace and path dependency point to packages/file_picker_bridge","three app consumers import package:file_picker_bridge/file_picker_bridge.dart"]},
+        {"task_id":"merge-gcode-core-owners","title":"Confirm the G-code package owner","source_units":["flutter_forge/packages/gcode_core"],"target_units":["packages/gcode_core"],"depends_on":[],"allowed_operations":[],"allowed_paths_by_repository":{"flutter_forge":["packages/gcode_core"]},"acceptance":["single owner remains packages/gcode_core"],"status":"DONE","evidence":["registry discovers packages/gcode_core only inside flutter_forge","standalone owner was removed before this program state"]},
+        {"task_id":"merge-file-picker-bridge-owners","title":"Confirm the file picker bridge package owner","source_units":["flutter_forge/packages/file_picker_bridge"],"target_units":["packages/file_picker_bridge"],"depends_on":[],"allowed_operations":[],"allowed_paths_by_repository":{"flutter_forge":["packages/file_picker_bridge"]},"target_creation_allowed":False,"dependency_constraints":["flutter_forge depends only on packages/file_picker_bridge","packages/file_picker_bridge must not depend on apps/flutter_forge","no dependency cycle"],"acceptance":["exactly one reusable file picker owner remains packages/file_picker_bridge","workspace package pubspec/lib/public API remain present","all app call sites resolve package:file_picker_bridge/file_picker_bridge.dart"],"status":"DONE","evidence":["registry discovers packages/file_picker_bridge only inside flutter_forge","flutter_forge/pubspec.yaml workspace and path dependency point to packages/file_picker_bridge","three app consumers import package:file_picker_bridge/file_picker_bridge.dart"]},
         {**_app_relocation_contract(), "status": "DONE"},
-        {"task_id":"establish-package-boundary-contracts","title":"Add per-package ownership contracts, independent test entries, and version pins","source_units":[],"target_units":["packages/gcode_core","packages/file_picker_bridge","packages/flutter_study_learning","packages/flutter_ioc_core"],"depends_on":["relocate-flutter-study-app"],"allowed_operations":[],"allowed_paths_by_repository":{"flutter_study":["packages/gcode_core","packages/file_picker_bridge","packages/flutter_study_learning","packages/flutter_ioc_core"]},"target_creation_allowed":False,"dependency_constraints":["packages/* and plugins/* must not depend on apps/flutter_study","workspace dependency cycles must remain zero"],"execution_instructions":["For each of packages/gcode_core, packages/file_picker_bridge, packages/flutter_study_learning and packages/flutter_ioc_core: create OWNERS.md at the package root declaring the package name, its public contract (boundary: public API intent and what it must not own) and its maintenance owners.","Ensure each package has an independent runnable test entry under packages/<package>/test/ (create test/<package>_test.dart only when the package has no test file).","Ensure each package pubspec.yaml declares an explicit semver version field (do not publish).","Do not modify apps/flutter_study or any existing lib/ source; only add contract/test/version content inside the four package directories.","Do not delete or move any existing file."],"acceptance":["each of the four packages has a boundary contract file (OWNERS.md)","each package has an independent runnable test entry","each package pubspec.yaml declares an explicit version","no apps/flutter_study or lib/ source changes","changed repository receives one integration commit"],"status":"READY","evidence":["workspace declares four package members consumed only by apps/flutter_study","registry lists each package as a development unit"]},
+        {"task_id":"establish-package-boundary-contracts","title":"Add per-package ownership contracts, independent test entries, and version pins","source_units":[],"target_units":["packages/gcode_core","packages/file_picker_bridge","packages/flutter_study_learning","packages/flutter_ioc_core"],"depends_on":["relocate-flutter-forge-app"],"allowed_operations":[],"allowed_paths_by_repository":{"flutter_forge":["packages/gcode_core","packages/file_picker_bridge","packages/flutter_study_learning","packages/flutter_ioc_core"]},"target_creation_allowed":False,"dependency_constraints":["packages/* and plugins/* must not depend on apps/flutter_forge","workspace dependency cycles must remain zero"],"execution_instructions":["For each of packages/gcode_core, packages/file_picker_bridge, packages/flutter_study_learning and packages/flutter_ioc_core: create OWNERS.md at the package root declaring the package name, its public contract (boundary: public API intent and what it must not own) and its maintenance owners.","Ensure each package has an independent runnable test entry under packages/<package>/test/ (create test/<package>_test.dart only when the package has no test file).","Ensure each package pubspec.yaml declares an explicit semver version field (do not publish).","Do not modify apps/flutter_forge or any existing lib/ source; only add contract/test/version content inside the four package directories.","Do not delete or move any existing file."],"acceptance":["each of the four packages has a boundary contract file (OWNERS.md)","each package has an independent runnable test entry","each package pubspec.yaml declares an explicit version","no apps/flutter_forge or lib/ source changes","changed repository receives one integration commit"],"status":"READY","evidence":["workspace declares four package members consumed only by apps/flutter_forge","registry lists each package as a development unit"]},
     ]
-    return {"project_id":str(context.get("project_id") or "flutter-study"),"program_id":str(context.get("program_id") or "flutter-study-decomposition-program"),"adapter":str(context.get("adapter") or "flutter_study"),"primary_repository_id":primary_repository,"cluster_root":str(root),"repositories":repos,"capabilities":capabilities,"package_candidates":candidates,"target_dependency_graph":{"nodes":[x["package_id"] for x in candidates],"edges":[["apps/flutter_study",x] for x in ["packages/gcode_core","packages/file_picker_bridge","packages/flutter_study_learning","packages/flutter_ioc_core"]],"cycles":[]},"migration_tasks":tasks,"human_decisions":[],"integration_head":None,"execution_mode":"PLAN_ONLY","status":"PLANNING_COMPLETE"}
+    return {"project_id":str(context.get("project_id") or "flutter-forge"),"program_id":str(context.get("program_id") or "flutter-forge-decomposition-program"),"adapter":str(context.get("adapter") or "flutter_forge"),"primary_repository_id":primary_repository,"cluster_root":str(root),"repositories":repos,"capabilities":capabilities,"package_candidates":candidates,"target_dependency_graph":{"nodes":[x["package_id"] for x in candidates],"edges":[["apps/flutter_forge",x] for x in ["packages/gcode_core","packages/file_picker_bridge","packages/flutter_study_learning","packages/flutter_ioc_core"]],"cycles":[]},"migration_tasks":tasks,"human_decisions":[],"integration_head":None,"execution_mode":"PLAN_ONLY","status":"PLANNING_COMPLETE"}
 
 
 def _app_relocation_contract() -> dict[str, object]:
     """Frozen contract for the explicitly authorised single App owner."""
     return {
-        "task_id": "relocate-flutter-study-app",
-        "title": "Create apps/flutter_study as the only Flutter Application owner",
-        "source_units": ["flutter_study/root_flutter_application"],
-        "target_units": ["apps/flutter_study"],
+        "task_id": "relocate-flutter-forge-app",
+        "title": "Create apps/flutter_forge as the only Flutter Application owner",
+        "source_units": ["flutter_forge/root_flutter_application"],
+        "target_units": ["apps/flutter_forge"],
         "depends_on": ["merge-gcode-core-owners", "merge-file-picker-bridge-owners"],
         "allowed_operations": ["MOVE", "RENAME", "DEPENDENCY_REWRITE", "API_BREAK"],
         "target_creation_allowed": True,
-        "allowed_paths_by_repository": {"flutter_study": ["apps/flutter_study", "lib", "macos", "windows", "android", "ios", "linux", "web", "assets", "test", "integration_test", "pubspec.yaml", "pubspec.lock", ".metadata", "analysis_options.yaml", "l10n.yaml", "flutterguard.yaml"]},
-        "dependency_constraints": ["apps/flutter_study may depend on packages/* and plugins/*", "packages/* and plugins/* must not depend on apps/flutter_study", "workspace dependency cycles must remain zero"],
-        "execution_instructions": ["Create apps/flutter_study as a Flutter application with pubspec.yaml and lib/main.dart.", "Move only app-owned runtime sources, hosts, assets, tests and configuration after inspecting ownership; do not move packages/* or plugins/*.", "Rewrite app package paths relative to apps/flutter_study and retain root pubspec.yaml only as a workspace/container manifest without Flutter Application ownership.", "Move the existing macos and windows hosts; move other platform hosts only when they exist."],
-        "acceptance": ["apps/flutter_study/pubspec.yaml and apps/flutter_study/lib/main.dart exist", "root has no lib/main.dart or lib/app duplicate App owner", "packages/* and plugins/* remain at workspace root", "app package paths resolve from apps/flutter_study", "changed repository receives one integration commit"],
+        "allowed_paths_by_repository": {"flutter_forge": ["apps/flutter_forge", "lib", "macos", "windows", "android", "ios", "linux", "web", "assets", "test", "integration_test", "pubspec.yaml", "pubspec.lock", ".metadata", "analysis_options.yaml", "l10n.yaml", "flutterguard.yaml"]},
+        "dependency_constraints": ["apps/flutter_forge may depend on packages/* and plugins/*", "packages/* and plugins/* must not depend on apps/flutter_forge", "workspace dependency cycles must remain zero"],
+        "execution_instructions": ["Create apps/flutter_forge as a Flutter application with pubspec.yaml and lib/main.dart.", "Move only app-owned runtime sources, hosts, assets, tests and configuration after inspecting ownership; do not move packages/* or plugins/*.", "Rewrite app package paths relative to apps/flutter_forge and retain root pubspec.yaml only as a workspace/container manifest without Flutter Application ownership.", "Move the existing macos and windows hosts; move other platform hosts only when they exist."],
+        "acceptance": ["apps/flutter_forge/pubspec.yaml and apps/flutter_forge/lib/main.dart exist", "root has no lib/main.dart or lib/app duplicate App owner", "packages/* and plugins/* remain at workspace root", "app package paths resolve from apps/flutter_forge", "changed repository receives one integration commit"],
         "status": "READY",
         "evidence": ["root pubspec.yaml currently owns Flutter application dependencies and workspace members", "lib/main.dart bootstraps lib/app", "macos and windows are the actual root platform hosts"],
     }
@@ -230,6 +240,18 @@ def _app_relocation_contract() -> dict[str, object]:
 
 def _select(program: dict[str, object]) -> dict[str, object] | None:
     done = {task.get("task_id") for task in program.get("migration_tasks", []) if task.get("status") == "DONE"}
+    current = next(
+        (
+            task
+            for task in program.get("migration_tasks", [])
+            if task.get("task_id") == program.get("current_migration_task")
+            and task.get("status") == "READY"
+            and set(task.get("depends_on", [])).issubset(done)
+        ),
+        None,
+    )
+    if current is not None:
+        return current
     return next((task for task in program.get("migration_tasks", []) if task.get("status") == "READY" and set(task.get("depends_on", [])).issubset(done)), None)
 
 
@@ -264,14 +286,61 @@ def _architecture_guard(task: dict[str, object], worker: dict[str, object], prog
     deleted = [path for result in repositories.values() if isinstance(result, dict) for path in result.get("changed_files", [])]
     source_deleted = bool(deleted)
     primary = _primary_repository(program)
+    if task.get("task_id") == "rename-project-to-flutter-forge":
+        changed = _worker_change_set(worker, primary)
+        required = {
+            "pubspec.yaml",
+            "apps/flutter_study/pubspec.yaml",
+            "apps/flutter_forge/pubspec.yaml",
+            "apps/flutter_study/lib/main.dart",
+            "apps/flutter_forge/lib/main.dart",
+        }
+        missing = sorted(required - set(changed))
+        if missing:
+            return {
+                "status": "REJECT",
+                "reason": "flutter_forge_rename_incomplete",
+                "missing_changed_paths": missing,
+                "changed_files": changed,
+            }
+        if any(path.startswith(("packages/", "plugins/")) for path in changed):
+            return {
+                "status": "REJECT",
+                "reason": "flutter_forge_rename_crossed_package_boundary",
+                "changed_files": changed,
+            }
+        diff = str((worker.get("repositories") or {}).get(primary, {}).get("diff", ""))
+        added = "\n".join(
+            line for line in diff.splitlines()
+            if line.startswith("+") and not line.startswith("+++")
+        )
+        if (
+            "name: flutter_forge_workspace" not in added
+            or "apps/flutter_forge" not in added
+            or "name: flutter_forge_app" not in added
+            or "package:flutter_study_app/" in added
+        ):
+            return {
+                "status": "REJECT",
+                "reason": "flutter_forge_identity_evidence_missing",
+            }
+        return {
+            "status": "PASS",
+            "guard_kind": "project_identity_rename",
+            "project_identity_before": "flutter_study",
+            "project_identity_after": "flutter_forge",
+            "app_owner_before": "apps/flutter_study",
+            "app_owner_after": "apps/flutter_forge",
+            "independent_package_boundary": "PASS",
+        }
     if task.get("task_id") == "replace-media-plugin-with-video-player":
         changed = _worker_change_set(worker, primary)
         required = {
-            "apps/flutter_study/pubspec.yaml",
-            "apps/flutter_study/lib/modules/platform/online_video_player/module_root.dart",
-            "apps/flutter_study/lib/modules/platform/online_video_player/state/media_kit_player_adapter.dart",
-            "apps/flutter_study/lib/modules/platform/online_video_player/state/video_player_adapter.dart",
-            "apps/flutter_study/test/modules/platform/online_video_player/online_video_player_test.dart",
+            "apps/flutter_forge/pubspec.yaml",
+            "apps/flutter_forge/lib/modules/platform/online_video_player/module_root.dart",
+            "apps/flutter_forge/lib/modules/platform/online_video_player/state/media_kit_player_adapter.dart",
+            "apps/flutter_forge/lib/modules/platform/online_video_player/state/video_player_adapter.dart",
+            "apps/flutter_forge/test/modules/platform/online_video_player/online_video_player_test.dart",
         }
         missing = sorted(required - set(changed))
         if missing:
@@ -284,19 +353,19 @@ def _architecture_guard(task: dict[str, object], worker: dict[str, object], prog
         return {"status": "PASS", "guard_kind": "backend_replacement", "capability_owner_before": list(task.get("source_units", [])), "capability_owner_after": list(task.get("target_units", [])), "required_changed_paths": sorted(required), "package_boundary": "PASS", "dependency_rewrite": "PRESENT"}
     if task.get("task_id") == "rename-main-app-package":
         changed = _worker_change_set(worker, primary)
-        required = {"apps/flutter_study/pubspec.yaml", ".run/Flutter_Study_macOS.run.xml"}
+        required = {"apps/flutter_forge/pubspec.yaml", ".run/Flutter_Forge_macOS.run.xml"}
         if not required.issubset(set(changed)):
             return {"status": "REJECT", "reason": "package_rename_incomplete", "missing_changed_paths": sorted(required - set(changed))}
         if any(path.startswith(("packages/", "plugins/")) for path in changed):
             return {"status": "REJECT", "reason": "package_rename_crossed_package_boundary", "changed_files": changed}
         diff = str((worker.get("repositories") or {}).get(primary, {}).get("diff", ""))
         added = "\n".join(line for line in diff.splitlines() if line.startswith("+") and not line.startswith("+++"))
-        if "name: flutter_study_app" not in added or "package:flutter_study_app/" not in added or "package:main_app/" in added:
+        if "name: flutter_forge_app" not in added or "package:flutter_forge_app/" not in added or "package:main_app/" in added:
             return {"status": "REJECT", "reason": "package_rename_evidence_missing"}
-        return {"status": "PASS", "guard_kind": "dart_package_rename", "capability_owner_before": ["main_app"], "capability_owner_after": ["flutter_study_app"], "run_configuration": "PRESENT", "package_boundary": "PASS"}
-    if task.get("task_id") == "relocate-flutter-study-app":
+        return {"status": "PASS", "guard_kind": "dart_package_rename", "capability_owner_before": ["main_app"], "capability_owner_after": ["flutter_forge_app"], "run_configuration": "PRESENT", "package_boundary": "PASS"}
+    if task.get("task_id") == "relocate-flutter-forge-app":
         root = _ensure_worktree(primary, program)[0]
-        target = root / "apps/flutter_study"
+        target = root / "apps/flutter_forge"
         target_pubspec, target_main = target / "pubspec.yaml", target / "lib/main.dart"
         root_pubspec = root / "pubspec.yaml"
         root_manifest = root_pubspec.read_text(encoding="utf-8") if root_pubspec.is_file() else ""
@@ -305,27 +374,27 @@ def _architecture_guard(task: dict[str, object], worker: dict[str, object], prog
         # Before integration, the verified target exists only in the isolated
         # Worker diff.  After integration, prove the same facts on disk.
         if not target_pubspec.is_file() or not target_main.is_file():
-            required = {"apps/flutter_study/pubspec.yaml", "apps/flutter_study/lib/main.dart", "lib/main.dart", "pubspec.yaml"}
+            required = {"apps/flutter_forge/pubspec.yaml", "apps/flutter_forge/lib/main.dart", "lib/main.dart", "pubspec.yaml"}
             if not required.issubset(set(app_changes)):
-                return {"status": "REJECT", "reason": "app_target_missing", "target": "apps/flutter_study", "required": sorted(required), "changed_files": app_changes}
+                return {"status": "REJECT", "reason": "app_target_missing", "target": "apps/flutter_forge", "required": sorted(required), "changed_files": app_changes}
             if any(path.startswith(("packages/", "plugins/")) for path in app_changes):
                 return {"status": "REJECT", "reason": "workspace_capability_moved_into_app", "changed_files": app_changes}
-            return {"status": "PASS", "capability_owner_before": ["flutter_study/root_flutter_application"], "capability_owner_after": ["apps/flutter_study"], "target_app_root": "apps/flutter_study", "root_app_removal_pending_in_approved_diff": True, "package_survival": "PASS", "dependency_direction": "PASS"}
+            return {"status": "PASS", "capability_owner_before": ["flutter_forge/root_flutter_application"], "capability_owner_after": ["apps/flutter_forge"], "target_app_root": "apps/flutter_forge", "root_app_removal_pending_in_approved_diff": True, "package_survival": "PASS", "dependency_direction": "PASS"}
         if (root / "lib/main.dart").exists() or (root / "lib/app").exists():
             return {"status": "REJECT", "reason": "root_app_owner_retained", "root_duplicates": [path for path in ("lib/main.dart", "lib/app") if (root / path).exists()]}
         if re.search(r"^\s*flutter:\s*$", root_manifest, re.M):
             return {"status": "REJECT", "reason": "root_flutter_application_manifest_retained"}
         if not packages_preserved:
             return {"status": "REJECT", "reason": "workspace_package_owner_missing"}
-        return {"status": "PASS", "capability_owner_before": ["flutter_study/root_flutter_application"], "capability_owner_after": ["apps/flutter_study"], "target_app_root": "apps/flutter_study", "root_app_removed": True, "package_survival": "PASS", "dependency_direction": "PASS"}
+        return {"status": "PASS", "capability_owner_before": ["flutter_forge/root_flutter_application"], "capability_owner_after": ["apps/flutter_forge"], "target_app_root": "apps/flutter_forge", "root_app_removed": True, "package_survival": "PASS", "dependency_direction": "PASS"}
     retained: list[str] = []
     for unit in target_units:
         # Target units may be repository-qualified in a frozen multi-repo
-        # contract (for example ``flutter_study/packages/...``).  Ownership
+        # contract (for example ``flutter_forge/packages/...``).  Ownership
         # validation is evaluated inside the Flutter worktree, so remove that
         # qualifier before testing the retained package owner.
-        if unit.startswith("flutter_study/"):
-            unit = unit.removeprefix("flutter_study/")
+        if unit.startswith("flutter_forge/"):
+            unit = unit.removeprefix("flutter_forge/")
         if unit.startswith("packages/") or unit.startswith("plugins/"):
             target = _ensure_worktree(primary, program)[0] / unit
             required = [target / "pubspec.yaml", target / "lib"]
@@ -344,17 +413,76 @@ def _file_picker_contract_preflight(program: dict[str, object] | None = None) ->
     primary = _primary_repository(program)
     target = _ensure_worktree(primary, program)[0] / "packages/file_picker_bridge"
     target_ready = (target / "pubspec.yaml").is_file() and (target / "lib").is_dir()
-    return {"status": "PASS" if target_ready else "REJECT", "capability_owner": "flutter_study/packages/file_picker_bridge", "target_package_root": "packages/file_picker_bridge", "required_dependency_rewrites": [], "reason": "workspace package owner is present" if target_ready else "workspace package owner cannot be proven"}
+    return {"status": "PASS" if target_ready else "REJECT", "capability_owner": "flutter_forge/packages/file_picker_bridge", "target_package_root": "packages/file_picker_bridge", "required_dependency_rewrites": [], "reason": "workspace package owner is present" if target_ready else "workspace package owner cannot be proven"}
 
 
 def _proposal_inventory(program: dict[str, object], spec: dict[str, object]) -> dict[str, object]:
     """Build a frozen task from tracked-file evidence without touching a worktree."""
-    primary_repository = str(program.get("primary_repository_id") or "flutter_study")
+    primary_repository = str(program.get("primary_repository_id") or "flutter_forge")
     repository = next((item for item in program.get("repositories", []) if item.get("repository_id") == primary_repository), None)
     root = Path(str(repository.get("path"))) if isinstance(repository, dict) else Path(str(program.get("cluster_root", CLUSTER))) / primary_repository
     if not root.is_dir():
-        return {"task_id": spec.get("task_id"), "title": spec.get("title"), "status": "BLOCKED_DECISION", "evidence": [], "candidate_paths": [], "allowed_paths_by_repository": {}, "blocked_decisions": ["flutter_study repository is unavailable for read-only discovery"]}
+        return {"task_id": spec.get("task_id"), "title": spec.get("title"), "status": "BLOCKED_DECISION", "evidence": [], "candidate_paths": [], "allowed_paths_by_repository": {}, "blocked_decisions": ["flutter_forge repository is unavailable for read-only discovery"]}
     tracked = subprocess.check_output(["git", "ls-files"], cwd=root, text=True).splitlines()
+    if spec.get("task_id") == "rename-project-to-flutter-forge":
+        candidates: set[str] = set()
+        evidence: list[str] = []
+        old_tokens = (
+            "flutter_study_workspace",
+            "flutter_study_app",
+            "apps/flutter_study",
+            "Flutter Study",
+            "Flutter_Study",
+        )
+        for relative in tracked:
+            path = root / relative
+            if relative.startswith("apps/flutter_study/"):
+                candidates.add(relative)
+                candidates.add("apps/flutter_forge/" + relative.removeprefix("apps/flutter_study/"))
+            try:
+                content = path.read_text(encoding="utf-8")
+            except (OSError, UnicodeDecodeError):
+                continue
+            matches = [token for token in old_tokens if token in content]
+            if matches:
+                candidates.add(relative)
+                evidence.append(f"{relative}: references {', '.join(matches)}")
+        for old, new in (
+            (".run/Flutter_Study_macOS.run.xml", ".run/Flutter_Forge_macOS.run.xml"),
+        ):
+            if old in tracked:
+                candidates.update((old, new))
+        blocked: list[str] = []
+        required_evidence = {
+            "pubspec.yaml": "root workspace manifest",
+            "apps/flutter_study/pubspec.yaml": "application package manifest",
+            "apps/flutter_study/lib/main.dart": "application entrypoint",
+        }
+        for path, label in required_evidence.items():
+            if path not in candidates:
+                blocked.append(f"missing {label}: {path}")
+        frozen = sorted(candidates)
+        return {
+            "task_id": str(spec.get("task_id", "")),
+            "title": str(spec.get("title", "")),
+            "intent": str(spec.get("intent", "")),
+            "source_units": list(spec.get("source_units", ["apps/flutter_study"])),
+            "target_units": list(spec.get("target_units", ["apps/flutter_forge"])),
+            "depends_on": list(spec.get("depends_on", [])),
+            "allowed_operations": list(spec.get("allowed_operations", ["RENAME", "MOVE", "DEPENDENCY_REWRITE", "CREATE", "DELETE"])),
+            "candidate_paths": frozen,
+            "allowed_paths_by_repository": {primary_repository: frozen} if not blocked else {},
+            "evidence": evidence,
+            "execution_instructions": list(spec.get("execution_instructions", [])),
+            "invariants": list(spec.get("invariants", [])),
+            "acceptance": list(spec.get("acceptance", [])),
+            "blocked_decisions": blocked,
+            "proposal": {
+                "status": "FROZEN" if not blocked else "PENDING_EVIDENCE",
+                "read_only": True,
+            },
+            "status": "READY" if not blocked else "BLOCKED_DECISION",
+        }
     if spec.get("task_id") == "rename-main-app-package":
         candidates: list[str] = []
         evidence: list[str] = []
@@ -364,23 +492,23 @@ def _proposal_inventory(program: dict[str, object], spec: dict[str, object]) -> 
                 content = path.read_text(encoding="utf-8")
             except (OSError, UnicodeDecodeError):
                 continue
-            if relative == "apps/flutter_study/pubspec.yaml" and re.search(r"^name:\s*main_app\s*$", content, re.M):
+            if relative == "apps/flutter_forge/pubspec.yaml" and re.search(r"^name:\s*main_app\s*$", content, re.M):
                 candidates.append(relative)
                 evidence.append(f"{relative}: declares name main_app")
             elif relative.endswith(".dart") and "package:main_app/" in content:
                 candidates.append(relative)
                 evidence.append(f"{relative}: imports package:main_app")
-        run_config = ".run/Flutter_Study_macOS.run.xml"
+        run_config = ".run/Flutter_Forge_macOS.run.xml"
         candidates.append(run_config)
         blocked: list[str] = []
-        if "apps/flutter_study/pubspec.yaml" not in candidates:
+        if "apps/flutter_forge/pubspec.yaml" not in candidates:
             blocked.append("main_app pubspec declaration not found")
         if not any(path.endswith(".dart") for path in candidates):
             blocked.append("package:main_app callsites not found")
         frozen = sorted(set(candidates))
         return {
             "task_id": str(spec.get("task_id", "")), "title": str(spec.get("title", "")), "intent": str(spec.get("intent", "")),
-            "source_units": list(spec.get("source_units", ["apps/flutter_study"])), "target_units": list(spec.get("target_units", ["apps/flutter_study"])),
+            "source_units": list(spec.get("source_units", ["apps/flutter_forge"])), "target_units": list(spec.get("target_units", ["apps/flutter_forge"])),
             "depends_on": list(spec.get("depends_on", [])), "allowed_operations": list(spec.get("allowed_operations", ["DEPENDENCY_REWRITE", "CREATE"])),
             "candidate_paths": frozen, "allowed_paths_by_repository": {primary_repository: frozen} if not blocked else {}, "evidence": evidence,
             "execution_instructions": list(spec.get("execution_instructions", [])), "invariants": list(spec.get("invariants", [])), "acceptance": list(spec.get("acceptance", [])),
@@ -399,7 +527,7 @@ def _proposal_inventory(program: dict[str, object], spec: dict[str, object]) -> 
         if matches:
             candidates.append(relative)
             evidence.append(f"{relative}: references {', '.join(matches)}")
-        elif relative.startswith("apps/flutter_study/") and (
+        elif relative.startswith("apps/flutter_forge/") and (
             relative.endswith("Podfile.lock")
             or "GeneratedPluginRegistrant" in relative
             or relative.endswith("generated_plugin_registrant.cc")
@@ -410,14 +538,14 @@ def _proposal_inventory(program: dict[str, object], spec: dict[str, object]) -> 
             evidence.append(f"{relative}: tracked generated platform plugin configuration")
     # The replacement adapter is an exact, anticipated CREATE target.  No
     # directory prefix is frozen, so ScopeGuard still rejects unrelated files.
-    adapter = "apps/flutter_study/lib/modules/platform/online_video_player/state/video_player_adapter.dart"
+    adapter = "apps/flutter_forge/lib/modules/platform/online_video_player/state/video_player_adapter.dart"
     if adapter not in candidates:
         candidates.append(adapter)
     candidates = sorted(set(candidates))
     allowed = [path for path in candidates if not path.startswith(".hermes/")]
     blocked: list[str] = []
     required_groups = {
-        "dependency manifest": lambda p: p == "apps/flutter_study/pubspec.yaml",
+        "dependency manifest": lambda p: p == "apps/flutter_forge/pubspec.yaml",
         "lockfile": lambda p: p == "pubspec.lock",
         "direct media API": lambda p: p.endswith("media_kit_player_adapter.dart"),
         "lifecycle/bootstrap": lambda p: p.endswith("app_bootstrap.dart") or p.endswith("module_root.dart"),
@@ -430,12 +558,12 @@ def _proposal_inventory(program: dict[str, object], spec: dict[str, object]) -> 
         "task_id": str(spec.get("task_id", "")),
         "title": str(spec.get("title", "")),
         "intent": str(spec.get("intent", "")),
-        "source_units": list(spec.get("source_units", ["flutter_study/media_playback"])),
-        "target_units": list(spec.get("target_units", ["flutter_study/media_playback"])),
+        "source_units": list(spec.get("source_units", ["flutter_forge/media_playback"])),
+        "target_units": list(spec.get("target_units", ["flutter_forge/media_playback"])),
         "depends_on": list(spec.get("depends_on", [])),
         "allowed_operations": list(spec.get("allowed_operations", ["DEPENDENCY_REWRITE", "API_BREAK", "CREATE", "DELETE"])),
         "candidate_paths": candidates,
-        "allowed_paths_by_repository": {"flutter_study": allowed} if allowed and not blocked else {},
+        "allowed_paths_by_repository": {"flutter_forge": allowed} if allowed and not blocked else {},
         "evidence": evidence,
         "discovery": list(spec.get("required_discovery", [])),
         "invariants": list(spec.get("invariants", [])),
@@ -464,7 +592,7 @@ def build_decomposition_graph():
             # or recovery Run without checkpoint state is not allowed to
             # silently invent a replacement plan.
             if state.get("execute"):
-                return {"decomposition_program": {"project_id": context.get("project_id", "flutter-study"), "program_id": context.get("program_id", "flutter-study-decomposition-program"), "status": "STATE_NOT_LOADED", "migration_tasks": [], "execution_blocker": {"status": "STATE_NOT_LOADED", "reason": "No persisted DecompositionProgram was supplied."}}}
+                return {"decomposition_program": {"project_id": context.get("project_id", "flutter-forge"), "program_id": context.get("program_id", "flutter-forge-decomposition-program"), "status": "STATE_NOT_LOADED", "migration_tasks": [], "execution_blocker": {"status": "STATE_NOT_LOADED", "reason": "No persisted DecompositionProgram was supplied."}}}
             root = Path(state.get("cluster_root") or CLUSTER)
             return {"decomposition_program": _program(root, context)}
         program = dict(program)
@@ -476,7 +604,7 @@ def build_decomposition_graph():
             task_id = decision_id.removeprefix("retry:")
             blocker = program.get("execution_blocker")
             task = next((item for item in program.get("migration_tasks", []) if item.get("task_id") == task_id and item.get("status") == "BLOCKED_DECISION"), None)
-            if task_id == "relocate-flutter-study-app" and isinstance(blocker, dict) and blocker.get("task_id") == task_id and isinstance(task, dict):
+            if task_id == "relocate-flutter-forge-app" and isinstance(blocker, dict) and blocker.get("task_id") == task_id and isinstance(task, dict):
                 contract = _app_relocation_contract()
                 task.clear(); task.update(contract)
                 program.update({"status": "PLANNING_COMPLETE", "current_migration_task": task_id})
@@ -553,7 +681,7 @@ def build_decomposition_graph():
                 program.update({"status": "PROGRAM_BLOCKED", "current_migration_task": rejected["task_id"], "execution_blocker": {"status": reason, "task_id": rejected["task_id"], "worker_execution_id": worker.get("worker_execution_id"), "reason": "ArchitectureGuard rejected the completed Worker result; no integration commit was created.", "detail": guard, **({"decision_id": f"retry:{rejected['task_id']}", "choices": ["retry"]} if reason == "MIGRATION_NO_EFFECT" else {})}})
                 return {"decomposition_program": program, "integration_result": {"status": "ARCHITECTURE_GUARD_REJECTED", "task_id": rejected["task_id"]}}
             recoverable = next((item for item in program.get("migration_tasks", []) if item.get("task_id") == worker.get("task_id") and item.get("status") == "BLOCKED_DECISION"), None)
-            if isinstance(recoverable, dict) and recoverable.get("task_id") == "relocate-flutter-study-app":
+            if isinstance(recoverable, dict) and recoverable.get("task_id") == "relocate-flutter-forge-app":
                 updated_guard = _architecture_guard(recoverable, worker, program)
                 if updated_guard.get("status") == "PASS":
                     recoverable["status"] = "RUNNING"
@@ -737,6 +865,13 @@ def build_decomposition_graph():
                 program["migration_tasks"] = tasks
                 existing = frozen
             program["last_proposal"] = {"task_id": task_id, "status": existing.get("status"), "idempotent": True}
+        selected = next((task for task in program.get("migration_tasks", []) if task.get("task_id") == task_id), None)
+        if isinstance(selected, dict) and selected.get("status") == "READY":
+            program["current_migration_task"] = task_id
+            blocker = program.get("execution_blocker")
+            if isinstance(blocker, dict) and blocker.get("task_id") != task_id:
+                program.pop("execution_blocker", None)
+                program["status"] = "PLANNING_COMPLETE"
         return {"decomposition_program": program, "proposal_spec": {}, "worker_result": {}, "migration_request": {}, "integration_result": {}}
 
     def sync_base(state: State):

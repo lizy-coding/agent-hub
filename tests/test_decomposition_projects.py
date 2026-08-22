@@ -8,6 +8,31 @@ from agent_hub.projects.decomposition_config import load_decomposition_project
 
 
 class DecompositionProjectConfigTest(unittest.TestCase):
+    def test_legacy_project_alias_resolves_to_canonical_identity(self):
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            repository = root / "legacy-directory"
+            repository.mkdir()
+            workspace = root / "workspace.json"
+            workspace.write_text(json.dumps({
+                "workspace_root": str(root),
+                "allowed_paths": [str(root)],
+                "registry_path": str(root / "registry.json"),
+                "runtime": {
+                    "primary_repository_id": "flutter_forge",
+                    "repositories": {"flutter_forge": {"runtime_path": str(repository)}},
+                },
+            }))
+            registry = root / "projects.json"
+            registry.write_text(json.dumps({
+                "default_project": "flutter-forge",
+                "aliases": {"flutter-study": "flutter-forge"},
+                "projects": {"flutter-forge": {"workspace_config": str(workspace)}},
+            }))
+            project = load_decomposition_project("flutter-study", registry_path=registry)
+        self.assertEqual(project.project_id, "flutter-forge")
+        self.assertEqual(project.primary_repository_id, "flutter_forge")
+
     def test_registry_resolves_project_through_workspace_runtime(self):
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)

@@ -11,9 +11,9 @@
   "runtime": {
     "environment": "LOCAL",
     "runtime_id": "local-development",
-    "primary_repository_id": "flutter_study",
+    "primary_repository_id": "flutter_forge",
     "repositories": {
-      "flutter_study": {"runtime_path": "../../langGraph/flutter_study", "role": "PRIMARY", "managed": true, "writable": true, "source_type": "LOCAL_PATH"}
+      "flutter_forge": {"runtime_path": "../../langGraph/flutter_forge", "role": "PRIMARY", "managed": true, "writable": true, "source_type": "LOCAL_PATH"}
     }
   }
 }
