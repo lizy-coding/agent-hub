@@ -13,20 +13,20 @@ class ContextResolverTest(unittest.TestCase):
         cls.resolver = ContextResolver(cls.config)
 
     def test_requirement_returns_bounded_valid_package(self):
-        package = self.resolver.resolve_context("GCode package import callsite", "flutter_study", ContextLimits(max_files=3, max_symbols=5))
+        package = self.resolver.resolve_context("GCode package import callsite", "flutter_forge", ContextLimits(max_files=3, max_symbols=5))
         self.assertLessEqual(len(package.files), 3)
         self.assertLessEqual(len(package.symbols), 5)
         self.assertTrue(package.dependencies)
         self.assertEqual(self.resolver.validate_context_package(package), [])
 
     def test_symbol_callsite_rules_and_dependency_queries(self):
-        unit_id = "flutter_study:apps/flutter_study"
+        unit_id = "flutter_forge:apps/flutter_forge"
         self.assertTrue(self.resolver.search_symbols(unit_id, "gcode"))
         self.assertTrue(self.resolver.search_callsites(unit_id, "gcode_core"))
-        self.assertTrue(self.resolver.resolve_rules_for_path("flutter_study:."))
+        self.assertTrue(self.resolver.resolve_rules_for_path("flutter_forge:."))
 
     def test_name_only_is_not_confirmed(self):
-        package = self.resolver.resolve_context("unmatched_term_xyz", "flutter_study")
+        package = self.resolver.resolve_context("unmatched_term_xyz", "flutter_forge")
         self.assertTrue(package.unknowns)
         self.assertTrue(all(candidate.confidence in {"LOW", "BLOCKED"} for candidate in package.candidates if candidate.classification == "unknown"))
 

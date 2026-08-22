@@ -10,6 +10,7 @@ from unittest.mock import patch
 
 from agent_hub.execution.code_worker import LocalCodeExecutor, WorkerRequest, _changed_files, _complete_diff, execute_request
 from agent_hub.graphs.development import build_development_graph
+from agent_hub.projects.discovery import discover
 from agent_hub.workspace.config import WorkspaceConfig
 
 
@@ -174,8 +175,24 @@ class DevelopmentGraphWorkerTest(unittest.TestCase):
         try:
             with tempfile.TemporaryDirectory() as raw:
                 root = Path(raw)
-                config = WorkspaceConfig(workspace_root=root, allowed_paths=[root], registry_path=root / "registry.json")
-                result = build_development_graph(config).invoke({"development_task": {"repository": "flutter_forge", "base_revision": "a", "requirement": "x", "allowed_paths": ["lib/x.dart"], "validation": []}})["result"]
+                repo = root / "flutter_forge"
+                repo.mkdir()
+                subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
+                subprocess.run(["git", "-C", repo, "config", "user.email", "test@example.com"], check=True)
+                subprocess.run(["git", "-C", repo, "config", "user.name", "test"], check=True)
+                (repo / "pubspec.yaml").write_text("name: flutter_forge_app\n")
+                subprocess.run(["git", "-C", repo, "add", "pubspec.yaml"], check=True)
+                subprocess.run(["git", "-C", repo, "commit", "-qm", "base"], check=True)
+                base = subprocess.check_output(["git", "-C", repo, "rev-parse", "HEAD"], text=True).strip()
+                config = WorkspaceConfig(
+                    workspace_root=root,
+                    allowed_paths=[root],
+                    registry_path=root / "bootstrap.json",
+                    registry_storage_path=root / "registry.json",
+                )
+                workspace = discover(config)
+                (root / "registry.json").write_text(json.dumps(workspace.model_dump(mode="json")))
+                result = build_development_graph(config).invoke({"development_task": {"repository": "flutter_forge", "base_revision": base, "requirement": "x", "allowed_paths": ["lib/x.dart"], "validation": []}})["result"]
             self.assertEqual(result["status"], "READY_FOR_HUMAN_REVIEW")
             self.assertEqual(result["review"], "APPROVED")
         finally:

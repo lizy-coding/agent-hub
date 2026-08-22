@@ -1,8 +1,24 @@
+import tempfile
 import unittest
+from contextlib import contextmanager
 from pathlib import Path
 from unittest.mock import patch
 
 from agent_hub.graphs.development import _complete, _apply_packaging_guard, _task_validation, apply_human_decision, reconcile_program
+
+
+@contextmanager
+def _canonical_repo_fixture():
+    with tempfile.TemporaryDirectory() as raw:
+        root = Path(raw)
+        (root / "apps" / "flutter_forge").mkdir(parents=True)
+        (root / "apps" / "flutter_forge" / "pubspec.yaml").write_text("name: flutter_forge_app\n")
+        controller_dir = root / "apps" / "flutter_forge" / "lib" / "modules" / "ui" / "gcode_visualizer" / "state"
+        controller_dir.mkdir(parents=True)
+        (controller_dir / "gcode_player_controller.dart").write_text(
+            "class GcodePlayerController {\n  void pickFilePathAndLoad() {}\n  AnimationController animation;\n}\n"
+        )
+        yield root
 
 
 class DevelopmentReconciliationTest(unittest.TestCase):
@@ -26,9 +42,8 @@ class DevelopmentReconciliationTest(unittest.TestCase):
         self.assertFalse(_complete({"development_units": [{"inventory_completed": True}], "architecture_issues": [{"status": "unknown"}], "tasks": [], "final_rescan_completed": True}))
 
     def test_recovery_handles_the_removed_router_source_file(self):
-        with patch("agent_hub.graphs.development._git", return_value="130c602"):
+        with _canonical_repo_fixture() as root, patch("agent_hub.graphs.development._git", return_value="130c602"):
             from agent_hub.graphs.development import _new_program_for_reconciliation
-            root = Path(__file__).parents[1] / ".integration" / "flutter_study"
             program = _new_program_for_reconciliation(root, "flutter_forge", ["app-router-private-facade"])
         self.assertEqual(program["tasks"][0]["status"], "DONE")
 
@@ -36,9 +51,9 @@ class DevelopmentReconciliationTest(unittest.TestCase):
         self.assertFalse(_complete({"development_units": [{"inventory_completed": True}], "architecture_issues": [], "tasks": [], "blocked_tasks": [{"task_id": "ownership"}], "final_rescan_completed": True}))
 
     def test_gcode_decision_creates_evidence_backed_task(self):
-        root = Path(__file__).parents[1] / ".integration" / "flutter_study"
-        program = {"repository": "flutter_forge", "tasks": [], "blocked_tasks": [{"task_id": "gcode-controller-ownership"}], "architecture_issues": [{"issue_id": "gcode-controller-ownership", "status": "BLOCKED_DECISION"}]}
-        updated, status = apply_human_decision(program, {"decision_id": "gcode-controller-ownership", "choice": "controller-as-orchestrator"}, root, "thread")
+        with _canonical_repo_fixture() as root:
+            program = {"repository": "flutter_forge", "tasks": [], "blocked_tasks": [{"task_id": "gcode-controller-ownership"}], "architecture_issues": [{"issue_id": "gcode-controller-ownership", "status": "BLOCKED_DECISION"}]}
+            updated, status = apply_human_decision(program, {"decision_id": "gcode-controller-ownership", "choice": "controller-as-orchestrator"}, root, "thread")
         self.assertEqual(status, "DECISION_ACCEPTED")
         self.assertEqual(updated["tasks"][0]["task_id"], "gcode-controller-file-picking-capability")
         self.assertFalse(updated["blocked_tasks"])
