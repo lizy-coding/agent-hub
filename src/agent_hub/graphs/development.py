@@ -104,6 +104,15 @@ def _program_id(repository_id: str) -> str:
 
 _APP_LEVEL_PATH_FRAGMENTS = ("lib/app", "lib/modules", "flutter_forge/pubspec.yaml", "flutter_forge/macos/", ".github/")
 
+_PROTECTED_PACKAGING_FILES = frozenset({
+    ".github/workflows/ci.yml",
+    "tool/quality_gate.sh",
+    "tool/test_all.sh",
+    "tool/verify_test_layout.sh",
+    "tool/validate_agent_docs.js",
+    "tool/generate_agent_indexes.js",
+})
+
 
 def _task_validation(candidate_paths: list[str]) -> list[str]:
     """Every task runs analyze; app-level tasks additionally smoke the macOS
@@ -112,6 +121,26 @@ def _task_validation(candidate_paths: list[str]) -> list[str]:
     if any(any(fragment in candidate for fragment in _APP_LEVEL_PATH_FRAGMENTS) for candidate in candidate_paths):
         validation.append("flutter_build")
     return validation
+
+
+def _apply_packaging_guard(task: dict[str, object]) -> dict[str, object]:
+    """Protected packaging-flow files cannot enter a task's allowed paths
+    unless the orchestrator explicitly sets packaging_change=True (which forces
+    manual_review). Unflagged tasks get those paths stripped and marked blocked."""
+    path_key = "candidate_paths" if "candidate_paths" in task else "allowed_paths" if "allowed_paths" in task else None
+    if path_key is None:
+        return task
+    allowed = [str(item) for item in task[path_key]]
+    touched = [item for item in allowed if item in _PROTECTED_PACKAGING_FILES]
+    if not touched:
+        return task
+    task = dict(task)
+    if task.get("packaging_change") is True:
+        task["manual_review"] = True
+        return task
+    task[path_key] = [item for item in allowed if item not in _PROTECTED_PACKAGING_FILES]
+    task["blocked"] = {"reason": "protected_packaging_flow", "protected": sorted(touched)}
+    return task
 
 
 def _router_task(root: Path, repository_id: str, status: str = "READY") -> dict[str, object]:
@@ -172,9 +201,9 @@ def _new_program(config: WorkspaceConfig, repository_id: str, completed: list[st
     facade_present = app.is_file() and router.is_file() and "AppRouter.router" in app.read_text(encoding="utf-8") and "static final GoRouter router" in router.read_text(encoding="utf-8")
     tasks: list[dict[str, object]] = []
     if facade_present:
-        tasks.append(_router_task(root, repository_id))
+        tasks.append(_apply_packaging_guard(_router_task(root, repository_id)))
     elif "app-router-private-facade" in completed:
-        tasks.append(_router_task(root, repository_id, "DONE"))
+        tasks.append(_apply_packaging_guard(_router_task(root, repository_id, "DONE")))
     controller = application / "lib/modules/ui/gcode_visualizer/state/gcode_player_controller.dart"
     issues = [
         {"issue_id": "app-router-private-facade", "issue": "private routing facade", "evidence": tasks[0]["evidence"] if tasks else ["lib/app/app.dart:8"], "status": "ACTIONABLE" if facade_present else "NO_ACTION"},
@@ -287,7 +316,8 @@ def build_development_graph(config: WorkspaceConfig):
         if not state.get("program") and isinstance(state.get("development_task"), dict):
             supplied = state["development_task"]
             task_id = str(supplied.get("task_id", "externally-frozen-task"))
-            return {"program": {"program_id": "externally-frozen-task", "repository": repository_id, "development_units": [{"inventory_completed": True}], "architecture_issues": [], "tasks": [{"task_id": task_id, "expected_change": supplied.get("requirement", ""), "candidate_paths": supplied.get("allowed_paths", []), "validation": supplied.get("validation", []), "dependencies": [], "risk": "LOW", "status": "READY"}], "completed_tasks": [], "blocked_tasks": [], "current_task": None, "status": "READY"}}
+            frozen_task = _apply_packaging_guard({"task_id": task_id, "expected_change": supplied.get("requirement", ""), "candidate_paths": list(supplied.get("allowed_paths", [])), "validation": supplied.get("validation", []), "dependencies": [], "risk": "LOW", "status": "READY"})
+            return {"program": {"program_id": "externally-frozen-task", "repository": repository_id, "development_units": [{"inventory_completed": True}], "architecture_issues": [], "tasks": [frozen_task], "completed_tasks": [], "blocked_tasks": [], "current_task": None, "status": "READY"}}
         root = _integration_root(config, repository_id)
         existing = state.get("program") or {}
         decision=state.get("decision")

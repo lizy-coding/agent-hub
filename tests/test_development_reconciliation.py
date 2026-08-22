@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from agent_hub.graphs.development import _complete, apply_human_decision, reconcile_program
+from agent_hub.graphs.development import _complete, _apply_packaging_guard, _task_validation, apply_human_decision, reconcile_program
 
 
 class DevelopmentReconciliationTest(unittest.TestCase):
@@ -42,3 +42,41 @@ class DevelopmentReconciliationTest(unittest.TestCase):
         self.assertEqual(status, "DECISION_ACCEPTED")
         self.assertEqual(updated["tasks"][0]["task_id"], "gcode-controller-file-picking-capability")
         self.assertFalse(updated["blocked_tasks"])
+
+
+class DevelopmentTaskContractTest(unittest.TestCase):
+    def test_app_level_task_emits_flutter_build(self):
+        self.assertEqual(
+            _task_validation(["apps/flutter_forge/lib/app/app.dart"]),
+            ["flutter_analyze", "flutter_build"],
+        )
+
+    def test_module_level_task_emits_flutter_build(self):
+        self.assertEqual(
+            _task_validation(["apps/flutter_forge/lib/modules/platform/usb_detector/module_entry.dart"]),
+            ["flutter_analyze", "flutter_build"],
+        )
+
+    def test_package_only_task_omits_flutter_build(self):
+        self.assertEqual(
+            _task_validation(["packages/gcode_core/lib/gcode_core.dart"]),
+            ["flutter_analyze"],
+        )
+
+    def test_protected_path_without_flag_is_stripped_and_blocked(self):
+        task = _apply_packaging_guard({"candidate_paths": ["lib/x.dart", "tool/quality_gate.sh", ".github/workflows/ci.yml"]})
+        self.assertEqual(task["candidate_paths"], ["lib/x.dart"])
+        self.assertEqual(task["blocked"]["reason"], "protected_packaging_flow")
+        self.assertEqual(task["blocked"]["protected"], [".github/workflows/ci.yml", "tool/quality_gate.sh"])
+        self.assertNotIn("manual_review", task)
+
+    def test_protected_path_with_flag_forces_manual_review(self):
+        task = _apply_packaging_guard({"candidate_paths": ["tool/quality_gate.sh"], "packaging_change": True})
+        self.assertEqual(task["candidate_paths"], ["tool/quality_gate.sh"])
+        self.assertTrue(task["manual_review"])
+        self.assertNotIn("blocked", task)
+
+    def test_unprotected_path_untouched(self):
+        task = _apply_packaging_guard({"candidate_paths": ["lib/x.dart"]})
+        self.assertEqual(task["candidate_paths"], ["lib/x.dart"])
+        self.assertNotIn("blocked", task)
