@@ -102,20 +102,33 @@ def _program_id(repository_id: str) -> str:
     return f"{repository_id.replace('_', '-')}-refactor-program"
 
 
+_APP_LEVEL_PATH_FRAGMENTS = ("lib/app", "lib/modules", "flutter_forge/pubspec.yaml", "flutter_forge/macos/", ".github/")
+
+
+def _task_validation(candidate_paths: list[str]) -> list[str]:
+    """Every task runs analyze; app-level tasks additionally smoke the macOS
+    packaging build so packaging-breaking changes fail inside agent-hub runs."""
+    validation = ["flutter_analyze"]
+    if any(any(fragment in candidate for fragment in _APP_LEVEL_PATH_FRAGMENTS) for candidate in candidate_paths):
+        validation.append("flutter_build")
+    return validation
+
+
 def _router_task(root: Path, repository_id: str, status: str = "READY") -> dict[str, object]:
     application = _app_root(root)
     app, router = application / "lib/app/app.dart", application / "lib/app/router/app_router.dart"
     evidence = [f"{_relative(root, app)}:8", f"{_relative(root, router)}:8", f"{_relative(root, router)}:8"]
     if app.is_file() and router.is_file():
         evidence = [_ref(app, root, "AppRouter.router"), _ref(router, root, "static final GoRouter router"), _ref(router, root, "AppRouteTable.routes")]
+    candidate_paths = [_relative(root, app), _relative(root, router)]
     return {
         "task_id": "app-router-private-facade", "title": "Inline the private AppRouter facade into the application shell",
         "development_unit": f"{repository_id}:.",
         "evidence": evidence,
-        "candidate_paths": [_relative(root, app), _relative(root, router)],
+        "candidate_paths": candidate_paths,
         "expected_change": "Keep the same GoRouter configuration while removing the one-use forwarding facade.",
         "invariants": ["MaterialApp.router continues to receive AppRouteTable.routes", "No route path, module metadata, or public package API changes"],
-        "validation": ["flutter_analyze"], "dependencies": [], "risk": "LOW", "status": status,
+        "validation": _task_validation(candidate_paths), "dependencies": [], "risk": "LOW", "status": status,
         "rules": _rules_for(app, root) + (_rules_for(router, root) if router.is_file() else []),
     }
 
@@ -123,14 +136,15 @@ def _router_task(root: Path, repository_id: str, status: str = "READY") -> dict[
 def _gcode_task(root: Path, repository_id: str) -> dict[str, object]:
     application = _app_root(root)
     controller = application / "lib/modules/ui/gcode_visualizer/state/gcode_player_controller.dart"
+    candidate_paths = [_relative(root, application / "lib/modules/ui/gcode_visualizer/pages/gcode_visualizer_page.dart"), _relative(root, controller)]
     return {
         "task_id": "gcode-controller-file-picking-capability", "title": "Move file-picking interaction out of the G-code preview controller",
         "development_unit": f"{repository_id}:.",
         "evidence": [_ref(controller, root, "pickFilePathAndLoad"), _ref(controller, root, "FilePickerService"), _ref(controller, root, "MethodChannelFilePicker")],
-        "candidate_paths": [_relative(root, application / "lib/modules/ui/gcode_visualizer/pages/gcode_visualizer_page.dart"), _relative(root, controller)],
+        "candidate_paths": candidate_paths,
         "expected_change": "Keep GcodePlayerController as the UI-facing preview orchestrator while moving platform file-selection interaction to the page boundary.",
         "invariants": ["File selection cancel and platform failure messages remain observable", "G-code parsing, playback, and UI interactions preserve current behavior", "No public package API or route metadata changes"],
-        "validation": ["flutter_analyze"], "dependencies": [], "risk": "MEDIUM", "status": "READY", "rules": _rules_for(controller, root),
+        "validation": _task_validation(candidate_paths), "dependencies": [], "risk": "MEDIUM", "status": "READY", "rules": _rules_for(controller, root),
     }
 
 

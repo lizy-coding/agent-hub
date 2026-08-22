@@ -8,6 +8,7 @@ single-repository, exact-path contract.
 from __future__ import annotations
 
 import os
+import platform
 import signal
 import shutil
 import subprocess
@@ -20,6 +21,7 @@ import yaml
 DEFAULT_PRIMARY_REPOSITORY = os.environ.get("AGENT_HUB_PRIMARY_REPOSITORY", "primary")
 CODEX_TIMEOUT_SECONDS = int(os.environ.get("AGENT_HUB_CODEX_TIMEOUT_SECONDS", "900"))
 CODEX_PROFILE = os.environ.get("AGENT_HUB_CODEX_PROFILE", "")
+BUILD_TIMEOUT_SECONDS = int(os.environ.get("AGENT_HUB_BUILD_TIMEOUT_SECONDS", "900"))
 
 
 @dataclass(frozen=True)
@@ -46,7 +48,7 @@ class WorkerRequest:
             if candidate.is_absolute() or ".." in candidate.parts or path.startswith(".hermes/"):
                 raise ValueError("invalid_allowed_paths")
         # Commands are identifiers chosen by the DevelopmentTask, not shell.
-        if any(command not in {"flutter_analyze"} and not command.startswith("flutter_test:") for command in validation):
+        if any(command not in {"flutter_analyze", "flutter_build"} and not command.startswith("flutter_test:") for command in validation):
             raise ValueError("arbitrary_shell_forbidden")
         return cls(
             repository=expected_repository,
@@ -154,11 +156,16 @@ class LocalCodeExecutor:
                 final = subprocess.run(["flutter", "analyze"], cwd=worktree, capture_output=True, text=True)
                 errors, warnings = _diagnostic_counts(final.stdout + final.stderr)
                 analyze = {"new_errors": max(0, errors-baseline_errors), "new_warnings": max(0, warnings-baseline_warnings), "status": "PASS" if errors <= baseline_errors and warnings <= baseline_warnings else "FAIL_REGRESSION"}
+            build = {"status": "NOT_REQUIRED"}
+            if "flutter_build" in request.validation:
+                build = self._run_build(worktree)
             if any(code != 0 for code in tests.values()):
-                return self._result(request, "VALIDATION_FAILED", exit_code=exit_code, changed_files=changed, diff=_complete_diff(worktree, changed), validation={"tests": tests, "analyze": analyze}, scope_guard="PASS", stdout_tail=stdout[-2000:], stderr_tail=stderr[-2000:])
+                return self._result(request, "VALIDATION_FAILED", exit_code=exit_code, changed_files=changed, diff=_complete_diff(worktree, changed), validation={"tests": tests, "analyze": analyze, "build": build}, scope_guard="PASS", stdout_tail=stdout[-2000:], stderr_tail=stderr[-2000:])
             if analyze["status"] == "FAIL_REGRESSION":
-                return self._result(request, "VALIDATION_FAILED", exit_code=exit_code, changed_files=changed, diff=_complete_diff(worktree, changed), validation={"tests": tests, "analyze": analyze}, scope_guard="PASS", stdout_tail=stdout[-2000:], stderr_tail=stderr[-2000:])
-            return self._result(request, "SUCCESS" if changed else "NO_CHANGE_REQUIRED", exit_code=exit_code, changed_files=changed, diff=_complete_diff(worktree, changed), validation={"tests": tests, "analyze": analyze}, scope_guard="PASS", stdout_tail=stdout[-2000:], stderr_tail=stderr[-2000:], review="APPROVED" if changed else "CHANGES_REQUIRED")
+                return self._result(request, "VALIDATION_FAILED", exit_code=exit_code, changed_files=changed, diff=_complete_diff(worktree, changed), validation={"tests": tests, "analyze": analyze, "build": build}, scope_guard="PASS", stdout_tail=stdout[-2000:], stderr_tail=stderr[-2000:])
+            if build["status"] == "FAIL":
+                return self._result(request, "VALIDATION_FAILED", exit_code=exit_code, changed_files=changed, diff=_complete_diff(worktree, changed), validation={"tests": tests, "analyze": analyze, "build": build}, scope_guard="PASS", stdout_tail=stdout[-2000:], stderr_tail=stderr[-2000:])
+            return self._result(request, "SUCCESS" if changed else "NO_CHANGE_REQUIRED", exit_code=exit_code, changed_files=changed, diff=_complete_diff(worktree, changed), validation={"tests": tests, "analyze": analyze, "build": build}, scope_guard="PASS", stdout_tail=stdout[-2000:], stderr_tail=stderr[-2000:], review="APPROVED" if changed else "CHANGES_REQUIRED")
         except Exception as error:
             changed = _changed_files(worktree) if worktree.exists() else []
             return self._result(request, "CODEX_EXECUTION_FAILED", reason="worker_exception", changed_files=changed, stderr_tail=str(error)[-2000:])
@@ -166,6 +173,30 @@ class LocalCodeExecutor:
             if worktree.exists():
                 subprocess.run(["git", "worktree", "remove", "--force", str(worktree)], cwd=self.repository_path, capture_output=True)
             shutil.rmtree(root, ignore_errors=True)
+
+    def _run_build(self, worktree: Path) -> dict[str, object]:
+        """Best-effort macOS packaging smoke test.
+
+        Non-Darwin hosts skip (BUILD_SKIPPED is non-fatal); CI remains the
+        authoritative packaging gate. A real build failure or timeout is fatal
+        (FAIL -> VALIDATION_FAILED) so packaging-breaking changes are caught
+        inside agent-hub runs instead of only at CI time.
+        """
+        if platform.system() != "Darwin":
+            return {"status": "SKIPPED", "reason": "non_darwin_host"}
+        try:
+            process = subprocess.run(
+                ["flutter", "build", "macos", "--debug"],
+                cwd=worktree,
+                capture_output=True,
+                text=True,
+                timeout=BUILD_TIMEOUT_SECONDS,
+            )
+        except subprocess.TimeoutExpired:
+            return {"status": "FAIL", "reason": "timeout", "exit_code": None}
+        if process.returncode == 0:
+            return {"status": "PASS", "exit_code": 0}
+        return {"status": "FAIL", "exit_code": process.returncode, "stderr_tail": process.stderr[-2000:]}
 
     def _link_path_dependencies(self, worktree: Path, root: Path) -> None:
         # Workspace members can declare external path dependencies too. Scan

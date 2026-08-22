@@ -13,6 +13,13 @@ from agent_hub.graphs.development import build_development_graph
 from agent_hub.workspace.config import WorkspaceConfig
 
 
+class _SubprocessResult:
+    def __init__(self, returncode=0, stdout="", stderr=""):
+        self.returncode = returncode
+        self.stdout = stdout
+        self.stderr = stderr
+
+
 class CodeWorkerRequestTest(unittest.TestCase):
     def payload(self, **changes):
         value = {"repository": "flutter_forge", "base_revision": "abc", "requirement": "x", "allowed_paths": ["lib/x.dart"], "validation": ["flutter_test:test/x_test.dart"]}
@@ -30,6 +37,53 @@ class CodeWorkerRequestTest(unittest.TestCase):
     def test_rejects_arbitrary_shell(self):
         with self.assertRaisesRegex(ValueError, "arbitrary_shell_forbidden"):
             WorkerRequest.from_json(self.payload(validation=["rm -rf /"]), "flutter_forge")
+
+    def test_accepts_flutter_build_validation_token(self):
+        request = WorkerRequest.from_json(self.payload(validation=["flutter_analyze", "flutter_build"]), "flutter_forge")
+        self.assertEqual(request.validation, ["flutter_analyze", "flutter_build"])
+
+    def test_run_build_skips_on_non_darwin_host(self):
+        with patch("agent_hub.execution.code_worker.platform.system", return_value="Linux"):
+            result = LocalCodeExecutor(Path.cwd(), repository_id="flutter_forge")._run_build(Path.cwd())
+        self.assertEqual(result["status"], "SKIPPED")
+
+    def test_run_build_reports_failure_on_build_error(self):
+        class Result:
+            returncode = 1
+            stderr = "build failed"
+        with patch("agent_hub.execution.code_worker.platform.system", return_value="Darwin"), patch("agent_hub.execution.code_worker.subprocess.run", return_value=Result()):
+            result = LocalCodeExecutor(Path.cwd(), repository_id="flutter_forge")._run_build(Path.cwd())
+        self.assertEqual(result["status"], "FAIL")
+        self.assertIn("build failed", result["stderr_tail"])
+
+    def test_run_build_passes_on_success(self):
+        class Result:
+            returncode = 0
+            stderr = ""
+        with patch("agent_hub.execution.code_worker.platform.system", return_value="Darwin"), patch("agent_hub.execution.code_worker.subprocess.run", return_value=Result()):
+            result = LocalCodeExecutor(Path.cwd(), repository_id="flutter_forge")._run_build(Path.cwd())
+        self.assertEqual(result["status"], "PASS")
+
+    def test_flutter_build_failure_returns_validation_failed(self):
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            os.system(f"git init -q {root}")
+            os.system(f"git -C {root} config user.email test@example.com")
+            os.system(f"git -C {root} config user.name test")
+            (root / "pubspec.yaml").write_text("name: x\n")
+            os.system(f"git -C {root} add pubspec.yaml && git -C {root} commit -qm base")
+            base = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
+            executor = LocalCodeExecutor(root, repository_id="flutter_forge")
+            request = WorkerRequest(repository="flutter_forge", base_revision=base, task_id="t", requirement="x", allowed_paths=["lib/x.dart"], validation=["flutter_build"])
+            with patch.object(executor, "_codex_run", return_value=("completed", 0, "out", "err")), \
+                 patch("agent_hub.execution.code_worker._changed_files", return_value=[]), \
+                 patch.object(executor, "_link_path_dependencies", return_value=None), \
+                 patch.object(executor, "_run_build", return_value={"status": "FAIL", "exit_code": 1}), \
+                 patch("agent_hub.execution.code_worker.subprocess.run", return_value=_SubprocessResult(0)), \
+                 patch("agent_hub.execution.code_worker.subprocess.check_output", return_value=base):
+                result = executor.execute(request)
+            self.assertEqual(result["status"], "VALIDATION_FAILED")
+            self.assertEqual(result["validation"]["build"]["status"], "FAIL")
 
     def test_collects_untracked_changes_in_complete_diff(self):
         with tempfile.TemporaryDirectory() as raw:
