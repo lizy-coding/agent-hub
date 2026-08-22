@@ -46,12 +46,6 @@ def _integration_root(config: WorkspaceConfig, repository_id: str) -> Path:
     managed = Path(__file__).resolve().parents[3] / ".integration" / repository_id
     if managed.is_dir():
         return managed.resolve()
-    # Reuse the pre-rename managed worktree until its active program has been
-    # reconciled into the canonical Flutter Forge identity.
-    if repository_id == "flutter_forge":
-        legacy = managed.parent / "flutter_study"
-        if legacy.is_dir():
-            return legacy.resolve()
     return registry_api.get_repository(config, repository_id).path.resolve()
 
 
@@ -97,8 +91,7 @@ def _app_root(root: Path) -> Path:
     relocated = root / "apps" / "flutter_forge"
     if (relocated / "pubspec.yaml").is_file():
         return relocated
-    legacy = root / "apps" / "flutter_study"
-    return legacy if (legacy / "pubspec.yaml").is_file() else root
+    return root
 
 
 def _relative(root: Path, path: Path) -> str:
