@@ -65,3 +65,7 @@ The bootstrap graph also succeeds with one registered repository: `flutter_forge
 ## Context Resolver readiness
 
 The Registry supplies a stable, queryable Workspace/Repository/DevelopmentUnit API with evidence, freshness, dependencies, dependents, rules, validation, and safe path lookup. It therefore satisfies Context Resolver input conditions. No Context Resolver, planner, developer/reviewer agent, RAG, or business code change was implemented.
+
+## Milestone: flutter_forge v1.2.1
+
+Released 2026-08-23 (installer structure completed). Ships a macOS unsigned zip and a Windows Inno Setup `.exe`. Identity is placeholder `com.flutterforge.preview`, pending assignment of the real bundle identity. `INSTALL_GUIDE` covers both platforms; release notes are structured by platform. Current flutter_forge HEAD is `6a6cad8`. Registry refreshed to 2026-08-23 reflecting this state.
