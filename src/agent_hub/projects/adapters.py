@@ -35,6 +35,8 @@ class ProjectAdapter(Protocol):
         program: dict[str, object],
     ) -> dict[str, object]: ...
 
+    def default_allowed_paths(self, task_id: str, repository: str) -> list[str]: ...
+
 
 class GenericProjectAdapter:
     """Safe plan-only baseline for projects without custom architecture rules."""
@@ -140,6 +142,9 @@ class GenericProjectAdapter:
     def contract_preflight(self, task, program):
         return {"status": "PASS", "guard_kind": "generic_contract_preflight"}
 
+    def default_allowed_paths(self, task_id, repository):
+        return []
+
 
 class FlutterForgeAdapter:
     """Compatibility adapter for the existing Flutter Forge decomposition plan."""
@@ -147,20 +152,24 @@ class FlutterForgeAdapter:
     name = "flutter_forge"
 
     def build_program(self, root, context):
-        from agent_hub.graphs.decomposition import _flutter_forge_program
-        return _flutter_forge_program(root, context)
+        from agent_hub.projects.flutter_forge_adapter import build_program
+        return build_program(root, context)
 
     def architecture_guard(self, task, worker, program):
-        from agent_hub.graphs.decomposition import _flutter_forge_architecture_guard
-        return _flutter_forge_architecture_guard(task, worker, program)
+        from agent_hub.projects.flutter_forge_adapter import architecture_guard
+        return architecture_guard(task, worker, program)
 
     def proposal_inventory(self, program, spec):
-        from agent_hub.graphs.decomposition import _flutter_forge_proposal_inventory
-        return _flutter_forge_proposal_inventory(program, spec)
+        from agent_hub.projects.flutter_forge_adapter import proposal_inventory
+        return proposal_inventory(program, spec)
 
     def contract_preflight(self, task, program):
-        from agent_hub.graphs.decomposition import _flutter_forge_file_picker_contract_preflight
-        return _flutter_forge_file_picker_contract_preflight(program)
+        from agent_hub.projects.flutter_forge_adapter import file_picker_contract_preflight
+        return file_picker_contract_preflight(program)
+
+    def default_allowed_paths(self, task_id, repository):
+        from agent_hub.projects.flutter_forge_adapter import default_allowed_paths
+        return default_allowed_paths(task_id, repository)
 
 
 _ADAPTERS: dict[str, ProjectAdapter] = {

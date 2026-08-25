@@ -143,7 +143,7 @@ python -c 'from pathlib import Path; from agent_hub.workspace.config import Work
 
 ### 6.2 `workspace/projects.json`
 
-拆解项目注册：`default_project` + 每个项目的 `adapter` / `program_id` / `snapshot_namespace` / `workspace_config` 路径。`adapter` 必须在 `agent_hub.projects.adapters` 注册；当前提供 `flutter_forge`（兼容现有 Flutter Forge 架构策略）和 `generic`（安全的 plan-only 基线）。
+拆解项目注册：`default_project` + 每个项目的 `adapter` / `program_id` / `snapshot_namespace` / `workspace_config` 路径。`adapter` 必须在 `agent_hub.projects.adapters` 注册；当前提供 `flutter_forge`（项目事实和架构策略位于 `projects/flutter_forge_adapter.py`）和 `generic`（安全的 plan-only 基线）。
 
 新增项目的最小接入只需：
 
