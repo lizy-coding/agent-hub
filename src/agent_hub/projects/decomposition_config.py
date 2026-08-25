@@ -7,6 +7,7 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field, model_validator
 
+from agent_hub.projects.adapters import get_adapter
 from agent_hub.workspace.config import WorkspaceConfig
 from agent_hub.workspace.runtime import RuntimeWorkspaceProvider
 
@@ -40,6 +41,7 @@ class DecompositionProjectConfig(BaseModel):
             raise ValueError(
                 "flutter_forge adapter requires primary_repository_id=flutter_forge"
             )
+        get_adapter(self.adapter)
         return self
 
     def graph_input(self) -> dict[str, object]:

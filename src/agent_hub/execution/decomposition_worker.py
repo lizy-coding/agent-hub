@@ -48,6 +48,12 @@ class DecompositionCodeExecutor:
     def execute(self, payload: dict[str, object]) -> dict[str, object]:
         task_id = str(payload.get("task_id", ""))
         repositories = payload.get("repositories")
+        payload_paths = payload.get("repository_paths")
+        repository_paths = {
+            str(repository): Path(str(path)).resolve()
+            for repository, path in payload_paths.items()
+        } if isinstance(payload_paths, dict) else self.repository_paths
+        cluster_root = Path(str(payload.get("cluster_root") or self.cluster_root)).resolve()
         scope, scope_error = self._writable_scope(payload)
         if not task_id or not isinstance(repositories, list) or not repositories or scope_error:
             return self._result(task_id, "WORKER_SCOPE_CONFIGURATION_ERROR", scope_error or "invalid_migration_request")
@@ -63,7 +69,7 @@ class DecompositionCodeExecutor:
                 if not isinstance(item, dict):
                     return self._result(task_id, "WORKER_DISPATCH_FAILED", "invalid_repository_entry", execution_id, root)
                 repository, base = str(item.get("repository", "")), str(item.get("base_revision", ""))
-                source = self.repository_paths.get(repository, self.cluster_root / repository)
+                source = repository_paths.get(repository, cluster_root / repository)
                 if not repository or not base or not source.is_dir():
                     return self._result(task_id, "WORKER_DISPATCH_FAILED", "invalid_repository_source", execution_id, root)
                 worktree = root / repository
@@ -109,7 +115,7 @@ class DecompositionCodeExecutor:
             return self._result(task_id, "WORKER_DISPATCH_FAILED", str(error), execution_id, root)
         finally:
             for repository, worktree in worktrees.items():
-                source = self.repository_paths.get(repository, self.cluster_root / repository)
+                source = repository_paths.get(repository, cluster_root / repository)
                 subprocess.run(["git", "worktree", "remove", "--force", str(worktree)], cwd=source, capture_output=True)
             shutil.rmtree(root, ignore_errors=True)
 

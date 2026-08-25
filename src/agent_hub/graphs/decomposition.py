@@ -12,6 +12,7 @@ from typing import TypedDict
 from urllib.request import Request, urlopen
 
 from langgraph.graph import END, START, StateGraph
+from agent_hub.projects.adapters import get_adapter
 from agent_hub.projects.decomposition_config import load_decomposition_project
 
 _DEFAULT_PROJECT = load_decomposition_project()
@@ -191,7 +192,7 @@ def _worker(request: dict[str, object], endpoint: str | None) -> dict[str, objec
         return {"status": "WORKER_DISPATCH_FAILED", "reason": "code_worker_unreachable", "detail": str(error)}
 
 
-def _program(root: Path, project_context: dict[str, object] | None = None) -> dict[str, object]:
+def _flutter_forge_program(root: Path, project_context: dict[str, object] | None = None) -> dict[str, object]:
     context = project_context or {}
     primary_repository = str(context.get("primary_repository_id") or "flutter_forge")
     repository_paths = context.get("repository_paths") if isinstance(context.get("repository_paths"), dict) else {}
@@ -276,7 +277,7 @@ def _mutation_repositories(task: dict[str, object], program: dict[str, object] |
     return roles
 
 
-def _architecture_guard(task: dict[str, object], worker: dict[str, object], program: dict[str, object]) -> dict[str, object]:
+def _flutter_forge_architecture_guard(task: dict[str, object], worker: dict[str, object], program: dict[str, object]) -> dict[str, object]:
     """Prove that a merge preserves a concrete target capability owner."""
     repositories = worker.get("repositories", {})
     if not isinstance(repositories, dict):
@@ -410,14 +411,14 @@ def _architecture_guard(task: dict[str, object], worker: dict[str, object], prog
     return {"status": "PASS", "capability_owner_before": list(task.get("source_units", [])), "capability_owner_after": target_units, "source_deleted_paths": deleted, "target_added_or_retained_paths": retained, "package_survival": "PASS", "dependency_direction": "PASS"}
 
 
-def _file_picker_contract_preflight(program: dict[str, object] | None = None) -> dict[str, object]:
+def _flutter_forge_file_picker_contract_preflight(program: dict[str, object] | None = None) -> dict[str, object]:
     primary = _primary_repository(program)
     target = _ensure_worktree(primary, program)[0] / "packages/file_picker_bridge"
     target_ready = (target / "pubspec.yaml").is_file() and (target / "lib").is_dir()
     return {"status": "PASS" if target_ready else "REJECT", "capability_owner": "flutter_forge/packages/file_picker_bridge", "target_package_root": "packages/file_picker_bridge", "required_dependency_rewrites": [], "reason": "workspace package owner is present" if target_ready else "workspace package owner cannot be proven"}
 
 
-def _proposal_inventory(program: dict[str, object], spec: dict[str, object]) -> dict[str, object]:
+def _flutter_forge_proposal_inventory(program: dict[str, object], spec: dict[str, object]) -> dict[str, object]:
     """Build a frozen task from tracked-file evidence without touching a worktree."""
     primary_repository = str(program.get("primary_repository_id") or "flutter_forge")
     repository = next((item for item in program.get("repositories", []) if item.get("repository_id") == primary_repository), None)
@@ -582,6 +583,42 @@ def _proposal_inventory(program: dict[str, object], spec: dict[str, object]) -> 
     return contract
 
 
+def _adapter_context(value: dict[str, object] | None) -> dict[str, object]:
+    context = value if isinstance(value, dict) else {}
+    if context.get("adapter"):
+        return context
+    # Preserve the historical Flutter Forge default for old checkpoints and
+    # direct helper callers; all newly registered projects must declare one.
+    repositories = context.get("repositories")
+    has_flutter_forge = isinstance(repositories, list) and any(
+        isinstance(item, dict) and item.get("repository_id") == "flutter_forge"
+        for item in repositories
+    )
+    if context.get("primary_repository_id") == "flutter_forge" or has_flutter_forge or not context:
+        return {**context, "adapter": "flutter_forge"}
+    return {**context, "adapter": "generic"}
+
+
+def _program(root: Path, project_context: dict[str, object] | None = None) -> dict[str, object]:
+    context = _adapter_context(project_context)
+    return get_adapter(str(context.get("adapter"))).build_program(root, context)
+
+
+def _architecture_guard(task: dict[str, object], worker: dict[str, object], program: dict[str, object]) -> dict[str, object]:
+    context = _adapter_context(program)
+    return get_adapter(str(context.get("adapter"))).architecture_guard(task, worker, program)
+
+
+def _file_picker_contract_preflight(program: dict[str, object] | None = None) -> dict[str, object]:
+    context = _adapter_context(program)
+    return get_adapter(str(context.get("adapter"))).contract_preflight({}, context)
+
+
+def _proposal_inventory(program: dict[str, object], spec: dict[str, object]) -> dict[str, object]:
+    context = _adapter_context(program)
+    return get_adapter(str(context.get("adapter"))).proposal_inventory(program, spec)
+
+
 def build_decomposition_graph():
     graph = StateGraph(State)
 
@@ -597,10 +634,11 @@ def build_decomposition_graph():
             root = Path(state.get("cluster_root") or CLUSTER)
             return {"decomposition_program": _program(root, context)}
         program = dict(program)
+        is_flutter_forge = not program.get("adapter") or program.get("adapter") in {"flutter_forge", "flutter-forge"}
         # A retry is deliberately task-scoped: it can only release a terminal
         # no-effect/dispatch outcome that has no integration result to apply.
         decision = state.get("decision")
-        if isinstance(decision, dict) and decision.get("choice") == "CREATE_APPS_FLUTTER_STUDY":
+        if is_flutter_forge and isinstance(decision, dict) and decision.get("choice") == "CREATE_APPS_FLUTTER_STUDY":
             decision_id = str(decision.get("decision_id", ""))
             task_id = decision_id.removeprefix("retry:")
             blocker = program.get("execution_blocker")
@@ -643,7 +681,7 @@ def build_decomposition_graph():
                 return {"decomposition_program": program}
         # Correct only the known, previously frozen bad path before the task
         # is dispatched.  This is a contract recovery, not a re-plan.
-        file_picker = next((item for item in program.get("migration_tasks", []) if item.get("task_id") == "merge-file-picker-bridge-owners" and item.get("status") == "READY"), None)
+        file_picker = next((item for item in program.get("migration_tasks", []) if is_flutter_forge and item.get("task_id") == "merge-file-picker-bridge-owners" and item.get("status") == "READY"), None)
         if file_picker and file_picker.get("target_units") == ["plugins/file_picker_bridge"]:
             recovered = _program(Path(str(program.get("cluster_root") or CLUSTER)), {key: program.get(key) for key in ("project_id", "program_id", "adapter", "primary_repository_id")})
             correct = next(item for item in recovered["migration_tasks"] if item.get("task_id") == "merge-file-picker-bridge-owners")
@@ -682,7 +720,7 @@ def build_decomposition_graph():
                 program.update({"status": "PROGRAM_BLOCKED", "current_migration_task": rejected["task_id"], "execution_blocker": {"status": reason, "task_id": rejected["task_id"], "worker_execution_id": worker.get("worker_execution_id"), "reason": "ArchitectureGuard rejected the completed Worker result; no integration commit was created.", "detail": guard, **({"decision_id": f"retry:{rejected['task_id']}", "choices": ["retry"]} if reason == "MIGRATION_NO_EFFECT" else {})}})
                 return {"decomposition_program": program, "integration_result": {"status": "ARCHITECTURE_GUARD_REJECTED", "task_id": rejected["task_id"]}}
             recoverable = next((item for item in program.get("migration_tasks", []) if item.get("task_id") == worker.get("task_id") and item.get("status") == "BLOCKED_DECISION"), None)
-            if isinstance(recoverable, dict) and recoverable.get("task_id") == "relocate-flutter-forge-app":
+            if is_flutter_forge and isinstance(recoverable, dict) and recoverable.get("task_id") == "relocate-flutter-forge-app":
                 updated_guard = _architecture_guard(recoverable, worker, program)
                 if updated_guard.get("status") == "PASS":
                     recoverable["status"] = "RUNNING"
@@ -940,7 +978,7 @@ def build_decomposition_graph():
         if set(roles) != set(repositories):
             program.update({"status": "PROGRAM_BLOCKED", "current_migration_task": task["task_id"], "execution_blocker": {"status": "WORKER_SCOPE_CONFIGURATION_ERROR", "task_id": task["task_id"], "reason": "Frozen mutation repositories do not match the frozen workspace repositories."}})
             return {"decomposition_program": program}
-        request = {"execution_kind": "decomposition_migration", "task_id": task["task_id"], "requirement": str(task.get("title", task["task_id"])) + ". Source units: " + ", ".join(task["source_units"]) + ". Target units: " + ", ".join(task["target_units"]), "source_units": task["source_units"], "target_units": task["target_units"], "allowed_operations": task["allowed_operations"], "target_creation_allowed": bool(task.get("target_creation_allowed", False)), "dependency_constraints": task.get("dependency_constraints", []), "execution_instructions": task.get("execution_instructions", []), "architecture_preflight": task.get("architecture_preflight", {}), "timeout_seconds": int(os.environ.get("AGENT_HUB_CODEX_TIMEOUT_SECONDS", "1800")), "allowed_paths_by_repository": allowed, "writable_repositories": [{"repository": repository, "role": roles[repository], "writable": True, "allowed_paths": allowed[repository]} for repository in repositories], "repositories": [{"repository": item["repository"], "base_revision": item["head"], "role": roles[item["repository"]], "writable": True, "allowed_paths": allowed[item["repository"]]} for item in managed]}
+        request = {"execution_kind": "decomposition_migration", "task_id": task["task_id"], "project_id": program.get("project_id"), "adapter": program.get("adapter"), "cluster_root": program.get("cluster_root"), "repository_paths": {str(item.get("repository_id")): str(item.get("path")) for item in program.get("repositories", []) if isinstance(item, dict) and item.get("repository_id") and item.get("path")}, "requirement": str(task.get("title", task["task_id"])) + ". Source units: " + ", ".join(task["source_units"]) + ". Target units: " + ", ".join(task["target_units"]), "source_units": task["source_units"], "target_units": task["target_units"], "allowed_operations": task["allowed_operations"], "target_creation_allowed": bool(task.get("target_creation_allowed", False)), "dependency_constraints": task.get("dependency_constraints", []), "execution_instructions": task.get("execution_instructions", []), "architecture_preflight": task.get("architecture_preflight", {}), "timeout_seconds": int(os.environ.get("AGENT_HUB_CODEX_TIMEOUT_SECONDS", "1800")), "allowed_paths_by_repository": allowed, "writable_repositories": [{"repository": repository, "role": roles[repository], "writable": True, "allowed_paths": allowed[repository]} for repository in repositories], "repositories": [{"repository": item["repository"], "base_revision": item["head"], "role": roles[item["repository"]], "writable": True, "allowed_paths": allowed[item["repository"]]} for item in managed]}
         return {"decomposition_program": program, "migration_request": request}
 
     def dispatch(state: State):

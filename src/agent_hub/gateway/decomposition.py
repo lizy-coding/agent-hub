@@ -12,7 +12,7 @@ from urllib.error import HTTPError, URLError
 from agent_hub.gateway.refactor_dashboard import fetch_state
 from agent_hub.gateway.refactor_run import _call
 from agent_hub.gateway.decomposition_state import load as load_snapshot, save as save_snapshot, validate as validate_snapshot
-from agent_hub.graphs.decomposition import RETRYABLE_BLOCKERS
+from agent_hub.graphs.decomposition import RETRYABLE_BLOCKERS, _repositories_for
 from agent_hub.projects.decomposition_config import DecompositionProjectConfig, load_decomposition_project
 
 _DEFAULT_PROJECT = load_decomposition_project()
@@ -152,6 +152,8 @@ def _needs_contract_reconciliation(state):
     program = values.get("decomposition_program") if isinstance(values, dict) else None
     if not isinstance(program, dict):
         return False
+    if program.get("adapter") and program.get("adapter") not in {"flutter_forge", "flutter-forge"}:
+        return False
     task = next((item for item in program.get("migration_tasks", []) if item.get("task_id") == "merge-file-picker-bridge-owners"), None)
     return isinstance(task, dict) and task.get("status") == "READY" and task.get("target_units") == ["plugins/file_picker_bridge"]
 
@@ -173,7 +175,7 @@ def _needs_ready_dirty_reconciliation(state):
     task = next((item for item in program.get("migration_tasks", []) if item.get("task_id") == program.get("current_migration_task") and item.get("status") == "READY"), None)
     if not isinstance(task, dict):
         return False
-    repositories = {"flutter_forge" if str(unit).startswith(("flutter_forge/", "apps/flutter_forge", "apps/")) else str(unit).split("/")[0] for unit in [*task.get("source_units", []), *task.get("target_units", [])]}
+    repositories = set(_repositories_for(task, program))
     for managed in program.get("managed_worktrees", []):
         if not isinstance(managed, dict) or str(managed.get("repository")) not in repositories:
             continue
@@ -197,7 +199,7 @@ def _needs_rejected_worker_reconciliation(state):
 def _needs_app_guard_reconciliation(state):
     values = state.get("values") or {}
     program, worker = values.get("decomposition_program"), values.get("worker_result")
-    if not isinstance(program, dict) or not isinstance(worker, dict) or worker.get("task_id") != "relocate-flutter-forge-app" or worker.get("architecture_verdict") != "REJECTED":
+    if not isinstance(program, dict) or (program.get("adapter") and program.get("adapter") not in {"flutter_forge", "flutter-forge"}) or not isinstance(worker, dict) or worker.get("task_id") != "relocate-flutter-forge-app" or worker.get("architecture_verdict") != "REJECTED":
         return False
     guard = (worker.get("validation") or {}).get("architecture_guard", {}) if isinstance(worker.get("validation"), dict) else {}
     return guard.get("reason") == "app_target_missing" and any(item.get("task_id") == worker.get("task_id") and item.get("status") == "BLOCKED_DECISION" for item in program.get("migration_tasks", []))

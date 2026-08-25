@@ -143,7 +143,16 @@ python -c 'from pathlib import Path; from agent_hub.workspace.config import Work
 
 ### 6.2 `workspace/projects.json`
 
-拆解项目注册：`default_project` + 每个项目的 `adapter` / `program_id` / `snapshot_namespace` / `workspace_config` 路径。
+拆解项目注册：`default_project` + 每个项目的 `adapter` / `program_id` / `snapshot_namespace` / `workspace_config` 路径。`adapter` 必须在 `agent_hub.projects.adapters` 注册；当前提供 `flutter_forge`（兼容现有 Flutter Forge 架构策略）和 `generic`（安全的 plan-only 基线）。
+
+新增项目的最小接入只需：
+
+1. 在 `workspace/projects.json` 增加项目身份和 `adapter`；
+2. 在对应 `workspace/config.json` 声明运行时仓库及路径；
+3. 若需要项目特有 decomposition 规则，实现 `ProjectAdapter` 的能力盘点、提案冻结、架构守卫和 contract preflight，并注册 adapter；
+4. 用第二个项目的 plan/reconcile/worker-path 测试证明 Graph 主流程无需项目名分支。
+
+未知 adapter 会在项目配置加载阶段失败；Worker 使用冻结任务携带的 `repository_paths`，不会回退到默认项目仓库。
 
 ### 6.3 `.env.local`
 
