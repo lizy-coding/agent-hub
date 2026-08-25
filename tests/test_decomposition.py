@@ -2,8 +2,22 @@ import unittest
 from unittest.mock import patch
 from agent_hub.gateway.decomposition import _needs_app_guard_reconciliation, _needs_blocked_decision_metadata, _needs_done_reconciliation, _needs_ready_dirty_reconciliation, _needs_zero_change_reconciliation, plan, propose, render, run, status
 from agent_hub.gateway.decomposition_state import load as load_snapshot, save as save_snapshot, validate as validate_snapshot
-from agent_hub.graphs.decomposition import _allowed, _app_relocation_contract, _classify_managed_dirty, _mutation_repositories, _proposal_inventory, _repositories_for, _restore_agent_owned_dirty, _select, _stage_validated_changes, build_decomposition_graph
+from agent_hub.graphs.decomposition import _allowed, _app_relocation_contract, _classify_managed_dirty, _mutation_repositories, _program, _proposal_inventory, _repositories_for, _restore_agent_owned_dirty, _select, _stage_validated_changes, build_decomposition_graph
 class DecompositionTest(unittest.TestCase):
+ def test_program_maps_windows_resilient_online_video_playback_to_app_owner(self):
+  import tempfile
+  from pathlib import Path
+  with tempfile.TemporaryDirectory() as raw:
+   repo=Path(raw)/'flutter_forge'; repo.mkdir(); (repo/'pubspec.yaml').write_text('name: flutter_forge_workspace\n')
+   program=_program(Path(raw))
+  capability=next(item for item in program['capabilities'] if item['capability_id']=='windows-resilient-online-video-playback')
+  app=next(item for item in program['package_candidates'] if item['package_id']=='apps/flutter_forge')
+  self.assertEqual(capability['current_owners'],['flutter_forge/apps/flutter_forge/lib/modules/platform/online_video_player'])
+  self.assertEqual(capability['dependencies'],['dio','video_player','video_player_win'])
+  self.assertTrue(capability['platform_dependency']); self.assertTrue(capability['native_dependency'])
+  self.assertIn(capability['capability_id'],app['owned_capabilities'])
+  self.assertIn('video_player_win',app['dependencies'])
+
  def test_current_ready_proposal_is_selected_before_older_ready_task(self):
   program={'current_migration_task':'rename-project-to-flutter-forge','migration_tasks':[{'task_id':'older','status':'READY','depends_on':[]},{'task_id':'rename-project-to-flutter-forge','status':'READY','depends_on':[]}]}
   self.assertEqual(_select(program)['task_id'],'rename-project-to-flutter-forge')

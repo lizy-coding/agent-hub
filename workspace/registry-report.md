@@ -69,3 +69,9 @@ The Registry supplies a stable, queryable Workspace/Repository/DevelopmentUnit A
 ## Milestone: flutter_forge v1.2.1
 
 Released 2026-08-23 (installer structure completed). Ships a macOS unsigned zip and a Windows Inno Setup `.exe`. Identity is placeholder `com.flutterforge.preview`, pending assignment of the real bundle identity. `INSTALL_GUIDE` covers both platforms; release notes are structured by platform. Current flutter_forge HEAD is `6a6cad8`. Registry refreshed to 2026-08-23 reflecting this state.
+
+## Capability update: Windows resilient online video playback
+
+Observed at flutter_forge `432ad04` on 2026-08-25. The app-owned `online_video_player` capability now uses `video_player_win` on Windows, performs a `dio` reachability precheck, rebuilds and safely disposes controllers across retries, and rejects stale asynchronous opens with a generation guard. The error state exposes an explicit retry action, with adapter regression coverage in the business repository. Agent Hub records this as `windows-resilient-online-video-playback`, owned by `apps/flutter_forge`; it remains an app/platform capability rather than a reusable package candidate.
+
+The untracked `.hermes/fix-usb-detector-subscription.codex.json` file is a pending external task input and is intentionally excluded from the active capability record until its business change is committed. Current flutter_forge HEAD is `432ad04`; Windows device acceptance remains outstanding per that commit's checklist.
