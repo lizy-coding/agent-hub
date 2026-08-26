@@ -126,6 +126,14 @@ python -c 'from pathlib import Path; from agent_hub.workspace.config import Work
 - 规划阶段**绝不执行**任何迁移；执行必须显式传 `--execute`，且 Worker 派发由 Graph 冻结精确路径。
 - 自定义提案不允许携带 `allowed_paths` / `candidate_paths` 等 Graph 自有字段。
 
+Flutter Forge 的 Android readiness 任务由项目 adapter 冻结，当前顺序为：
+
+1. `responsive_navigation_policy`：移动端/小屏应用内导航，桌面大屏多窗口。
+2. `android_mobile_navigation_baseline`：360dp 小屏布局和导航验收。
+3. `android_host_readiness`：Android host、插件矩阵、APK 和 emulator smoke test。
+
+这些任务只允许修改 adapter 冻结的应用、测试、文档和 Android host 路径；不修改通用 Graph，也不允许宿主自动 push、merge 或 release。
+
 ---
 
 ## 6. 配置说明
