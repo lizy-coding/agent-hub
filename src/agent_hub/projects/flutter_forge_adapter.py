@@ -116,6 +116,7 @@ def build_program(root: Path, context: dict[str, object]) -> dict[str, object]:
             "acceptance": [
                 "Android host directory exists",
                 "plugin support matrix is recorded",
+                "usb_android_method_channel replaces the incompatible usb_serial plugin",
                 "debug APK builds",
                 "emulator smoke test passes",
             ],
