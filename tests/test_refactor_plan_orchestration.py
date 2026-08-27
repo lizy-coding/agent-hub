@@ -51,9 +51,9 @@ class RefactorPlanLoaderTest(unittest.TestCase):
             (root / "REFACTOR_PLAN.md").write_text("not json {")
             self.assertIsNone(_load_refactor_plan(root))
 
-    def test_real_flutter_forge_plan_loads_six_entries(self):
+    def test_real_flutter_forge_plan_loads_eight_entries(self):
         entries = _load_refactor_plan(Path("/Users/forest/code/langGraph/flutter_forge"))
-        self.assertEqual(len(entries), 6)
+        self.assertEqual(len(entries), 8)
 
 
 class RefactorPlanTaskGenerationTest(unittest.TestCase):

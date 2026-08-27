@@ -75,3 +75,9 @@ Released 2026-08-23 (installer structure completed). Ships a macOS unsigned zip 
 Observed at flutter_forge `432ad04` on 2026-08-25. The app-owned `online_video_player` capability now uses `video_player_win` on Windows, performs a `dio` reachability precheck, rebuilds and safely disposes controllers across retries, and rejects stale asynchronous opens with a generation guard. The error state exposes an explicit retry action, with adapter regression coverage in the business repository. Agent Hub records this as `windows-resilient-online-video-playback`, owned by `apps/flutter_forge`; it remains an app/platform capability rather than a reusable package candidate.
 
 The untracked `.hermes/fix-usb-detector-subscription.codex.json` file is a pending external task input and is intentionally excluded from the active capability record until its business change is committed. Current flutter_forge HEAD is `432ad04`; Windows device acceptance remains outstanding per that commit's checklist.
+
+## Current maintainability baseline (2026-08-27)
+
+Flutter Forge now has a responsive navigation policy: Android/iOS/Web and compact windows use in-app navigation; only large supported desktop windows may create category windows. Android host and APK smoke validation passed on an Android 15 AOSP ARM64 emulator; Windows build evidence remains host-dependent.
+
+The current Flutter Forge implementation commits are `58defb5`, `7ac3d92`, and `d581db5`. Agent Hub records the next PC封板 tasks as `pc_window_lifecycle_baseline` and `pc_build_matrix`, followed by the non-blocking Android compatibility tasks. The business-module intake remains gated by module contracts, tests, and adapter-frozen paths.
