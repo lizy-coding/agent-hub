@@ -28,6 +28,14 @@ class FlutterForgeAdapterTest(unittest.TestCase):
             tasks['android_host_readiness']['depends_on'],
             ['android_mobile_navigation_baseline'],
         )
+        self.assertEqual(
+            tasks['pc_build_matrix']['depends_on'],
+            ['pc_window_lifecycle_baseline'],
+        )
+        self.assertIn(
+            'apps/flutter_forge/macos',
+            tasks['pc_window_lifecycle_baseline']['allowed_paths_by_repository']['flutter_forge'],
+        )
         self.assertIn(
             'apps/flutter_forge/lib/app/navigation_policy.dart',
             tasks['responsive_navigation_policy']['allowed_paths_by_repository']['flutter_forge'],
