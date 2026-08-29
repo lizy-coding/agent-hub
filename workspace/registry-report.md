@@ -81,3 +81,9 @@ The untracked `.hermes/fix-usb-detector-subscription.codex.json` file is a pendi
 Flutter Forge now has a responsive navigation policy: Android/iOS/Web and compact windows use in-app navigation; only large supported desktop windows may create category windows. Android host and APK smoke validation passed on an Android 15 AOSP ARM64 emulator; Windows build evidence remains host-dependent.
 
 The current Flutter Forge implementation commits are `58defb5`, `7ac3d92`, and `d581db5`. Agent Hub records the next PC封板 tasks as `pc_window_lifecycle_baseline` and `pc_build_matrix`, followed by the non-blocking Android compatibility tasks. The business-module intake remains gated by module contracts, tests, and adapter-frozen paths.
+
+## Capability update: Windows build restored and release shape changed (2026-08-29)
+
+Observed at flutter_forge `14273f6` / `8e15ad5`. The standalone Windows USB plugin (`usb_detector_windows`) was removed after five rounds of CMake include-path fixes failed to resolve the C1083 `flutter/plugin.h` compile error in the symlinked plugin build chain. The `usb_detector` module is now Android-only (`supportedPlatforms: {TargetPlatform.android}`), displays an explicit unavailable state in the catalog on Windows, and its route is not registered there. The USB removal restored the Windows release build: run 33225421217 (dev=14273f6) and run 33226619709 (dev=8e15ad5) both succeeded on the windows-latest job after the previous five consecutive failures.
+
+Release shape: Windows now publishes `flutter_forge-setup-x64.exe` only — the zip portable package step was removed from `release.yml` (macOS keeps the zip). Current flutter_forge HEAD is `8e15ad5`; the remaining Windows acceptance is the device-side checklist in `docs/reports/WINDOWS_TEST_CHECKLIST-20260827.md` (install/launch/uninstall, video online/offline/retry, multi-window, integration_test).
