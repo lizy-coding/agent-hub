@@ -37,6 +37,8 @@ class ProjectAdapter(Protocol):
 
     def default_allowed_paths(self, task_id: str, repository: str) -> list[str]: ...
 
+    def release_inventory(self, context: dict[str, object], spec: dict[str, object]) -> dict[str, object]: ...
+
 
 class GenericProjectAdapter:
     """Safe plan-only baseline for projects without custom architecture rules."""
@@ -145,6 +147,41 @@ class GenericProjectAdapter:
     def default_allowed_paths(self, task_id, repository):
         return []
 
+    def release_inventory(self, context, spec):
+        """Safe baseline: freeze only what the spec states explicitly."""
+        from agent_hub.projects.release_program import (
+            artifact_entries,
+            blocked_release_program,
+            build_release_program,
+            normalize_artifact_paths,
+            valid_release_tag,
+        )
+        context = {**(context or {}), "adapter": self.name, "program_id": f"{(context or {}).get('project_id') or 'generic-project'}-release-program"}
+        if not str((context.get("release") or {}).get("github_repo") or "").strip():
+            return blocked_release_program(context, "RELEASE_NOT_CONFIGURED", "release.github_repo is not configured in workspace/projects.json; freeze the target repository slug before planning a release.")
+        spec = spec if isinstance(spec, dict) else {}
+        tag = str(spec.get("tag") or "")
+        if not tag or not valid_release_tag(tag):
+            return blocked_release_program(context, "RELEASE_SPEC_REQUIRED", "generic adapter requires an explicit semver release tag in the spec.")
+        raw_artifacts = spec.get("artifacts")
+        if not isinstance(raw_artifacts, list) or not raw_artifacts:
+            return blocked_release_program(context, "RELEASE_SPEC_REQUIRED", "generic adapter requires an explicit artifacts list; it never discovers files.")
+        paths, error = normalize_artifact_paths(raw_artifacts)
+        if error:
+            return blocked_release_program(context, "RELEASE_ARTIFACTS_INVALID", error)
+        version = str(spec.get("version") or tag.lstrip("v"))
+        return build_release_program(
+            context,
+            version=version,
+            tag=tag,
+            name=str(spec.get("name") or tag),
+            notes=str(spec.get("notes") or ""),
+            draft=bool(spec.get("draft", (context.get("release") or {}).get("default_draft", False))),
+            prerelease=bool(spec.get("prerelease", (context.get("release") or {}).get("default_prerelease", False))),
+            artifacts=artifact_entries(paths),
+            evidence=["generic adapter: tag and artifacts supplied explicitly by the release spec"],
+        )
+
 
 class FlutterForgeAdapter:
     """Compatibility adapter for the existing Flutter Forge decomposition plan."""
@@ -170,6 +207,10 @@ class FlutterForgeAdapter:
     def default_allowed_paths(self, task_id, repository):
         from agent_hub.projects.flutter_forge_adapter import default_allowed_paths
         return default_allowed_paths(task_id, repository)
+
+    def release_inventory(self, context, spec):
+        from agent_hub.projects.flutter_forge_adapter import release_inventory
+        return release_inventory(context, spec)
 
 
 _ADAPTERS: dict[str, ProjectAdapter] = {

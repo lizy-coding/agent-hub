@@ -7,7 +7,14 @@
       "program_id": "flutter-forge-decomposition-program",
       "refactor_program_id": "flutter-forge-refactor-program",
       "snapshot_namespace": "flutter-forge",
-      "workspace_config": "workspace/config.json"
+      "workspace_config": "workspace/config.json",
+      "release": {
+        "github_repo": "lizy-coding/flutter_forge",
+        "tag_prefix": "v",
+        "artifact_root": "release",
+        "default_draft": false,
+        "default_prerelease": false
+      }
     }
   }
 }

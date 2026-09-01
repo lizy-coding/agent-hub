@@ -10,6 +10,7 @@
     "migration_planning": "./src/agent_hub/graphs/registered_migration_planning.py:graph",
     "migration_execution": "./src/agent_hub/graphs/registered_migration_execution.py:graph",
     "development": "./src/agent_hub/graphs/registered_development.py:graph",
-    "decomposition": "./src/agent_hub/graphs/registered_decomposition.py:graph"
+    "decomposition": "./src/agent_hub/graphs/registered_decomposition.py:graph",
+    "release_hosting": "./src/agent_hub/graphs/registered_release_hosting.py:graph"
   }
 }

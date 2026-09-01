@@ -37,6 +37,7 @@ Agent Hub 本身不提交业务项目源码。它接收“项目注册 + 工作�
 | `migration_execution` | `graphs/migration_execution.py` | 迁移执行骨架图（加载批准计划、验证权威与源新鲜度、worktree、执行、scope/validate/integration） |
 | `development` | `graphs/development.py` | 重构执行图：`bootstrap_runtime -> reconcile -> inventory -> normalize -> prepare -> execute -> review -> commit -> final_rescan`，驱动单仓库全量重构程序 |
 | `decomposition` | `graphs/decomposition.py` | 拆解编排图：能力盘点 -> 包候选分类 -> 生成 MigrationTask DAG -> worktree 管理 -> Worker 派发 -> 校验 -> 评审 -> 集成 |
+| `release_hosting` | `graphs/release_hosting.py` | GitHub 安装包发布托管图（scene#22 CI/CD）：reconcile -> freeze -> verify_artifacts -> preflight -> publish -> verify_release；默认 PLAN_ONLY，`--execute` 才经冻结的 `gh release` 通道发布 |
 
 ---
 
@@ -136,6 +137,22 @@ Flutter Forge 的 PC 封板与 Android readiness 任务由项目 adapter 冻结�
 
 这些任务只允许修改 adapter 冻结的应用、测试、文档和 Android host 路径；不修改通用 Graph，也不允许宿主自动 push、merge 或 release。
 
+### 5.5 安装包发布托管（release_hosting Graph，scene#22 CI/CD）
+
+```bash
+./agent release-plan [--spec release.json]   # 冻结 ReleaseProgram 并校验安装包 sha256（PLAN_ONLY）
+./agent release-status                       # 查看发布程序状态
+./agent release-run --execute                # 经冻结的 gh release 通道发布到 GitHub Releases
+./agent release-decide --decision-id retry:release:<tag> --choice retry   # 部分发布失败后的重试决策
+```
+
+- 发布目标在 `workspace/projects.json` 的 `release` 段冻结：`github_repo`（发布前必须配置，否则以 `RELEASE_NOT_CONFIGURED` 阻塞）、`tag_prefix`、`artifact_root`、默认 draft/prerelease。
+- Flutter Forge 约定：安装包由 CI 或本地构建预置到 `<repo>/release/<version>/`，命名 `FlutterForge-<version>-<platform>.<ext>`（apk/aab/dmg/exe/msix/zip/ipa/tar.gz），可选 `SHA256SUMS` 交叉校验；版本默认取 `apps/flutter_forge/pubspec.yaml`。
+- 图只消费预构建的安装包，**从不运行构建**；发布前逐文件重算 sha256 与冻结值比对，路径逃逸、缺失或校验和不匹配都会阻塞。
+- 发布通道是 `forbid_release` 的唯一显式例外（`policies/safety.py::validate_release_command`）：仅允许 `gh release create/upload/view/list`、`gh auth status`、`gh repo view`，且 `--repo` 必须等于冻结仓库；`delete`/`edit`/push/merge 仍被拒绝。凭据来自运维者本人的 `gh auth` 会话，宿主不存储任何 token。
+- 幂等恢复：tag 已存在时进入 RESUME 模式只补传缺失资产；上传中断以 `PARTIAL_PUBLISH` 阻塞，经 `release-decide` 重试后从断点续传；发布完成后回读 release 校验资产名与大小一致才标记 `PUBLISHED`。
+- release spec（`--spec`）只允许请求 `version`/`tag`/`name`/`notes`/`draft`/`prerelease`/显式 `artifacts`；`github_repo`、`repository_paths` 等 Graph 自有字段一律拒绝。
+
 ---
 
 ## 6. 配置说明
@@ -194,5 +211,5 @@ python -m unittest discover -s tests
 
 ## 9. 当前范围
 
-- 已实现：启动自检、工作区注册表、上下文解析、能力分析、影子基准、迁移规划/执行骨架、development 重构程序、decomposition 拆解程序。
-- 有意不在范围内：需求分析器、通用 RAG、外部项目管理集成；宿主不 push / 不 merge / 不发布。
+- 已实现：启动自检、工作区注册表、上下文解析、能力分析、影子基准、迁移规划/执行骨架、development 重构程序、decomposition 拆解程序、release_hosting 安装包发布托管（PLAN_ONLY 默认 + 显式 `--execute` 发布通道）。
+- 有意不在范围内：需求分析器、通用 RAG、外部项目管理集成；除 release_hosting 冻结通道外，宿主不 push / 不 merge / 不发布。

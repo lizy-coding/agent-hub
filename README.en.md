@@ -37,6 +37,7 @@ Agent Hub does not contain, move, or copy business project code. It accepts an e
 | `migration_execution` | `graphs/migration_execution.py` | Migration execution skeleton (load approved plan, verify authority & source freshness, prepare worktree, execute, scope/validate/integration) |
 | `development` | `graphs/development.py` | Refactor execution graph: `bootstrap_runtime -> reconcile -> inventory -> normalize -> prepare -> execute -> review -> commit -> final_rescan`; drives single-repo global refactor programs |
 | `decomposition` | `graphs/decomposition.py` | Decomposition orchestration: capability inventory -> package-candidate classification -> MigrationTask DAG -> worktree management -> Worker dispatch -> validation -> review -> integration |
+| `release_hosting` | `graphs/release_hosting.py` | GitHub installer release hosting (scene#22 CI/CD): reconcile -> freeze -> verify_artifacts -> preflight -> publish -> verify_release; PLAN_ONLY by default, `--execute` publishes through the frozen `gh release` lane |
 
 ---
 
@@ -126,6 +127,21 @@ The refactor program follows a **frozen-task** model: only one frozen `Developme
 - The planning phase **never executes** a migration; execution requires an explicit `--execute`, and the Graph freezes exact Worker paths.
 - Custom proposals may not carry graph-owned fields such as `allowed_paths` / `candidate_paths`.
 
+### 5.5 Installer release hosting (release_hosting Graph, scene#22 CI/CD)
+
+```bash
+./agent release-plan [--spec release.json]   # Freeze a ReleaseProgram and verify installer sha256 (PLAN_ONLY)
+./agent release-status                       # Inspect the release program
+./agent release-run --execute                # Publish to GitHub Releases through the frozen gh release lane
+./agent release-decide --decision-id retry:release:<tag> --choice retry   # Retry after a partial publish
+```
+
+- The publish target is frozen in the `release` section of `workspace/projects.json`: `github_repo` (must be configured before publishing, otherwise the plan blocks with `RELEASE_NOT_CONFIGURED`), `tag_prefix`, `artifact_root`, default draft/prerelease.
+- Flutter Forge convention: installers are pre-built by CI or a local build into `<repo>/release/<version>/`, named `FlutterForge-<version>-<platform>.<ext>` (apk/aab/dmg/exe/msix/zip/ipa/tar.gz), with an optional `SHA256SUMS` cross-check; the version defaults to `apps/flutter_forge/pubspec.yaml`.
+- The graph only consumes pre-built installers and **never runs builds**; every artifact's sha256 is recomputed and compared against the frozen value before publishing. Path escapes, missing files, or checksum mismatches block the program.
+- The release lane is the single explicit exception to `forbid_release` (`policies/safety.py::validate_release_command`): only `gh release create/upload/view/list`, `gh auth status`, and `gh repo view` are allowed, and `--repo` must equal the frozen repository; `delete`/`edit`/push/merge stay forbidden. Credentials come from the operator's own `gh auth` session; no token is stored by this host.
+- Idempotent resume: an existing tag switches to RESUME mode and only re-uploads missing assets; an interrupted upload blocks with `PARTIAL_PUBLISH` and resumes after a `release-decide` retry; the release is marked `PUBLISHED` only after the remote assets match the frozen manifest by name and size.
+
 ---
 
 ## 6. Configuration
@@ -176,4 +192,4 @@ Coverage includes: bootstrap, workspace registry, runtime workspace, context res
 ## 9. Current Scope
 
 - Implemented: bootstrap check, workspace registry, context resolution, capability analysis, shadow benchmark, migration planning/execution skeleton, development refactor program, decomposition program.
-- Deliberately out of scope: requirement analyzers, general-purpose RAG, external project-management integrations; the host never pushes, merges, or releases.
+- Deliberately out of scope: requirement analyzers, general-purpose RAG, external project-management integrations; apart from the frozen release_hosting lane, the host never pushes, merges, or releases.

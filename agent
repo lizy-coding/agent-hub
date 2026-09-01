@@ -15,19 +15,20 @@ from agent_hub.gateway.refactor_dashboard import DEFAULT_SERVER, DEFAULT_THREAD_
 from agent_hub.gateway.refactor_run import refactor_run
 from agent_hub.gateway.refactor_decide import refactor_decide
 from agent_hub.gateway import decomposition
+from agent_hub.gateway import release
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Agent Hub local LangGraph orchestration CLI.")
-    parser.add_argument("command", choices=("refactor-status", "refactor-watch", "refactor-run", "refactor-decide", "decomposition-plan", "decomposition-propose", "decomposition-sync", "decomposition-status", "decomposition-run", "decomposition-decide"))
+    parser.add_argument("command", choices=("refactor-status", "refactor-watch", "refactor-run", "refactor-decide", "decomposition-plan", "decomposition-propose", "decomposition-sync", "decomposition-status", "decomposition-run", "decomposition-decide", "release-plan", "release-status", "release-run", "release-decide"))
     parser.add_argument("--thread-id")
     parser.add_argument("--server", default=DEFAULT_SERVER)
     parser.add_argument("--verbose", action="store_true")
     parser.add_argument("--decision-id")
     parser.add_argument("--choice")
     parser.add_argument("--reason", default="")
-    parser.add_argument("--execute", action="store_true", help="Allow decomposition-run to enter real migration execution.")
-    parser.add_argument("--spec", type=str, help="MigrationTask proposal JSON file (proposal input only; allowed paths are discovered and frozen by the graph).")
+    parser.add_argument("--execute", action="store_true", help="Allow decomposition-run to enter real migration execution, or release-run to publish the frozen release.")
+    parser.add_argument("--spec", type=str, help="MigrationTask proposal / release spec JSON file (proposal input only; graph-owned fields are frozen by the graph).")
     parser.add_argument("--project", help="Registered decomposition project id (default: registry default_project).")
     args = parser.parse_args()
     refactor_thread = args.thread_id or DEFAULT_THREAD_ID
@@ -55,6 +56,16 @@ def main() -> int:
         if not args.decision_id or not args.choice:
             parser.error("decomposition-decide requires --decision-id and --choice")
         return decomposition.decide(server=args.server, thread_id=args.thread_id, decision_id=args.decision_id, choice=args.choice, reason=args.reason, output=print, project_id=args.project)
+    if args.command == "release-plan":
+        return release.plan(server=args.server, thread_id=args.thread_id, spec_path=args.spec, output=print, project_id=args.project)
+    if args.command == "release-status":
+        return release.status(server=args.server, thread_id=args.thread_id, output=print, project_id=args.project)
+    if args.command == "release-run":
+        return release.run(server=args.server, thread_id=args.thread_id, execute=args.execute, output=print, project_id=args.project)
+    if args.command == "release-decide":
+        if not args.decision_id or not args.choice:
+            parser.error("release-decide requires --decision-id and --choice")
+        return release.decide(server=args.server, thread_id=args.thread_id, decision_id=args.decision_id, choice=args.choice, reason=args.reason, output=print, project_id=args.project)
     try:
         while True:
             print("\033[2J\033[H", end="")

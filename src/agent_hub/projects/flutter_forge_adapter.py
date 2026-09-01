@@ -518,3 +518,106 @@ def proposal_inventory(program: dict[str, object], spec: dict[str, object]) -> d
         "status": "READY" if candidates and not blocked else "BLOCKED_DECISION",
     }
     return contract
+
+
+# --- GitHub installer release hosting (scene#22 CI/CD) ---------------------
+#
+# Flutter Forge installer packages are staged by CI or a local build under
+# ``<repo>/release/<version>/`` and named ``FlutterForge-<version>-<platform>.<ext>``.
+# The adapter freezes that staging directory into a ReleaseProgram; the graph
+# verifies checksums and publishes through the release lane.  This module
+# never runs builds and never talks to GitHub.
+
+_RELEASE_ASSET_EXTENSIONS = ("apk", "aab", "dmg", "exe", "msix", "zip", "ipa", "tar.gz")
+
+
+def _app_version(repository_root: Path) -> str:
+    for pubspec in (repository_root / "apps/flutter_forge/pubspec.yaml", repository_root / "pubspec.yaml"):
+        if pubspec.is_file():
+            match = re.search(r"^version:\s*(\d+\.\d+\.\d+)", pubspec.read_text(encoding="utf-8"), re.M)
+            if match:
+                return match.group(1)
+    return ""
+
+
+def _sha256sums(directory: Path) -> dict[str, str]:
+    manifest = directory / "SHA256SUMS"
+    checksums: dict[str, str] = {}
+    if not manifest.is_file():
+        return checksums
+    for line in manifest.read_text(encoding="utf-8").splitlines():
+        match = re.match(r"^([0-9a-fA-F]{64})\s+\*?(\S+)$", line.strip())
+        if match:
+            checksums[match.group(2)] = match.group(1).lower()
+    return checksums
+
+
+def _release_asset_convention(version: str) -> re.Pattern[str]:
+    extensions = "|".join(extension.replace(".", r"\.") for extension in _RELEASE_ASSET_EXTENSIONS)
+    return re.compile(rf"^FlutterForge-{re.escape(version)}-.+\.(?:{extensions})$")
+
+
+def release_inventory(context: dict[str, object], spec: dict[str, object]) -> dict[str, object]:
+    """Freeze a Flutter Forge installer release from its staging directory."""
+    from agent_hub.projects.release_program import (
+        artifact_entries,
+        blocked_release_program,
+        build_release_program,
+        is_publishable_artifact,
+        normalize_artifact_paths,
+        release_context,
+        valid_release_tag,
+    )
+    context = {**(context or {}), "adapter": "flutter_forge"}
+    context.setdefault("program_id", f"{context.get('project_id') or 'flutter-forge'}-release-program")
+    config = release_context(context)
+    if not str(config.get("github_repo") or "").strip():
+        return blocked_release_program(context, "RELEASE_NOT_CONFIGURED", "release.github_repo is not configured in workspace/projects.json; freeze the Flutter Forge repository slug before planning a release.")
+    primary = str(context.get("primary_repository_id") or "flutter_forge")
+    paths = context.get("repository_paths")
+    repository_root = Path(str(paths.get(primary))) if isinstance(paths, dict) and paths.get(primary) else Path(str(context.get("cluster_root") or ".")) / primary
+    spec = spec if isinstance(spec, dict) else {}
+    version = str(spec.get("version") or "") or _app_version(repository_root)
+    if not version:
+        return blocked_release_program(context, "RELEASE_VERSION_REQUIRED", "No version in the spec and no apps/flutter_forge pubspec version; supply an explicit semver version.")
+    tag = str(spec.get("tag") or f"{config.get('tag_prefix') or 'v'}{version}")
+    if not valid_release_tag(tag):
+        return blocked_release_program(context, "RELEASE_TAG_INVALID", f"release tag is not semver-shaped: {tag}")
+    evidence: list[str] = []
+    explicit = spec.get("artifacts")
+    if isinstance(explicit, list) and explicit:
+        artifact_paths, error = normalize_artifact_paths(explicit)
+        if error:
+            return blocked_release_program(context, "RELEASE_ARTIFACTS_INVALID", error)
+        checksums = {Path(str(item.get("path"))).name: str(item.get("sha256")).lower() for item in explicit if isinstance(item, dict) and item.get("sha256") and re.fullmatch(r"[0-9a-fA-F]{64}", str(item["sha256"]))}
+        evidence.append("artifacts supplied explicitly by the release spec")
+    else:
+        staging = repository_root / str(config.get("artifact_root") or "release").strip("/") / version
+        if not staging.is_dir():
+            return blocked_release_program(context, "RELEASE_ARTIFACTS_MISSING", f"installer staging directory not found: {staging}; build the installers and stage them under {staging.relative_to(repository_root)} first.")
+        convention = _release_asset_convention(version)
+        discovered = sorted(path for path in staging.iterdir() if is_publishable_artifact(path))
+        ignored = [path.name for path in discovered if not convention.match(path.name)]
+        kept = [path for path in discovered if convention.match(path.name)]
+        if ignored:
+            evidence.append("ignored non-convention files: " + ", ".join(ignored))
+        if not kept:
+            return blocked_release_program(context, "RELEASE_ARTIFACTS_MISSING", f"no FlutterForge-{version}-* installer packages found in {staging.relative_to(repository_root)}.")
+        root_prefix = str(config.get("artifact_root") or "release").strip("/")
+        artifact_paths = [f"{root_prefix}/{version}/{path.name}" for path in kept]
+        checksums = _sha256sums(staging)
+        evidence.append(f"artifacts discovered in {root_prefix}/{version}/" + (" with SHA256SUMS cross-check" if checksums else ""))
+    artifacts = artifact_entries(artifact_paths, checksums)
+    name = str(spec.get("name") or f"FlutterForge {tag}")
+    notes = str(spec.get("notes") or "FlutterForge " + tag + " installer packages.\n\n" + "\n".join(f"- {entry['asset_name']}" for entry in artifacts))
+    return build_release_program(
+        context,
+        version=version,
+        tag=tag,
+        name=name,
+        notes=notes,
+        draft=bool(spec.get("draft", config.get("default_draft", False))),
+        prerelease=bool(spec.get("prerelease", config.get("default_prerelease", False))),
+        artifacts=artifacts,
+        evidence=evidence,
+    )
