@@ -255,8 +255,17 @@ class DecompositionTest(unittest.TestCase):
   from pathlib import Path
   from agent_hub.graphs.decomposition import _architecture_guard
   ensure.return_value=(Path("/missing"),"decomposition/flutter_forge")
-  guard=_architecture_guard({"source_units":["gcode_core"],"target_units":["packages/gcode_core"]},{"repositories":{"gcode_core":{"changed_files":["pubspec.yaml","lib/x.dart"]}}},{})
+  diff="diff --git a/pubspec.yaml b/pubspec.yaml\ndeleted file mode 100644\n"
+  guard=_architecture_guard({"source_units":["gcode_core"],"target_units":["packages/gcode_core"]},{"repositories":{"gcode_core":{"changed_files":["pubspec.yaml","lib/x.dart"],"diff":diff}}},{})
   self.assertEqual(guard["status"],"REJECT")
+ @patch("agent_hub.graphs.decomposition._ensure_worktree")
+ def test_architecture_guard_does_not_treat_modified_files_as_deletions(self, ensure):
+  from pathlib import Path
+  from agent_hub.graphs.decomposition import _architecture_guard
+  ensure.return_value=(Path("/missing"),"decomposition/flutter_forge")
+  diff="diff --git a/apps/flutter_forge/lib/app/navigation_policy.dart b/apps/flutter_forge/lib/app/navigation_policy.dart\n--- a/apps/flutter_forge/lib/app/navigation_policy.dart\n+++ b/apps/flutter_forge/lib/app/navigation_policy.dart\n@@ -1 +1 @@\n-old\n+new\n"
+  guard=_architecture_guard({"source_units":["flutter_forge/apps/flutter_forge"],"target_units":["flutter_forge/apps/flutter_forge"]},{"repositories":{"flutter_forge":{"changed_files":["apps/flutter_forge/lib/app/navigation_policy.dart"],"diff":diff}}},{})
+  self.assertEqual(guard["status"],"PASS")
  @patch("agent_hub.graphs.decomposition._ensure_worktree")
  def test_architecture_guard_accepts_repository_qualified_retained_target(self, ensure):
   import tempfile

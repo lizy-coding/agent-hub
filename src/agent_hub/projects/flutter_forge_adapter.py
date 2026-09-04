@@ -75,7 +75,7 @@ def build_program(root: Path, context: dict[str, object]) -> dict[str, object]:
                 "desktop widths at or above 600dp may use multi-window",
                 "NavigationPolicy is covered by boundary tests",
             ],
-            "status": "READY",
+            "status": "DONE",
             "evidence": ["Flutter Forge navigation policy is an app-owned concern; desktop_multi_window remains a host capability"],
         },
         {
@@ -85,6 +85,11 @@ def build_program(root: Path, context: dict[str, object]) -> dict[str, object]:
             "target_units": ["flutter_forge/apps/flutter_forge"],
             "depends_on": ["responsive_navigation_policy"],
             "allowed_operations": ["CREATE", "DEPENDENCY_REWRITE"],
+            "execution_instructions": [
+                "Create or update Android-targeted integration evidence for the 360dp navigation and SafeArea baseline.",
+                "Keep Android navigation in-app and do not add desktop multi-window behavior.",
+                "Run the targeted Flutter test and leave the evidence inside the frozen integration_test or test paths.",
+            ],
             "allowed_paths_by_repository": {"flutter_forge": [
                 "apps/flutter_forge/lib/app",
                 "apps/flutter_forge/lib/modules",
@@ -96,8 +101,9 @@ def build_program(root: Path, context: dict[str, object]) -> dict[str, object]:
                 "category home has safe area and usable touch targets",
                 "Android uses in-app category navigation",
                 "targeted widget or integration evidence exists",
+                "Android-targeted test asset is present in the frozen checkout",
             ],
-            "status": "READY",
+            "status": "DONE",
             "evidence": ["REFACTOR_PLAN mobile_layout_baseline target width is 360dp"],
         },
         {
@@ -120,7 +126,7 @@ def build_program(root: Path, context: dict[str, object]) -> dict[str, object]:
                 "no_black_surface",
                 "no_invalid_engine_handle",
             ],
-            "status": "READY",
+            "status": "DONE",
             "evidence": ["PC multi-window is navigation infrastructure and must be closed before business-module expansion"],
         },
         {
@@ -136,7 +142,7 @@ def build_program(root: Path, context: dict[str, object]) -> dict[str, object]:
                 "docs/reports",
             ]},
             "acceptance": ["macos_release_build", "windows_release_build", "pc_quality_gate"],
-            "status": "READY",
+            "status": "DONE",
             "evidence": ["Windows build evidence requires a Windows host or CI; macOS refusal is not a pass"],
         },
         {
@@ -159,10 +165,12 @@ def build_program(root: Path, context: dict[str, object]) -> dict[str, object]:
                 "debug APK builds",
                 "emulator smoke test passes",
             ],
-            "status": "READY",
+            "status": "DONE",
             "evidence": ["REFACTOR_PLAN android_host depends on platform audit and mobile layout baseline"],
         },
-        {"task_id": "establish-package-boundary-contracts", "title": "Add per-package ownership contracts, independent test entries, and version pins", "source_units": [], "target_units": ["packages/gcode_core", "packages/file_picker_bridge", "packages/flutter_study_learning", "packages/flutter_ioc_core"], "depends_on": ["relocate-flutter-forge-app"], "allowed_operations": [], "allowed_paths_by_repository": {"flutter_forge": ["packages/gcode_core", "packages/file_picker_bridge", "packages/flutter_study_learning", "packages/flutter_ioc_core"]}, "target_creation_allowed": False, "status": "READY", "evidence": ["workspace declares four package members consumed only by apps/flutter_forge"]},
+        {"task_id": "establish-package-boundary-contracts", "title": "Add per-package ownership contracts, independent test entries, and version pins", "source_units": [], "target_units": ["packages/gcode_core", "packages/file_picker_bridge", "packages/flutter_study_learning", "packages/flutter_ioc_core"], "depends_on": ["relocate-flutter-forge-app"], "allowed_operations": [], "allowed_paths_by_repository": {"flutter_forge": ["packages/gcode_core", "packages/file_picker_bridge", "packages/flutter_study_learning", "packages/flutter_ioc_core"]}, "target_creation_allowed": False, "status": "DONE", "evidence": ["workspace declares four package members consumed only by apps/flutter_forge"]},
+        {"task_id": "android_usb_permission_boundary", "title": "Harden Android USB permission and enumeration fallback", "source_units": ["flutter_forge/apps/flutter_forge"], "target_units": ["flutter_forge/apps/flutter_forge"], "depends_on": ["android_host"], "allowed_operations": ["CREATE", "DEPENDENCY_REWRITE"], "allowed_paths_by_repository": {"flutter_forge": ["apps/flutter_forge/android/app/src/main/kotlin", "apps/flutter_forge/android/app/src/main/AndroidManifest.xml", "apps/flutter_forge/lib/modules/platform/usb_detector", "apps/flutter_forge/test/modules/platform/usb_detector"]}, "acceptance": ["usb_permission_denied_is_observable", "device_enumeration_falls_back_without_crash", "android_usb_channel_contract_tested"], "status": "DONE", "evidence": ["托管仓库 REFACTOR_PLAN marks android_usb_permission_boundary completed", "Android MainActivity reports permission-safe USB enumeration and APK validation passed"]},
+        {"task_id": "module_scaffold_generation", "title": "Validate the reusable module scaffold generator", "source_units": ["flutter_forge/tool/module_scaffold.dart"], "target_units": ["flutter_forge/tool/module_scaffold.dart"], "depends_on": ["android_usb_permission_boundary"], "allowed_operations": ["CREATE", "DEPENDENCY_REWRITE"], "allowed_paths_by_repository": {"flutter_forge": ["tool/module_scaffold.dart", "tool/module_scaffold_test.dart", "REFACTOR_PLAN.md", "tool/generate_agent_indexes.js"]}, "execution_instructions": ["Run the scaffold CLI acceptance test.", "Keep preview mode non-mutating and do not register a module automatically.", "Validate generated module contracts through the owning project validators."], "acceptance": ["preview_does_not_write_formal_module", "apply_generates_module_entry_and_learning_page", "generated_analysis_contract_is_valid", "invalid_module_arguments_fail_with_usage_code", "route_registration_remains_explicit"], "status": "DONE", "evidence": ["tool/module_scaffold.dart and tool/module_scaffold_test.dart passed local CLI acceptance", "Agent Hub Worker revalidated the committed scaffold baseline"]},
     ]
     return {
         "project_id": str(context.get("project_id") or "flutter-forge"),
@@ -229,7 +237,13 @@ def architecture_guard(task: dict[str, object], worker: dict[str, object], progr
     target_units = [str(unit) for unit in task.get("target_units", [])]
     if not target_units:
         return {"status": "REJECT", "reason": "merge_task_has_no_target_units"}
-    deleted = [path for result in repositories.values() if isinstance(result, dict) for path in result.get("changed_files", [])]
+    deleted = [
+        line.removeprefix("deleted file mode ").strip()
+        for result in repositories.values()
+        if isinstance(result, dict)
+        for line in str(result.get("diff", "")).splitlines()
+        if line.startswith("deleted file mode ")
+    ]
     source_deleted = bool(deleted)
     primary = _primary_repository(program)
     if task.get("task_id") == "rename-project-to-flutter-forge":

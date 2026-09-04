@@ -15,7 +15,6 @@ from agent_hub.gateway.refactor_dashboard import DEFAULT_SERVER, DEFAULT_THREAD_
 from agent_hub.gateway.refactor_run import refactor_run
 from agent_hub.gateway.refactor_decide import refactor_decide
 from agent_hub.gateway import decomposition
-from agent_hub.gateway import release
 
 
 def main() -> int:
@@ -57,14 +56,18 @@ def main() -> int:
             parser.error("decomposition-decide requires --decision-id and --choice")
         return decomposition.decide(server=args.server, thread_id=args.thread_id, decision_id=args.decision_id, choice=args.choice, reason=args.reason, output=print, project_id=args.project)
     if args.command == "release-plan":
+        from agent_hub.gateway import release
         return release.plan(server=args.server, thread_id=args.thread_id, spec_path=args.spec, output=print, project_id=args.project)
     if args.command == "release-status":
+        from agent_hub.gateway import release
         return release.status(server=args.server, thread_id=args.thread_id, output=print, project_id=args.project)
     if args.command == "release-run":
+        from agent_hub.gateway import release
         return release.run(server=args.server, thread_id=args.thread_id, execute=args.execute, output=print, project_id=args.project)
     if args.command == "release-decide":
         if not args.decision_id or not args.choice:
             parser.error("release-decide requires --decision-id and --choice")
+        from agent_hub.gateway import release
         return release.decide(server=args.server, thread_id=args.thread_id, decision_id=args.decision_id, choice=args.choice, reason=args.reason, output=print, project_id=args.project)
     try:
         while True:
