@@ -20,17 +20,24 @@ class MigrationPlanner:
   return bool(node.files) and all(Path(path).name.lower() not in NON_CAPABILITY_NAMES and Path(path).suffix.lower() not in NON_CAPABILITY_SUFFIXES and '/test/' not in f'/{path}' and '/build/' not in f'/{path}' and '/.dart_tool/' not in f'/{path}' for path in node.files)
  def _rules(self,paths):
   result=[]; seen=set()
-  # Registry records per-unit rules; add all ancestor AGENTS metadata in scope.
+  # Registry records per-unit rules; add all ancestor control contracts and
+  # ADR metadata in scope so current project rules reach frozen tasks.
   for raw in paths:
    path=Path(raw)
    if not is_allowed_business_path(path,self.config): continue
    for parent in (path,*path.parents):
     if parent == self.config.workspace_root.parent: break
-    for name in ('AGENTS.md','AGENTS.override.md'):
+    for name in ('AGENTS.md','AGENTS.override.md','CONTEXT.md','AI_PROJECT_CONTEXT.md','AI_ANALYSIS_SCHEMA.json','REFACTOR_PLAN.md'):
      candidate=parent/name
      if candidate.is_file() and is_allowed_business_path(candidate,self.config):
       key=str(candidate)
       if key not in seen: seen.add(key); result.append(ContextRule(path=str(candidate),scope=str(parent),applies_to=str(path),provenance='filesystem_rule_scope'))
+    adr=parent/'docs'/'adr'
+    if adr.is_dir():
+     for candidate in adr.glob('*.md'):
+      if is_allowed_business_path(candidate,self.config):
+       key=str(candidate)
+       if key not in seen: seen.add(key); result.append(ContextRule(path=str(candidate),scope=str(adr),applies_to=str(path),provenance='filesystem_rule_scope'))
   return result
  def _validation(self,*units):
   seen=set(); commands=[]

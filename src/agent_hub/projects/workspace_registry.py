@@ -37,7 +37,10 @@ class WorkspaceRegistry:
         repo = self.get_repository(identifier); return repo.dependents if repo else []
     def get_rule_files(self, path_or_unit: str | Path):
         unit = self.get_development_unit(str(path_or_unit))
-        if unit: return unit.rule_files
+        if unit:
+            repository = self.get_repository(unit.repo_id)
+            combined = (unit.rule_files if unit else []) + (repository.rule_files if repository else [])
+            return list({item.path: item for item in combined}.values())
         found = self.find_unit_by_path(Path(path_or_unit))
         return found.rule_files if found else []
     def get_validation_commands(self, identifier: str):

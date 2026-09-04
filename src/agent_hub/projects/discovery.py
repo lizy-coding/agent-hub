@@ -16,6 +16,7 @@ from agent_hub.tools.path_guard import is_allowed_business_path, is_within
 from agent_hub.workspace.config import WorkspaceConfig
 
 MANIFEST_NAMES = {"pubspec.yaml": "dart_flutter", "pyproject.toml": "python", "Cargo.toml": "rust", "package.json": "node", "CMakeLists.txt": "cmake"}
+CONTROL_DOCUMENT_NAMES = {"AGENTS.md", "AGENTS.override.md", "CONTEXT.md", "AI_PROJECT_CONTEXT.md", "AI_ANALYSIS_SCHEMA.json", "REFACTOR_PLAN.md"}
 SKIP_DIRS = {".git", ".dart_tool", ".venv", "build", "node_modules", ".langgraph_api"}
 
 
@@ -56,10 +57,10 @@ def git_roots(root: Path, config: WorkspaceConfig) -> list[Path]:
 def rule_files(base: Path, root: Path, config: WorkspaceConfig) -> list[RuleFile]:
     found: list[RuleFile] = []
     for current, files in walk(base, config):
-        for name in ("AGENTS.md", "AGENTS.override.md"):
-            if name in files:
-                path = current / name
-                found.append(RuleFile(path=relative(path, root), scope=relative(current, root), provenance="filesystem"))
+        names = [name for name in files if name in CONTROL_DOCUMENT_NAMES or (current.name == "adr" and name.endswith(".md"))]
+        for name in names:
+            path = current / name
+            found.append(RuleFile(path=relative(path, root), scope=relative(current, root), provenance="filesystem_control_contract"))
     return found
 
 
@@ -89,8 +90,8 @@ def unit_type(manifest: Path, data: dict) -> tuple[str, list[str], list[str]]:
 
 def validation_for(manifest: Path, root: Path, config: WorkspaceConfig) -> list[ValidationCommand]:
     directory, commands = manifest.parent, []
-    def add(category: str, command: str, executable: str):
-        commands.append(ValidationCommand(category=category, command=command, commands=[command], working_directory=relative(directory, root), available=shutil.which(executable) is not None, evidence=evidence(manifest, root, f"{manifest.name} runtime")))
+    def add(category: str, command: str, executable: str, working_directory: Path = directory):
+        commands.append(ValidationCommand(category=category, command=command, commands=[command], working_directory=relative(working_directory, root), available=shutil.which(executable) is not None, evidence=evidence(manifest, root, f"{manifest.name} runtime")))
     if manifest.name == "pubspec.yaml":
         add("format", "dart format .", "dart")
         add("analyze", "flutter analyze" if (manifest.parent / "lib").exists() else "dart analyze", "flutter" if (manifest.parent / "lib").exists() else "dart")
@@ -98,6 +99,9 @@ def validation_for(manifest: Path, root: Path, config: WorkspaceConfig) -> list[
     elif manifest.name == "pyproject.toml":
         if (directory / "tests").is_dir(): add("test", "pytest", "pytest")
     elif manifest.name == "Cargo.toml": add("test", "cargo test", "cargo")
+    project_root = next((parent for parent in (directory, *directory.parents) if (parent / ".git").exists()), None)
+    if project_root and (project_root / "tool" / "quality_gate.sh").is_file():
+        add("quality_gate", "bash tool/quality_gate.sh", "bash", project_root)
     return commands
 
 

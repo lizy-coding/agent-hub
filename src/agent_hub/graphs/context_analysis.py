@@ -15,10 +15,16 @@ def _refactor_plan_path(config: WorkspaceConfig) -> Path:
     runtime = config.runtime if isinstance(config.runtime, dict) else {}
     repositories = runtime.get("repositories")
     if isinstance(repositories, dict):
-        entry = repositories.get("flutter_forge")
-        if isinstance(entry, dict) and entry.get("runtime_path"):
-            return Path(entry["runtime_path"]) / "REFACTOR_PLAN.md"
-    return config.workspace_root / "flutter_forge" / "REFACTOR_PLAN.md"
+        primary = str(runtime.get("primary_repository_id") or "")
+        entries = [repositories.get(primary)] if primary else []
+        entries.extend(value for key, value in repositories.items() if key != primary)
+        for entry in entries:
+            if isinstance(entry, dict) and entry.get("runtime_path"):
+                candidate = Path(str(entry["runtime_path"])) / "REFACTOR_PLAN.md"
+                if candidate.is_file():
+                    return candidate
+    candidates = sorted(config.workspace_root.glob("*/REFACTOR_PLAN.md"))
+    return candidates[0] if candidates else config.workspace_root / "REFACTOR_PLAN.md"
 
 def _load_plan_entries(plan_path: Path) -> list[dict]:
     if not plan_path.is_file():

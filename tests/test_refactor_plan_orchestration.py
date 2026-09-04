@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 from agent_hub.execution.code_worker import WorkerRequest, _build_target
 from agent_hub.graphs.context_analysis import planned_capabilities
-from agent_hub.graphs.development import _load_refactor_plan, _new_program, _plan_task, reconcile_program
+from agent_hub.graphs.development import _load_refactor_plan, _new_program, _normalise_plan_target, _plan_task, reconcile_program
 from agent_hub.workspace.config import WorkspaceConfig
 
 PLAN_PAYLOAD = {
@@ -100,6 +100,19 @@ class RefactorPlanTaskGenerationTest(unittest.TestCase):
             task = _plan_task(self._entry("android_host"), root, "flutter_forge", ["module_platform_contract", "platform_plugin_audit", "mobile_layout_baseline"])
         self.assertEqual(task["candidate_paths"], ["apps/flutter_forge/android/", "apps/flutter_forge/pubspec.yaml"])
         self.assertEqual(task["validation"], ["flutter_analyze", "flutter_build:apk"])
+
+    def test_repository_qualified_targets_are_not_prefixed_twice(self):
+        with _plan_repo_fixture() as root:
+            self.assertEqual(
+                _normalise_plan_target(root, "apps/flutter_forge/lib/modules/platform/usb_detector"),
+                "apps/flutter_forge/lib/modules/platform/usb_detector",
+            )
+
+    def test_completed_plan_entry_is_not_reoffered_as_ready(self):
+        entry = {"id": "completed_task", "status": "completed", "targets": ["lib/app"]}
+        with _plan_repo_fixture() as root:
+            task = _plan_task(entry, root, "flutter_forge", ["completed_task"])
+        self.assertEqual(task["status"], "DONE")
 
 
 class RefactorPlanProgramTest(unittest.TestCase):

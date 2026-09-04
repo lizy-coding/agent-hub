@@ -70,5 +70,22 @@ class WorkspaceRegistryTest(unittest.TestCase):
         self.assertEqual(registry.find_unit_by_path(outside), None)
         self.assertEqual(registry.validate_registry(), [])
 
+    def test_latest_agent_control_documents_and_quality_gate_are_registered(self):
+        self.repo("repo")
+        self.write("repo/pubspec.yaml", "name: repo\n")
+        self.write("repo/AGENTS.md", "rules")
+        self.write("repo/CONTEXT.md", "context")
+        self.write("repo/AI_PROJECT_CONTEXT.md", "{}")
+        self.write("repo/AI_ANALYSIS_SCHEMA.json", "{}")
+        self.write("repo/REFACTOR_PLAN.md", "{}")
+        self.write("repo/docs/adr/0001-layout.md", "# layout")
+        self.write("repo/tool/quality_gate.sh", "#!/bin/sh\n")
+        registry = WorkspaceRegistry(self.config)
+        registry.refresh()
+        unit = registry.get_development_unit("repo:.")
+        rule_paths = {rule.path for rule in registry.get_rule_files(unit.unit_id)}
+        self.assertTrue({"repo/AGENTS.md", "repo/CONTEXT.md", "repo/AI_PROJECT_CONTEXT.md", "repo/AI_ANALYSIS_SCHEMA.json", "repo/REFACTOR_PLAN.md", "repo/docs/adr/0001-layout.md"}.issubset(rule_paths))
+        self.assertIn("bash tool/quality_gate.sh", {command.command for command in unit.validation})
+
 
 if __name__ == "__main__": unittest.main()

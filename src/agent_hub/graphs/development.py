@@ -78,10 +78,13 @@ def _ref(path: Path, root: Path, needle: str) -> str:
 def _rules_for(path: Path, root: Path) -> list[str]:
     rules: list[str] = []
     for parent in (path.parent, *path.parents):
-        for name in ("AGENTS.md", "AGENTS.override.md"):
+        for name in ("AGENTS.md", "AGENTS.override.md", "CONTEXT.md", "AI_PROJECT_CONTEXT.md", "AI_ANALYSIS_SCHEMA.json", "REFACTOR_PLAN.md"):
             candidate = parent / name
             if candidate.is_file():
                 rules.append(candidate.relative_to(root).as_posix())
+        adr = parent / "docs" / "adr"
+        if adr.is_dir():
+            rules.extend(item.relative_to(root).as_posix() for item in adr.glob("*.md"))
         if parent == root:
             break
     return sorted(set(rules))
@@ -123,9 +126,13 @@ _LEGACY_COMPLETED_TASK_IDS = ("app-router-private-facade", "gcode-controller-fil
 # candidate_paths stay root-relative and validation can be derived.
 _REFACTOR_TARGET_PATHS = {
     "module_platform_contract": ["lib/module_registry/module_entry.dart", "lib/app/module_home_page.dart"],
+    "responsive_navigation_policy": ["lib/app/navigation_policy.dart", "lib/app/category_navigation.dart", "test/shared/navigation_policy_test.dart"],
     "platform_plugin_audit": ["lib/app", "lib/modules/platform"],
     "usb_platform_boundary": ["lib/modules/platform/usb_detector"],
     "android_host": ["android/", "pubspec.yaml"],
+    "android_host_readiness": ["android/", "pubspec.yaml"],
+    "pc_window_lifecycle_baseline": ["packages/desktop_multi_window", "lib/shared/multi_window", "lib/app/category_navigation"],
+    "pc_build_matrix": ["macos", "windows"],
 }
 
 _REFACTOR_TITLES = {
@@ -134,6 +141,12 @@ _REFACTOR_TITLES = {
     "usb_platform_boundary": "Move USB detection behind a platform-neutral boundary",
     "android_host": "Generate the Android host with manifest capabilities and a debug APK build",
     "mobile_layout_baseline": "Establish a mobile layout baseline (visual acceptance domain)",
+    "responsive_navigation_policy": "Separate mobile in-app navigation from desktop multi-window navigation",
+    "android_compatibility_plan": "Coordinate the Android compatibility workstreams",
+    "android_usb_permission_boundary": "Harden Android USB permission and enumeration fallback",
+    "module_scaffold_generation": "Validate the reusable module scaffold generator",
+    "pc_window_lifecycle_baseline": "Close the PC multi-window lifecycle baseline",
+    "pc_build_matrix": "Verify the PC build matrix before maintainability freeze",
 }
 
 
@@ -142,6 +155,45 @@ def _app_relative(root: Path, target: str) -> str:
     application = _app_root(root)
     prefix = _relative(root, application)
     return f"{prefix}/{target.lstrip('/')}" if prefix != "." else target.lstrip("/")
+
+
+def _normalise_plan_target(root: Path, target: str) -> str:
+    """Convert plan targets to repository-relative paths exactly once.
+
+    REFACTOR_PLAN mixes app-relative paths, repository-relative paths, and
+    semantic names.  Resolve existing paths first, then apply the small set
+    of documented semantic aliases; never prepend ``apps/flutter_forge`` to
+    a path that is already repository-relative.
+    """
+    target = target.strip().lstrip("./")
+    application = _app_root(root)
+    app_prefix = _relative(root, application)
+    aliases = {
+        "desktop_multi_window": "packages/desktop_multi_window",
+        "file_picker_bridge": "packages/file_picker_bridge",
+        "usb_android_method_channel": "lib/modules/platform/usb_detector",
+        "device_info_plus": "pubspec.yaml",
+        "module_home": "lib/app/module_home_page.dart",
+        "category_home": "lib/app/category_navigation.dart",
+        "ready_modules": "lib/module_registry",
+        "recommended_modules": "lib/module_registry",
+        "macos": "macos",
+        "windows": "windows",
+    }
+    candidate = aliases.get(target, target)
+    if candidate in {"android/", "pubspec.yaml"}:
+        return _app_relative(root, candidate)
+    if candidate in {"macos", "windows"} and (application / candidate).exists():
+        return _app_relative(root, candidate)
+    if candidate.startswith(app_prefix + "/") or candidate == app_prefix:
+        return candidate
+    if (root / candidate).exists() or (root / candidate.rstrip("/")).exists():
+        return candidate
+    if (application / candidate).exists() or (application / candidate.rstrip("/")).exists():
+        return _app_relative(root, candidate)
+    if candidate.startswith(("packages/", "plugins/", "docs/", "tool/", ".run/", "AI_")):
+        return candidate
+    return _app_relative(root, candidate)
 
 
 def _load_refactor_plan(root: Path) -> list[dict[str, object]] | None:
@@ -163,14 +215,14 @@ def _load_refactor_plan(root: Path) -> list[dict[str, object]] | None:
     return [entry for entry in entries if isinstance(entry, dict)]
 
 
-def _plan_candidate_paths(entry: dict[str, object]) -> list[str]:
+def _plan_candidate_paths(entry: dict[str, object], root: Path) -> list[str]:
     task_id = str(entry.get("id", ""))
     known = _REFACTOR_TARGET_PATHS.get(task_id)
     if known:
-        return list(known)
-    targets = entry.get("targets")
+        return [_normalise_plan_target(root, target) for target in known]
+    targets = entry.get("targets") or entry.get("changes")
     if isinstance(targets, list) and all(isinstance(item, str) for item in targets):
-        return list(targets)
+        return [_normalise_plan_target(root, target) for target in targets]
     return []
 
 
@@ -194,17 +246,19 @@ def _plan_task(entry: dict[str, object], root: Path, repository_id: str, complet
             "entry_type": "decision",
         }
     application = _app_root(root)
-    app_paths = _plan_candidate_paths(entry)
-    candidate_paths = [_app_relative(root, path) for path in app_paths]
+    app_paths = _plan_candidate_paths(entry, root)
+    candidate_paths = list(app_paths)
     deps = [str(item) for item in entry.get("depends_on", [])]
     missing = [dep for dep in deps if dep not in set(completed)]
     acceptance = [str(item) for item in entry.get("acceptance", [])]
-    rules = _rules_for(application / app_paths[0], root) if app_paths else []
+    rules = _rules_for(root / app_paths[0], root) if app_paths else []
+    entry_status = str(entry.get("status", "pending"))
+    task_status = "DONE" if entry_status == "completed" else "BLOCKED_DECISION" if entry_status == "planned" else "READY"
     task: dict[str, object] = {
         "task_id": task_id,
         "title": _REFACTOR_TITLES.get(task_id, f"Implement REFACTOR_PLAN work_queue entry {task_id}"),
         "development_unit": f"{repository_id}:.",
-        "evidence": [f"{_app_relative(root, path)}:1" for path in app_paths],
+        "evidence": [f"{path}:1" for path in app_paths],
         "candidate_paths": candidate_paths,
         "expected_change": f"Implement REFACTOR_PLAN {task_id} per acceptance: " + "; ".join(acceptance),
         "invariants": ["Platform contract and route/module metadata keep their current public shape", "No protected packaging flow files are touched"],
@@ -212,9 +266,12 @@ def _plan_task(entry: dict[str, object], root: Path, repository_id: str, complet
         "validation": _task_validation(candidate_paths),
         "dependencies": deps,
         "risk": "MEDIUM",
-        "status": "READY",
+        "status": task_status,
         "rules": rules,
     }
+    if entry_status == "planned":
+        task["reason"] = "plan_not_activated"
+        task["decision_required"] = "Activate this planned REFACTOR_PLAN phase before execution."
     if missing:
         task["status"] = "BLOCKED_DECISION"
         task["reason"] = "depends_on_incomplete"
@@ -312,7 +369,9 @@ def _new_program(config: WorkspaceConfig, repository_id: str, completed: list[st
     if plan_entries:
         tasks: list[dict[str, object]] = []
         blocked: list[dict[str, object]] = []
-        completed_tasks = set(completed) | set(_LEGACY_COMPLETED_TASK_IDS)
+        completed_tasks = set(completed) | set(_LEGACY_COMPLETED_TASK_IDS) | {
+            str(entry.get("id")) for entry in plan_entries if entry.get("status") == "completed"
+        }
         for entry in plan_entries:
             mapped = _apply_packaging_guard(_plan_task(entry, root, repository_id, sorted(completed_tasks)))
             if mapped.get("entry_type") == "decision":

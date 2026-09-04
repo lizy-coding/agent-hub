@@ -21,9 +21,13 @@ class MigrationEvidenceResolver:
   out=[];seen=set();path=Path(path)
   for parent in (path,*path.parents):
    if parent==self.config.workspace_root.parent:break
-   for name in ('AGENTS.md','AGENTS.override.md'):
+   for name in ('AGENTS.md','AGENTS.override.md','CONTEXT.md','AI_PROJECT_CONTEXT.md','AI_ANALYSIS_SCHEMA.json','REFACTOR_PLAN.md'):
     rule=parent/name
     if rule.is_file() and is_allowed_business_path(rule,self.config) and str(rule) not in seen:seen.add(str(rule));out.append(ContextRule(path=str(rule),scope=str(parent),applies_to=str(path),provenance='filesystem_rule_scope'))
+   adr=parent/'docs'/'adr'
+   if adr.is_dir():
+    for rule in adr.glob('*.md'):
+     if is_allowed_business_path(rule,self.config) and str(rule) not in seen:seen.add(str(rule));out.append(ContextRule(path=str(rule),scope=str(adr),applies_to=str(path),provenance='filesystem_rule_scope'))
   return out
  def resolve(self,blocked):
   refs=[x for x in blocked.evidence_refs if ':' in x];paths=[str((self.config.workspace_root/x.rsplit(':',1)[0]).resolve()) for x in refs if Path(x.rsplit(':',1)[0]).suffix];paths=[x for x in paths if is_allowed_business_path(Path(x),self.config)];primary=paths[0] if paths else None;unit=registry_api.find_unit_by_path(self.config,Path(primary)) if primary else None
