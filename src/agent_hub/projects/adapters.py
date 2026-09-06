@@ -213,7 +213,19 @@ class FlutterForgeAdapter:
         return release_inventory(context, spec)
 
 
+class GcodeCoreAdapter(GenericProjectAdapter):
+    name = "gcode_core"
+
+    def build_program(self, root, context):
+        from agent_hub.projects.gcode_core_adapter import enrich_program
+        program = super().build_program(root, context)
+        primary = str(context.get("primary_repository_id") or "gcode_core")
+        path = Path((context.get("repository_paths") or {}).get(primary, root / primary))
+        return enrich_program(program, path, primary)
+
+
 _ADAPTERS: dict[str, ProjectAdapter] = {
+    "gcode_core": GcodeCoreAdapter(),
     "flutter_forge": FlutterForgeAdapter(),
     "flutter-forge": FlutterForgeAdapter(),
     "generic": GenericProjectAdapter(),

@@ -13,7 +13,8 @@
     "runtime_id": "local-development",
     "primary_repository_id": "flutter_forge",
     "repositories": {
-      "flutter_forge": {"runtime_path": "../../langGraph/flutter_forge", "role": "PRIMARY", "managed": true, "writable": true, "source_type": "LOCAL_PATH"}
+      "flutter_forge": {"runtime_path": "../../langGraph/flutter_forge", "role": "PRIMARY", "managed": true, "writable": true, "source_type": "LOCAL_PATH"},
+      "gcode_core": {"runtime_path": "../../langGraph/gcode_core", "role": "REFERENCE", "managed": true, "writable": false, "source_type": "LOCAL_PATH"}
     }
   }
 }

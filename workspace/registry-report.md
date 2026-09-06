@@ -1,5 +1,19 @@
 # Workspace Registry P2 report
 
+## G-code GPU project inventory
+
+The `gcode-core` project now uses the dedicated `gcode_core` adapter. At observed revision `5d7e92730147ef620ccc115d35933155cfaa33f3`, its root Flutter package owns parsing and trajectory preview; `example` consumes that package. Inventory reads the Flutter SDK minimum (currently 3.47.2), Flutter GPU dependency and shaderbundle asset from the manifest. It creates no automatic migration tasks and does not promote inventory to native runtime acceptance. Forge retains its separately pinned Git dependency until an explicit dependency update is requested.
+
+## WebView module inventory (2026-09-06)
+
+Forge commits `89735f6` and `8a2ce96` integrate and normalize the app-owned `/webview` module for Android, macOS and Windows. The adapter discovers its module contract as `embedded-webview-navigation`, maps `webview_flutter` and `webview_windows` to the app, and records the reachable integration commit as DONE without reopening write permissions. Project-owned types use canonical `WebView*` names; `WebViewFlutterBackend` owns Android/macOS and `WebView2Backend` owns Windows. The upstream `webview_plugin` snapshot is provenance, not another managed runtime repository. Native device acceptance is not inferred from inventory or the module's ready status.
+
+## Independent G-code ownership (2026-09-05)
+
+`gcode-core` is an independent project (`generic` adapter), whose primary repository is `gcode_core` at `/Users/forest/code/langGraph/gcode_core`. Forge sees that repository as a read-only reference. Its app consumes `https://github.com/lizy-coding/gcode_core.git` pinned to `7a5228126d6e43b0cb9175b035cd2e1701950779`; this is a Git dependency, not a pub.dev release. Older consolidation records below are historical.
+
+The independent package no longer requires Pub workspace resolution. Its 30 tests pass. The decomposition graph freezes `consume-independent-gcode-core` and validates/integrates the current-session Worker diff as commit `1b604fb03c204a5f7537f6fb82e33325f8e85d37`. External Codex Worker invocation failed because its CLI did not support the configured model; no external Worker success is claimed. Forge's app tests continue to cover the G-code consumer while package tests belong to the independent repository.
+
 **Status: READY_FOR_CONTEXT_RESOLVER**
 
 ## Registry architecture

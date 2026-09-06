@@ -1,0 +1,13 @@
+{
+  "workspace_root": "../../langGraph/gcode_core",
+  "allowed_paths": ["../../langGraph/gcode_core"],
+  "registry_path": "../../workspace-bootstrap.json",
+  "registry_storage_path": "gcode-core-registry.json",
+  "runtime": {
+    "environment": "LOCAL",
+    "primary_repository_id": "gcode_core",
+    "repositories": {
+      "gcode_core": {"runtime_path": "../../langGraph/gcode_core", "role": "PRIMARY", "managed": true, "writable": true, "source_type": "LOCAL_PATH"}
+    }
+  }
+}

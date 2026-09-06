@@ -2,6 +2,13 @@
   "default_project": "flutter-forge",
   "aliases": {},
   "projects": {
+    "gcode-core": {
+      "adapter": "gcode_core",
+      "program_id": "gcode-core-decomposition-program",
+      "refactor_program_id": "gcode-core-refactor-program",
+      "snapshot_namespace": "gcode-core",
+      "workspace_config": "workspace/gcode-core.json"
+    },
     "flutter-forge": {
       "adapter": "flutter_forge",
       "program_id": "flutter-forge-decomposition-program",
@@ -12,6 +19,17 @@
         "github_repo": "lizy-coding/flutter_forge",
         "tag_prefix": "v",
         "artifact_root": "release",
+        "platforms": ["macos-x64", "windows-x64", "android-arm64"],
+        "android_target_platform": "android-arm64",
+        "android_abi": "arm64-v8a",
+        "build_matrix": {
+          "android-arm64": {
+            "runner": "ubuntu-latest",
+            "working_directory": "apps/flutter_forge",
+            "commands": ["flutter build appbundle --release", "flutter build apk --release --target-platform android-arm64 --split-per-abi"],
+            "artifacts": ["app-release.aab", "app-arm64-v8a-release.apk"]
+          }
+        },
         "default_draft": false,
         "default_prerelease": false
       }

@@ -5,6 +5,7 @@ know which packages, app roots, or capability owners belong to Flutter Forge.
 """
 from __future__ import annotations
 
+import json
 import re
 import subprocess
 from pathlib import Path
@@ -172,6 +173,59 @@ def build_program(root: Path, context: dict[str, object]) -> dict[str, object]:
         {"task_id": "android_usb_permission_boundary", "title": "Harden Android USB permission and enumeration fallback", "source_units": ["flutter_forge/apps/flutter_forge"], "target_units": ["flutter_forge/apps/flutter_forge"], "depends_on": ["android_host"], "allowed_operations": ["CREATE", "DEPENDENCY_REWRITE"], "allowed_paths_by_repository": {"flutter_forge": ["apps/flutter_forge/android/app/src/main/kotlin", "apps/flutter_forge/android/app/src/main/AndroidManifest.xml", "apps/flutter_forge/lib/modules/platform/usb_detector", "apps/flutter_forge/test/modules/platform/usb_detector"]}, "acceptance": ["usb_permission_denied_is_observable", "device_enumeration_falls_back_without_crash", "android_usb_channel_contract_tested"], "status": "DONE", "evidence": ["托管仓库 REFACTOR_PLAN marks android_usb_permission_boundary completed", "Android MainActivity reports permission-safe USB enumeration and APK validation passed"]},
         {"task_id": "module_scaffold_generation", "title": "Validate the reusable module scaffold generator", "source_units": ["flutter_forge/tool/module_scaffold.dart"], "target_units": ["flutter_forge/tool/module_scaffold.dart"], "depends_on": ["android_usb_permission_boundary"], "allowed_operations": ["CREATE", "DEPENDENCY_REWRITE"], "allowed_paths_by_repository": {"flutter_forge": ["tool/module_scaffold.dart", "tool/module_scaffold_test.dart", "REFACTOR_PLAN.md", "tool/generate_agent_indexes.js"]}, "execution_instructions": ["Run the scaffold CLI acceptance test.", "Keep preview mode non-mutating and do not register a module automatically.", "Validate generated module contracts through the owning project validators."], "acceptance": ["preview_does_not_write_formal_module", "apply_generates_module_entry_and_learning_page", "generated_analysis_contract_is_valid", "invalid_module_arguments_fail_with_usage_code", "route_registration_remains_explicit"], "status": "DONE", "evidence": ["tool/module_scaffold.dart and tool/module_scaffold_test.dart passed local CLI acceptance", "Agent Hub Worker revalidated the committed scaffold baseline"]},
     ]
+    # Discover the integrated WebView contract only when present in this checkout.
+    webview_path = "apps/flutter_forge/lib/modules/platform/webview"
+    webview_contract = repository_root / webview_path / "AI_ANALYSIS.md"
+    if webview_contract.is_file():
+        contract = json.loads(webview_contract.read_text(encoding="utf-8"))
+        capabilities.append({
+            "capability_id": "embedded-webview-navigation",
+            "current_owners": [f"{primary}/{webview_path}"],
+            "source_paths": [f"{primary}/{webview_path}"],
+            "consumers": [f"{primary}:webview"],
+            "dependencies": list(contract.get("depends", [])),
+            "supported_platforms": list(contract.get("supported_platforms", [])),
+            "route": contract.get("route"),
+            "flutter_dependency": True, "platform_dependency": True,
+            "native_dependency": True, "state_dependency": True,
+            "reuse_scope": "app", "classification": "KEEP_APP_ONLY",
+            "target_package": "apps/flutter_forge",
+            "evidence": [f"{webview_path}/AI_ANALYSIS.md", f"{webview_path}/SOURCE.md"],
+        })
+        app_candidate = next(c for c in candidates if c["package_id"] == "apps/flutter_forge")
+        app_candidate["owned_capabilities"].append("embedded-webview-navigation")
+        app_candidate["dependencies"] = sorted(set(app_candidate["dependencies"] + ["webview_flutter", "webview_windows"]))
+        commits = subprocess.check_output([
+            "git", "log", "-1", "--format=%H", "--fixed-strings",
+            "--grep=[integrate-historical-webview-module]",
+        ], cwd=repository_root, text=True).strip()
+        if commits:
+            tasks.append({
+                "task_id": "integrate-historical-webview-module",
+                "title": "Integrate Android, macOS and Windows WebView module",
+                "source_units": [], "target_units": [f"{primary}/{webview_path}"],
+                "depends_on": [], "allowed_operations": [],
+                "allowed_paths_by_repository": {}, "status": "DONE",
+                "integration_commits": {primary: commits},
+                "evidence": [f"git:{commits}", f"{webview_path}/AI_ANALYSIS.md"],
+                "native_runtime_acceptance": "NOT_VERIFIED_BY_INVENTORY",
+            })
+    # gcode_core is independently maintained; Forge only consumes its Git API.
+    upstream = (paths or {}).get("gcode_core") if isinstance(paths, dict) else None
+    if upstream:
+        repositories.append({"repository_id": "gcode_core", "path": str(upstream), "role": "REFERENCE", "consumers": ["flutter_forge"]})
+        for capability in capabilities:
+            if capability["capability_id"] == "gcode-parser-toolpath":
+                capability.update(current_owners=["gcode_core"], source_paths=["gcode_core/lib"], target_package="gcode_core", classification="KEEP_PACKAGE")
+        candidates = [c for c in candidates if c["package_id"] != "packages/gcode_core"]
+        for candidate in candidates:
+            candidate["dependencies"] = ["gcode_core" if dep == "packages/gcode_core" else dep for dep in candidate.get("dependencies", [])]
+        for task in tasks:
+            if task["task_id"] == "merge-gcode-core-owners":
+                task.update(title="Historical consolidation superseded by independent gcode_core ownership", source_units=["gcode_core"], target_units=["gcode_core"], allowed_paths_by_repository={}, evidence=["gcode_core is a configured independent repository consumed through pinned Git URL"])
+            if task["task_id"] == "establish-package-boundary-contracts":
+                task["target_units"] = [p for p in task.get("target_units", []) if p != "packages/gcode_core"]
+                task["allowed_paths_by_repository"][primary] = [p for p in task["allowed_paths_by_repository"].get(primary, []) if p != "packages/gcode_core"]
     return {
         "project_id": str(context.get("project_id") or "flutter-forge"),
         "program_id": str(context.get("program_id") or "flutter-forge-decomposition-program"),
@@ -181,7 +235,7 @@ def build_program(root: Path, context: dict[str, object]) -> dict[str, object]:
         "repositories": repositories,
         "capabilities": capabilities,
         "package_candidates": candidates,
-        "target_dependency_graph": {"nodes": [item["package_id"] for item in candidates], "edges": [["apps/flutter_forge", item] for item in ["packages/gcode_core", "packages/file_picker_bridge", "packages/flutter_study_learning", "packages/flutter_ioc_core"]], "cycles": []},
+        "target_dependency_graph": {"nodes": [item["package_id"] for item in candidates] + (["gcode_core"] if upstream else []), "edges": [["apps/flutter_forge", item] for item in (["gcode_core"] if upstream else ["packages/gcode_core"]) + ["packages/file_picker_bridge", "packages/flutter_study_learning", "packages/flutter_ioc_core"]], "cycles": []},
         "migration_tasks": tasks,
         "human_decisions": [],
         "integration_head": None,
@@ -229,6 +283,10 @@ def default_allowed_paths(task_id: str, repository: str) -> list[str]:
     }.get(task_id, {}).get(repository, [])
 
 def architecture_guard(task: dict[str, object], worker: dict[str, object], program: dict[str, object]) -> dict[str, object]:
+    if task.get("task_id") == "consume-independent-gcode-core":
+        diff = str(worker.get("repositories", {}).get("flutter_forge", {}).get("diff", ""))
+        valid = "+      url: https://github.com/lizy-coding/gcode_core.git" in diff and "+      ref: 7a5228126d6e43b0cb9175b035cd2e1701950779" in diff
+        return {"status": "PASS" if valid else "REJECT", "guard_kind": "independent_gcode_git_owner", "capability_owner_after": ["gcode_core"]}
     """Prove that a merge preserves a concrete target capability owner."""
     from agent_hub.graphs.decomposition import _ensure_worktree, _primary_repository, _worker_change_set
     repositories = worker.get("repositories", {})
@@ -370,6 +428,39 @@ def architecture_guard(task: dict[str, object], worker: dict[str, object], progr
 
 def proposal_inventory(program: dict[str, object], spec: dict[str, object]) -> dict[str, object]:
     """Build a frozen task from tracked-file evidence without touching a worktree."""
+    if spec.get("task_id") == "normalize-webview-naming":
+        from agent_hub.projects.adapters import GenericProjectAdapter
+        primary = str(program.get("primary_repository_id") or "flutter_forge")
+        root = Path(next(r["path"] for r in program["repositories"] if r["repository_id"] == primary))
+        paths = [str(p.relative_to(root)) for folder in ("apps/flutter_forge/lib/modules/platform/webview", "apps/flutter_forge/test/modules/platform/webview") for p in (root / folder).rglob("*") if p.is_file()]
+        paths += ["apps/flutter_forge/lib/modules/platform/webview/platforms/webview_flutter_backend.dart", "apps/flutter_forge/lib/modules/platform/webview/platforms/webview2_backend.dart", "apps/flutter_forge/integration_test/webview_macos_test.dart", "apps/flutter_forge/lib/app/router/app_route_table.dart", "tool/generate_agent_indexes.js", "CONTEXT.md", "docs/reports/WEBVIEW_INTEGRATION.md"]
+        task = GenericProjectAdapter().proposal_inventory(program, {**spec, "candidate_paths": sorted(set(paths))})
+        task["evidence"] = ["Existing module and tests discovered in current Forge checkout", "User approved naming-only change; route, dependencies and runtime behavior preserved"]
+        return task
+    if spec.get("task_id") == "integrate-historical-webview-module":
+        from agent_hub.projects.adapters import GenericProjectAdapter
+        primary = str(program.get("primary_repository_id") or "flutter_forge")
+        root = Path(next(r["path"] for r in program["repositories"] if r["repository_id"] == primary))
+        tracked = subprocess.check_output(["git", "ls-files"], cwd=root, text=True).splitlines()
+        paths = [p for p in tracked if p.endswith("AI_ANALYSIS.md") or p.endswith("AI_MODULE_INDEX.md")]
+        paths += ["AI_ANALYSIS_SCHEMA.json", "AI_PROJECT_CONTEXT.md", "REFACTOR_PLAN.md", "pubspec.lock", "apps/flutter_forge/pubspec.yaml", "tool/generate_agent_indexes.js", "apps/flutter_forge/lib/app/router/app_route_table.dart", "docs/reports/WEBVIEW_INTEGRATION.md"]
+        module = "apps/flutter_forge/lib/modules/platform/webview/"
+        paths += [module + p for p in ["module_entry.dart", "module_root.dart", "AI_ANALYSIS.md", "SOURCE.md", "core/webview_session.dart", "core/webview_backend.dart", "platforms/webview_flutter_backend.dart", "platforms/webview2_backend.dart", "widgets/webview_navigation_bar.dart", "widgets/loading_placeholder.dart"]]
+        paths += ["apps/flutter_forge/test/modules/platform/webview/" + p for p in ["webview_test.dart", "webview_session_test.dart"]]
+        paths += [p for p in tracked if p.startswith("apps/flutter_forge/") and ("GeneratedPluginRegistrant" in p or "generated_plugin" in p or p.endswith("Podfile.lock"))]
+        task = GenericProjectAdapter().proposal_inventory(program, {**spec, "candidate_paths": sorted(set(paths))})
+        task["evidence"] = ["Forge manifest and generator define the application owner", "historical webview_plugin source revision: 1e160be430a55612bd1c1711f56be7ed94a4957b", "anticipated module and behavior test paths frozen by Flutter Forge adapter"]
+        task["target_creation_allowed"] = True
+        return task
+    if spec.get("task_id") == "consume-independent-gcode-core":
+        from agent_hub.projects.adapters import GenericProjectAdapter
+        root = Path(next(r["path"] for r in program["repositories"] if r["repository_id"] == "flutter_forge"))
+        tracked = subprocess.check_output(["git", "ls-tree", "-r", "--name-only", "HEAD"], cwd=root, text=True).splitlines()
+        paths = [p for p in tracked if p.endswith("AI_ANALYSIS.md") or p.endswith("AI_MODULE_INDEX.md") or p.startswith("packages/gcode_core/")]
+        paths += ["apps/flutter_forge/pubspec.yaml", "pubspec.yaml", "pubspec.lock", "AI_ANALYSIS_SCHEMA.json", "AI_PROJECT_CONTEXT.md", "REFACTOR_PLAN.md", "tool/generate_agent_indexes.js", "tool/validate_agent_docs.js", "tool/test_all.sh"]
+        task = GenericProjectAdapter().proposal_inventory(program, {**spec, "candidate_paths": sorted(set(paths))})
+        task.update(packaging_change=True, manual_review=True)
+        return task
     from agent_hub.graphs.decomposition import CLUSTER
     primary_repository = str(program.get("primary_repository_id") or "flutter_forge")
     repository = next((item for item in program.get("repositories", []) if item.get("repository_id") == primary_repository), None)
@@ -578,6 +669,7 @@ def release_inventory(context: dict[str, object], spec: dict[str, object]) -> di
         blocked_release_program,
         build_release_program,
         is_publishable_artifact,
+        is_flutter_forge_android_arm64,
         normalize_artifact_paths,
         release_context,
         valid_release_tag,
@@ -611,12 +703,17 @@ def release_inventory(context: dict[str, object], spec: dict[str, object]) -> di
             return blocked_release_program(context, "RELEASE_ARTIFACTS_MISSING", f"installer staging directory not found: {staging}; build the installers and stage them under {staging.relative_to(repository_root)} first.")
         convention = _release_asset_convention(version)
         discovered = sorted(path for path in staging.iterdir() if is_publishable_artifact(path))
+        android_candidates = [path for path in discovered if path.suffix.lower() in {".apk", ".aab"}]
+        rejected_android = [path.name for path in android_candidates if not is_flutter_forge_android_arm64(path)]
+        if rejected_android:
+            evidence.append("ignored non-arm64 Android files: " + ", ".join(rejected_android))
+        discovered = [path for path in discovered if path not in android_candidates or is_flutter_forge_android_arm64(path)]
         ignored = [path.name for path in discovered if not convention.match(path.name)]
         kept = [path for path in discovered if convention.match(path.name)]
         if ignored:
             evidence.append("ignored non-convention files: " + ", ".join(ignored))
         if not kept:
-            return blocked_release_program(context, "RELEASE_ARTIFACTS_MISSING", f"no FlutterForge-{version}-* installer packages found in {staging.relative_to(repository_root)}.")
+            return blocked_release_program(context, "RELEASE_ARTIFACTS_MISSING", f"no supported FlutterForge-{version} installer packages found in {staging.relative_to(repository_root)}; Android accepts only arm64-v8a APKs plus AAB.")
         root_prefix = str(config.get("artifact_root") or "release").strip("/")
         artifact_paths = [f"{root_prefix}/{version}/{path.name}" for path in kept]
         checksums = _sha256sums(staging)

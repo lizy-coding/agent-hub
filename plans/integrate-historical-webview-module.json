@@ -1,0 +1,24 @@
+{
+  "task_id": "integrate-historical-webview-module",
+  "title": "Integrate historical WebView source as a governed Forge module",
+  "source_revision": "1e160be430a55612bd1c1711f56be7ed94a4957b",
+  "target_units": [
+    "flutter_forge/apps/flutter_forge/lib/modules/platform/webview"
+  ],
+  "follow_up_task": "normalize-webview-naming",
+  "platforms": [
+    "android",
+    "macOS",
+    "windows"
+  ],
+  "ownership": "KEEP_APP_ONLY",
+  "route": "/webview",
+  "acceptance": [
+    "module contract and generated index are current",
+    "WebView project types use canonical names",
+    "Android and macOS use WebViewFlutterBackend",
+    "Windows uses WebView2Backend",
+    "lifecycle and module tests pass",
+    "native runtime evidence remains distinct by host"
+  ]
+}

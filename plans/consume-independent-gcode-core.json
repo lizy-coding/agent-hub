@@ -1,0 +1,14 @@
+{
+  "task_id": "consume-independent-gcode-core",
+  "title": "Consume independent gcode_core through pinned Git dependency",
+  "source_units": ["flutter_forge/apps/flutter_forge"],
+  "target_units": ["flutter_forge/apps/flutter_forge"],
+  "allowed_operations": ["DEPENDENCY_REWRITE", "DELETE"],
+  "execution_instructions": [
+    "Read AGENTS.md and required contracts. Replace apps/flutter_forge/pubspec.yaml gcode_core path dependency with git url https://github.com/lizy-coding/gcode_core.git and ref 7a5228126d6e43b0cb9175b035cd2e1701950779.",
+    "Remove packages/gcode_core from root workspace and remove its tracked files: user already migrated them to independent repository. Do not reintroduce them.",
+    "Update tool/generate_agent_indexes.js and tool/validate_agent_docs.js to remove gcode_core from workspace package ownership, describe pinned external git dependency, and regenerate documents. Update tool/test_all.sh to no longer run tests in deleted packages/gcode_core; retain app gcode consumer tests and all other test suites.",
+    "Run flutter pub get, documentation generator, flutter analyze, bash tool/test_all.sh, bash tool/quality_gate.sh. Preserve public imports and app functionality. No push, no release, no version change."
+  ],
+  "acceptance": ["git dependency resolves at exact upstream revision", "no local gcode_core workspace owner", "app gcode consumer tests pass", "generated documents match generator"]
+}

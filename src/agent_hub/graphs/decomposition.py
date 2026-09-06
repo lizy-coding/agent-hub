@@ -112,7 +112,7 @@ def _ensure_worktree(repository: str, program: dict[str, object] | None = None) 
 
 
 def _changes(root: Path) -> list[str]:
-    tracked = subprocess.check_output(["git", "diff", "--name-only"], cwd=root, text=True).splitlines()
+    tracked = subprocess.check_output(["git", "diff", "HEAD", "--no-renames", "--name-only"], cwd=root, text=True).splitlines()
     untracked = subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard"], cwd=root, text=True).splitlines()
     return sorted(set(tracked + untracked))
 

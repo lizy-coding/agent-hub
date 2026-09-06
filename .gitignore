@@ -21,6 +21,17 @@ htmlcov/
 .execution/
 .integration/
 .decomposition/
+.decomposition-gcode-migration/
+.decomposition-webview-migration/
+plans/gcode-frozen.json
+plans/gcode-result.json
+plans/webview-frozen.json
+plans/webview-result.json
+plans/webview-integration-result.json
+plans/webview-naming-before.json
+plans/webview-naming-frozen.json
+plans/webview-naming-review.json
+workspace/gcode-core-registry.json
 
 # IDE / editor
 .idea/
