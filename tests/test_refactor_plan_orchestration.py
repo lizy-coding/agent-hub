@@ -51,11 +51,29 @@ class RefactorPlanLoaderTest(unittest.TestCase):
             (root / "REFACTOR_PLAN.md").write_text("not json {")
             self.assertIsNone(_load_refactor_plan(root))
 
-    def test_real_flutter_forge_plan_loads_eleven_entries(self):
+    def test_real_flutter_forge_plan_matches_current_work_queue_contract(self):
         entries = _load_refactor_plan(Path("/Users/forest/code/langGraph/flutter_forge"))
-        self.assertEqual(len(entries), 11)
+        self.assertEqual(
+            [entry["id"] for entry in entries],
+            [
+                "module_platform_contract",
+                "responsive_navigation_policy",
+                "platform_plugin_audit",
+                "usb_platform_boundary",
+                "mobile_layout_baseline",
+                "android_host",
+                "android_compatibility_plan",
+                "web_compatibility_boundary",
+                "android_usb_permission_boundary",
+                "module_scaffold_generation",
+                "pc_window_lifecycle_baseline",
+                "pc_build_matrix",
+            ],
+        )
         android_plan = next(entry for entry in entries if entry["id"] == "android_compatibility_plan")
         self.assertEqual(android_plan["status"], "planned")
+        web_plan = next(entry for entry in entries if entry["id"] == "web_compatibility_boundary")
+        self.assertEqual(web_plan["status"], "planned")
         scaffold_plan = next(entry for entry in entries if entry["id"] == "module_scaffold_generation")
         self.assertEqual(scaffold_plan["status"], "completed")
 

@@ -1,0 +1,103 @@
+{
+  "schema": "agent_hub.codex_task.v1",
+  "task_id": "FIX-20260907-refactor-plan-test-drift",
+  "title": "Repair Agent Hub refactor-plan test drift after Web compatibility entry",
+  "status": "pending",
+  "manual_review": true,
+  "objective": "Restore Agent Hub unit-test consistency with the current Flutter Forge generated REFACTOR_PLAN work queue without changing orchestration semantics.",
+  "agent_role": "code executor; Agent Hub repository only; local commit allowed; git push, tag, release, force-push, rebase, and Flutter Forge source edits forbidden",
+  "background": {
+    "repo": "/Users/forest/code/agent-hub",
+    "branch": "main",
+    "host": "macos",
+    "baseline": "HEAD=0f5493845091591320d148200de704578796ab45; origin/main=b127104468b42df62fc83f6e75665bf32b2e578e; workspace clean before task file creation; HEAD ahead of origin/main by 1",
+    "verified_facts": [
+      "python -m unittest discover -s tests currently runs 162 tests and fails exactly one assertion in tests/test_refactor_plan_orchestration.py:56.",
+      "The failing test is named test_real_flutter_forge_plan_loads_eleven_entries and asserts len(entries) == 11.",
+      "Current Flutter Forge REFACTOR_PLAN.md at /Users/forest/code/langGraph/flutter_forge contains 12 work_queue entries because web_compatibility_boundary was added as a planned entry.",
+      "The current Flutter Forge checkout is clean at HEAD=1995cb38f224bd8c24740f6499825da782e4e19f and its quality_gate is 6/6 PASS; do not edit that repository.",
+      "Agent Hub workspace registry refresh returned added=[], removed=[], changed=[flutter_forge], unchanged=[gcode_core], ambiguous=[] and validate_registry returned [].",
+      "Agent Hub shadow benchmark currently reports 5/6 cases passed with SHADOW_002 failed and evidence_coverage=0.75; golden scoring reports ownership_accuracy=0.625, extraction_accuracy=0.75, extraction_target_accuracy=0.3333333333, architecture_disagreement_count=3. These are pre-existing calibration residuals and are not part of this repair unless tests prove a regression.",
+      "Agent Hub has no root AGENTS.md; README.md and source/test files are the governing repository context."
+    ]
+  },
+  "design_decisions": [
+    {
+      "id": "DD-1",
+      "title": "test_assertion_tracks_current_plan_contract",
+      "constraints": [
+        "Repair only the stale test expectation or a narrowly justified test fixture; do not weaken _load_refactor_plan or orchestration production behavior.",
+        "Prefer an explicit expected work_queue ID list or a current count of 12 with assertions for web_compatibility_boundary status=planned and android_compatibility_plan status=planned.",
+        "Do not remove web_compatibility_boundary from Flutter Forge REFACTOR_PLAN.md or generated source merely to satisfy the old test."
+      ]
+    },
+    {
+      "id": "DD-2",
+      "title": "preserve_cross_repository_boundary",
+      "constraints": [
+        "Only /Users/forest/code/agent-hub may be modified.",
+        "Do not modify /Users/forest/code/langGraph/flutter_forge, its .hermes task JSON, generated docs, application source, or quality gates.",
+        "Do not modify benchmark cases, architecture goldens, registry semantics, or the Agent Hub WebView adapter as part of this one-test repair."
+      ]
+    }
+  ],
+  "implementation_steps": [
+    {
+      "step": 1,
+      "action": "preflight",
+      "detail": "Run git status --short --branch, git rev-parse HEAD origin/main, and inspect the failing test plus current Flutter Forge REFACTOR_PLAN.md. Treat this task JSON as expected planning input and stop if unrelated Agent Hub changes exist."
+    },
+    {
+      "step": 2,
+      "action": "repair_test",
+      "detail": "Update tests/test_refactor_plan_orchestration.py so the real Flutter Forge plan assertion matches the current generated plan contract and explicitly validates the planned Web compatibility entry. Keep production orchestration unchanged."
+    },
+    {
+      "step": 3,
+      "action": "targeted_verification",
+      "detail": "Run the targeted RefactorPlanLoaderTest tests, then run the complete Agent Hub unittest suite. Record the exact test counts and any remaining failures; do not classify shadow/golden residuals as fixed by this test change."
+    },
+    {
+      "step": 4,
+      "action": "review_and_commit",
+      "detail": "Inspect git diff --check and git diff. Stage only the focused test change and this task JSON if repository convention requires it. Create one local commit with message test(agent-hub): align refactor plan count. Do not push. Verify git show --name-status HEAD and origin/main remains unchanged."
+    }
+  ],
+  "acceptance_criteria": [
+    "DD-1: the stale eleven-entry assertion is removed or replaced by an explicit current-plan contract assertion including web_compatibility_boundary=planned.",
+    "DD-1: Agent Hub production orchestration source is unchanged.",
+    "DD-2: no file under /Users/forest/code/langGraph/flutter_forge is modified.",
+    "Targeted RefactorPlanLoaderTest tests pass.",
+    "python -m unittest discover -s tests exits 0 with all tests passing.",
+    "git diff --check exits 0.",
+    "One local commit contains only the focused Agent Hub test/task files.",
+    "origin/main remains b127104468b42df62fc83f6e75665bf32b2e578e; no push/tag/release/rebase/force-push occurs."
+  ],
+  "forbidden_changes": [
+    "Do not modify Flutter Forge files or its task JSON.",
+    "Do not modify Agent Hub production source, registry semantics, benchmark cases, architecture goldens, or WebView capability inventory.",
+    "Do not fabricate a green shadow benchmark or golden score.",
+    "Do not delete or downgrade web_compatibility_boundary from the Flutter Forge plan.",
+    "Do not push, tag, release, rebase, force-push, amend prior commits, or mutate GitHub Issues."
+  ],
+  "out_of_scope": [
+    "SHADOW_002 evidence coverage failure",
+    "architecture golden calibration disagreements",
+    "Web runtime implementation",
+    "iOS/Linux support",
+    "Flutter Forge source or generated-doc changes"
+  ],
+  "validation": [
+    "python -m unittest tests.test_refactor_plan_orchestration.RefactorPlanLoaderTest -v",
+    "python -m unittest discover -s tests",
+    "git diff --check",
+    "git show --name-status --format= HEAD",
+    "git status --short --branch",
+    "git rev-parse HEAD origin/main"
+  ],
+  "notes": [
+    "This is a focused Agent Hub test-drift repair, not evidence that the Web target is implemented or supported.",
+    "The task JSON is an expected new planning file during preflight.",
+    "The current Agent Hub working tree is clean before task-file creation; preserve that baseline and keep the task file in the final local commit only if it does not violate repository conventions."
+  ]
+}
