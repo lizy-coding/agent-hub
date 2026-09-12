@@ -173,6 +173,47 @@ def build_program(root: Path, context: dict[str, object]) -> dict[str, object]:
         {"task_id": "android_usb_permission_boundary", "title": "Harden Android USB permission and enumeration fallback", "source_units": ["flutter_forge/apps/flutter_forge"], "target_units": ["flutter_forge/apps/flutter_forge"], "depends_on": ["android_host"], "allowed_operations": ["CREATE", "DEPENDENCY_REWRITE"], "allowed_paths_by_repository": {"flutter_forge": ["apps/flutter_forge/android/app/src/main/kotlin", "apps/flutter_forge/android/app/src/main/AndroidManifest.xml", "apps/flutter_forge/lib/modules/platform/usb_detector", "apps/flutter_forge/test/modules/platform/usb_detector"]}, "acceptance": ["usb_permission_denied_is_observable", "device_enumeration_falls_back_without_crash", "android_usb_channel_contract_tested"], "status": "DONE", "evidence": ["托管仓库 REFACTOR_PLAN marks android_usb_permission_boundary completed", "Android MainActivity reports permission-safe USB enumeration and APK validation passed"]},
         {"task_id": "module_scaffold_generation", "title": "Validate the reusable module scaffold generator", "source_units": ["flutter_forge/tool/module_scaffold.dart"], "target_units": ["flutter_forge/tool/module_scaffold.dart"], "depends_on": ["android_usb_permission_boundary"], "allowed_operations": ["CREATE", "DEPENDENCY_REWRITE"], "allowed_paths_by_repository": {"flutter_forge": ["tool/module_scaffold.dart", "tool/module_scaffold_test.dart", "REFACTOR_PLAN.md", "tool/generate_agent_indexes.js"]}, "execution_instructions": ["Run the scaffold CLI acceptance test.", "Keep preview mode non-mutating and do not register a module automatically.", "Validate generated module contracts through the owning project validators."], "acceptance": ["preview_does_not_write_formal_module", "apply_generates_module_entry_and_learning_page", "generated_analysis_contract_is_valid", "invalid_module_arguments_fail_with_usage_code", "route_registration_remains_explicit"], "status": "DONE", "evidence": ["tool/module_scaffold.dart and tool/module_scaffold_test.dart passed local CLI acceptance", "Agent Hub Worker revalidated the committed scaffold baseline"]},
     ]
+    # Web is an application host, distinct from the native embedded WebView
+    # capability discovered below. Index it only when the checkout contains the
+    # host and its checked release-build contract.
+    web_host = repository_root / "apps/flutter_forge/web"
+    web_build = repository_root / "tool/build_web_release.sh"
+    if web_host.is_dir() and web_build.is_file():
+        capabilities.append({
+            "capability_id": "flutter-web-application-host",
+            "current_owners": [f"{primary}/apps/flutter_forge"],
+            "source_paths": [f"{primary}/apps/flutter_forge/web", f"{primary}/tool/build_web_release.sh"],
+            "consumers": [f"{primary}:web-capable-modules"],
+            "dependencies": ["flutter_web"],
+            "supported_platforms": ["web"],
+            "flutter_dependency": True, "platform_dependency": True,
+            "native_dependency": False, "state_dependency": False,
+            "reuse_scope": "app", "classification": "KEEP_APP_ONLY",
+            "target_package": "apps/flutter_forge",
+            "evidence": ["apps/flutter_forge/web/index.html", "tool/build_web_release.sh"],
+        })
+        app_candidate = next(c for c in candidates if c["package_id"] == "apps/flutter_forge")
+        app_candidate["owned_capabilities"].append("flutter-web-application-host")
+        tasks.append({
+            "task_id": "web_host_readiness",
+            "title": "Register the Flutter Web host and compatibility boundary",
+            "source_units": [f"{primary}/apps/flutter_forge"],
+            "target_units": [f"{primary}/apps/flutter_forge/web"],
+            "depends_on": ["responsive_navigation_policy"],
+            "allowed_operations": [], "allowed_paths_by_repository": {},
+            "acceptance": [
+                "web host directory exists",
+                "checked Web release build is defined",
+                "Web uses in-app navigation",
+                "unsupported modules remain filtered by platform metadata",
+            ],
+            "status": "DONE",
+            "evidence": [
+                "apps/flutter_forge/web/index.html",
+                "tool/build_web_release.sh",
+                "docs/reports/WEB_COMPATIBILITY_REPORT-20260908.md",
+            ],
+        })
     # Discover the integrated WebView contract only when present in this checkout.
     webview_path = "apps/flutter_forge/lib/modules/platform/webview"
     webview_contract = repository_root / webview_path / "AI_ANALYSIS.md"
@@ -280,6 +321,7 @@ def default_allowed_paths(task_id: str, repository: str) -> list[str]:
         "pc_window_lifecycle_baseline": {"flutter_forge": ["apps/flutter_forge/lib/app", "apps/flutter_forge/lib/shared/multi_window", "apps/flutter_forge/test", "apps/flutter_forge/macos", "docs/adr"]},
         "pc_build_matrix": {"flutter_forge": ["apps/flutter_forge/macos", "apps/flutter_forge/windows", "docs/reports"]},
         "android_host_readiness": {"flutter_forge": ["apps/flutter_forge/android", "apps/flutter_forge/pubspec.yaml", "AI_PROJECT_CONTEXT.md", "REFACTOR_PLAN.md"]},
+        "web_host_readiness": {"flutter_forge": ["apps/flutter_forge/web", "apps/flutter_forge/lib/app", "apps/flutter_forge/lib/module_registry", "tool/build_web_release.sh", "docs/reports"]},
     }.get(task_id, {}).get(repository, [])
 
 def architecture_guard(task: dict[str, object], worker: dict[str, object], program: dict[str, object]) -> dict[str, object]:

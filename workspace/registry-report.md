@@ -8,6 +8,8 @@ The `gcode-core` project now uses the dedicated `gcode_core` adapter. At observe
 
 Forge commits `89735f6` and `8a2ce96` integrate and normalize the app-owned `/webview` module for Android, macOS and Windows. The adapter discovers its module contract as `embedded-webview-navigation`, maps `webview_flutter` and `webview_windows` to the app, and records the reachable integration commit as DONE without reopening write permissions. Project-owned types use canonical `WebView*` names; `WebViewFlutterBackend` owns Android/macOS and `WebView2Backend` owns Windows. The upstream `webview_plugin` snapshot is provenance, not another managed runtime repository. Native device acceptance is not inferred from inventory or the module's ready status.
 
+Forge commit `64c9c01` adds the Flutter Web application host, followed by browser compatibility and delivery work through `553af16`. Agent Hub indexes that host separately as `flutter-web-application-host`, owned by `apps/flutter_forge`, with `web_host_readiness` depending on the existing responsive navigation policy. The release graph includes the checked Web build target. This does not add Web support to `embedded-webview-navigation`: WebView remains a native embedded-browser capability and is unavailable in the browser module matrix.
+
 ## Independent G-code ownership (2026-09-05)
 
 `gcode-core` is an independent project (`generic` adapter), whose primary repository is `gcode_core` at `/Users/forest/code/langGraph/gcode_core`. Forge sees that repository as a read-only reference. Its app consumes `https://github.com/lizy-coding/gcode_core.git` pinned to `7a5228126d6e43b0cb9175b035cd2e1701950779`; this is a Git dependency, not a pub.dev release. Older consolidation records below are historical.

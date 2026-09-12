@@ -44,6 +44,16 @@ class FlutterForgeAdapterTest(unittest.TestCase):
             'apps/flutter_forge/android',
             tasks['android_host_readiness']['allowed_paths_by_repository']['flutter_forge'],
         )
+        web_capability = next(
+            capability for capability in program['capabilities']
+            if capability['capability_id'] == 'flutter-web-application-host'
+        )
+        self.assertEqual(web_capability['supported_platforms'], ['web'])
+        self.assertFalse(web_capability['native_dependency'])
+        app = next(candidate for candidate in program['package_candidates'] if candidate['package_id'] == 'apps/flutter_forge')
+        self.assertIn('flutter-web-application-host', app['owned_capabilities'])
+        self.assertEqual(tasks['web_host_readiness']['depends_on'], ['responsive_navigation_policy'])
+        self.assertEqual(tasks['web_host_readiness']['status'], 'DONE')
 
 
 if __name__ == '__main__':

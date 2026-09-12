@@ -150,6 +150,7 @@ Flutter Forge 的 PC 封板与 Android readiness 任务由项目 adapter 冻结�
 - Flutter Forge 约定：安装包由 CI 或本地构建预置到 `<repo>/release/<version>/`，命名 `FlutterForge-<version>-<platform>.<ext>`（apk/aab/dmg/exe/msix/zip/ipa/tar.gz），可选 `SHA256SUMS` 交叉校验；版本默认取 `apps/flutter_forge/pubspec.yaml`。
 - 图只消费预构建的安装包，**从不运行构建**；发布前逐文件重算 sha256 与冻结值比对，路径逃逸、缺失或校验和不匹配都会阻塞。
 - 发布通道是 `forbid_release` 的唯一显式例外（`policies/safety.py::validate_release_command`）：仅允许 `gh release create/upload/view/list`、`gh auth status`、`gh repo view`，且 `--repo` 必须等于冻结仓库；`delete`/`edit`/push/merge 仍被拒绝。凭据来自运维者本人的 `gh auth` 会话，宿主不存储任何 token。
+- 发布工作流所有权固定为 `agent_hub.gateway.release`（`policies/safety.py::validate_release_entrypoint`）。业务仓库的 CI 只能构建/暂存产物，不得直接创建、编辑或上传 Release；发布必须通过 `release-plan` 冻结后再由 `release-run --execute` 进入 `release_hosting` 图。
 - 幂等恢复：tag 已存在时进入 RESUME 模式只补传缺失资产；上传中断以 `PARTIAL_PUBLISH` 阻塞，经 `release-decide` 重试后从断点续传；发布完成后回读 release 校验资产名与大小一致才标记 `PUBLISHED`。
 - release spec（`--spec`）只允许请求 `version`/`tag`/`name`/`notes`/`draft`/`prerelease`/显式 `artifacts`；`github_repo`、`repository_paths` 等 Graph 自有字段一律拒绝。
 

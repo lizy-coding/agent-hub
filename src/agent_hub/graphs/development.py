@@ -131,6 +131,7 @@ _REFACTOR_TARGET_PATHS = {
     "usb_platform_boundary": ["lib/modules/platform/usb_detector"],
     "android_host": ["android/", "pubspec.yaml"],
     "android_host_readiness": ["android/", "pubspec.yaml"],
+    "web_compatibility_boundary": ["web", "lib/app", "lib/module_registry", "lib/modules", "tool/build_web_release.sh"],
     "pc_window_lifecycle_baseline": ["packages/desktop_multi_window", "lib/shared/multi_window", "lib/app/category_navigation"],
     "pc_build_matrix": ["macos", "windows"],
 }
@@ -143,6 +144,7 @@ _REFACTOR_TITLES = {
     "mobile_layout_baseline": "Establish a mobile layout baseline (visual acceptance domain)",
     "responsive_navigation_policy": "Separate mobile in-app navigation from desktop multi-window navigation",
     "android_compatibility_plan": "Coordinate the Android compatibility workstreams",
+    "web_compatibility_boundary": "Maintain the Flutter Web host and browser capability boundary",
     "android_usb_permission_boundary": "Harden Android USB permission and enumeration fallback",
     "module_scaffold_generation": "Validate the reusable module scaffold generator",
     "pc_window_lifecycle_baseline": "Close the PC multi-window lifecycle baseline",

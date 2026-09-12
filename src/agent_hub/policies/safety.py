@@ -12,10 +12,24 @@ class SafetyPolicy:
     forbid_git_push: bool = True
     forbid_git_merge: bool = True
     forbid_release: bool = True
+    require_release_via_agent_hub: bool = True
     forbid_repository_deletion: bool = True
 
 
 DEFAULT_SAFETY_POLICY = SafetyPolicy()
+
+# Release ownership is deliberately explicit: project CI may build and stage
+# artifacts, but publication must enter through the Agent Hub release_hosting
+# graph and its frozen ReleaseProgram.
+RELEASE_WORKFLOW_OWNER = "agent_hub.gateway.release"
+
+
+def validate_release_entrypoint(entrypoint: str) -> dict[str, object]:
+    """Reject project-side release publishers that bypass Agent Hub."""
+    value = str(entrypoint or "").strip()
+    if value != RELEASE_WORKFLOW_OWNER:
+        return _reject("release_must_use_agent_hub", [value])
+    return {"status": "PASS", "owner": RELEASE_WORKFLOW_OWNER}
 
 # The release_hosting graph is the single, explicit exception to
 # ``forbid_release``.  It may publish installer packages to GitHub Releases,

@@ -19,7 +19,7 @@
         "github_repo": "lizy-coding/flutter_forge",
         "tag_prefix": "v",
         "artifact_root": "release",
-        "platforms": ["macos-x64", "windows-x64", "android-arm64"],
+        "platforms": ["macos-x64", "windows-x64", "android-arm64", "web"],
         "android_target_platform": "android-arm64",
         "android_abi": "arm64-v8a",
         "build_matrix": {
@@ -28,6 +28,12 @@
             "working_directory": "apps/flutter_forge",
             "commands": ["flutter build appbundle --release", "flutter build apk --release --target-platform android-arm64 --split-per-abi"],
             "artifacts": ["app-release.aab", "app-arm64-v8a-release.apk"]
+          },
+          "web": {
+            "runner": "ubuntu-latest",
+            "working_directory": "apps/flutter_forge",
+            "commands": ["bash ../../tool/build_web_release.sh"],
+            "artifacts": ["build/web"]
           }
         },
         "default_draft": false,
