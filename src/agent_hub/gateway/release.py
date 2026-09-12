@@ -101,7 +101,7 @@ def plan(server, thread_id=None, spec_path=None, output=print, project_id=None):
         else:
             thread_id = _call("POST", f"{server.rstrip('/')}/threads", {"metadata": _metadata(project)})["thread_id"]
         run = _submit(server, thread_id, {**_graph_payload(project), "release_spec": spec, "execute": False})
-        output(f"Project ID: {project.project_id}\nProgram ID: {project.program_id}\nThread ID: {thread_id}\nRun ID: {run['run_id']}\nGitHub repo: {project.release.github_repo or '<unconfigured>'}\nMode: PLAN_ONLY\nStatus: RELEASE_PLAN_SUBMITTED")
+        output(f"Project ID: {project.project_id}\nProgram ID: {project.program_id}\nThread ID: {thread_id}\nRun ID: {run['run_id']}\nGitHub repo: {project.release.get('github_repo') or '<unconfigured>'}\nMode: PLAN_ONLY\nStatus: RELEASE_PLAN_SUBMITTED")
         return 0
     except (URLError, OSError) as error:
         output(f"DISCONNECTED: {error}")
