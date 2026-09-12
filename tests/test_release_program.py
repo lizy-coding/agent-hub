@@ -28,6 +28,7 @@ class ReleaseProgramTest(unittest.TestCase):
         self.assertEqual(matrix["android-arm64"]["artifacts"], ["app-release.aab", "app-arm64-v8a-release.apk"])
         self.assertEqual(matrix["web"]["commands"], ["bash ../../tool/build_web_release.sh"])
         self.assertEqual(matrix["web"]["artifacts"], ["build/web"])
+        self.assertEqual(load_release_project("flutter-forge").graph_input()["release"]["github_repo"], "lizy-coding/flutter_forge")
 
 
 if __name__ == "__main__":
