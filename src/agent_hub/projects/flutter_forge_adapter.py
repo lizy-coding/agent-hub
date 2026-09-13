@@ -470,6 +470,39 @@ def architecture_guard(task: dict[str, object], worker: dict[str, object], progr
 
 def proposal_inventory(program: dict[str, object], spec: dict[str, object]) -> dict[str, object]:
     """Build a frozen task from tracked-file evidence without touching a worktree."""
+    if spec.get("task_id") == "add-flutter-scene-3d-learning-module":
+        from agent_hub.projects.adapters import GenericProjectAdapter
+
+        paths = [
+            "CONTEXT.md",
+            "docs/adr/0008-flutter-scene-platform-evidence-boundary.md",
+            "pubspec.lock",
+            "tool/generate_agent_indexes.js",
+            "AI_PROJECT_CONTEXT.md",
+            "REFACTOR_PLAN.md",
+            "apps/flutter_forge/pubspec.yaml",
+            "apps/flutter_forge/hook/build.dart",
+            "apps/flutter_forge/flutter_scene_generated/.gitignore",
+            "apps/flutter_forge/macos/Runner/Info.plist",
+            "apps/flutter_forge/windows/runner/main.cpp",
+            "apps/flutter_forge/lib/app/router/app_route_table.dart",
+            "apps/flutter_forge/lib/AI_MODULE_INDEX.md",
+            "apps/flutter_forge/lib/modules/AI_ANALYSIS.md",
+            "apps/flutter_forge/lib/modules/ui/AI_ANALYSIS.md",
+            "apps/flutter_forge/lib/modules/ui/flutter_scene_3d",
+            "apps/flutter_forge/test/modules/ui/flutter_scene_3d",
+        ]
+        task = GenericProjectAdapter().proposal_inventory(
+            program,
+            {**spec, "candidate_paths": paths},
+        )
+        task["evidence"] = [
+            "Flutter Forge generator owns module registration and agent documents",
+            "Flutter 3.47.2 satisfies flutter_scene 0.23.0 minimum SDK",
+            "macOS admission and unverified-platform fallback are frozen explicitly",
+        ]
+        task["target_creation_allowed"] = True
+        return task
     if spec.get("task_id") == "normalize-webview-naming":
         from agent_hub.projects.adapters import GenericProjectAdapter
         primary = str(program.get("primary_repository_id") or "flutter_forge")
