@@ -230,7 +230,8 @@ def build_release_hosting_graph():
                 return {**_block(program, "RELEASE_CREATE_FAILED", f"gh release create failed: {str(created.get('stderr', ''))[-300:]}", tag=tag), "publish_result": {"status": "RELEASE_CREATE_FAILED", "tag": tag}}
         artifacts = []
         uploaded: list[str] = []
-        for artifact in release.get("artifacts", []):
+        frozen_artifacts = list(release.get("artifacts", []))
+        for index, artifact in enumerate(frozen_artifacts):
             artifact = dict(artifact)
             if artifact.get("status") == "UPLOADED":
                 artifacts.append(artifact)
@@ -241,6 +242,7 @@ def build_release_hosting_graph():
             if not upload["ok"]:
                 artifact["status"] = "FAILED"
                 artifacts.append(artifact)
+                artifacts.extend(dict(pending) for pending in frozen_artifacts[index + 1:])
                 program["release"] = {**release, "artifacts": artifacts}
                 LOGGER.warning("PARTIAL_PUBLISH tag=%s asset=%s", tag, artifact.get("asset_name"))
                 return {**_block(program, "PARTIAL_PUBLISH", f"asset upload failed for {artifact.get('asset_name')}: {str(upload.get('stderr', ''))[-300:]}", tag=tag, uploaded=uploaded, failed=str(artifact.get("asset_name"))), "publish_result": {"status": "PARTIAL_PUBLISH", "tag": tag, "uploaded": uploaded}}

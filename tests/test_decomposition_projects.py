@@ -74,6 +74,7 @@ class DecompositionProjectConfigTest(unittest.TestCase):
         self.assertEqual(project.repository_paths["product"], repository.resolve())
         self.assertEqual(project.program_id, "product-decomposition-program")
         self.assertEqual(project.refactor_program_id, "product-refactor-program")
+        self.assertEqual(project.delivery_stage, {})
 
     def test_unknown_project_is_rejected(self):
         with tempfile.TemporaryDirectory() as raw:

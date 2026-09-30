@@ -15,6 +15,14 @@
       "refactor_program_id": "flutter-forge-refactor-program",
       "snapshot_namespace": "flutter-forge",
       "workspace_config": "workspace/config.json",
+      "delivery_stage": {
+        "stage_id": "cross-platform-foundation-v1",
+        "status": "COMPLETE",
+        "completed_on": "2026-09-12",
+        "supported_platforms": ["windows", "macos", "android", "web"],
+        "next_stage": "feature-expansion",
+        "next_stage_status": "READY_FOR_PROPOSALS"
+      },
       "release": {
         "github_repo": "lizy-coding/flutter_forge",
         "tag_prefix": "v",
@@ -23,6 +31,26 @@
         "android_target_platform": "android-arm64",
         "android_abi": "arm64-v8a",
         "build_matrix": {
+          "macos-x64": {
+            "runner": "macos-latest",
+            "working_directory": "apps/flutter_forge",
+            "commands": ["flutter build macos --release"],
+            "package_format": "DMG",
+            "package_commands": [
+              "Copy Flutter Forge.app into a DMG staging directory and add an Applications symlink",
+              "hdiutil create -volname 'Flutter Forge' -srcfolder <staging> -fs HFS+ -format UDZO -ov <dmg>",
+              "hdiutil verify <dmg>"
+            ],
+            "artifacts": ["release-assets/FlutterForge-<version>-macos-x64.dmg"],
+            "code_signed": false,
+            "notarized": false
+          },
+          "windows-x64": {
+            "runner": "windows-latest",
+            "working_directory": "apps/flutter_forge",
+            "commands": ["flutter build windows --release"],
+            "artifacts": ["build/windows/x64/runner/Release"]
+          },
           "android-arm64": {
             "runner": "ubuntu-latest",
             "working_directory": "apps/flutter_forge",

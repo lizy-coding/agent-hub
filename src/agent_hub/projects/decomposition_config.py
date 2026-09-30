@@ -25,6 +25,7 @@ class DecompositionProjectConfig(BaseModel):
     primary_repository_id: str
     repository_paths: dict[str, Path] = Field(default_factory=dict)
     snapshot_namespace: str
+    delivery_stage: dict[str, object] = Field(default_factory=dict)
 
     @model_validator(mode="after")
     def normalize(self) -> "DecompositionProjectConfig":
@@ -56,6 +57,7 @@ class DecompositionProjectConfig(BaseModel):
                 key: str(value) for key, value in self.repository_paths.items()
             },
             "snapshot_namespace": self.snapshot_namespace,
+            "delivery_stage": dict(self.delivery_stage),
         }
 
 
@@ -97,4 +99,5 @@ def load_decomposition_project(
             for repository in runtime.repositories
         },
         snapshot_namespace=str(entry.get("snapshot_namespace") or selected),
+        delivery_stage=dict(entry.get("delivery_stage") or {}),
     )

@@ -68,6 +68,14 @@ class RefactorPlanLoaderTest(unittest.TestCase):
                 "module_scaffold_generation",
                 "pc_window_lifecycle_baseline",
                 "pc_build_matrix",
+                "flutter_scene_3d_macos_baseline",
+                "flutter_scene_3d_camera_motion",
+                "flutter_scene_3d_scene_picking",
+                "flutter_scene_3d_windows_admission",
+                "flutter_scene_3d_android_view_only_admission",
+                "android_online_video_playback",
+                "android_file_picker_admission",
+                "platform_snapshot_guarded_routes",
             ],
         )
         android_plan = next(entry for entry in entries if entry["id"] == "android_compatibility_plan")
@@ -76,6 +84,16 @@ class RefactorPlanLoaderTest(unittest.TestCase):
         self.assertEqual(web_plan["status"], "completed")
         scaffold_plan = next(entry for entry in entries if entry["id"] == "module_scaffold_generation")
         self.assertEqual(scaffold_plan["status"], "completed")
+        scene_macos = next(entry for entry in entries if entry["id"] == "flutter_scene_3d_macos_baseline")
+        self.assertEqual(scene_macos["status"], "completed")
+        scene_android = next(entry for entry in entries if entry["id"] == "flutter_scene_3d_android_view_only_admission")
+        self.assertEqual(scene_android["status"], "pending")
+        android_video = next(entry for entry in entries if entry["id"] == "android_online_video_playback")
+        self.assertEqual(android_video["status"], "pending")
+        android_file_picker = next(entry for entry in entries if entry["id"] == "android_file_picker_admission")
+        self.assertEqual(android_file_picker["status"], "pending")
+        platform_snapshot = next(entry for entry in entries if entry["id"] == "platform_snapshot_guarded_routes")
+        self.assertEqual(platform_snapshot["status"], "completed")
 
 
 class RefactorPlanTaskGenerationTest(unittest.TestCase):

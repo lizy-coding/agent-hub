@@ -21,9 +21,11 @@ class ReleaseProgramTest(unittest.TestCase):
         self.assertEqual(validate_release_entrypoint("agent_hub.gateway.release")["status"], "PASS")
         self.assertEqual(validate_release_entrypoint("github_actions")["reason"], "release_must_use_agent_hub")
 
-    def test_flutter_forge_build_matrix_includes_android_and_web(self):
+    def test_flutter_forge_build_matrix_includes_all_stage_one_platforms(self):
         matrix = load_release_project("flutter-forge").graph_input()["release"]["build_matrix"]
-        self.assertEqual(list(matrix), ["android-arm64", "web"])
+        self.assertEqual(list(matrix), ["macos-x64", "windows-x64", "android-arm64", "web"])
+        self.assertEqual(matrix["macos-x64"]["commands"], ["flutter build macos --release"])
+        self.assertEqual(matrix["windows-x64"]["commands"], ["flutter build windows --release"])
         self.assertIn("--target-platform android-arm64", matrix["android-arm64"]["commands"][1])
         self.assertEqual(matrix["android-arm64"]["artifacts"], ["app-release.aab", "app-arm64-v8a-release.apk"])
         self.assertEqual(matrix["web"]["commands"], ["bash ../../tool/build_web_release.sh"])

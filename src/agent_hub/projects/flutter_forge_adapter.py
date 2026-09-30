@@ -18,10 +18,70 @@ def _pubspec(path: Path) -> tuple[str, list[str]]:
     return (name.group(1) if name else path.parent.name, dependencies)
 
 
+def _project_work_queue(repository_root: Path) -> list[dict[str, object]]:
+    """Project the generator-owned Forge queue without granting execution scope."""
+    plan = repository_root / "REFACTOR_PLAN.md"
+    if not plan.is_file():
+        return []
+    payload = json.loads(plan.read_text(encoding="utf-8"))
+    entries = payload.get("work_queue", [])
+    if not isinstance(entries, list):
+        return []
+    projected = []
+    for entry in entries:
+        if not isinstance(entry, dict) or not entry.get("id"):
+            continue
+        projected.append({
+            "task_id": str(entry["id"]),
+            "priority": entry.get("priority"),
+            "project_status": str(entry.get("status") or "unknown"),
+            "depends_on": list(entry.get("depends_on") or []),
+            "targets": list(entry.get("targets") or []),
+            "acceptance": list(entry.get("acceptance") or []),
+            "evidence": list(entry.get("evidence") or []),
+            "allowed_paths_by_repository": {},
+            "execution_authority": "FROZEN_PROPOSAL_REQUIRED",
+        })
+    return projected
+
+
+def _module_platforms(contract: dict[str, object]) -> list[str]:
+    """Read both the legacy platform list and the current inclusion/exclusion model."""
+    support = contract.get("platform_support")
+    if isinstance(support, dict):
+        targets = list(support.get("target_platforms") or [])
+        excluded = set(support.get("excluded_platforms") or [])
+        return [platform for platform in targets if platform not in excluded]
+    return list(contract.get("supported_platforms") or [])
+
+
+def _repository_observation(repository_root: Path) -> dict[str, object]:
+    """Record the exact checkout observed by inventory without changing it."""
+    try:
+        revision = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=repository_root, text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+        status = subprocess.check_output(
+            ["git", "status", "--short"], cwd=repository_root, text=True,
+            stderr=subprocess.DEVNULL,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return {"revision": None, "worktree_status": "UNKNOWN", "changed_paths": []}
+    changed_paths = [line[3:] for line in status.splitlines() if len(line) > 3]
+    return {
+        "revision": revision,
+        "worktree_status": "DIRTY" if changed_paths else "CLEAN",
+        "changed_paths": changed_paths,
+    }
+
+
 def build_program(root: Path, context: dict[str, object]) -> dict[str, object]:
     primary = str(context.get("primary_repository_id") or "flutter_forge")
     paths = context.get("repository_paths")
     repository_root = Path(str(paths.get(primary))) if isinstance(paths, dict) and paths.get(primary) else root / primary
+    project_work_queue = _project_work_queue(repository_root)
+    repository_observation = _repository_observation(repository_root)
     repositories = []
     manifest = repository_root / "pubspec.yaml"
     if manifest.is_file():
@@ -173,6 +233,126 @@ def build_program(root: Path, context: dict[str, object]) -> dict[str, object]:
         {"task_id": "android_usb_permission_boundary", "title": "Harden Android USB permission and enumeration fallback", "source_units": ["flutter_forge/apps/flutter_forge"], "target_units": ["flutter_forge/apps/flutter_forge"], "depends_on": ["android_host"], "allowed_operations": ["CREATE", "DEPENDENCY_REWRITE"], "allowed_paths_by_repository": {"flutter_forge": ["apps/flutter_forge/android/app/src/main/kotlin", "apps/flutter_forge/android/app/src/main/AndroidManifest.xml", "apps/flutter_forge/lib/modules/platform/usb_detector", "apps/flutter_forge/test/modules/platform/usb_detector"]}, "acceptance": ["usb_permission_denied_is_observable", "device_enumeration_falls_back_without_crash", "android_usb_channel_contract_tested"], "status": "DONE", "evidence": ["托管仓库 REFACTOR_PLAN marks android_usb_permission_boundary completed", "Android MainActivity reports permission-safe USB enumeration and APK validation passed"]},
         {"task_id": "module_scaffold_generation", "title": "Validate the reusable module scaffold generator", "source_units": ["flutter_forge/tool/module_scaffold.dart"], "target_units": ["flutter_forge/tool/module_scaffold.dart"], "depends_on": ["android_usb_permission_boundary"], "allowed_operations": ["CREATE", "DEPENDENCY_REWRITE"], "allowed_paths_by_repository": {"flutter_forge": ["tool/module_scaffold.dart", "tool/module_scaffold_test.dart", "REFACTOR_PLAN.md", "tool/generate_agent_indexes.js"]}, "execution_instructions": ["Run the scaffold CLI acceptance test.", "Keep preview mode non-mutating and do not register a module automatically.", "Validate generated module contracts through the owning project validators."], "acceptance": ["preview_does_not_write_formal_module", "apply_generates_module_entry_and_learning_page", "generated_analysis_contract_is_valid", "invalid_module_arguments_fail_with_usage_code", "route_registration_remains_explicit"], "status": "DONE", "evidence": ["tool/module_scaffold.dart and tool/module_scaffold_test.dart passed local CLI acceptance", "Agent Hub Worker revalidated the committed scaffold baseline"]},
     ]
+    # Refresh platform-module admission from generator-owned module contracts.
+    # This keeps the control-plane index aligned while preserving historical
+    # implementation tasks as evidence rather than current route authority.
+    video_path = "apps/flutter_forge/lib/modules/platform/online_video_player"
+    video_contract = repository_root / video_path / "AI_ANALYSIS.md"
+    if video_contract.is_file():
+        contract = json.loads(video_contract.read_text(encoding="utf-8"))
+        video_capability = next(
+            capability for capability in capabilities
+            if capability["capability_id"] == "windows-resilient-online-video-playback"
+        )
+        video_platforms = _module_platforms(contract)
+        video_capability.update(
+            dependencies=list(contract.get("depends", [])),
+            supported_platforms=[platform for platform in video_platforms if platform != "web"],
+            supports_web="web" in video_platforms or bool(contract.get("supports_web", False)),
+            route=contract.get("route"),
+            evidence=[f"{video_path}/AI_ANALYSIS.md"],
+        )
+        if "android" in video_capability["supported_platforms"]:
+            tasks.append({
+                "task_id": "android_online_video_playback",
+                "title": "Track Android online-video admission",
+                "source_units": [f"{primary}/{video_path}"],
+                "target_units": [f"{primary}/{video_path}"],
+                "depends_on": ["android_host_readiness"],
+                "allowed_operations": [], "allowed_paths_by_repository": {},
+                "status": "PARTIAL",
+                "evidence": ["Android route and compact widget contracts are present; device playback evidence remains pending"],
+            })
+    usb_path = "apps/flutter_forge/lib/modules/platform/usb_detector"
+    usb_contract = repository_root / usb_path / "AI_ANALYSIS.md"
+    if usb_contract.is_file():
+        contract = json.loads(usb_contract.read_text(encoding="utf-8"))
+        usb_platforms = _module_platforms(contract)
+        capabilities.append({
+            "capability_id": "usb-device-observation",
+            "current_owners": [f"{primary}/{usb_path}"],
+            "source_paths": [f"{primary}/{usb_path}"],
+            "consumers": [f"{primary}:usb_detector"],
+            "dependencies": list(contract.get("depends", [])),
+            "supported_platforms": usb_platforms,
+            "route": contract.get("route"),
+            "availability": "DISABLED_PENDING_WORKFLOW" if not usb_platforms else "AVAILABLE",
+            "flutter_dependency": True, "platform_dependency": True,
+            "native_dependency": True, "state_dependency": True,
+            "reuse_scope": "app", "classification": "KEEP_APP_ONLY",
+            "target_package": "apps/flutter_forge",
+            "evidence": [f"{usb_path}/AI_ANALYSIS.md", "REFACTOR_PLAN.md"],
+        })
+        app_candidate = next(c for c in candidates if c["package_id"] == "apps/flutter_forge")
+        app_candidate["owned_capabilities"].append("usb-device-observation")
+        if not usb_platforms:
+            usb_task = next(task for task in tasks if task["task_id"] == "android_usb_permission_boundary")
+            usb_task.update(
+                status="SUPERSEDED",
+                allowed_operations=[],
+                allowed_paths_by_repository={},
+                evidence=["Current module contract admits no host routes; a concrete OTG workflow is required before re-admission"],
+            )
+    file_picker_path = "apps/flutter_forge/lib/modules/platform/file_picker"
+    file_picker_contract = repository_root / file_picker_path / "AI_ANALYSIS.md"
+    if file_picker_contract.is_file():
+        contract = json.loads(file_picker_contract.read_text(encoding="utf-8"))
+        support = dict(contract.get("platform_support") or {})
+        capabilities.append({
+            "capability_id": "cross-platform-file-picker-learning-flow",
+            "current_owners": [f"{primary}/{file_picker_path}"],
+            "source_paths": [f"{primary}/{file_picker_path}"],
+            "consumers": [f"{primary}:file_picker"],
+            "dependencies": list(contract.get("depends", [])),
+            "target_platforms": list(support.get("target_platforms", [])),
+            "excluded_platforms": list(support.get("excluded_platforms", [])),
+            "route": contract.get("route"),
+            "flutter_dependency": True, "platform_dependency": True,
+            "native_dependency": True, "state_dependency": True,
+            "reuse_scope": "app", "classification": "KEEP_APP_ONLY",
+            "target_package": "apps/flutter_forge",
+            "evidence": [f"{file_picker_path}/AI_ANALYSIS.md"],
+        })
+        app_candidate = next(c for c in candidates if c["package_id"] == "apps/flutter_forge")
+        app_candidate["owned_capabilities"].append("cross-platform-file-picker-learning-flow")
+    registry_path = "apps/flutter_forge/lib/module_registry"
+    registry_contract = repository_root / registry_path / "AI_ANALYSIS.md"
+    if registry_contract.is_file():
+        contract = json.loads(registry_contract.read_text(encoding="utf-8"))
+        capabilities.append({
+            "capability_id": "immutable-platform-snapshot-and-route-guard",
+            "current_owners": [f"{primary}/{registry_path}", f"{primary}/apps/flutter_forge/lib/app/router"],
+            "source_paths": [f"{primary}/{registry_path}", f"{primary}/apps/flutter_forge/lib/app/router"],
+            "consumers": [f"{primary}:module_routes"],
+            "dependencies": list(contract.get("depends", [])),
+            "flutter_dependency": True, "platform_dependency": True,
+            "native_dependency": False, "state_dependency": True,
+            "reuse_scope": "app", "classification": "KEEP_APP_ONLY",
+            "target_package": "apps/flutter_forge",
+            "evidence": [f"{registry_path}/AI_ANALYSIS.md", "REFACTOR_PLAN.md"],
+        })
+        app_candidate = next(c for c in candidates if c["package_id"] == "apps/flutter_forge")
+        app_candidate["owned_capabilities"].append("immutable-platform-snapshot-and-route-guard")
+    app_contract_path = "apps/flutter_forge/lib/app/AI_ANALYSIS.md"
+    app_contract = repository_root / app_contract_path
+    if app_contract.is_file():
+        contract = json.loads(app_contract.read_text(encoding="utf-8"))
+        capabilities.append({
+            "capability_id": "adaptive-creator-navigation-shell",
+            "current_owners": [f"{primary}/apps/flutter_forge/lib/app"],
+            "source_paths": [f"{primary}/apps/flutter_forge/lib/app"],
+            "consumers": [f"{primary}:application_shell"],
+            "dependencies": list(contract.get("depends", [])),
+            "entrypoints": list(contract.get("entrypoints", [])),
+            "owned_contracts": list(contract.get("owns", [])),
+            "flutter_dependency": True, "platform_dependency": True,
+            "native_dependency": False, "state_dependency": True,
+            "reuse_scope": "app", "classification": "KEEP_APP_ONLY",
+            "target_package": "apps/flutter_forge",
+            "evidence": [app_contract_path, "docs/adr/0012-adaptive-navigation-shell.md"],
+        })
+        app_candidate = next(c for c in candidates if c["package_id"] == "apps/flutter_forge")
+        app_candidate["owned_capabilities"].append("adaptive-creator-navigation-shell")
     # Web is an application host, distinct from the native embedded WebView
     # capability discovered below. Index it only when the checkout contains the
     # host and its checked release-build contract.
@@ -214,6 +394,43 @@ def build_program(root: Path, context: dict[str, object]) -> dict[str, object]:
                 "docs/reports/WEB_COMPATIBILITY_REPORT-20260908.md",
             ],
         })
+    delivery_stage = dict(context.get("delivery_stage") or {})
+    supported_platforms = list(delivery_stage.get("supported_platforms") or [])
+    if delivery_stage.get("status") == "COMPLETE" and supported_platforms:
+        tasks.extend([
+            {
+                "task_id": "cross_platform_foundation_v1",
+                "title": "Freeze the stage-one cross-platform foundation",
+                "source_units": [f"{primary}/apps/flutter_forge"],
+                "target_units": [f"{primary}/apps/flutter_forge"],
+                "depends_on": ["pc_build_matrix", "android_host_readiness", "web_host_readiness"],
+                "allowed_operations": [],
+                "allowed_paths_by_repository": {},
+                "acceptance": [f"{platform}_support_baseline" for platform in supported_platforms],
+                "status": "DONE",
+                "evidence": [
+                    "workspace/projects.json delivery_stage is COMPLETE",
+                    "platform-specific build, navigation and unavailable-state contracts remain authoritative",
+                ],
+            },
+            {
+                "task_id": "feature_expansion_intake",
+                "title": "Accept the next scoped feature proposal",
+                "source_units": [f"{primary}/apps/flutter_forge"],
+                "target_units": [f"{primary}/apps/flutter_forge"],
+                "depends_on": ["cross_platform_foundation_v1"],
+                "allowed_operations": [],
+                "allowed_paths_by_repository": {},
+                "acceptance": [
+                    "feature capability and owner are named",
+                    "supported and unavailable platform behavior is explicit",
+                    "candidate paths and regression tests are frozen before execution",
+                    "release and device evidence boundaries are preserved",
+                ],
+                "status": "PLANNED",
+                "evidence": ["Next-stage intake is proposal-only and grants no repository write scope"],
+            },
+        ])
     # Discover the integrated WebView contract only when present in this checkout.
     webview_path = "apps/flutter_forge/lib/modules/platform/webview"
     webview_contract = repository_root / webview_path / "AI_ANALYSIS.md"
@@ -251,6 +468,89 @@ def build_program(root: Path, context: dict[str, object]) -> dict[str, object]:
                 "evidence": [f"git:{commits}", f"{webview_path}/AI_ANALYSIS.md"],
                 "native_runtime_acceptance": "NOT_VERIFIED_BY_INVENTORY",
             })
+    # Flutter Scene is an app-owned teaching capability.  Its generated module
+    # contract is the source of truth for platform admission; the proposal
+    # contract below only freezes write scope and must not become the index.
+    scene_path = "apps/flutter_forge/lib/modules/ui/flutter_scene_3d"
+    scene_contract = repository_root / scene_path / "AI_ANALYSIS.md"
+    if scene_contract.is_file():
+        contract = json.loads(scene_contract.read_text(encoding="utf-8"))
+        scene_dependencies = list(contract.get("depends", []))
+        scene_platforms = _module_platforms(contract)
+        capabilities.append({
+            "capability_id": "interactive-flutter-scene-3d-viewer",
+            "current_owners": [f"{primary}/{scene_path}"],
+            "source_paths": [f"{primary}/{scene_path}"],
+            "consumers": [f"{primary}:flutter_scene_3d"],
+            "dependencies": scene_dependencies,
+            "supported_platforms": scene_platforms,
+            "route": contract.get("route"),
+            "interaction_modes": {
+                "macOS": "interactive",
+                "windows": "interactive",
+                "android": "view_only",
+            },
+            "flutter_dependency": True,
+            "platform_dependency": True,
+            "native_dependency": True,
+            "state_dependency": True,
+            "reuse_scope": "app",
+            "classification": "KEEP_APP_ONLY",
+            "target_package": "apps/flutter_forge",
+            "evidence": [
+                f"{scene_path}/AI_ANALYSIS.md",
+                "docs/adr/0008-flutter-scene-platform-evidence-boundary.md",
+                "REFACTOR_PLAN.md",
+            ],
+        })
+        app_candidate = next(c for c in candidates if c["package_id"] == "apps/flutter_forge")
+        app_candidate["owned_capabilities"].append("interactive-flutter-scene-3d-viewer")
+        app_candidate["dependencies"] = sorted(set(
+            app_candidate["dependencies"]
+            + [dependency for dependency in scene_dependencies if dependency in {"flutter_scene", "vector_math"}]
+        ))
+        tasks.extend([
+            {
+                "task_id": "flutter_scene_3d_macos_baseline",
+                "title": "Index the accepted macOS Flutter Scene baseline",
+                "source_units": [f"{primary}/{scene_path}"],
+                "target_units": [f"{primary}/{scene_path}"],
+                "depends_on": ["feature_expansion_intake"],
+                "allowed_operations": [], "allowed_paths_by_repository": {},
+                "status": "DONE",
+                "evidence": ["REFACTOR_PLAN marks the macOS baseline completed"],
+            },
+            {
+                "task_id": "flutter_scene_3d_interaction_acceptance",
+                "title": "Track camera, picking and rendered interaction acceptance",
+                "source_units": [f"{primary}/{scene_path}"],
+                "target_units": [f"{primary}/{scene_path}"],
+                "depends_on": ["flutter_scene_3d_macos_baseline"],
+                "allowed_operations": [], "allowed_paths_by_repository": {},
+                "status": "PARTIAL",
+                "evidence": ["Automated camera and selection coverage exists; macOS visual pointer acceptance remains pending"],
+            },
+            {
+                "task_id": "flutter_scene_3d_windows_admission",
+                "title": "Track Windows Flutter Scene admission",
+                "source_units": [f"{primary}/{scene_path}"],
+                "target_units": [f"{primary}/{scene_path}"],
+                "depends_on": ["flutter_scene_3d_interaction_acceptance"],
+                "allowed_operations": [], "allowed_paths_by_repository": {},
+                "status": "PARTIAL",
+                "evidence": ["Catalog and automated desktop flow are present; Windows host, GPU, DPI and installer evidence remain pending"],
+            },
+            {
+                "task_id": "flutter_scene_3d_android_view_only_admission",
+                "title": "Track Android view-only Flutter Scene admission",
+                "source_units": [f"{primary}/{scene_path}"],
+                "target_units": [f"{primary}/{scene_path}"],
+                "depends_on": ["flutter_scene_3d_macos_baseline"],
+                "allowed_operations": [], "allowed_paths_by_repository": {},
+                "status": "PARTIAL",
+                "evidence": ["View-only policy and widget contracts are present; Android host build and GPU first-frame evidence remain pending"],
+            },
+        ])
     # gcode_core is independently maintained; Forge only consumes its Git API.
     upstream = (paths or {}).get("gcode_core") if isinstance(paths, dict) else None
     if upstream:
@@ -278,6 +578,24 @@ def build_program(root: Path, context: dict[str, object]) -> dict[str, object]:
         "package_candidates": candidates,
         "target_dependency_graph": {"nodes": [item["package_id"] for item in candidates] + (["gcode_core"] if upstream else []), "edges": [["apps/flutter_forge", item] for item in (["gcode_core"] if upstream else ["packages/gcode_core"]) + ["packages/file_picker_bridge", "packages/flutter_study_learning", "packages/flutter_ioc_core"]], "cycles": []},
         "migration_tasks": tasks,
+        "project_work_queue": project_work_queue,
+        "orchestration_sync": {
+            "source": "REFACTOR_PLAN.md",
+            "source_revision": repository_observation["revision"],
+            "source_worktree_status": repository_observation["worktree_status"],
+            "source_changed_paths": repository_observation["changed_paths"],
+            "task_count": len(project_work_queue),
+            "completed": [task["task_id"] for task in project_work_queue if task["project_status"] == "completed"],
+            "open": [task["task_id"] for task in project_work_queue if task["project_status"] != "completed"],
+            "execution_authority": "FROZEN_PROPOSAL_REQUIRED",
+        },
+        "delivery_stage": delivery_stage,
+        "next_phase": {
+            "phase_id": str(delivery_stage.get("next_stage") or "feature-expansion"),
+            "status": str(delivery_stage.get("next_stage_status") or "READY_FOR_PROPOSALS"),
+            "intake_task_id": "feature_expansion_intake",
+            "execution_requires_frozen_proposal": True,
+        },
         "human_decisions": [],
         "integration_head": None,
         "execution_mode": "PLAN_ONLY",

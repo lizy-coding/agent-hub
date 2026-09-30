@@ -1,8 +1,34 @@
 # Workspace Registry P2 report
 
+## macOS release asset policy (2026-09-29)
+
+Flutter Forge macOS releases now use a compressed HFS+ DMG with an `Applications` shortcut. The Release workflow names the file `FlutterForge-<version>-macos-x64.dmg`, verifies it with `hdiutil verify`, and uploads it as the `flutter_forge-macos-x64.dmg` Actions artifact. Agent Hub's staging convention remains `release/<version>/`; the matching macOS asset is the versioned DMG. Builds are unsigned and not notarized until a Developer ID signing identity is configured.
+
+## Cross-platform foundation v1 (2026-09-12)
+
+Flutter Forge has entered the `cross-platform-foundation-v1` baseline for Windows, macOS, Android and Web. Agent Hub now carries the four targets in one release build matrix and freezes the existing host, navigation, capability-filtering and platform fallback work as a completed foundation milestone. This is a support baseline, not a claim that every device-specific extension has passed on every physical device: Android physical USB/keyboard behavior and Web hosted-path/cold-trace work retain their own evidence boundaries.
+
+The next stage is `feature-expansion` with status `READY_FOR_PROPOSALS`. Its intake task is deliberately `PLANNED` with no writable repository paths. Each new feature must first name its capability owner, supported/unavailable platforms, candidate paths, regression tests and release evidence before a concrete proposal may become executable.
+
+### Flutter Scene 3D capability refresh (2026-09-18)
+
+The current Forge checkout at `7972ffb` has advanced beyond the original module-creation proposal. Agent Hub now discovers `interactive-flutter-scene-3d-viewer` from the module-owned `AI_ANALYSIS.md`, including its `/flutter-scene-3d` route, `flutter_scene` and `vector_math` dependencies, and admitted Android, macOS and Windows platforms. The application remains the sole owner; this capability is not promoted to a reusable package.
+
+The acceptance index intentionally separates availability from proof. The macOS cuboid baseline is complete. Camera/picking behavior has automated coverage but retains macOS visual pointer acceptance; Windows catalog and desktop-flow coverage retain Windows host/GPU/DPI/installer evidence; Android is admitted only in view-only mode and retains host-build/GPU-first-frame evidence. These three open boundaries are indexed as `PARTIAL`, grant no write paths, and must not be reported as full native-device passes.
+
+The same refresh records the current platform-module boundary: online video now advertises Android, macOS, Windows and Web, but Android remains `PARTIAL` until real playback evidence exists. USB remains indexed as an app-owned capability while its generated contract admits no host routes; the older Android permission-boundary task is therefore `SUPERSEDED`, not evidence that the current USB route is available.
+
+### Orchestration projection refresh (2026-09-22)
+
+Agent Hub now projects all 20 entries from Forge's generator-owned `REFACTOR_PLAN.md` into `project_work_queue`. This projection carries priorities, project statuses, dependencies, targets, acceptance criteria and evidence, but grants no repository paths: every executable change still requires a separately frozen proposal. The current additions are Android file-picker admission (`pending`) and immutable platform-snapshot/guarded routes (`completed`).
+
+The capability inventory also reads the current file-picker, module-registry and application contracts. It records Android file picking while preserving the explicit iOS exclusion, the process-immutable platform snapshot and stable guarded routes, and the adaptive creator/navigation shell described by ADR 0012. The shell, refined learning home and search keyboard shortcut are committed through Forge revision `9019c1c`; inventory records the exact source revision and clean/dirty state without promoting application code to completed device evidence.
+
 ## G-code GPU project inventory
 
-The `gcode-core` project now uses the dedicated `gcode_core` adapter. At observed revision `5d7e92730147ef620ccc115d35933155cfaa33f3`, its root Flutter package owns parsing and trajectory preview; `example` consumes that package. Inventory reads the Flutter SDK minimum (currently 3.47.2), Flutter GPU dependency and shaderbundle asset from the manifest. It creates no automatic migration tasks and does not promote inventory to native runtime acceptance. Forge retains its separately pinned Git dependency until an explicit dependency update is requested.
+The `gcode-core` project uses the dedicated `gcode_core` adapter. At committed revision `e219cd1`, the repository has moved beyond the earlier single "parsing and trajectory preview" inventory: Flutter GPU is the sole renderer, the example owns its extracted session/playback controller and adaptive UI, Android has a host and build lane, and CI separates quality, Android, macOS, and platform-contract checks. The adapter therefore indexes parsing/toolpath modeling, GPU rendering, and example session playback as distinct capabilities while keeping the root package as their canonical reusable owner.
+
+The current checkout also contains an uncommitted platform-contract tightening. Agent Hub observes it without treating it as committed evidence: Android is API 29+ and ARM64-only, with an ARM64 APK/ABI check in progress. macOS retains durable GPU runtime evidence and is indexed as `RUNTIME_VALIDATED`; Android is `BUILD_READY_RUNTIME_PENDING` until API 29/API 35 ARM64 device runs establish picker behavior, GPU first frame, and frame/memory measurements. iOS, Linux, Windows, and Web remain unsupported. Both platform tasks are plan-only and grant no write paths; inventory must not promote a successful build to native runtime acceptance. Forge retains its separately pinned Git dependency until an explicit dependency update is requested.
 
 ## WebView module inventory (2026-09-06)
 
@@ -12,7 +38,7 @@ Forge commit `64c9c01` adds the Flutter Web application host, followed by browse
 
 ## Independent G-code ownership (2026-09-05)
 
-`gcode-core` is an independent project (`generic` adapter), whose primary repository is `gcode_core` at `/Users/forest/code/langGraph/gcode_core`. Forge sees that repository as a read-only reference. Its app consumes `https://github.com/lizy-coding/gcode_core.git` pinned to `7a5228126d6e43b0cb9175b035cd2e1701950779`; this is a Git dependency, not a pub.dev release. Older consolidation records below are historical.
+`gcode-core` is an independent project (dedicated `gcode_core` adapter), whose primary repository is `gcode_core` at `/Users/forest/code/langGraph/gcode_core`. Forge sees that repository as a read-only reference. Its app consumes `https://github.com/lizy-coding/gcode_core.git` pinned to `7a5228126d6e43b0cb9175b035cd2e1701950779`; this is a Git dependency, not a pub.dev release. Older consolidation records below are historical.
 
 The independent package no longer requires Pub workspace resolution. Its 30 tests pass. The decomposition graph freezes `consume-independent-gcode-core` and validates/integrates the current-session Worker diff as commit `1b604fb03c204a5f7537f6fb82e33325f8e85d37`. External Codex Worker invocation failed because its CLI did not support the configured model; no external Worker success is claimed. Forge's app tests continue to cover the G-code consumer while package tests belong to the independent repository.
 
