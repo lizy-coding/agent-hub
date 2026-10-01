@@ -54,8 +54,10 @@
           "android-arm64": {
             "runner": "ubuntu-latest",
             "working_directory": "apps/flutter_forge",
-            "commands": ["flutter build appbundle --release", "flutter build apk --release --target-platform android-arm64 --split-per-abi"],
-            "artifacts": ["app-release.aab", "app-arm64-v8a-release.apk"]
+            "commands": ["flutter build apk --debug --target-platform android-arm64 --split-per-abi"],
+            "artifacts": ["app-arm64-v8a-debug.apk"],
+            "build_mode": "debug",
+            "signing": "Android debug certificate"
           },
           "web": {
             "runner": "ubuntu-latest",
