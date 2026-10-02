@@ -3,12 +3,15 @@ import json
 from pathlib import Path
 from typing import TypedDict
 from langgraph.graph import START, END, StateGraph
-from agent_hub.context.resolver import ContextResolver
+from agent_hub.context.resolver import ContextLimits, ContextResolver
+from agent_hub.projects import api as registry_api
 from agent_hub.workspace.config import WorkspaceConfig
 
 class ContextState(TypedDict, total=False):
     requirement: str
     target_repository: str | None
+    candidate_paths: list[str] | None
+    limits: dict[str, int]
     context_package: dict[str, object]
 
 def _refactor_plan_path(config: WorkspaceConfig) -> Path:
@@ -38,7 +41,7 @@ def _load_plan_entries(plan_path: Path) -> list[dict]:
         return []
     return [entry for entry in entries if isinstance(entry, dict)]
 
-def planned_capabilities(package: dict[str, object], config: WorkspaceConfig) -> list[dict[str, object]]:
+def planned_capabilities(package: dict[str, object], config: WorkspaceConfig, *, target_repository: str | None = None, candidate_paths: list[str] | None = None) -> list[dict[str, object]]:
     """Surface pending REFACTOR_PLAN work whose targets intersect resolved paths.
 
     Read-only and backward compatible: absent or unparsable plans yield an
@@ -47,7 +50,17 @@ def planned_capabilities(package: dict[str, object], config: WorkspaceConfig) ->
     """
     resolved = [str(item.get("relative_path", "")) for item in package.get("files", []) if isinstance(item, dict)]
     planned: list[dict[str, object]] = []
-    for entry in _load_plan_entries(_refactor_plan_path(config)):
+    if candidate_paths is not None:
+        repo = registry_api.get_repository(config, target_repository) if target_repository else None
+        if repo is None:
+            return []
+        plan_path = (repo.path / "REFACTOR_PLAN.md").resolve()
+        selected_paths = {Path(str(item.get("absolute_path", ""))).resolve() for item in package.get("files", []) if isinstance(item, dict)}
+        if plan_path not in selected_paths:
+            return []
+    else:
+        plan_path = _refactor_plan_path(config)
+    for entry in _load_plan_entries(plan_path):
         if str(entry.get("status", "")) != "pending":
             continue
         targets = [str(item) for item in entry.get("targets") or entry.get("changes") or [] if isinstance(item, str)]
@@ -64,9 +77,10 @@ def build_context_analysis_graph(config: WorkspaceConfig):
     def search_evidence(state): return {}
     def resolve_rules(state): return {}
     def build_context_package(state):
-        package=resolver.resolve_context(state["requirement"], state.get("target_repository"))
+        limits = ContextLimits(**state["limits"]) if state.get("limits") is not None else None
+        package=resolver.resolve_context(state["requirement"], state.get("target_repository"), limits, candidate_paths=state.get("candidate_paths"))
         data=package.model_dump(mode="json")
-        data["planned_capabilities"]=planned_capabilities(data, config)
+        data["planned_capabilities"]=planned_capabilities(data, config, target_repository=state.get("target_repository"), candidate_paths=state.get("candidate_paths"))
         return {"context_package": data}
     graph=StateGraph(ContextState)
     graph.add_node("load_registry", load_registry); graph.add_node("resolve_candidates", resolve_candidates); graph.add_node("search_evidence", search_evidence); graph.add_node("resolve_rules", resolve_rules); graph.add_node("build_context_package", build_context_package)

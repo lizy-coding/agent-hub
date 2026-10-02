@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Local Agent Hub command entrypoint."""
 import argparse
+import json
 import os
 import sys
 import time
+from pathlib import Path
 
 if sys.version_info < (3, 11):
     local_python = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".venv", "bin", "python")
@@ -19,7 +21,7 @@ from agent_hub.gateway import decomposition
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Agent Hub local LangGraph orchestration CLI.")
-    parser.add_argument("command", choices=("refactor-status", "refactor-watch", "refactor-run", "refactor-decide", "decomposition-plan", "decomposition-propose", "decomposition-sync", "decomposition-status", "decomposition-run", "decomposition-decide", "release-plan", "release-status", "release-run", "release-decide"))
+    parser.add_argument("command", choices=("agent-context", "refactor-status", "refactor-watch", "refactor-run", "refactor-decide", "decomposition-plan", "decomposition-propose", "decomposition-sync", "decomposition-status", "decomposition-run", "decomposition-decide", "release-plan", "release-status", "release-run", "release-decide"))
     parser.add_argument("--thread-id")
     parser.add_argument("--server", default=DEFAULT_SERVER)
     parser.add_argument("--verbose", action="store_true")
@@ -29,7 +31,17 @@ def main() -> int:
     parser.add_argument("--execute", action="store_true", help="Allow decomposition-run to enter real migration execution, or release-run to publish the frozen release.")
     parser.add_argument("--spec", type=str, help="MigrationTask proposal / release spec JSON file (proposal input only; graph-owned fields are frozen by the graph).")
     parser.add_argument("--project", help="Registered decomposition project id (default: registry default_project).")
+    parser.add_argument("--max-files", type=int, default=24, help="Per-project explicit evidence budget for agent-context.")
+    parser.add_argument("--output", type=Path, help="Hub snapshot output for agent-context.")
     args = parser.parse_args()
+    if args.command == "agent-context":
+        from agent_hub.projects.agent_context import refresh_agent_contexts
+        options = {"max_files": args.max_files}
+        if args.output:
+            options["output_path"] = args.output
+        result = refresh_agent_contexts([args.project] if args.project else None, **options)
+        print(json.dumps(result.get("summary", result), ensure_ascii=False, indent=2))
+        return 0
     refactor_thread = args.thread_id or DEFAULT_THREAD_ID
     if args.command == "refactor-status":
         return status(args.server, refactor_thread, project_id=args.project)

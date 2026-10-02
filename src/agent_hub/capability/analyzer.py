@@ -1,7 +1,7 @@
 """Evidence-driven ownership, coupling, overlap, and extraction assessment."""
 import re
 from pathlib import Path
-from agent_hub.context.resolver import ContextResolver
+from agent_hub.context.resolver import ContextLimits, ContextResolver
 from agent_hub.projects import api as registry_api
 from agent_hub.schemas.models import CapabilityAnalysis, CapabilityNode, ContextPackage, CouplingProfile, ExtractionAssessment, WorkspaceCapabilityMatch
 from agent_hub.tools.path_guard import is_allowed_business_path
@@ -42,11 +42,13 @@ class CapabilityAnalyzer:
             return 'reusable_capability' if public_widget and composition else 'ui_only'
         if any(x in low for x in ('parser','parse','algorithm','model','transform')) and coupling.ui in ('NONE','UNKNOWN'): return 'shared_core'
         return 'unknown'
-    def _is_public_export(self, unit_id: str, source_path: str) -> bool:
+    def _is_public_export(self, unit_id: str, source_path: str, export_paths: list[Path] | None = None) -> bool:
         unit=registry_api.get_development_unit(self.config,unit_id); repo=registry_api.get_repository(self.config,unit.repo_id) if unit else None
         if not unit or not repo: return False
         source=Path(source_path).resolve()
-        for entry in (repo.path/unit.relative_path/'lib').glob('*.dart'):
+        lib_root = (repo.path / unit.relative_path / 'lib').resolve()
+        entries = lib_root.glob('*.dart') if export_paths is None else [path for path in export_paths if path.parent == lib_root and path.suffix == '.dart']
+        for entry in entries:
             exported=self._text_file(entry)
             # A unit-level barrel is not proof that every source file is public.
             # Match the actual exported source name to keep visibility evidence
@@ -56,14 +58,14 @@ class CapabilityAnalyzer:
     def _text_file(self,path:Path)->str:
         try: return path.read_text(encoding='utf-8')[:12000] if is_allowed_business_path(path,self.config) else ''
         except (OSError,UnicodeDecodeError): return ''
-    def match_workspace_capabilities(self, node: CapabilityNode, context: ContextPackage):
+    def match_workspace_capabilities(self, node: CapabilityNode, context: ContextPackage, *, export_paths: list[Path] | None = None):
         matches=[]
         unit_id=node.development_units[0]
         unit=registry_api.get_development_unit(self.config,unit_id)
         # A public contract in a registered unit plus an incoming manifest path edge
         # is a strong existing-unit match, including workspace-member packages.
         incoming=[edge for repo in registry_api.list_repositories(self.config) for edge in registry_api.get_dependencies(self.config,repo.repo_id) if edge.target==unit_id]
-        if unit and self._is_public_export(unit_id,node.files[0]) and incoming:
+        if unit and self._is_public_export(unit_id,node.files[0], export_paths) and incoming:
             edge=incoming[0]
             matches.append(WorkspaceCapabilityMatch(source_capability_id=node.capability_id,target_repo=unit.repo_id,target_unit=unit_id,match_type='existing_unit_strong_match',matched_contracts=node.files,matched_symbols=node.symbols,evidence_refs=[edge.evidence.path]+node.evidence_refs,confidence='HIGH'))
         for edge in node.dependencies:
@@ -84,8 +86,9 @@ class CapabilityAnalyzer:
         elif node.ownership=='platform_plugin': decision='NEW_PLUGIN_CANDIDATE'; target=None
         else: decision='NOT_ENOUGH_EVIDENCE'; target=None
         return ExtractionAssessment(capability_id=node.capability_id,decision=decision,target_repo=target.target_repo if target else None,target_unit=target.target_unit if target else None,reasons=[f'ownership={node.ownership}'],blockers=node.unknowns,evidence_refs=node.evidence_refs,confidence=node.confidence)
-    def analyze_capabilities(self, requirement:str, target_repository:str) -> CapabilityAnalysis:
-        context=self.resolver.resolve_context(requirement,target_repository)
+    def analyze_capabilities(self, requirement:str, target_repository:str, *, candidate_paths:list[str] | None = None, limits:ContextLimits | None = None) -> CapabilityAnalysis:
+        context=self.resolver.resolve_context(requirement,target_repository,limits,candidate_paths=candidate_paths)
+        export_paths = [Path(file.absolute_path) for file in context.files] if candidate_paths is not None else None
         nodes=[]
         # Seed one bounded capability per source-evidence file rather than per unit.
         for file in context.files:
@@ -94,13 +97,13 @@ class CapabilityAnalyzer:
             unit_text=self._text_file(Path(file.absolute_path))
             if not unit_text: continue
             symbols=[s.name for s in context.symbols if s.file==file.absolute_path]
-            coupling=self.analyze_coupling(unit_text); ownership=self.classify_ownership(unit_text,coupling,self._is_public_export(file.unit_id,file.absolute_path))
+            coupling=self.analyze_coupling(unit_text); ownership=self.classify_ownership(unit_text,coupling,self._is_public_export(file.unit_id,file.absolute_path,export_paths))
             unknowns=[] if ownership!='unknown' else ['Insufficient bounded source evidence for ownership.']
             deps=registry_api.get_dependencies(self.config,file.unit_id)+registry_api.get_dependents(self.config,file.unit_id)
             refs=list(dict.fromkeys(file.evidence_refs+[d.evidence.path for d in deps]))
             confidence='HIGH' if refs and ownership!='unknown' else 'MEDIUM' if refs else 'LOW'
             nodes.append(CapabilityNode(capability_id=f'capability:{file.unit_id}:{Path(file.absolute_path).name}',label='evidence_anchor',target_repo=target_repository,development_units=[file.unit_id],files=[file.relative_path],symbols=symbols,responsibilities=['source evidence anchor'],ownership=ownership,coupling=coupling,dependencies=deps,evidence_refs=refs,confidence=confidence,unknowns=unknowns))
-        matches=[m for n in nodes for m in self.match_workspace_capabilities(n,context)]
+        matches=[m for n in nodes for m in self.match_workspace_capabilities(n,context,export_paths=export_paths)]
         assessments=[self.assess_extraction(n,[m for m in matches if m.source_capability_id==n.capability_id]) for n in nodes]
         unknowns=list(context.unknowns[i].reason for i in range(len(context.unknowns)))+[u for n in nodes for u in n.unknowns]
         return CapabilityAnalysis(requirement=requirement,target_repository=target_repository,context_ref={'confidence':context.confidence,'metrics':context.metrics},capabilities=nodes,workspace_matches=matches,extraction_assessments=assessments,keep_in_application=[a.capability_id for a in assessments if a.decision=='KEEP_IN_APPLICATION'],extraction_candidates=[a.capability_id for a in assessments if a.decision not in ('KEEP_IN_APPLICATION','NOT_ENOUGH_EVIDENCE')],unknowns=unknowns,evidence_summary={'context_evidence':context.metrics.get('evidence_count',0),'capability_nodes':len(nodes)},metrics={'bounded_files_read':len(nodes),'capabilities':len(nodes),'matches':len(matches)})

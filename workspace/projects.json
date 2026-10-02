@@ -1,13 +1,18 @@
 {
   "default_project": "flutter-forge",
-  "aliases": {},
+  "aliases": {"forge": "flutter-forge"},
   "projects": {
     "gcode-core": {
       "adapter": "gcode_core",
       "program_id": "gcode-core-decomposition-program",
       "refactor_program_id": "gcode-core-refactor-program",
       "snapshot_namespace": "gcode-core",
-      "workspace_config": "workspace/gcode-core.json"
+      "workspace_config": "workspace/gcode-core.json",
+      "agent_context": {
+        "seed_files": ["AGENTS.md", "CONTEXT.md", "pubspec.yaml", "lib/gcode_core.dart", "example/pubspec.yaml", ".github/workflows/ci.yml", "docs/evidence/0.2.1-maintainer-acceptance.md", "example/android/app/src/main/AndroidManifest.xml", "example/android/app/build.gradle.kts", "lib/src/rendering/gpu_toolpath_layer.dart", "lib/src/rendering/toolpath_geometry.dart"],
+        "change_prefixes": ["lib/", "example/lib/", "example/android/", "docs/evidence/", ".github/"],
+        "ownership": "independent_flutter_gpu_package"
+      }
     },
     "flutter-forge": {
       "adapter": "flutter_forge",
@@ -15,6 +20,11 @@
       "refactor_program_id": "flutter-forge-refactor-program",
       "snapshot_namespace": "flutter-forge",
       "workspace_config": "workspace/config.json",
+      "agent_context": {
+        "seed_files": ["AGENTS.md", "AI_ANALYSIS_SCHEMA.json", "AI_PROJECT_CONTEXT.md", "REFACTOR_PLAN.md", "apps/flutter_forge/pubspec.yaml", "pubspec.lock", "tool/generate_agent_indexes.js", "tool/agent_indexes/generator.js", "tool/agent_indexes/project.js", "tool/agent_indexes/contracts.js", "tool/agent_indexes/AGENTS.md", "apps/flutter_forge/lib/app/AGENTS.md", "apps/flutter_forge/lib/app/AI_ANALYSIS.md", "apps/flutter_forge/lib/app/theme/app_theme_controller.dart", "apps/flutter_forge/lib/app/theme/forge_theme_tokens.dart", "apps/flutter_forge/lib/modules/platform/bluetooth_ble/AI_ANALYSIS.md", "apps/flutter_forge/lib/shared/popup/AI_ANALYSIS.md", "apps/flutter_forge/lib/shared/table/AI_ANALYSIS.md", ".github/workflows/release.yml"],
+        "change_prefixes": ["apps/flutter_forge/lib/app/", "apps/flutter_forge/lib/shared/", "apps/flutter_forge/lib/modules/platform/bluetooth_ble/", "tool/agent_indexes/", ".github/"],
+        "ownership": "flutter_app_and_generator_owned_contracts"
+      },
       "delivery_stage": {
         "stage_id": "cross-platform-foundation-v1",
         "status": "COMPLETE",
@@ -68,6 +78,18 @@
         },
         "default_draft": false,
         "default_prerelease": false
+      }
+    },
+    "flutterguard": {
+      "adapter": "generic",
+      "program_id": "flutterguard-decomposition-program",
+      "refactor_program_id": "flutterguard-refactor-program",
+      "snapshot_namespace": "flutterguard",
+      "workspace_config": "workspace/flutterguard.json",
+      "agent_context": {
+        "seed_files": ["AGENTS.md", "CONTEXT.md", "pubspec.yaml", "bin/AGENTS.md", "bin/flutterguard.dart", "lib/src/AGENTS.md", "lib/src/cli/AGENTS.md", "lib/src/cli/scan_command.dart", "lib/src/scan_context.dart", "lib/src/source_workspace.dart", "lib/src/rules/AGENTS.md", "scripts/AGENTS.md", "idea-plugin/AGENTS.md", "scripts/idea_plugin_preflight.sh", ".github/workflows/release.yml"],
+        "change_prefixes": ["bin/", "lib/src/", "scripts/", "idea-plugin/", ".github/"],
+        "ownership": "executable_cli_with_separate_ide_adapter"
       }
     }
   }

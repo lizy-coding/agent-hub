@@ -101,12 +101,120 @@ class RepositorySearcher:
         return [(path,number,term,kind) for _,path,number,term,kind in sorted(found,key=lambda item:(-item[0],str(item[1])))[:max_results]]
 
 
+AGENT_RULE_NAMES = {"AGENTS.md", "AGENTS.override.md"}
+
+
+def ancestor_agent_rules(root: Path, path: Path) -> list[Path]:
+    """Stat exact ancestor guide names, root first; overrides mask AGENTS.md.
+
+    This does not read guides or enumerate directories. Unsafe source paths
+    produce no candidates. A symlink override remains the active candidate so
+    callers reject it explicitly instead of falling back to weaker guidance.
+    """
+    root = root.resolve()
+    path = path if path.is_absolute() else root / path
+    if ".." in path.parts or not (path == root or root in path.parents):
+        return []
+    if path.is_symlink() or any(parent.is_symlink() for parent in path.parents if parent == root or root in parent.parents):
+        return []
+    directory = path if path.is_dir() else path.parent
+    directories = [directory, *[parent for parent in directory.parents if parent == root or root in parent.parents]]
+    result = []
+    for directory in reversed(directories):
+        override = directory / "AGENTS.override.md"
+        guide = directory / "AGENTS.md"
+        try:
+            override_present = override.exists() or override.is_symlink()
+        except OSError:
+            # An unreadable override cannot prove that ordinary guidance is
+            # active. Keep its exact path for the caller's unknown record.
+            result.append(override)
+            continue
+        if override_present:
+            result.append(override)
+        else:
+            try:
+                guide_present = guide.exists() or guide.is_symlink()
+            except OSError:
+                guide_present = True
+            if guide_present:
+                result.append(guide)
+    return result
+
+
 class RuleResolver:
     def __init__(self, config: WorkspaceConfig): self.config = config
-    def resolve_rules_for_path(self, path_or_unit: str) -> list[ContextRule]:
-        unit = registry_api.get_development_unit(self.config, path_or_unit)
-        rules = registry_api.get_rule_files(self.config, path_or_unit)
-        return [ContextRule(path=rule.path, scope=rule.scope, applies_to=unit.unit_id if unit else str(path_or_unit)) for rule in rules]
+
+    def resolve_rules_for_path(self, path_or_unit: str | Path, *, selected_paths: set[Path] | None = None, readable_paths: set[Path] | None = None, unknowns: list[ContextUnknown] | None = None) -> list[ContextRule]:
+        unit = registry_api.get_development_unit(self.config, str(path_or_unit))
+        if unit:
+            repo = registry_api.get_repository(self.config, unit.repo_id)
+            path = repo.path / unit.relative_path if repo else None
+            applies_to = unit.unit_id
+        else:
+            path = Path(path_or_unit)
+            if not path.is_absolute():
+                path = self.config.workspace_root / path
+            matches = [item for item in registry_api.list_repositories(self.config) if path == item.path or item.path in path.parents]
+            repo = max(matches, key=lambda item: len(item.path.parts)) if matches else None
+            applies_to = f"{repo.repo_id}:{path.relative_to(repo.path).as_posix()}" if repo else str(path_or_unit)
+        if repo is None or path is None or not is_allowed_business_path(path, self.config):
+            return []
+        if ".." in path.parts or not is_within(path, repo.path) or path.is_symlink() or any(parent.is_symlink() for parent in path.parents if parent == repo.path or repo.path in parent.parents):
+            return []
+        active = ancestor_agent_rules(repo.path, path)
+        rules = []
+
+        def safe(guide):
+            try:
+                available = is_within(guide, repo.path) and is_allowed_business_path(guide, self.config) and guide.is_file() and not guide.is_symlink() and not any(parent.is_symlink() for parent in guide.parents if parent == repo.path or repo.path in parent.parents)
+            except OSError:
+                available = False
+            if not available and unknowns is not None:
+                unknowns.append(ContextUnknown(subject=guide.relative_to(self.config.workspace_root).as_posix(), reason=f"Applicable rule path is missing, unsafe, or not a regular file for {applies_to}.", required_evidence="An existing in-repository rule file without symlinks."))
+            return available
+
+        def readable(guide):
+            if readable_paths is not None:
+                available = guide.resolve() in readable_paths
+            else:
+                try:
+                    guide.read_text(encoding="utf-8")
+                    available = True
+                except (OSError, UnicodeDecodeError):
+                    available = False
+            if not available and unknowns is not None:
+                unknowns.append(ContextUnknown(subject=guide.relative_to(self.config.workspace_root).as_posix(), reason=f"Applicable guide could not be read for {applies_to}.", required_evidence="Readable UTF-8 rule content in the explicit intake."))
+            return available
+
+        for guide in active:
+            if not safe(guide):
+                continue
+            if selected_paths is not None and guide not in selected_paths:
+                if unknowns is not None:
+                    unknowns.append(ContextUnknown(subject=guide.relative_to(self.config.workspace_root).as_posix(), reason=f"Applicable ancestor guide is not selected for {applies_to}.", required_evidence=f"Include {guide.relative_to(repo.path).as_posix()} in explicit candidate_paths within the file budget."))
+                continue
+            if not readable(guide):
+                continue
+            rules.append(ContextRule(path=guide.relative_to(self.config.workspace_root).as_posix(), scope=guide.parent.relative_to(self.config.workspace_root).as_posix(), applies_to=applies_to, provenance="filesystem_agent_override" if guide.name == "AGENTS.override.md" else "filesystem_agent_ancestor"))
+        owner = unit or registry_api.find_unit_by_path(self.config, path)
+        for cached in registry_api.get_rule_files(self.config, owner.unit_id if owner else path):
+            if Path(cached.path).name in AGENT_RULE_NAMES:
+                continue
+            guide = self.config.workspace_root / cached.path
+            scope = self.config.workspace_root / cached.scope
+            if not is_within(guide, repo.path) or not is_within(scope, repo.path) or not is_within(path, scope):
+                continue
+            if not safe(guide):
+                continue
+            if selected_paths is not None and guide.resolve() not in selected_paths:
+                if unknowns is not None:
+                    unknowns.append(ContextUnknown(subject=guide.relative_to(self.config.workspace_root).as_posix(), reason=f"Applicable cached rule is not selected for {applies_to}.", required_evidence=f"Include {guide.relative_to(repo.path).as_posix()} in explicit candidate_paths within the file budget."))
+                continue
+            if not readable(guide):
+                continue
+            rules.append(ContextRule(path=cached.path, scope=cached.scope, applies_to=applies_to, provenance=cached.provenance))
+        return list({rule.path: rule for rule in rules}.values())
 
 
 class EvidenceScorer:
@@ -127,7 +235,9 @@ class ContextResolver:
         return [] if not unit else self.searcher.search_callsites(unit, terms(query), 80)
     def resolve_rules_for_path(self, path_or_unit: str): return self.rules.resolve_rules_for_path(path_or_unit)
     def explain_candidate(self, candidate: ContextCandidate) -> dict: return candidate.model_dump()
-    def resolve_context(self, requirement: str, target_repository: str | None = None, limits: ContextLimits | None = None) -> ContextPackage:
+    def resolve_context(self, requirement: str, target_repository: str | None = None, limits: ContextLimits | None = None, *, candidate_paths: list[str] | None = None) -> ContextPackage:
+        if candidate_paths is not None:
+            return self._resolve_bounded_context(requirement, target_repository, limits or ContextLimits(), candidate_paths)
         limits = limits or ContextLimits(); term_list = terms(requirement); repositories = registry_api.list_repositories(self.config)
         if target_repository:
             selected_repos = [repo for repo in repositories if repo.repo_id == target_repository]
@@ -194,6 +304,84 @@ class ContextResolver:
         unique_symbols = {(item.file, item.line, item.name, item.kind): item for item in symbols}
         package = ContextPackage(request={"requirement": requirement, "optional_target_repository": target_repository}, scope={"repositories": sorted({registry_api.get_development_unit(self.config, unit.unit_id).repo_id for unit in units}), "development_units": [unit.unit_id for unit in units]}, candidates=candidates, files=files[:limits.max_files], symbols=list(unique_symbols.values())[:limits.max_symbols], rules=list(unique_rules.values()), dependencies=list(unique_deps.values()), unknowns=unknowns, confidence="HIGH" if any(item.confidence == "HIGH" for item in candidates) else "MEDIUM" if any(item.confidence == "MEDIUM" for item in candidates) else "LOW", metrics={"searched_repositories": len(selected_repos), "searched_files": searched_files, "selected_files": len(files[:limits.max_files]), "evidence_count": len(unique_symbols)+len(unique_deps), "context_size_estimate": len(files)+len(unique_symbols)+len(unique_deps)+len(unique_rules)})
         return package
+
+    def _resolve_bounded_context(self, requirement: str, target_repository: str | None, limits: ContextLimits, candidate_paths: list[str]) -> ContextPackage:
+        """Resolve only explicit repository-relative files, without discovery.
+
+        An empty list is an empty intake. Registry relationships remain context
+        metadata and never expand the source files read by this mode.
+        """
+        if not target_repository:
+            raise ValueError("bounded context requires target_repository")
+        repo = registry_api.get_repository(self.config, target_repository)
+        if repo is None or not is_allowed_business_path(repo.path, self.config):
+            raise ValueError(f"unknown or out-of-bound repository: {target_repository}")
+        if min(limits.max_files, limits.max_symbols) < 0:
+            raise ValueError("context limits must be nonnegative")
+        repo_root = repo.path.resolve()
+        paths: list[tuple[Path, DevelopmentUnit]] = []
+        for value in candidate_paths:
+            relative = Path(value)
+            if relative.is_absolute() or ".." in relative.parts:
+                raise ValueError(f"candidate must be repository-relative: {value}")
+            path = repo.path / relative
+            if path.is_symlink() or any(parent.is_symlink() for parent in path.parents if is_within(parent, repo_root)):
+                raise ValueError(f"symlink candidate is not allowed: {value}")
+            resolved = path.resolve()
+            if not is_within(resolved, repo_root) or not is_allowed_business_path(resolved, self.config):
+                raise ValueError(f"candidate outside repository boundary: {value}")
+            if not resolved.is_file():
+                raise ValueError(f"candidate must be an existing file: {value}")
+            unit = registry_api.find_unit_by_path(self.config, resolved)
+            if unit is None or unit.repo_id != target_repository:
+                raise ValueError(f"candidate has no registered development unit: {value}")
+            if resolved not in {item[0] for item in paths}:
+                paths.append((resolved, unit))
+        selected = paths[:limits.max_files]
+        selected_paths = {path for path, _ in selected}
+        unit_map = {unit.unit_id: unit for _, unit in selected}
+        term_list = terms(requirement)
+        files, symbols, candidates, rules, dependencies, unknowns = [], [], [], [], [], []
+        read_files = 0
+        readable_paths = set()
+        refs_by_unit: dict[str, list[str]] = {unit_id: [] for unit_id in unit_map}
+        for path, unit in selected:
+            relative = path.relative_to(self.config.workspace_root).as_posix()
+            refs = [relative]
+            try:
+                lines = path.read_text(encoding="utf-8").splitlines()
+                read_files += 1
+                readable_paths.add(path)
+            except (OSError, UnicodeDecodeError):
+                unknowns.append(ContextUnknown(subject=relative, reason="Explicit candidate could not be read as text.", required_evidence="Readable source or control document."))
+                lines = []
+            for number, line in enumerate(lines, 1):
+                if len(symbols) >= limits.max_symbols:
+                    break
+                term = next((term for term in term_list if re.search(rf"\b{re.escape(term)}\b", line, re.IGNORECASE)), None)
+                if term:
+                    ref = f"{relative}:{number}"
+                    refs.append(ref)
+                    symbols.append(ContextSymbol(name=term, kind="symbol", file=str(path), line=number, evidence_refs=[ref]))
+            files.append(ContextFile(absolute_path=str(path), relative_path=relative, repo_id=unit.repo_id, unit_id=unit.unit_id, relevance="explicit_candidate", evidence_refs=refs))
+            refs_by_unit[unit.unit_id].extend(refs)
+        for unit_id, unit in unit_map.items():
+            refs = refs_by_unit[unit_id]
+            candidates.append(ContextCandidate(id=unit_id, classification="context_only", confidence="MEDIUM", reasons=["explicit bounded file intake"], evidence_refs=refs))
+            dependencies.extend(registry_api.get_dependencies(self.config, unit_id) + registry_api.get_dependents(self.config, unit_id))
+        rule_unknowns = []
+        for path, _ in selected:
+            rules.extend(self.rules.resolve_rules_for_path(path, selected_paths=selected_paths, readable_paths=readable_paths, unknowns=rule_unknowns))
+        unknowns.extend(rule_unknowns)
+        unique_rules = {f"{rule.path}:{rule.applies_to}": rule for rule in rules}
+        unique_deps = {f"{edge.source}>{edge.target}>{edge.kind}": edge for edge in dependencies}
+        return ContextPackage(
+            request={"requirement": requirement, "optional_target_repository": target_repository, "candidate_paths": candidate_paths},
+            scope={"repositories": [target_repository], "development_units": list(unit_map)},
+            candidates=candidates, files=files, symbols=symbols, rules=list(unique_rules.values()), dependencies=list(unique_deps.values()), unknowns=unknowns,
+            confidence="MEDIUM" if files else "LOW",
+            metrics={"searched_repositories": 1, "searched_files": read_files, "selected_files": len(files), "candidate_files": len(paths), "evidence_count": len(symbols) + len(unique_deps), "context_size_estimate": len(files) + len(symbols) + len(unique_deps) + len(unique_rules), "rule_files": len({rule.path for rule in rules}), "rule_target_files": len({rule.applies_to for rule in rules}), "missing_rule_candidates": len({item.subject for item in rule_unknowns if "not selected" in item.reason})},
+        )
     def validate_context_package(self, package: ContextPackage) -> list[str]:
         errors=[]
         for file in package.files:

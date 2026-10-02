@@ -1,0 +1,19 @@
+{
+  "workspace_root": "../../flutterguard",
+  "allowed_paths": ["../../flutterguard"],
+  "registry_path": "../../workspace-bootstrap.json",
+  "registry_storage_path": "flutterguard-registry.json",
+  "runtime": {
+    "environment": "LOCAL",
+    "primary_repository_id": "flutterguard",
+    "repositories": {
+      "flutterguard": {
+        "runtime_path": "../../flutterguard",
+        "role": "PRIMARY",
+        "managed": true,
+        "writable": false,
+        "source_type": "LOCAL_PATH"
+      }
+    }
+  }
+}
