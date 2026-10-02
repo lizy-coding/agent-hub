@@ -1,6 +1,8 @@
 """Read the independently maintained G-code package's current build facts."""
 from pathlib import Path
+import re
 import subprocess
+import xml.etree.ElementTree as ET
 
 import yaml
 
@@ -14,13 +16,58 @@ def _git(root: Path, *args: str) -> str:
 def _android_contract(root: Path) -> dict[str, object]:
     gradle = root / 'example/android/app/build.gradle.kts'
     text = gradle.read_text(encoding='utf-8') if gradle.is_file() else ''
+    manifest = root / 'example/android/app/src/main/AndroidManifest.xml'
+    gpu_enabled = False
+    if manifest.is_file():
+        try:
+            application = ET.fromstring(manifest.read_text(encoding='utf-8')).find('application')
+            if application is not None:
+                namespace = '{http://schemas.android.com/apk/res/android}'
+                gpu_enabled = any(
+                    item.get(f'{namespace}name') == 'io.flutter.embedding.android.EnableFlutterGPU'
+                    and item.get(f'{namespace}value') == 'true'
+                    for item in application.findall('meta-data')
+                )
+        except ET.ParseError:
+            pass
     return {
         'status': 'BUILD_READY_RUNTIME_PENDING' if gradle.is_file() else 'UNSUPPORTED',
         'minimum_api': 29 if 'minSdk = 29' in text else None,
         'abis': ['arm64-v8a'] if 'abiFilters += "arm64-v8a"' in text else [],
+        'flutter_gpu_enabled': gpu_enabled,
+        'host_configuration': 'GPU_ENABLED' if gpu_enabled else 'GPU_METADATA_MISSING_OR_INVALID',
+        'evidence': [str(path.relative_to(root)) for path in (gradle, manifest) if path.is_file()],
         'build_command': 'flutter build apk --debug --target-platform android-arm64',
         'runtime_acceptance': 'PENDING_NATIVE_GPU_DEVICE_EVIDENCE',
+        'detailed_acceptance': 'PENDING',
     }
+
+
+def _maintainer_acceptance(root: Path, version: str) -> dict[str, object]:
+    acceptance = {
+        'status': 'UNKNOWN', 'version': version, 'platforms': [], 'evidence': [],
+        'detailed_acceptance': 'PENDING',
+    }
+    if not re.fullmatch(r'\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.+-]+)?', version):
+        return acceptance
+    path = root / f'docs/evidence/{version}-maintainer-acceptance.md'
+    if not path.is_file():
+        return acceptance
+    acceptance['evidence'] = [str(path.relative_to(root))]
+    content = ' '.join(path.read_text(encoding='utf-8').split())
+    confirmation = (
+        'The maintainer explicitly confirmed that macOS and Android manual acceptance '
+        f'passed and authorized publication as {version}.'
+    )
+    date = re.search(r'Date: (\d{4}-\d{2}-\d{2})\.', content)
+    baseline = re.search(r'Source baseline: ([0-9a-f]{7,40})\.', content)
+    if confirmation in content and date and baseline:
+        acceptance.update({
+            'status': 'MAINTAINER_CONFIRMED', 'platforms': ['macos', 'android'],
+            'date': date.group(1), 'source_baseline': baseline.group(1),
+            'scope': 'MANUAL_ACCEPTANCE_ONLY',
+        })
+    return acceptance
 
 
 def enrich_program(program: dict, root: Path, primary: str) -> dict:
@@ -33,6 +80,7 @@ def enrich_program(program: dict, root: Path, primary: str) -> dict:
     data = yaml.safe_load(manifest.read_text(encoding='utf-8'))
     dependencies = list((data.get('dependencies') or {}).keys())
     program['repositories'][0]['role'] = 'PACKAGE'
+    program['package_version'] = str(data.get('version', ''))
     program['source_revision'] = _git(root, 'rev-parse', 'HEAD')
     try:
         status = subprocess.check_output(
@@ -49,11 +97,22 @@ def enrich_program(program: dict, root: Path, primary: str) -> dict:
     }
 
     android = _android_contract(root)
+    acceptance = _maintainer_acceptance(root, program['package_version'])
+    program['maintainer_acceptance'] = acceptance
+    latest_evidence = acceptance['evidence']
+    android['manual_acceptance'] = acceptance
     macos_evidence = root / 'docs/evidence/macos-gpu-only/report.json'
     program['platform_contract'] = {
         'macos': {
-            'status': 'RUNTIME_VALIDATED' if macos_evidence.is_file() else 'BUILD_READY_RUNTIME_PENDING',
-            'evidence': ['docs/evidence/macos-gpu-only/report.json'] if macos_evidence.is_file() else [],
+            'status': 'BUILD_READY_RUNTIME_PENDING',
+            'evidence': latest_evidence,
+            'manual_acceptance': acceptance,
+            'detailed_acceptance': 'PENDING',
+            'historical_runtime_evidence': {
+                'status': 'RECORDED' if macos_evidence.is_file() else 'MISSING',
+                'evidence': ['docs/evidence/macos-gpu-only/report.json'] if macos_evidence.is_file() else [],
+                'current_revision_binding': 'UNVERIFIED',
+            },
             'build_command': 'python3 tool/macos_run.py --mode release --build-only',
         },
         'android': android,
@@ -76,7 +135,7 @@ def enrich_program(program: dict, root: Path, primary: str) -> dict:
         {
             'capability_id': 'gcode-parsing-and-toolpath-modeling',
             'current_owners': [primary],
-            'source_paths': [f'{primary}/lib/src/parser', f'{primary}/lib/src/core', f'{primary}/lib/src/services'],
+            'source_paths': [f'{primary}/lib/src/parser', f'{primary}/lib/src/core', f'{primary}/lib/src/models', f'{primary}/lib/src/services'],
             'consumers': [f'{primary}:rendering', f'{primary}:example', 'flutter_forge:gcode_visualizer'],
             'dependencies': dependencies, 'flutter_dependency': True,
             'platform_dependency': False, 'native_dependency': False, 'state_dependency': False,
@@ -91,7 +150,7 @@ def enrich_program(program: dict, root: Path, primary: str) -> dict:
             'dependencies': ['flutter_gpu', 'flutter'], 'supported_platforms': ['macos', 'android'],
             'platform_dependency': True, 'native_dependency': True, 'state_dependency': True,
             'reuse_scope': 'cluster', 'classification': 'KEEP_PACKAGE', 'target_package': '.',
-            'evidence': ['lib/src/rendering', 'shaders/toolpath.shaderbundle', 'docs/evidence/macos-gpu-only/report.json'],
+            'evidence': ['lib/src/rendering', 'shaders/toolpath.shaderbundle', 'docs/evidence/macos-gpu-only/report.json', *latest_evidence],
         },
         {
             'capability_id': 'gcode-example-session-playback',
@@ -102,10 +161,21 @@ def enrich_program(program: dict, root: Path, primary: str) -> dict:
             'reuse_scope': 'example', 'classification': 'KEEP_APP_ONLY', 'target_package': 'example',
             'evidence': ['example/lib/src/gcode_session_controller.dart', 'example/lib/src/gcode_example_page.dart'],
         },
+        {
+            'capability_id': 'native-gcode-file-reading',
+            'current_owners': [primary], 'source_paths': [f'{primary}/lib/src/data/readers'],
+            'consumers': [f'{primary}:example', 'flutter_forge:gcode_visualizer'],
+            'dependencies': ['dart:io'], 'supported_platforms': ['macos', 'android'],
+            'flutter_dependency': False, 'platform_dependency': True,
+            'native_dependency': True, 'state_dependency': False,
+            'reuse_scope': 'cluster', 'classification': 'KEEP_PACKAGE', 'target_package': '.',
+            'public_api_intent': 'Native line reading; file picking and playback state remain app owned',
+            'evidence': ['lib/src/data/readers', 'AGENTS.md'],
+        },
     ]
     program['package_candidates'] = [{
         'package_id': '.', 'package_type': 'FLUTTER_PACKAGE', 'target_path': '.',
-        'owned_capabilities': ['gcode-parsing-and-toolpath-modeling', 'flutter-gpu-toolpath-rendering'],
+        'owned_capabilities': ['gcode-parsing-and-toolpath-modeling', 'flutter-gpu-toolpath-rendering', 'native-gcode-file-reading'],
         'dependencies': dependencies,
         'public_api_intent': 'G-code parsing, toolpath modeling, and GPU-only visualization',
         'migration_priority': 1,
@@ -124,11 +194,13 @@ def enrich_program(program: dict, root: Path, primary: str) -> dict:
     program['migration_tasks'] = [
         {
             'task_id': 'gcode_macos_gpu_runtime_baseline',
-            'title': 'Preserve the validated macOS Flutter GPU baseline',
+            'title': 'Preserve the historical macOS Flutter GPU report',
             'source_units': [primary], 'target_units': [primary], 'depends_on': [],
             'allowed_operations': [], 'allowed_paths_by_repository': {},
             'status': 'DONE' if macos_evidence.is_file() else 'PARTIAL',
             'evidence': ['docs/evidence/macos-gpu-only/report.json'] if macos_evidence.is_file() else [],
+            'evidence_scope': 'HISTORICAL_REPORT_ONLY',
+            'current_detailed_acceptance': 'PENDING',
         },
         {
             'task_id': 'gcode_android_arm64_runtime_acceptance',
@@ -138,7 +210,7 @@ def enrich_program(program: dict, root: Path, primary: str) -> dict:
             'allowed_operations': [], 'allowed_paths_by_repository': {},
             'acceptance': ['api_29_and_api_35_arm64_device_runs', 'picker_cancel_and_sample_load', 'gpu_first_frame', 'frame_and_memory_measurements'],
             'status': 'PARTIAL' if android['status'] == 'BUILD_READY_RUNTIME_PENDING' else 'BLOCKED',
-            'evidence': ['example/android', '.github/workflows/ci.yml', 'AGENTS.md'],
+            'evidence': ['example/android', '.github/workflows/ci.yml', 'AGENTS.md', *latest_evidence],
         },
     ]
     program['execution_mode'] = 'PLAN_ONLY'
