@@ -1,3 +1,15 @@
+# Current bounded Agent context — 2026-10-02
+
+Registered projects: `flutter-forge` (alias `forge`), `gcode-core`, and `flutterguard`. Run `./agent agent-context --max-files 24` to use the existing context/capability graphs with explicit paths. The scoped snapshot is `workspace/agent-context.json`; it preserves unknowns and never represents full-registry refresh or runtime acceptance.
+
+The current run selected 59 files (24 Forge, 11 gcode-core, 24 FlutterGuard). Forge owns its split generator, app/theme shell and shared popup/table contracts; gcode-core owns its GPU-only package and records matching-version maintainer confirmation separately from historical reports; FlutterGuard is a read-only executable CLI project with an independent IDE adapter boundary.
+
+Forge pins `gcode_core v0.2.1 / 22d76ad` and `flutterguard_cli 9f9be84`. FlutterGuard's working checkout `b3beced` does not replace that consumer pin. Business worktrees and missing detailed evidence remain explicit. See `docs/reports/AGENT_CONTEXT_REFRESH-20261002.md` for scope, validation and gaps.
+
+The entries below are historical observations; consult the scoped snapshot for this update's current evidence.
+
+---
+
 # Workspace Registry P2 report
 
 ## macOS release asset policy (2026-09-29)

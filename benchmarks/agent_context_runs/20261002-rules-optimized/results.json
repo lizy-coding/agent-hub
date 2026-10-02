@@ -1,0 +1,2971 @@
+{
+  "schema": "bounded-agent-hit-evaluation.v1",
+  "generated_at": "2026-10-02T14:49:19.559937+00:00",
+  "no_walk": true,
+  "evaluator_parameter_tuning": false,
+  "max_files": 24,
+  "goldens_sha256": "d858bb5a2a37e18fca4901eee4c91257c6f1da94891e7fccbfc54af6d0ec2588",
+  "case_semantics_sha256": "10e612ad49525528b0cce6144d8973b00cd10275ff645c8ef94ac54481500e9a",
+  "code_hashes": {
+    "src/agent_hub/context/resolver.py": "f94ca4d99e3e222a6f3d9ecbc15e1a5f9f07dd2afe49b50e88e0fd6306faae26",
+    "src/agent_hub/capability/analyzer.py": "a103be8d5228ed51990545c1f7bd28e50c9b8507e45bb35eae2f1695c48a7365",
+    "src/agent_hub/projects/agent_context.py": "909ecdc6fc2dff115cda001fdf273bd8dac59c9b7897c9afb30499c190e93486"
+  },
+  "project_observations": [
+    {
+      "project_id": "gcode-core",
+      "source_sha": "22d76ad54e11ad752771b594b8345d5f9aab6a31",
+      "version": "0.2.1",
+      "workspace_dirty_paths": [
+        "AGENTS.md"
+      ],
+      "registry_metadata_mode": "CACHED_TARGET_METADATA",
+      "metrics": {
+        "candidate_files": 11,
+        "rule_candidates": 1,
+        "inspected_files": 11,
+        "selected_files": 11,
+        "max_files": 24,
+        "no_walk": true,
+        "source_discovery_performed": false
+      }
+    },
+    {
+      "project_id": "flutter-forge",
+      "source_sha": "f7996632559bcfb72243b831863d069ab9abfd71",
+      "version": "1.2.8+2",
+      "workspace_dirty_paths": [
+        "AGENTS.md",
+        "apps/flutter_forge/integration_test/app_test.dart",
+        "apps/flutter_forge/integration_test/flutter_scene_3d_flow_test.dart",
+        "apps/flutter_forge/integration_test/windows_acceptance_test.dart",
+        "apps/flutter_forge/lib/app/AI_ANALYSIS.md",
+        "apps/flutter_forge/lib/app/adaptive_app_shell.dart",
+        "apps/flutter_forge/lib/app/app.dart",
+        "apps/flutter_forge/lib/app/app_bootstrap.dart",
+        "apps/flutter_forge/lib/app/category_window_app.dart",
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/AI_ANALYSIS.md",
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/module_root.dart",
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/state/ble_session.dart",
+        "apps/flutter_forge/lib/shared/multi_window/multi_window_manager.dart",
+        "apps/flutter_forge/test/modules/platform/bluetooth_ble/ble_session_test.dart",
+        "apps/flutter_forge/test/shared/category_window_lifecycle_test.dart",
+        "apps/flutter_forge/test/shared/multi_window_manager_test.dart",
+        "apps/flutter_forge/test/shared/platform_route_guard_test.dart",
+        "tool/agent_indexes/contracts.js",
+        "tool/generate_agent_indexes.js"
+      ],
+      "registry_metadata_mode": "CACHED_TARGET_METADATA",
+      "metrics": {
+        "candidate_files": 35,
+        "rule_candidates": 3,
+        "inspected_files": 24,
+        "selected_files": 24,
+        "max_files": 24,
+        "no_walk": true,
+        "source_discovery_performed": false
+      }
+    },
+    {
+      "project_id": "flutterguard",
+      "source_sha": "b3becede57d87b9d5a3c53e6a2bca79e3cb84e17",
+      "version": "0.7.1",
+      "workspace_dirty_paths": [
+        ".github/workflows/release.yml",
+        "AGENTS.md",
+        "CONTEXT.md",
+        "lib/src/cli/AGENTS.md",
+        "scripts/AGENTS.md"
+      ],
+      "registry_metadata_mode": "EXPLICIT_ROOT_FALLBACK",
+      "metrics": {
+        "candidate_files": 43,
+        "rule_candidates": 8,
+        "inspected_files": 24,
+        "selected_files": 24,
+        "max_files": 24,
+        "no_walk": true,
+        "source_discovery_performed": false
+      }
+    }
+  ],
+  "aggregates": {
+    "zh": {
+      "positive_cases": 10,
+      "files": {
+        "hit": 19,
+        "total": 25,
+        "rate": 0.76
+      },
+      "symbols": {
+        "hit": 3,
+        "total": 25,
+        "rate": 0.12
+      },
+      "conditional_symbols": {
+        "hit": 3,
+        "total": 19,
+        "rate": 0.15789473684210525
+      },
+      "rules": {
+        "hit": 15,
+        "total": 15,
+        "rate": 1.0
+      },
+      "ownership_end_to_end": {
+        "hit": 2,
+        "total": 5,
+        "rate": 0.4
+      },
+      "ownership_with_prediction": {
+        "hit": 2,
+        "total": 4,
+        "rate": 0.5
+      },
+      "symbol_budget_saturated_cases": 1
+    },
+    "en": {
+      "positive_cases": 10,
+      "files": {
+        "hit": 19,
+        "total": 25,
+        "rate": 0.76
+      },
+      "symbols": {
+        "hit": 8,
+        "total": 25,
+        "rate": 0.32
+      },
+      "conditional_symbols": {
+        "hit": 8,
+        "total": 19,
+        "rate": 0.42105263157894735
+      },
+      "rules": {
+        "hit": 15,
+        "total": 15,
+        "rate": 1.0
+      },
+      "ownership_end_to_end": {
+        "hit": 2,
+        "total": 5,
+        "rate": 0.4
+      },
+      "ownership_with_prediction": {
+        "hit": 2,
+        "total": 4,
+        "rate": 0.5
+      },
+      "symbol_budget_saturated_cases": 8
+    }
+  },
+  "cases": [
+    {
+      "case_id": "gcode-parser-model",
+      "project_id": "gcode-core",
+      "language": "zh",
+      "negative": false,
+      "pool_files": 11,
+      "returned_files": 11,
+      "intake_retention": 1.0,
+      "expected_files": 3,
+      "covered_files": 1,
+      "missing_files": [
+        "lib/src/models/toolpath_segment.dart",
+        "lib/src/parser/gcode_parser.dart"
+      ],
+      "symbol_supported_files": 0,
+      "symbol_missing_files": [
+        "lib/gcode_core.dart",
+        "lib/src/models/toolpath_segment.dart",
+        "lib/src/parser/gcode_parser.dart"
+      ],
+      "covered_files_without_symbols": [
+        "lib/gcode_core.dart"
+      ],
+      "expected_rules": 1,
+      "covered_rules": 1,
+      "missing_rules": [],
+      "symbols": 0,
+      "symbol_budget_saturated": false,
+      "ownership_expected": "shared_core",
+      "ownership_predicted": null,
+      "ownership_correct": false,
+      "markdown_nodes": 3,
+      "markdown_nodes_with_high_ownership": 1,
+      "unknown_context_count": 0,
+      "query_unfiltered_recommendations": 3,
+      "negative_semantic_support_claim": null,
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "CONTEXT.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "pubspec.yaml": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "lib/gcode_core.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "example/pubspec.yaml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        ".github/workflows/ci.yml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "docs/evidence/0.2.1-maintainer-acceptance.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "example/android/app/src/main/AndroidManifest.xml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "example/android/app/build.gradle.kts": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/rendering/gpu_toolpath_layer.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "lib/src/rendering/toolpath_geometry.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        }
+      }
+    },
+    {
+      "case_id": "gcode-parser-model",
+      "project_id": "gcode-core",
+      "language": "en",
+      "negative": false,
+      "pool_files": 11,
+      "returned_files": 11,
+      "intake_retention": 1.0,
+      "expected_files": 3,
+      "covered_files": 1,
+      "missing_files": [
+        "lib/src/models/toolpath_segment.dart",
+        "lib/src/parser/gcode_parser.dart"
+      ],
+      "symbol_supported_files": 1,
+      "symbol_missing_files": [
+        "lib/src/models/toolpath_segment.dart",
+        "lib/src/parser/gcode_parser.dart"
+      ],
+      "covered_files_without_symbols": [],
+      "expected_rules": 1,
+      "covered_rules": 1,
+      "missing_rules": [],
+      "symbols": 76,
+      "symbol_budget_saturated": false,
+      "ownership_expected": "shared_core",
+      "ownership_predicted": null,
+      "ownership_correct": false,
+      "markdown_nodes": 3,
+      "markdown_nodes_with_high_ownership": 1,
+      "unknown_context_count": 0,
+      "query_unfiltered_recommendations": 3,
+      "negative_semantic_support_claim": null,
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "CONTEXT.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "pubspec.yaml": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "lib/gcode_core.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "example/pubspec.yaml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        ".github/workflows/ci.yml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "docs/evidence/0.2.1-maintainer-acceptance.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "example/android/app/src/main/AndroidManifest.xml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "example/android/app/build.gradle.kts": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/rendering/gpu_toolpath_layer.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "lib/src/rendering/toolpath_geometry.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        }
+      }
+    },
+    {
+      "case_id": "gcode-gpu-playback",
+      "project_id": "gcode-core",
+      "language": "zh",
+      "negative": false,
+      "pool_files": 11,
+      "returned_files": 11,
+      "intake_retention": 1.0,
+      "expected_files": 2,
+      "covered_files": 2,
+      "missing_files": [],
+      "symbol_supported_files": 0,
+      "symbol_missing_files": [
+        "lib/src/rendering/gpu_toolpath_layer.dart",
+        "lib/src/rendering/toolpath_geometry.dart"
+      ],
+      "covered_files_without_symbols": [
+        "lib/src/rendering/gpu_toolpath_layer.dart",
+        "lib/src/rendering/toolpath_geometry.dart"
+      ],
+      "expected_rules": 1,
+      "covered_rules": 1,
+      "missing_rules": [],
+      "symbols": 0,
+      "symbol_budget_saturated": false,
+      "ownership_expected": "ui_only",
+      "ownership_predicted": "ui_only",
+      "ownership_correct": true,
+      "markdown_nodes": 3,
+      "markdown_nodes_with_high_ownership": 1,
+      "unknown_context_count": 0,
+      "query_unfiltered_recommendations": 3,
+      "negative_semantic_support_claim": null,
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "CONTEXT.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "pubspec.yaml": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "lib/gcode_core.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "example/pubspec.yaml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        ".github/workflows/ci.yml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "docs/evidence/0.2.1-maintainer-acceptance.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "example/android/app/src/main/AndroidManifest.xml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "example/android/app/build.gradle.kts": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/rendering/gpu_toolpath_layer.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "lib/src/rendering/toolpath_geometry.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        }
+      }
+    },
+    {
+      "case_id": "gcode-gpu-playback",
+      "project_id": "gcode-core",
+      "language": "en",
+      "negative": false,
+      "pool_files": 11,
+      "returned_files": 11,
+      "intake_retention": 1.0,
+      "expected_files": 2,
+      "covered_files": 2,
+      "missing_files": [],
+      "symbol_supported_files": 1,
+      "symbol_missing_files": [
+        "lib/src/rendering/toolpath_geometry.dart"
+      ],
+      "covered_files_without_symbols": [
+        "lib/src/rendering/toolpath_geometry.dart"
+      ],
+      "expected_rules": 1,
+      "covered_rules": 1,
+      "missing_rules": [],
+      "symbols": 80,
+      "symbol_budget_saturated": true,
+      "ownership_expected": "ui_only",
+      "ownership_predicted": "ui_only",
+      "ownership_correct": true,
+      "markdown_nodes": 3,
+      "markdown_nodes_with_high_ownership": 1,
+      "unknown_context_count": 0,
+      "query_unfiltered_recommendations": 3,
+      "negative_semantic_support_claim": null,
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "CONTEXT.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "pubspec.yaml": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "lib/gcode_core.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "example/pubspec.yaml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        ".github/workflows/ci.yml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "docs/evidence/0.2.1-maintainer-acceptance.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "example/android/app/src/main/AndroidManifest.xml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "example/android/app/build.gradle.kts": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/rendering/gpu_toolpath_layer.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "lib/src/rendering/toolpath_geometry.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        }
+      }
+    },
+    {
+      "case_id": "gcode-version-evidence",
+      "project_id": "gcode-core",
+      "language": "zh",
+      "negative": false,
+      "pool_files": 11,
+      "returned_files": 11,
+      "intake_retention": 1.0,
+      "expected_files": 3,
+      "covered_files": 3,
+      "missing_files": [],
+      "symbol_supported_files": 0,
+      "symbol_missing_files": [
+        "AGENTS.md",
+        "docs/evidence/0.2.1-maintainer-acceptance.md",
+        "pubspec.yaml"
+      ],
+      "covered_files_without_symbols": [
+        "AGENTS.md",
+        "docs/evidence/0.2.1-maintainer-acceptance.md",
+        "pubspec.yaml"
+      ],
+      "expected_rules": 1,
+      "covered_rules": 1,
+      "missing_rules": [],
+      "symbols": 0,
+      "symbol_budget_saturated": false,
+      "ownership_expected": null,
+      "ownership_predicted": null,
+      "ownership_correct": null,
+      "markdown_nodes": 3,
+      "markdown_nodes_with_high_ownership": 1,
+      "unknown_context_count": 0,
+      "query_unfiltered_recommendations": 3,
+      "negative_semantic_support_claim": null,
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "CONTEXT.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "pubspec.yaml": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "lib/gcode_core.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "example/pubspec.yaml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        ".github/workflows/ci.yml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "docs/evidence/0.2.1-maintainer-acceptance.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "example/android/app/src/main/AndroidManifest.xml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "example/android/app/build.gradle.kts": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/rendering/gpu_toolpath_layer.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "lib/src/rendering/toolpath_geometry.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        }
+      }
+    },
+    {
+      "case_id": "gcode-version-evidence",
+      "project_id": "gcode-core",
+      "language": "en",
+      "negative": false,
+      "pool_files": 11,
+      "returned_files": 11,
+      "intake_retention": 1.0,
+      "expected_files": 3,
+      "covered_files": 3,
+      "missing_files": [],
+      "symbol_supported_files": 2,
+      "symbol_missing_files": [
+        "docs/evidence/0.2.1-maintainer-acceptance.md"
+      ],
+      "covered_files_without_symbols": [
+        "docs/evidence/0.2.1-maintainer-acceptance.md"
+      ],
+      "expected_rules": 1,
+      "covered_rules": 1,
+      "missing_rules": [],
+      "symbols": 80,
+      "symbol_budget_saturated": true,
+      "ownership_expected": null,
+      "ownership_predicted": null,
+      "ownership_correct": null,
+      "markdown_nodes": 3,
+      "markdown_nodes_with_high_ownership": 1,
+      "unknown_context_count": 0,
+      "query_unfiltered_recommendations": 3,
+      "negative_semantic_support_claim": null,
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "CONTEXT.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "pubspec.yaml": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "lib/gcode_core.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "example/pubspec.yaml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        ".github/workflows/ci.yml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "docs/evidence/0.2.1-maintainer-acceptance.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "example/android/app/src/main/AndroidManifest.xml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "example/android/app/build.gradle.kts": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/rendering/gpu_toolpath_layer.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "lib/src/rendering/toolpath_geometry.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        }
+      }
+    },
+    {
+      "case_id": "gcode-windows-unproven",
+      "project_id": "gcode-core",
+      "language": "zh",
+      "negative": true,
+      "pool_files": 11,
+      "returned_files": 11,
+      "intake_retention": 1.0,
+      "expected_files": 2,
+      "covered_files": 2,
+      "missing_files": [],
+      "symbol_supported_files": 0,
+      "symbol_missing_files": [
+        "AGENTS.md",
+        "docs/evidence/0.2.1-maintainer-acceptance.md"
+      ],
+      "covered_files_without_symbols": [
+        "AGENTS.md",
+        "docs/evidence/0.2.1-maintainer-acceptance.md"
+      ],
+      "expected_rules": 1,
+      "covered_rules": 1,
+      "missing_rules": [],
+      "symbols": 0,
+      "symbol_budget_saturated": false,
+      "ownership_expected": null,
+      "ownership_predicted": null,
+      "ownership_correct": null,
+      "markdown_nodes": 3,
+      "markdown_nodes_with_high_ownership": 1,
+      "unknown_context_count": 0,
+      "query_unfiltered_recommendations": 3,
+      "negative_semantic_support_claim": "NOT_SCORED_GRAPHS_RETURN_ANCHORS_NOT_SUPPORT_CLAIMS",
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "CONTEXT.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "pubspec.yaml": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "lib/gcode_core.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "example/pubspec.yaml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        ".github/workflows/ci.yml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "docs/evidence/0.2.1-maintainer-acceptance.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "example/android/app/src/main/AndroidManifest.xml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "example/android/app/build.gradle.kts": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/rendering/gpu_toolpath_layer.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "lib/src/rendering/toolpath_geometry.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        }
+      }
+    },
+    {
+      "case_id": "gcode-windows-unproven",
+      "project_id": "gcode-core",
+      "language": "en",
+      "negative": true,
+      "pool_files": 11,
+      "returned_files": 11,
+      "intake_retention": 1.0,
+      "expected_files": 2,
+      "covered_files": 2,
+      "missing_files": [],
+      "symbol_supported_files": 2,
+      "symbol_missing_files": [],
+      "covered_files_without_symbols": [],
+      "expected_rules": 1,
+      "covered_rules": 1,
+      "missing_rules": [],
+      "symbols": 80,
+      "symbol_budget_saturated": true,
+      "ownership_expected": null,
+      "ownership_predicted": null,
+      "ownership_correct": null,
+      "markdown_nodes": 3,
+      "markdown_nodes_with_high_ownership": 1,
+      "unknown_context_count": 0,
+      "query_unfiltered_recommendations": 3,
+      "negative_semantic_support_claim": "NOT_SCORED_GRAPHS_RETURN_ANCHORS_NOT_SUPPORT_CLAIMS",
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "CONTEXT.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "pubspec.yaml": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "lib/gcode_core.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "example/pubspec.yaml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        ".github/workflows/ci.yml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "docs/evidence/0.2.1-maintainer-acceptance.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "example/android/app/src/main/AndroidManifest.xml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "example/android/app/build.gradle.kts": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/rendering/gpu_toolpath_layer.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "lib/src/rendering/toolpath_geometry.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        }
+      }
+    },
+    {
+      "case_id": "forge-theme-window",
+      "project_id": "flutter-forge",
+      "language": "zh",
+      "negative": false,
+      "pool_files": 24,
+      "returned_files": 24,
+      "intake_retention": 1.0,
+      "expected_files": 2,
+      "covered_files": 2,
+      "missing_files": [],
+      "symbol_supported_files": 0,
+      "symbol_missing_files": [
+        "apps/flutter_forge/lib/app/category_window_app.dart",
+        "apps/flutter_forge/lib/app/theme/app_theme_controller.dart"
+      ],
+      "covered_files_without_symbols": [
+        "apps/flutter_forge/lib/app/category_window_app.dart",
+        "apps/flutter_forge/lib/app/theme/app_theme_controller.dart"
+      ],
+      "expected_rules": 2,
+      "covered_rules": 2,
+      "missing_rules": [],
+      "symbols": 0,
+      "symbol_budget_saturated": false,
+      "ownership_expected": "application_orchestration",
+      "ownership_predicted": "application_orchestration",
+      "ownership_correct": true,
+      "markdown_nodes": 9,
+      "markdown_nodes_with_high_ownership": 6,
+      "unknown_context_count": 24,
+      "query_unfiltered_recommendations": 14,
+      "negative_semantic_support_claim": null,
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/AGENTS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "AI_ANALYSIS_SCHEMA.json": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "AI_PROJECT_CONTEXT.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "REFACTOR_PLAN.md": {
+          "ownership": "adapter",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/pubspec.yaml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "pubspec.lock": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/generate_agent_indexes.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/generator.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/project.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/contracts.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/AI_ANALYSIS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/theme/app_theme_controller.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/theme/forge_theme_tokens.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/AI_ANALYSIS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/shared/popup/AI_ANALYSIS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "apps/flutter_forge/lib/shared/table/AI_ANALYSIS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        ".github/workflows/release.yml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/adaptive_app_shell.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/app.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/app_bootstrap.dart": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/category_window_app.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/module_root.dart": {
+          "ownership": "adapter",
+          "confidence": "HIGH"
+        }
+      }
+    },
+    {
+      "case_id": "forge-theme-window",
+      "project_id": "flutter-forge",
+      "language": "en",
+      "negative": false,
+      "pool_files": 24,
+      "returned_files": 24,
+      "intake_retention": 1.0,
+      "expected_files": 2,
+      "covered_files": 2,
+      "missing_files": [],
+      "symbol_supported_files": 0,
+      "symbol_missing_files": [
+        "apps/flutter_forge/lib/app/category_window_app.dart",
+        "apps/flutter_forge/lib/app/theme/app_theme_controller.dart"
+      ],
+      "covered_files_without_symbols": [
+        "apps/flutter_forge/lib/app/category_window_app.dart",
+        "apps/flutter_forge/lib/app/theme/app_theme_controller.dart"
+      ],
+      "expected_rules": 2,
+      "covered_rules": 2,
+      "missing_rules": [],
+      "symbols": 80,
+      "symbol_budget_saturated": true,
+      "ownership_expected": "application_orchestration",
+      "ownership_predicted": "application_orchestration",
+      "ownership_correct": true,
+      "markdown_nodes": 9,
+      "markdown_nodes_with_high_ownership": 6,
+      "unknown_context_count": 24,
+      "query_unfiltered_recommendations": 14,
+      "negative_semantic_support_claim": null,
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/AGENTS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "AI_ANALYSIS_SCHEMA.json": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "AI_PROJECT_CONTEXT.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "REFACTOR_PLAN.md": {
+          "ownership": "adapter",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/pubspec.yaml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "pubspec.lock": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/generate_agent_indexes.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/generator.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/project.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/contracts.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/AI_ANALYSIS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/theme/app_theme_controller.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/theme/forge_theme_tokens.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/AI_ANALYSIS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/shared/popup/AI_ANALYSIS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "apps/flutter_forge/lib/shared/table/AI_ANALYSIS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        ".github/workflows/release.yml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/adaptive_app_shell.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/app.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/app_bootstrap.dart": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/category_window_app.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/module_root.dart": {
+          "ownership": "adapter",
+          "confidence": "HIGH"
+        }
+      }
+    },
+    {
+      "case_id": "forge-ble-session",
+      "project_id": "flutter-forge",
+      "language": "zh",
+      "negative": false,
+      "pool_files": 24,
+      "returned_files": 24,
+      "intake_retention": 1.0,
+      "expected_files": 2,
+      "covered_files": 1,
+      "missing_files": [
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/state/ble_session.dart"
+      ],
+      "symbol_supported_files": 0,
+      "symbol_missing_files": [
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/module_root.dart",
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/state/ble_session.dart"
+      ],
+      "covered_files_without_symbols": [
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/module_root.dart"
+      ],
+      "expected_rules": 1,
+      "covered_rules": 1,
+      "missing_rules": [],
+      "symbols": 0,
+      "symbol_budget_saturated": false,
+      "ownership_expected": null,
+      "ownership_predicted": null,
+      "ownership_correct": null,
+      "markdown_nodes": 9,
+      "markdown_nodes_with_high_ownership": 6,
+      "unknown_context_count": 24,
+      "query_unfiltered_recommendations": 14,
+      "negative_semantic_support_claim": null,
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/AGENTS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "AI_ANALYSIS_SCHEMA.json": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "AI_PROJECT_CONTEXT.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "REFACTOR_PLAN.md": {
+          "ownership": "adapter",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/pubspec.yaml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "pubspec.lock": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/generate_agent_indexes.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/generator.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/project.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/contracts.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/AI_ANALYSIS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/theme/app_theme_controller.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/theme/forge_theme_tokens.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/AI_ANALYSIS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/shared/popup/AI_ANALYSIS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "apps/flutter_forge/lib/shared/table/AI_ANALYSIS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        ".github/workflows/release.yml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/adaptive_app_shell.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/app.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/app_bootstrap.dart": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/category_window_app.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/module_root.dart": {
+          "ownership": "adapter",
+          "confidence": "HIGH"
+        }
+      }
+    },
+    {
+      "case_id": "forge-ble-session",
+      "project_id": "flutter-forge",
+      "language": "en",
+      "negative": false,
+      "pool_files": 24,
+      "returned_files": 24,
+      "intake_retention": 1.0,
+      "expected_files": 2,
+      "covered_files": 1,
+      "missing_files": [
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/state/ble_session.dart"
+      ],
+      "symbol_supported_files": 1,
+      "symbol_missing_files": [
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/state/ble_session.dart"
+      ],
+      "covered_files_without_symbols": [],
+      "expected_rules": 1,
+      "covered_rules": 1,
+      "missing_rules": [],
+      "symbols": 72,
+      "symbol_budget_saturated": false,
+      "ownership_expected": null,
+      "ownership_predicted": null,
+      "ownership_correct": null,
+      "markdown_nodes": 9,
+      "markdown_nodes_with_high_ownership": 6,
+      "unknown_context_count": 24,
+      "query_unfiltered_recommendations": 14,
+      "negative_semantic_support_claim": null,
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/AGENTS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "AI_ANALYSIS_SCHEMA.json": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "AI_PROJECT_CONTEXT.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "REFACTOR_PLAN.md": {
+          "ownership": "adapter",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/pubspec.yaml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "pubspec.lock": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/generate_agent_indexes.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/generator.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/project.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/contracts.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/AI_ANALYSIS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/theme/app_theme_controller.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/theme/forge_theme_tokens.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/AI_ANALYSIS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/shared/popup/AI_ANALYSIS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "apps/flutter_forge/lib/shared/table/AI_ANALYSIS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        ".github/workflows/release.yml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/adaptive_app_shell.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/app.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/app_bootstrap.dart": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/category_window_app.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/module_root.dart": {
+          "ownership": "adapter",
+          "confidence": "HIGH"
+        }
+      }
+    },
+    {
+      "case_id": "forge-generated-dependency-contract",
+      "project_id": "flutter-forge",
+      "language": "zh",
+      "negative": false,
+      "pool_files": 24,
+      "returned_files": 24,
+      "intake_retention": 1.0,
+      "expected_files": 3,
+      "covered_files": 3,
+      "missing_files": [],
+      "symbol_supported_files": 3,
+      "symbol_missing_files": [],
+      "covered_files_without_symbols": [],
+      "expected_rules": 2,
+      "covered_rules": 2,
+      "missing_rules": [],
+      "symbols": 48,
+      "symbol_budget_saturated": false,
+      "ownership_expected": null,
+      "ownership_predicted": null,
+      "ownership_correct": null,
+      "markdown_nodes": 9,
+      "markdown_nodes_with_high_ownership": 6,
+      "unknown_context_count": 24,
+      "query_unfiltered_recommendations": 14,
+      "negative_semantic_support_claim": null,
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/AGENTS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "AI_ANALYSIS_SCHEMA.json": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "AI_PROJECT_CONTEXT.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "REFACTOR_PLAN.md": {
+          "ownership": "adapter",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/pubspec.yaml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "pubspec.lock": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/generate_agent_indexes.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/generator.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/project.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/contracts.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/AI_ANALYSIS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/theme/app_theme_controller.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/theme/forge_theme_tokens.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/AI_ANALYSIS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/shared/popup/AI_ANALYSIS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "apps/flutter_forge/lib/shared/table/AI_ANALYSIS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        ".github/workflows/release.yml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/adaptive_app_shell.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/app.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/app_bootstrap.dart": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/category_window_app.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/module_root.dart": {
+          "ownership": "adapter",
+          "confidence": "HIGH"
+        }
+      }
+    },
+    {
+      "case_id": "forge-generated-dependency-contract",
+      "project_id": "flutter-forge",
+      "language": "en",
+      "negative": false,
+      "pool_files": 24,
+      "returned_files": 24,
+      "intake_retention": 1.0,
+      "expected_files": 3,
+      "covered_files": 3,
+      "missing_files": [],
+      "symbol_supported_files": 1,
+      "symbol_missing_files": [
+        "tool/agent_indexes/contracts.js",
+        "tool/agent_indexes/project.js"
+      ],
+      "covered_files_without_symbols": [
+        "tool/agent_indexes/contracts.js",
+        "tool/agent_indexes/project.js"
+      ],
+      "expected_rules": 2,
+      "covered_rules": 2,
+      "missing_rules": [],
+      "symbols": 80,
+      "symbol_budget_saturated": true,
+      "ownership_expected": null,
+      "ownership_predicted": null,
+      "ownership_correct": null,
+      "markdown_nodes": 9,
+      "markdown_nodes_with_high_ownership": 6,
+      "unknown_context_count": 24,
+      "query_unfiltered_recommendations": 14,
+      "negative_semantic_support_claim": null,
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/AGENTS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "AI_ANALYSIS_SCHEMA.json": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "AI_PROJECT_CONTEXT.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "REFACTOR_PLAN.md": {
+          "ownership": "adapter",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/pubspec.yaml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "pubspec.lock": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/generate_agent_indexes.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/generator.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/project.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/contracts.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/AI_ANALYSIS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/theme/app_theme_controller.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/theme/forge_theme_tokens.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/AI_ANALYSIS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/shared/popup/AI_ANALYSIS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "apps/flutter_forge/lib/shared/table/AI_ANALYSIS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        ".github/workflows/release.yml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/adaptive_app_shell.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/app.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/app_bootstrap.dart": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/category_window_app.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/module_root.dart": {
+          "ownership": "adapter",
+          "confidence": "HIGH"
+        }
+      }
+    },
+    {
+      "case_id": "forge-platform-release",
+      "project_id": "flutter-forge",
+      "language": "zh",
+      "negative": false,
+      "pool_files": 24,
+      "returned_files": 24,
+      "intake_retention": 1.0,
+      "expected_files": 3,
+      "covered_files": 1,
+      "missing_files": [
+        "apps/flutter_forge/windows/installer/setup.iss",
+        "tool/build_web_release.sh"
+      ],
+      "symbol_supported_files": 0,
+      "symbol_missing_files": [
+        ".github/workflows/release.yml",
+        "apps/flutter_forge/windows/installer/setup.iss",
+        "tool/build_web_release.sh"
+      ],
+      "covered_files_without_symbols": [
+        ".github/workflows/release.yml"
+      ],
+      "expected_rules": 1,
+      "covered_rules": 1,
+      "missing_rules": [],
+      "symbols": 80,
+      "symbol_budget_saturated": true,
+      "ownership_expected": null,
+      "ownership_predicted": null,
+      "ownership_correct": null,
+      "markdown_nodes": 9,
+      "markdown_nodes_with_high_ownership": 6,
+      "unknown_context_count": 24,
+      "query_unfiltered_recommendations": 14,
+      "negative_semantic_support_claim": null,
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/AGENTS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "AI_ANALYSIS_SCHEMA.json": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "AI_PROJECT_CONTEXT.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "REFACTOR_PLAN.md": {
+          "ownership": "adapter",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/pubspec.yaml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "pubspec.lock": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/generate_agent_indexes.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/generator.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/project.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/contracts.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/AI_ANALYSIS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/theme/app_theme_controller.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/theme/forge_theme_tokens.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/AI_ANALYSIS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/shared/popup/AI_ANALYSIS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "apps/flutter_forge/lib/shared/table/AI_ANALYSIS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        ".github/workflows/release.yml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/adaptive_app_shell.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/app.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/app_bootstrap.dart": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/category_window_app.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/module_root.dart": {
+          "ownership": "adapter",
+          "confidence": "HIGH"
+        }
+      }
+    },
+    {
+      "case_id": "forge-platform-release",
+      "project_id": "flutter-forge",
+      "language": "en",
+      "negative": false,
+      "pool_files": 24,
+      "returned_files": 24,
+      "intake_retention": 1.0,
+      "expected_files": 3,
+      "covered_files": 1,
+      "missing_files": [
+        "apps/flutter_forge/windows/installer/setup.iss",
+        "tool/build_web_release.sh"
+      ],
+      "symbol_supported_files": 0,
+      "symbol_missing_files": [
+        ".github/workflows/release.yml",
+        "apps/flutter_forge/windows/installer/setup.iss",
+        "tool/build_web_release.sh"
+      ],
+      "covered_files_without_symbols": [
+        ".github/workflows/release.yml"
+      ],
+      "expected_rules": 1,
+      "covered_rules": 1,
+      "missing_rules": [],
+      "symbols": 80,
+      "symbol_budget_saturated": true,
+      "ownership_expected": null,
+      "ownership_predicted": null,
+      "ownership_correct": null,
+      "markdown_nodes": 9,
+      "markdown_nodes_with_high_ownership": 6,
+      "unknown_context_count": 24,
+      "query_unfiltered_recommendations": 14,
+      "negative_semantic_support_claim": null,
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/AGENTS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "AI_ANALYSIS_SCHEMA.json": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "AI_PROJECT_CONTEXT.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "REFACTOR_PLAN.md": {
+          "ownership": "adapter",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/pubspec.yaml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "pubspec.lock": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/generate_agent_indexes.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/generator.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/project.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "tool/agent_indexes/contracts.js": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/AI_ANALYSIS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/theme/app_theme_controller.dart": {
+          "ownership": "ui_only",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/theme/forge_theme_tokens.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/AI_ANALYSIS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/shared/popup/AI_ANALYSIS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "apps/flutter_forge/lib/shared/table/AI_ANALYSIS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        ".github/workflows/release.yml": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/adaptive_app_shell.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/app.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/app_bootstrap.dart": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/app/category_window_app.dart": {
+          "ownership": "application_orchestration",
+          "confidence": "HIGH"
+        },
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/module_root.dart": {
+          "ownership": "adapter",
+          "confidence": "HIGH"
+        }
+      }
+    },
+    {
+      "case_id": "flutterguard-file-stdout",
+      "project_id": "flutterguard",
+      "language": "zh",
+      "negative": false,
+      "pool_files": 24,
+      "returned_files": 24,
+      "intake_retention": 1.0,
+      "expected_files": 2,
+      "covered_files": 2,
+      "missing_files": [],
+      "symbol_supported_files": 0,
+      "symbol_missing_files": [
+        "lib/src/cli/AGENTS.md",
+        "lib/src/cli/scan_command.dart"
+      ],
+      "covered_files_without_symbols": [
+        "lib/src/cli/AGENTS.md",
+        "lib/src/cli/scan_command.dart"
+      ],
+      "expected_rules": 2,
+      "covered_rules": 2,
+      "missing_rules": [],
+      "symbols": 0,
+      "symbol_budget_saturated": false,
+      "ownership_expected": "adapter",
+      "ownership_predicted": "unknown",
+      "ownership_correct": false,
+      "markdown_nodes": 9,
+      "markdown_nodes_with_high_ownership": 7,
+      "unknown_context_count": 0,
+      "query_unfiltered_recommendations": 8,
+      "negative_semantic_support_claim": null,
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "bin/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/AGENTS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/cli/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/rules/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "scripts/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "CONTEXT.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "pubspec.yaml": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "bin/flutterguard.dart": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/cli/scan_command.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/scan_context.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/source_workspace.dart": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "scripts/idea_plugin_preflight.sh": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        ".github/workflows/release.yml": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/.gitignore": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/build.gradle.kts": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/gradle.properties": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/gradle/wrapper/gradle-wrapper.properties": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/gradlew.bat": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/settings.gradle.kts": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardSettings.kt": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        }
+      }
+    },
+    {
+      "case_id": "flutterguard-file-stdout",
+      "project_id": "flutterguard",
+      "language": "en",
+      "negative": false,
+      "pool_files": 24,
+      "returned_files": 24,
+      "intake_retention": 1.0,
+      "expected_files": 2,
+      "covered_files": 2,
+      "missing_files": [],
+      "symbol_supported_files": 1,
+      "symbol_missing_files": [
+        "lib/src/cli/scan_command.dart"
+      ],
+      "covered_files_without_symbols": [
+        "lib/src/cli/scan_command.dart"
+      ],
+      "expected_rules": 2,
+      "covered_rules": 2,
+      "missing_rules": [],
+      "symbols": 80,
+      "symbol_budget_saturated": true,
+      "ownership_expected": "adapter",
+      "ownership_predicted": "unknown",
+      "ownership_correct": false,
+      "markdown_nodes": 9,
+      "markdown_nodes_with_high_ownership": 7,
+      "unknown_context_count": 0,
+      "query_unfiltered_recommendations": 8,
+      "negative_semantic_support_claim": null,
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "bin/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/AGENTS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/cli/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/rules/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "scripts/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "CONTEXT.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "pubspec.yaml": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "bin/flutterguard.dart": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/cli/scan_command.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/scan_context.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/source_workspace.dart": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "scripts/idea_plugin_preflight.sh": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        ".github/workflows/release.yml": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/.gitignore": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/build.gradle.kts": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/gradle.properties": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/gradle/wrapper/gradle-wrapper.properties": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/gradlew.bat": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/settings.gradle.kts": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardSettings.kt": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        }
+      }
+    },
+    {
+      "case_id": "flutterguard-rule-registry",
+      "project_id": "flutterguard",
+      "language": "zh",
+      "negative": false,
+      "pool_files": 24,
+      "returned_files": 24,
+      "intake_retention": 1.0,
+      "expected_files": 2,
+      "covered_files": 1,
+      "missing_files": [
+        "lib/src/rules/registry.dart"
+      ],
+      "symbol_supported_files": 0,
+      "symbol_missing_files": [
+        "lib/src/rules/AGENTS.md",
+        "lib/src/rules/registry.dart"
+      ],
+      "covered_files_without_symbols": [
+        "lib/src/rules/AGENTS.md"
+      ],
+      "expected_rules": 2,
+      "covered_rules": 2,
+      "missing_rules": [],
+      "symbols": 0,
+      "symbol_budget_saturated": false,
+      "ownership_expected": null,
+      "ownership_predicted": null,
+      "ownership_correct": null,
+      "markdown_nodes": 9,
+      "markdown_nodes_with_high_ownership": 7,
+      "unknown_context_count": 0,
+      "query_unfiltered_recommendations": 8,
+      "negative_semantic_support_claim": null,
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "bin/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/AGENTS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/cli/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/rules/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "scripts/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "CONTEXT.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "pubspec.yaml": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "bin/flutterguard.dart": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/cli/scan_command.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/scan_context.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/source_workspace.dart": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "scripts/idea_plugin_preflight.sh": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        ".github/workflows/release.yml": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/.gitignore": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/build.gradle.kts": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/gradle.properties": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/gradle/wrapper/gradle-wrapper.properties": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/gradlew.bat": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/settings.gradle.kts": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardSettings.kt": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        }
+      }
+    },
+    {
+      "case_id": "flutterguard-rule-registry",
+      "project_id": "flutterguard",
+      "language": "en",
+      "negative": false,
+      "pool_files": 24,
+      "returned_files": 24,
+      "intake_retention": 1.0,
+      "expected_files": 2,
+      "covered_files": 1,
+      "missing_files": [
+        "lib/src/rules/registry.dart"
+      ],
+      "symbol_supported_files": 1,
+      "symbol_missing_files": [
+        "lib/src/rules/registry.dart"
+      ],
+      "covered_files_without_symbols": [],
+      "expected_rules": 2,
+      "covered_rules": 2,
+      "missing_rules": [],
+      "symbols": 80,
+      "symbol_budget_saturated": true,
+      "ownership_expected": null,
+      "ownership_predicted": null,
+      "ownership_correct": null,
+      "markdown_nodes": 9,
+      "markdown_nodes_with_high_ownership": 7,
+      "unknown_context_count": 0,
+      "query_unfiltered_recommendations": 8,
+      "negative_semantic_support_claim": null,
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "bin/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/AGENTS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/cli/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/rules/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "scripts/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "CONTEXT.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "pubspec.yaml": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "bin/flutterguard.dart": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/cli/scan_command.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/scan_context.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/source_workspace.dart": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "scripts/idea_plugin_preflight.sh": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        ".github/workflows/release.yml": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/.gitignore": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/build.gradle.kts": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/gradle.properties": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/gradle/wrapper/gradle-wrapper.properties": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/gradlew.bat": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/settings.gradle.kts": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardSettings.kt": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        }
+      }
+    },
+    {
+      "case_id": "flutterguard-idea-windows",
+      "project_id": "flutterguard",
+      "language": "zh",
+      "negative": false,
+      "pool_files": 24,
+      "returned_files": 24,
+      "intake_retention": 1.0,
+      "expected_files": 3,
+      "covered_files": 3,
+      "missing_files": [],
+      "symbol_supported_files": 0,
+      "symbol_missing_files": [
+        "idea-plugin/AGENTS.md",
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+        "scripts/idea_plugin_preflight.sh"
+      ],
+      "covered_files_without_symbols": [
+        "idea-plugin/AGENTS.md",
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+        "scripts/idea_plugin_preflight.sh"
+      ],
+      "expected_rules": 2,
+      "covered_rules": 2,
+      "missing_rules": [],
+      "symbols": 0,
+      "symbol_budget_saturated": false,
+      "ownership_expected": "adapter",
+      "ownership_predicted": "platform_plugin",
+      "ownership_correct": false,
+      "markdown_nodes": 9,
+      "markdown_nodes_with_high_ownership": 7,
+      "unknown_context_count": 0,
+      "query_unfiltered_recommendations": 8,
+      "negative_semantic_support_claim": null,
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "bin/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/AGENTS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/cli/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/rules/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "scripts/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "CONTEXT.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "pubspec.yaml": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "bin/flutterguard.dart": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/cli/scan_command.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/scan_context.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/source_workspace.dart": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "scripts/idea_plugin_preflight.sh": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        ".github/workflows/release.yml": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/.gitignore": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/build.gradle.kts": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/gradle.properties": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/gradle/wrapper/gradle-wrapper.properties": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/gradlew.bat": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/settings.gradle.kts": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardSettings.kt": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        }
+      }
+    },
+    {
+      "case_id": "flutterguard-idea-windows",
+      "project_id": "flutterguard",
+      "language": "en",
+      "negative": false,
+      "pool_files": 24,
+      "returned_files": 24,
+      "intake_retention": 1.0,
+      "expected_files": 3,
+      "covered_files": 3,
+      "missing_files": [],
+      "symbol_supported_files": 0,
+      "symbol_missing_files": [
+        "idea-plugin/AGENTS.md",
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+        "scripts/idea_plugin_preflight.sh"
+      ],
+      "covered_files_without_symbols": [
+        "idea-plugin/AGENTS.md",
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+        "scripts/idea_plugin_preflight.sh"
+      ],
+      "expected_rules": 2,
+      "covered_rules": 2,
+      "missing_rules": [],
+      "symbols": 80,
+      "symbol_budget_saturated": true,
+      "ownership_expected": "adapter",
+      "ownership_predicted": "platform_plugin",
+      "ownership_correct": false,
+      "markdown_nodes": 9,
+      "markdown_nodes_with_high_ownership": 7,
+      "unknown_context_count": 0,
+      "query_unfiltered_recommendations": 8,
+      "negative_semantic_support_claim": null,
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "bin/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/AGENTS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/cli/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/rules/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "scripts/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "CONTEXT.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "pubspec.yaml": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "bin/flutterguard.dart": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/cli/scan_command.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/scan_context.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/source_workspace.dart": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "scripts/idea_plugin_preflight.sh": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        ".github/workflows/release.yml": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/.gitignore": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/build.gradle.kts": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/gradle.properties": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/gradle/wrapper/gradle-wrapper.properties": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/gradlew.bat": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/settings.gradle.kts": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardSettings.kt": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        }
+      }
+    },
+    {
+      "case_id": "flutterguard-missing-runtime-plugin",
+      "project_id": "flutterguard",
+      "language": "zh",
+      "negative": true,
+      "pool_files": 24,
+      "returned_files": 24,
+      "intake_retention": 1.0,
+      "expected_files": 2,
+      "covered_files": 2,
+      "missing_files": [],
+      "symbol_supported_files": 0,
+      "symbol_missing_files": [
+        "AGENTS.md",
+        "pubspec.yaml"
+      ],
+      "covered_files_without_symbols": [
+        "AGENTS.md",
+        "pubspec.yaml"
+      ],
+      "expected_rules": 1,
+      "covered_rules": 1,
+      "missing_rules": [],
+      "symbols": 0,
+      "symbol_budget_saturated": false,
+      "ownership_expected": null,
+      "ownership_predicted": null,
+      "ownership_correct": null,
+      "markdown_nodes": 9,
+      "markdown_nodes_with_high_ownership": 7,
+      "unknown_context_count": 0,
+      "query_unfiltered_recommendations": 8,
+      "negative_semantic_support_claim": "NOT_SCORED_GRAPHS_RETURN_ANCHORS_NOT_SUPPORT_CLAIMS",
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "bin/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/AGENTS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/cli/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/rules/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "scripts/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "CONTEXT.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "pubspec.yaml": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "bin/flutterguard.dart": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/cli/scan_command.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/scan_context.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/source_workspace.dart": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "scripts/idea_plugin_preflight.sh": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        ".github/workflows/release.yml": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/.gitignore": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/build.gradle.kts": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/gradle.properties": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/gradle/wrapper/gradle-wrapper.properties": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/gradlew.bat": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/settings.gradle.kts": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardSettings.kt": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        }
+      }
+    },
+    {
+      "case_id": "flutterguard-missing-runtime-plugin",
+      "project_id": "flutterguard",
+      "language": "en",
+      "negative": true,
+      "pool_files": 24,
+      "returned_files": 24,
+      "intake_retention": 1.0,
+      "expected_files": 2,
+      "covered_files": 2,
+      "missing_files": [],
+      "symbol_supported_files": 1,
+      "symbol_missing_files": [
+        "pubspec.yaml"
+      ],
+      "covered_files_without_symbols": [
+        "pubspec.yaml"
+      ],
+      "expected_rules": 1,
+      "covered_rules": 1,
+      "missing_rules": [],
+      "symbols": 80,
+      "symbol_budget_saturated": true,
+      "ownership_expected": null,
+      "ownership_predicted": null,
+      "ownership_correct": null,
+      "markdown_nodes": 9,
+      "markdown_nodes_with_high_ownership": 7,
+      "unknown_context_count": 0,
+      "query_unfiltered_recommendations": 8,
+      "negative_semantic_support_claim": "NOT_SCORED_GRAPHS_RETURN_ANCHORS_NOT_SUPPORT_CLAIMS",
+      "out_of_pool_files": [],
+      "known_irrelevant_symbol_hits": [],
+      "node_ownership": {
+        "AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "bin/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/AGENTS.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/cli/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/rules/AGENTS.md": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "scripts/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/AGENTS.md": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "CONTEXT.md": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "pubspec.yaml": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "bin/flutterguard.dart": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "lib/src/cli/scan_command.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/scan_context.dart": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "lib/src/source_workspace.dart": {
+          "ownership": "shared_core",
+          "confidence": "HIGH"
+        },
+        "scripts/idea_plugin_preflight.sh": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        ".github/workflows/release.yml": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/.gitignore": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/build.gradle.kts": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/gradle.properties": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/gradle/wrapper/gradle-wrapper.properties": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/gradlew.bat": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/settings.gradle.kts": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        },
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt": {
+          "ownership": "platform_plugin",
+          "confidence": "HIGH"
+        },
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardSettings.kt": {
+          "ownership": "unknown",
+          "confidence": "MEDIUM"
+        }
+      }
+    }
+  ],
+  "precision": {
+    "status": "NOT_SCORED",
+    "reason": "must_hit is a partial positive set, not a complete relevance judgement"
+  },
+  "limitations": [
+    "10 independently labelled positive intents and 2 negative intents; each has paired Chinese/English queries, not 24 independent samples.",
+    "25 positive case-file expectations and 15 rule expectations are minimal required sets, not complete relevance labels.",
+    "Five ownership-labelled source files; a missing source is retained in end-to-end accuracy and unknown predictions remain in the conditional denominator.",
+    "Current dirty/untracked worktrees and cached unit metadata are observed; no claim about release acceptance or full-repository recall.",
+    "Negative existing HIGH ownership anchors are not proof of support for nonexistent or unverified capability.",
+    "Symbol-supported file coverage is lexical evidence coverage, not semantic answer accuracy.",
+    "Existing HIGH ownership anchors do not assert support for a negative query.",
+    "The run evaluates current local worktrees and cached unit metadata, not release acceptance."
+  ]
+}

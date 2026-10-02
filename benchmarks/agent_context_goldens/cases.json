@@ -1,0 +1,326 @@
+{
+  "schema": "bounded-agent-hit-goldens.v1",
+  "independent_of_predictions": true,
+  "method": "Independent source review before graph predictions; must_hit is a partial positive set, not a complete relevance set.",
+  "cases": [
+    {
+      "id": "forge-theme-window",
+      "project_id": "flutter-forge",
+      "negative": false,
+      "query_zh": "让主窗口和桌面分类窗口统一使用持久化的主题选择；关闭、重开或复用分类窗口时正确释放旧路由与监听器，避免主题不同步或生命周期泄漏。",
+      "query_en": "Keep AppThemeController theme preferences persisted and consistent between the main app and CategoryWindowApp; dispose and replace category router listeners correctly when desktop windows close, reopen, or are reused.",
+      "must_hit": [
+        "apps/flutter_forge/lib/app/theme/app_theme_controller.dart",
+        "apps/flutter_forge/lib/app/category_window_app.dart"
+      ],
+      "rule_entries": [
+        "AGENTS.md",
+        "apps/flutter_forge/lib/app/AGENTS.md"
+      ],
+      "ownership_expectation": {
+        "path": "apps/flutter_forge/lib/app/category_window_app.dart",
+        "classification": "application_orchestration",
+        "rationale": "分类窗口组合应用级路由、主题与窗口生命周期；属于应用编排，不因自身是 Widget 就降为纯渲染，也不因监听器存在就判为平台插件。"
+      },
+      "known_irrelevant": [
+        "apps/flutter_forge/windows/installer/setup.iss"
+      ],
+      "rationale": "控制器读取和持久化主题并接受远端选择；分类窗口创建、替换、释放路由并组合 AppThemeScope/MaterialApp。",
+      "negative_expectation": null
+    },
+    {
+      "id": "forge-ble-session",
+      "project_id": "flutter-forge",
+      "negative": false,
+      "query_zh": "完善蓝牙扫描和连接会话的可控性：扫描结束、手动停止、连接取消、断连未确认和页面离开时显示真实状态，并阻止过期异步结果重新更新界面。",
+      "query_en": "Improve BleSession scan and GATT connection lifecycle controls: truthful startScan/stopScan phases, cancelConnection, unconfirmed disconnects, and page deactivation cleanup with generation guards against stale asynchronous results.",
+      "must_hit": [
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/state/ble_session.dart",
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/module_root.dart"
+      ],
+      "rule_entries": [
+        "AGENTS.md"
+      ],
+      "ownership_expectation": null,
+      "known_irrelevant": [
+        "apps/flutter_forge/windows/installer/setup.iss"
+      ],
+      "rationale": "会话定义扫描/连接阶段、generation 与 close 清理；页面绑定会话、离开时 setActive(false) 并驱动控件。同文件还包含 UniversalBleClient 平台适配，文件级单标签不能准确表达两种所有权，因此不强制 ownership 标签。",
+      "negative_expectation": null
+    },
+    {
+      "id": "forge-generated-dependency-contract",
+      "project_id": "flutter-forge",
+      "negative": false,
+      "query_zh": "维护 Forge 的生成器依赖与层级机器契约，准确记录 gcode_core 的请求版本和锁定提交、FlutterGuard 的 immutable 工具 pin，并把应用主题和跨窗口同步归属生成到 Agent 上下文。",
+      "query_en": "Maintain agent index generator contracts for dependency facts and application layers: render gcode_core requested ref and resolved ref, immutable FlutterGuard tool pin, and app theme / cross-window lifecycle ownership into AI_PROJECT_CONTEXT.",
+      "must_hit": [
+        "tool/agent_indexes/project.js",
+        "tool/agent_indexes/contracts.js",
+        "AI_PROJECT_CONTEXT.md"
+      ],
+      "rule_entries": [
+        "AGENTS.md",
+        "tool/agent_indexes/AGENTS.md"
+      ],
+      "ownership_expectation": null,
+      "known_irrelevant": [
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/module_root.dart"
+      ],
+      "rationale": "project.js 将 facts 中外部依赖投影到项目上下文；contracts.js 输出 app/theme 等层级归属；AI_PROJECT_CONTEXT 是当前生成投影。生成器归属未被能力分类集合单独表达，此 case 仅测定位与规则命中。",
+      "negative_expectation": null
+    },
+    {
+      "id": "forge-platform-release",
+      "project_id": "flutter-forge",
+      "negative": false,
+      "query_zh": "验证同一应用版本的四端分发准备：Windows 安装器注入并校验版本，Android 产出 ARM64 debug 签名 APK，Web 生成静态发布包；真实发布仍交给 Hub 冻结发布流程。",
+      "query_en": "Validate four-platform release preparation from one application version: Windows Inno Setup installer version injection and validation, Android ARM64 debug APK signing, Web static release build, and Hub-owned frozen ReleaseProgram publication.",
+      "must_hit": [
+        ".github/workflows/release.yml",
+        "apps/flutter_forge/windows/installer/setup.iss",
+        "tool/build_web_release.sh"
+      ],
+      "rule_entries": [
+        "AGENTS.md"
+      ],
+      "ownership_expectation": null,
+      "known_irrelevant": [
+        "apps/flutter_forge/lib/modules/platform/bluetooth_ble/module_root.dart"
+      ],
+      "rationale": "工作流声明四端构建、版本提取校验和 Android debug 产物，并明确禁用 CI 直接 GitHub Release；Inno Setup 强制外部版本；工作流直接调用 Web 构建脚本。发布控制属于 Hub lifecycle，不能塞进 Dart runtime 所有权标签。",
+      "negative_expectation": null
+    },
+    {
+      "id": "gcode-parser-model",
+      "project_id": "gcode-core",
+      "negative": false,
+      "query_zh": "定位直线运动与绝对、相对坐标的解析逻辑以及轨迹线段模型，评估解析和数据契约是否独立于页面状态。",
+      "query_en": "Locate GcodeParser G0 G1 G90 G91 parsing and ToolpathSegment model contracts; assess whether parser and model responsibilities are independent from page state.",
+      "must_hit": [
+        "lib/src/parser/gcode_parser.dart",
+        "lib/src/models/toolpath_segment.dart",
+        "lib/gcode_core.dart"
+      ],
+      "rule_entries": [
+        "AGENTS.md"
+      ],
+      "ownership_expectation": {
+        "path": "lib/src/parser/gcode_parser.dart",
+        "classification": "shared_core",
+        "rationale": "GcodeParser 只读文本并构造 GcodeCommand/ParsedGcodeLine，无 Widget、应用控制器或平台调用；根指南明确 package 拥有 parser/model。"
+      },
+      "known_irrelevant": [],
+      "rationale": [
+        "AGENTS.md Layout and ownership / Change boundaries",
+        "lib/gcode_core.dart parser/model exports",
+        "GcodeParser.parse/parseRecord/parseLine",
+        "ToolpathSegment immutable fields"
+      ],
+      "negative_expectation": null
+    },
+    {
+      "id": "gcode-gpu-playback",
+      "project_id": "gcode-core",
+      "negative": false,
+      "query_zh": "定位绘制时播放进度的更新逻辑，检查仅进度改变时是否复用几何数据、绘图缓冲区和画布，并保留退化线段的累计顶点数。",
+      "query_en": "Locate GPU playback progress updates and foregroundVertexCount uniforms; check whether progress-only changes reuse geometry, buffer and surface while preserving degenerate-segment prefixVertexCounts.",
+      "must_hit": [
+        "lib/src/rendering/gpu_toolpath_layer.dart",
+        "lib/src/rendering/toolpath_geometry.dart"
+      ],
+      "rule_entries": [
+        "AGENTS.md"
+      ],
+      "ownership_expectation": {
+        "path": "lib/src/rendering/gpu_toolpath_layer.dart",
+        "classification": "ui_only",
+        "rationale": "GpuToolpathLayer 是 StatefulWidget/CustomPainter 渲染实现；不负责 example 的播放会话与文件选择。GPU渲染自身属于package，但在通用分类enum中渲染叶子为ui_only。"
+      },
+      "known_irrelevant": [],
+      "rationale": [
+        "AGENTS.md Playback-only progress changes",
+        "_GpuResources.prepare identity/viewport/width invalidation",
+        "ToolpathGeometry.foregroundVertexCount / prefixVertexCounts",
+        "recent commit 7d561e3 GPU playback changes"
+      ],
+      "negative_expectation": null
+    },
+    {
+      "id": "gcode-version-evidence",
+      "project_id": "gcode-core",
+      "negative": false,
+      "query_zh": "核对 0.2.1 的苹果桌面端与安卓端维护者手测确认，区分历史绘图报告、当前详细运行验收与构建证据；缺少的设备、文件选择、帧率和显存测量仍应待验证。",
+      "query_en": "Check gcode_core version 0.2.1 macOS Android maintainer acceptance evidence; separate historical GPU reports, current native runtime validation and builds; leave missing device picker frame memory measurements unknown.",
+      "must_hit": [
+        "docs/evidence/0.2.1-maintainer-acceptance.md",
+        "pubspec.yaml",
+        "AGENTS.md"
+      ],
+      "rule_entries": [
+        "AGENTS.md"
+      ],
+      "ownership_expectation": null,
+      "known_irrelevant": [],
+      "rationale": [
+        "pubspec.yaml version 0.2.1",
+        "acceptance document source baseline 7d561e3",
+        "AGENTS.md platform contract and evidence boundaries"
+      ],
+      "negative_expectation": null
+    },
+    {
+      "id": "flutterguard-file-stdout",
+      "project_id": "flutterguard",
+      "negative": false,
+      "query_zh": "定位单个源码文件的扫描输出和严重程度门禁，确认结构化报告不写文件、诊断进入错误输出，发现问题导致退出码为 1 时仍能供编辑器解析。",
+      "query_en": "Locate single file scan --stdout JSON SARIF output and severity gate semantics; confirm structured report has no file writes, diagnostics go to stderr and exit 1 remains parseable by IDE.",
+      "must_hit": [
+        "lib/src/cli/scan_command.dart",
+        "lib/src/cli/AGENTS.md"
+      ],
+      "rule_entries": [
+        "AGENTS.md",
+        "lib/src/cli/AGENTS.md"
+      ],
+      "ownership_expectation": {
+        "path": "lib/src/cli/scan_command.dart",
+        "classification": "adapter",
+        "rationale": "ScanCommand 仅把args映射给FlutterGuardScanner、分流stdout/stderr并处理exit code；scoped guide明确cli只拥有参数与I/O，scanner拥有扫描编排。此金标是语义归属，未按实际分类输出迁就。"
+      },
+      "known_irrelevant": [],
+      "rationale": [
+        "AGENTS.md Product and IDE contract",
+        "lib/src/cli/AGENTS.md Target and report contract",
+        "ScanCommand.run writeStdout branch"
+      ],
+      "negative_expectation": null
+    },
+    {
+      "id": "flutterguard-rule-registry",
+      "project_id": "flutterguard",
+      "negative": false,
+      "query_zh": "定位唯一规则注册表，核查新增资源生命周期与蓝牙扫描检测规则的元数据、默认选项和执行是否统一维护，并复用扫描上下文与源码读取缓存。",
+      "query_en": "Locate sole RuleRegistry.registrations for lifecycle BLE scanning rules metadata defaultOptions and execution; reuse ScanContext and SourceWorkspace.",
+      "must_hit": [
+        "lib/src/rules/registry.dart",
+        "lib/src/rules/AGENTS.md"
+      ],
+      "rule_entries": [
+        "AGENTS.md",
+        "lib/src/rules/AGENTS.md"
+      ],
+      "ownership_expectation": null,
+      "known_irrelevant": [],
+      "rationale": [
+        "AGENTS.md Architecture invariants / Adding or changing a rule",
+        "lib/src/rules/AGENTS.md sole registry and defaults contract",
+        "RuleRegistry.registrations / all / find / analyze"
+      ],
+      "negative_expectation": null
+    },
+    {
+      "id": "flutterguard-idea-windows",
+      "project_id": "flutterguard",
+      "negative": false,
+      "query_zh": "定位编辑器外部扫描适配层的原生命令调用与微软桌面系统资源包装，核查运行时查找的文件名与打包的可执行文件后缀是否一致，保留三十秒超时及退出码为 1 时的结构化输出。",
+      "query_en": "Locate IntelliJ ExternalAnnotator adapter native CLI invocation and Windows packaged resources; compare resolveBinary lookup with .exe file names; preserve 30 second timeout and exit 1 structured JSON stdout semantics.",
+      "must_hit": [
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+        "scripts/idea_plugin_preflight.sh",
+        "idea-plugin/AGENTS.md"
+      ],
+      "rule_entries": [
+        "AGENTS.md",
+        "idea-plugin/AGENTS.md"
+      ],
+      "ownership_expectation": {
+        "path": "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+        "classification": "adapter",
+        "rationale": "IDE scoped guide明确annotator收集单文件、调用CLI、解析报告并展示注释；检测器及注册表继续属于root scanner，因此语义归属为adapter。实际文件仅确认存在，不新增超过8文件的源码读取。"
+      },
+      "known_irrelevant": [],
+      "rationale": [
+        "idea-plugin/AGENTS.md Entry points and protocol / Native resources and version",
+        "scripts/idea_plugin_preflight.sh native sync targets",
+        "recent commit 851af28 added annotator and IDE packaging"
+      ],
+      "negative_expectation": null
+    },
+    {
+      "id": "gcode-windows-unproven",
+      "project_id": "gcode-core",
+      "negative": true,
+      "query_zh": "请从当前证据确认轨迹绘图包在微软桌面系统上的原生实机验收已经通过，并提供当前版本持续每秒六十帧与长时间显存稳定性的证明。",
+      "query_en": "Confirm current gcode_core Windows native GPU runtime acceptance and sustained 60 fps long-running GPU memory stability from current evidence.",
+      "must_hit": [
+        "AGENTS.md",
+        "docs/evidence/0.2.1-maintainer-acceptance.md"
+      ],
+      "rule_entries": [
+        "AGENTS.md"
+      ],
+      "ownership_expectation": null,
+      "known_irrelevant": [],
+      "rationale": "根平台契约明确 Windows unsupported；0.2.1维护者确认仅macOS/Android且帧率和显存信息未记录。既有真实证据文件可以命中，但不能把它们投影为需求已被满足。",
+      "negative_expectation": {
+        "unknown": true,
+        "no_fabricated_paths": true,
+        "forbidden_claims": [
+          "Windows native GPU runtime validated",
+          "sustained 60 fps validated",
+          "long-running GPU memory stability validated"
+        ],
+        "no_unsupported_promotion": true,
+        "allow_existing_anchor_ownership": true,
+        "semantic_limit": "Existing bounded source anchors may retain HIGH confidence ownership. Their confidence does not establish support for this requested nonexistent or unverified capability; do not equate every HIGH anchor with a false-positive claim.",
+        "forbidden_query_linked_capabilities": [
+          "Windows native GPU runtime validated",
+          "sustained 60 fps validated",
+          "long-running GPU memory stability validated"
+        ]
+      }
+    },
+    {
+      "id": "flutterguard-missing-runtime-plugin",
+      "project_id": "flutterguard",
+      "negative": true,
+      "query_zh": "定位扫描工具的运行时蓝牙自动配对扩展系统与消息协议设备远程控制能力，确认可以直接作为扫描应用中的运行时软件开发包调用。",
+      "query_en": "Locate FlutterGuard runtime BLE auto pairing extension plugin system and MQTT remote device control SDK exposed to the scanned application.",
+      "must_hit": [
+        "AGENTS.md",
+        "pubspec.yaml"
+      ],
+      "rule_entries": [
+        "AGENTS.md"
+      ],
+      "ownership_expectation": null,
+      "known_irrelevant": [],
+      "rationale": "根guide明确executable-only CLI，无extension plugin system，不向被扫描app增加运行时SDK。现有ble_scanning静态检测规则不证明配对或远程控制能力。",
+      "negative_expectation": {
+        "unknown": true,
+        "no_fabricated_paths": true,
+        "forbidden_claims": [
+          "runtime BLE auto pairing capability exists",
+          "MQTT device remote control SDK exists",
+          "extension plugin system exists"
+        ],
+        "no_unsupported_promotion": true,
+        "allow_existing_anchor_ownership": true,
+        "semantic_limit": "Existing bounded source anchors may retain HIGH confidence ownership. Their confidence does not establish support for this requested nonexistent or unverified capability; do not equate every HIGH anchor with a false-positive claim.",
+        "forbidden_query_linked_capabilities": [
+          "runtime BLE auto pairing capability exists",
+          "MQTT device remote control SDK exists",
+          "extension plugin system exists"
+        ]
+      }
+    }
+  ],
+  "limitations": [
+    "10 independently labelled positive intents and 2 negative intents; each has paired Chinese/English queries, not 24 independent samples.",
+    "25 positive case-file expectations and 15 rule expectations are minimal required sets, not complete relevance labels.",
+    "Five ownership-labelled source files; a missing source is retained in end-to-end accuracy and unknown predictions remain in the conditional denominator.",
+    "Current dirty/untracked worktrees and cached unit metadata are observed; no claim about release acceptance or full-repository recall.",
+    "Negative existing HIGH ownership anchors are not proof of support for nonexistent or unverified capability."
+  ]
+}

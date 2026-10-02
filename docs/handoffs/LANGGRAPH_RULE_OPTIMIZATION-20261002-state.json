@@ -1,0 +1,39 @@
+{
+  "agent-hub": {
+    "path": "/Users/forest/code/agent-hub",
+    "head": "cde1adb76ad57d0496d7fb07fed7a0cd4111ca16",
+    "branch": "main",
+    "status": " M README.md\n M agent\n M src/agent_hub/capability/analyzer.py\n M src/agent_hub/context/resolver.py\n M src/agent_hub/graphs/capability_analysis.py\n M src/agent_hub/graphs/context_analysis.py\n M src/agent_hub/projects/gcode_core_adapter.py\n M tests/test_gcode_core_adapter.py\n M workspace/projects.json\n M workspace/registry-report.md\n?? AGENTS.md\n?? benchmarks/agent_context_goldens/\n?? benchmarks/agent_context_runs/\n?? docs/\n?? scripts/\n?? src/agent_hub/projects/agent_context.py\n?? tests/test_agent_context.py\n?? tests/test_bounded_context.py\n?? tests/test_rule_entrypoints.py\n?? workspace/agent-context.json\n?? workspace/flutterguard.json\n"
+  },
+  "flutter-forge": {
+    "path": "/Users/forest/code/langGraph/flutter_forge",
+    "head": "f7996632559bcfb72243b831863d069ab9abfd71",
+    "branch": "dev",
+    "status": " M AGENTS.md\n M apps/flutter_forge/integration_test/app_test.dart\n M apps/flutter_forge/integration_test/flutter_scene_3d_flow_test.dart\n M apps/flutter_forge/integration_test/windows_acceptance_test.dart\n M apps/flutter_forge/lib/app/AI_ANALYSIS.md\n M apps/flutter_forge/lib/app/adaptive_app_shell.dart\n M apps/flutter_forge/lib/app/app.dart\n M apps/flutter_forge/lib/app/app_bootstrap.dart\n M apps/flutter_forge/lib/app/category_window_app.dart\n M apps/flutter_forge/lib/modules/platform/bluetooth_ble/AI_ANALYSIS.md\n M apps/flutter_forge/lib/modules/platform/bluetooth_ble/module_root.dart\n M apps/flutter_forge/lib/modules/platform/bluetooth_ble/state/ble_session.dart\n M apps/flutter_forge/lib/shared/multi_window/multi_window_manager.dart\n M apps/flutter_forge/test/modules/platform/bluetooth_ble/ble_session_test.dart\n M apps/flutter_forge/test/shared/category_window_lifecycle_test.dart\n M apps/flutter_forge/test/shared/multi_window_manager_test.dart\n M apps/flutter_forge/test/shared/platform_route_guard_test.dart\n M tool/agent_indexes/contracts.js\n M tool/generate_agent_indexes.js\n?? apps/flutter_forge/docs/screenshots/ble/controls/\n?? apps/flutter_forge/integration_test/ble_scan_controls_test.dart\n?? apps/flutter_forge/lib/app/AGENTS.md\n?? apps/flutter_forge/lib/app/theme/\n?? apps/flutter_forge/test/modules/platform/bluetooth_ble/ble_controls_test.dart\n?? apps/flutter_forge/test/shared/app_theme_test.dart\n?? docs/reports/BLE_CONTROLLABILITY-20261002.md\n?? tool/agent_indexes/AGENTS.md\n"
+  },
+  "gcode-core": {
+    "path": "/Users/forest/code/langGraph/gcode_core",
+    "head": "22d76ad54e11ad752771b594b8345d5f9aab6a31",
+    "branch": "dev",
+    "status": " M AGENTS.md\n"
+  },
+  "flutterguard": {
+    "path": "/Users/forest/code/flutterguard",
+    "head": "b3becede57d87b9d5a3c53e6a2bca79e3cb84e17",
+    "branch": "feature/ide-stdout-single-file",
+    "status": " M .github/workflows/release.yml\n M AGENTS.md\n M CONTEXT.md\n M lib/src/cli/AGENTS.md\n M scripts/AGENTS.md\n?? .hermes/flutterguard-idea-ci-release.codex.json\n?? idea-plugin/AGENTS.md\n"
+  },
+  "file_hashes": {
+    "src/agent_hub/context/resolver.py": "f94ca4d99e3e222a6f3d9ecbc15e1a5f9f07dd2afe49b50e88e0fd6306faae26",
+    "src/agent_hub/capability/analyzer.py": "a103be8d5228ed51990545c1f7bd28e50c9b8507e45bb35eae2f1695c48a7365",
+    "src/agent_hub/projects/agent_context.py": "909ecdc6fc2dff115cda001fdf273bd8dac59c9b7897c9afb30499c190e93486",
+    "src/agent_hub/projects/gcode_core_adapter.py": "da40e00c13ec84bbd6952bb31ce5f6e9a58f0ca8321688ad838dd8c732152ae8",
+    "scripts/evaluate_agent_context_hits.py": "56f46b96f87814d04ee7b5b6f4cec0a909cad3b1ab0e2ce215ee78ac32a14bcd",
+    "benchmarks/agent_context_goldens/cases.json": "d858bb5a2a37e18fca4901eee4c91257c6f1da94891e7fccbfc54af6d0ec2588",
+    "benchmarks/agent_context_runs/20261002-baseline/results.json": "a65349de2cbb1cb6a04827501206b18c8c75ad06efb943d2a820276335cd9d7a",
+    "benchmarks/agent_context_runs/20261002-rules-optimized/results.json": "9d6c0584b8b89d718dee801327918efba88fca4835317ee42f5dac08263b69fb"
+  },
+  "paused_by_user": true,
+  "date": "2026-10-02",
+  "pending_review": "forge_hit_goldens independent implementation review was interrupted before result"
+}
