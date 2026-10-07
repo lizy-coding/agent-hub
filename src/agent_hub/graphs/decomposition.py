@@ -14,6 +14,9 @@ from urllib.request import Request, urlopen
 from langgraph.graph import END, START, StateGraph
 from agent_hub.projects.adapters import get_adapter
 from agent_hub.projects.decomposition_config import load_decomposition_project
+from agent_hub.execution.control import ControlError, ExecutionStore
+from agent_hub.execution.validation import freeze_checks
+from agent_hub.execution.integration import validate_result, integrate as integrate_verified
 
 _DEFAULT_PROJECT = load_decomposition_project()
 CLUSTER = _DEFAULT_PROJECT.cluster_root
@@ -59,6 +62,7 @@ class State(TypedDict, total=False):
     sync_base: dict[str, object]
     sync_result: dict[str, object]
     revalidate_worker: bool
+    resume_dispatch: bool
 
 
 def _pubspec(path: Path) -> tuple[str, list[str]]:
@@ -292,13 +296,20 @@ def _file_picker_contract_preflight(program: dict[str, object] | None = None) ->
 
 def _proposal_inventory(program: dict[str, object], spec: dict[str, object]) -> dict[str, object]:
     context = _adapter_context(program)
-    return get_adapter(str(context.get("adapter"))).proposal_inventory(program, spec)
+    task = get_adapter(str(context.get("adapter"))).proposal_inventory(program, spec)
+    if "validation_by_repository" in spec:
+        try:
+            task["validation_by_repository"] = freeze_checks(spec, _repositories_for(task, program))
+        except ControlError as error:
+            task.update(status="BLOCKED_DECISION", blocked_decisions=[str(error)])
+    return task
 
 
-def build_decomposition_graph():
+def build_decomposition_graph(control_root: Path | None = None):
+    store = ExecutionStore(control_root)
     graph = StateGraph(State)
 
-    def reconcile(state: State):
+    def reconcile_internal(state: State):
         program = state.get("decomposition_program")
         if not isinstance(program, dict):
             context = state.get("project_context") if isinstance(state.get("project_context"), dict) else {}
@@ -310,6 +321,31 @@ def build_decomposition_graph():
             root = Path(state.get("cluster_root") or CLUSTER)
             return {"decomposition_program": _program(root, context)}
         program = dict(program)
+        for active in program.get("migration_tasks", []):
+            request = active.get("execution_request")
+            if not request or active.get("status") == "DONE":
+                continue
+            try:
+                record = store.verify(request)
+            except ControlError as error:
+                active["status"] = "BLOCKED_DECISION"
+                program.update(status="PROGRAM_BLOCKED", current_migration_task=active["task_id"],
+                               execution_blocker={"status": str(error), "task_id": active["task_id"]})
+                return {"decomposition_program": program, "worker_result": {}, "migration_request": {}}
+            active["maintenance_progress"] = record.get("integration", {})
+            if record.get("phase") in {"EXECUTED", "INTEGRATING", "INTEGRATED"} and record.get("result", {}).get("status") == "SUCCESS":
+                # Recovery consumes the durable collector result and revalidates;
+                # it never discards already committed repositories on retry.
+                active["status"] = "RUNNING"
+                program.update(status="RUNNING", current_migration_task=active["task_id"])
+                program.pop("execution_blocker", None)
+                return {"decomposition_program": program, "worker_result": record["result"],
+                        "migration_request": {}, "revalidate_worker": True, "decision": {}}
+            incoming = state.get("worker_result")
+            if record.get("phase") == "RESERVED" and incoming and incoming.get("status") == "STALE_EXECUTION_RESULT" and not incoming.get("attempt_id") and state.get("execute"):
+                return {"decomposition_program": program, "worker_result": {}, "migration_request": request, "resume_dispatch": True}
+            if incoming and not store.result_matches(request, incoming):
+                return {"decomposition_program": program, "worker_result": {"status": "STALE_EXECUTION_RESULT"}, "migration_request": {}}
         is_flutter_forge = not program.get("adapter") or program.get("adapter") in {"flutter_forge", "flutter-forge"}
         # A retry is deliberately task-scoped: it can only release a terminal
         # no-effect/dispatch outcome that has no integration result to apply.
@@ -556,6 +592,11 @@ def build_decomposition_graph():
                 return {"decomposition_program": program}
         return {"decomposition_program": program}
 
+    def reconcile(state: State):
+        result = reconcile_internal(state)
+        result.setdefault("resume_dispatch", False)
+        return result
+
     def propose_task(state: State):
         program = dict(state.get("decomposition_program") or {})
         program["execution_mode"] = "PLAN_ONLY"
@@ -630,9 +671,19 @@ def build_decomposition_graph():
             return {}
         task = _select(program)
         if task is None:
-            program["status"] = "PROGRAM_COMPLETED"
-            return {"decomposition_program": program}
+            complete = all(item.get("status") in {"DONE", "NO_ACTION"} for item in program.get("migration_tasks", []))
+            program["status"] = "PROGRAM_COMPLETED" if complete else "PROGRAM_BLOCKED"
+            if not complete:
+                program["execution_blocker"] = {"status": "PROGRAM_INCOMPLETE", "reason": "No runnable task; unfinished tasks or dependencies remain."}
+            return {"decomposition_program": program, "migration_request": {}}
         repositories = _repositories_for(task, program)
+        try:
+            checks = freeze_checks(task, repositories)
+        except ControlError as error:
+            task["status"] = "BLOCKED_DECISION"
+            program.update(status="PROGRAM_BLOCKED", current_migration_task=task["task_id"],
+                           execution_blocker={"status": str(error), "task_id": task["task_id"]})
+            return {"decomposition_program": program, "migration_request": {}}
         managed, dirty = [], []
         for repository in repositories:
             worktree, branch = _ensure_worktree(repository, program)
@@ -655,6 +706,14 @@ def build_decomposition_graph():
             program.update({"status": "PROGRAM_BLOCKED", "current_migration_task": task["task_id"], "execution_blocker": {"status": "WORKER_SCOPE_CONFIGURATION_ERROR", "task_id": task["task_id"], "reason": "Frozen mutation repositories do not match the frozen workspace repositories."}})
             return {"decomposition_program": program}
         request = {"execution_kind": "decomposition_migration", "task_id": task["task_id"], "project_id": program.get("project_id"), "adapter": program.get("adapter"), "cluster_root": program.get("cluster_root"), "repository_paths": {str(item.get("repository_id")): str(item.get("path")) for item in program.get("repositories", []) if isinstance(item, dict) and item.get("repository_id") and item.get("path")}, "requirement": str(task.get("title", task["task_id"])) + ". Source units: " + ", ".join(task["source_units"]) + ". Target units: " + ", ".join(task["target_units"]), "source_units": task["source_units"], "target_units": task["target_units"], "allowed_operations": task["allowed_operations"], "target_creation_allowed": bool(task.get("target_creation_allowed", False)), "dependency_constraints": task.get("dependency_constraints", []), "execution_instructions": task.get("execution_instructions", []), "architecture_preflight": task.get("architecture_preflight", {}), "timeout_seconds": int(os.environ.get("AGENT_HUB_CODEX_TIMEOUT_SECONDS", "1800")), "allowed_paths_by_repository": allowed, "writable_repositories": [{"repository": repository, "role": roles[repository], "writable": True, "allowed_paths": allowed[repository]} for repository in repositories], "repositories": [{"repository": item["repository"], "base_revision": item["head"], "role": roles[item["repository"]], "writable": True, "allowed_paths": allowed[item["repository"]]} for item in managed]}
+        request["validation_by_repository"] = checks
+        try:
+            request = store.reserve(request, task.get("execution_request"))
+        except ControlError as error:
+            task["status"] = "BLOCKED_DECISION"
+            program.update(status="PROGRAM_BLOCKED", execution_blocker={"status": str(error), "task_id": task["task_id"]})
+            return {"decomposition_program": program, "migration_request": {}}
+        task["execution_request"] = request
         return {"decomposition_program": program, "migration_request": request}
 
     def dispatch(state: State):
@@ -671,6 +730,7 @@ def build_decomposition_graph():
             # terminal result consumed by receive/reconciliation.
             LOGGER.exception("DECOMPOSITION_DISPATCH_FAILED task_id=%s", task_id)
             worker = {"status": "WORKER_DISPATCH_FAILED", "task_id": task_id, "reason": "worker_bridge_exception", "detail": str(error)}
+            worker.update({key: request.get(key) for key in ("project_id", "attempt_id", "generation", "contract_sha256")})
         LOGGER.info("DECOMPOSITION_WORKER_INVOKED task_id=%s status=%s execution_id=%s", task_id, worker.get("status"), worker.get("worker_execution_id", ""))
         return {"worker_result": worker}
 
@@ -679,13 +739,16 @@ def build_decomposition_graph():
         task = next((item for item in program.get("migration_tasks", []) if item.get("task_id") == program.get("current_migration_task")), None)
         if not task:
             return {}
+        request = task.get("execution_request")
+        if request and not store.result_matches(request, worker):
+            return {"decomposition_program": program, "worker_result": {"status": "STALE_EXECUTION_RESULT", "reason": "execution_identity_mismatch"}}
         if worker.get("status") == "SUCCESS" and worker.get("worker_execution_id"):
             task.update({"status": "RUNNING", "worker_execution": {key: worker.get(key) for key in ("worker_execution_id", "worker_workspace", "dispatched_at")}})
             program["status"] = "RUNNING"
         else:
             task["status"] = "BLOCKED_DECISION"
             program.update({"status": "PROGRAM_BLOCKED", "execution_blocker": {"status": worker.get("status", "WORKER_DISPATCH_FAILED"), "task_id": task["task_id"], "reason": str(worker.get("reason", "worker_dispatch_failed")), "detail": worker.get("detail", "")}, "current_migration_task": None})
-        return {"decomposition_program": program}
+        return {"decomposition_program": program, "worker_result": worker}
 
     def validate(state: State):
         worker = state.get("worker_result") or {}
@@ -697,12 +760,15 @@ def build_decomposition_graph():
             guard = {"status": "REJECT", "reason": "MIGRATION_NO_EFFECT", "detail": "MigrationTask produced no repository changes; a move/create contract cannot be inferred or approved."}
         else:
             guard = _architecture_guard(task, worker, program) if isinstance(task, dict) and worker.get("status") == "SUCCESS" else {"status": "REJECT", "reason": "worker_not_successful"}
-        return {"worker_result": {**worker, "validation": {"scope_guard": "PASS" if worker.get("scope_guard") == "PASS" else "FAILED", "architecture_guard": guard}}, "revalidate_worker": False}
+        request = task.get("execution_request") if isinstance(task, dict) else None
+        issues = validate_result(store, request, worker) if request else ["EXECUTION_CONTRACT_MISSING"]
+        return {"worker_result": {**worker, "validation": {**worker.get("validation", {}), "scope_guard": "PASS" if worker.get("scope_guard") == "PASS" else "FAILED", "architecture_guard": guard, "completion_gate": {"status": "PASS" if not issues else "REJECT", "issues": issues}}}, "revalidate_worker": False}
 
     def review(state: State):
         worker = state.get("worker_result") or {}
         architecture = (worker.get("validation") or {}).get("architecture_guard", {}) if isinstance(worker.get("validation"), dict) else {}
-        approved = worker.get("status") == "SUCCESS" and worker.get("scope_guard") == "PASS" and not worker.get("unauthorized_files") and architecture.get("status") == "PASS"
+        completion = (worker.get("validation") or {}).get("completion_gate", {})
+        approved = worker.get("status") == "SUCCESS" and worker.get("scope_guard") == "PASS" and not worker.get("unauthorized_files") and architecture.get("status") == "PASS" and completion.get("status") == "PASS"
         return {"worker_result": {**worker, "review": "APPROVED" if approved else "CHANGES_REQUIRED", "architecture_verdict": "APPROVED" if approved else "REJECTED"}}
 
     def integrate(state: State):
@@ -715,36 +781,25 @@ def build_decomposition_graph():
             task["status"] = "BLOCKED_DECISION"
             program.update({"status": "PROGRAM_BLOCKED", "current_migration_task": task["task_id"], "execution_blocker": {"status": str(guard.get("reason", worker.get("status", "REVIEW_REJECTED"))), "task_id": task["task_id"], "worker_execution_id": worker.get("worker_execution_id"), "reason": "Worker/architecture review did not satisfy the integration gate.", "detail": guard}})
             return {"decomposition_program": program, "integration_result": {"status": "ARCHITECTURE_GUARD_REJECTED", "task_id": task["task_id"]}}
-        commits: dict[str, str] = {}
+        request = task.get("execution_request")
+        if not request:
+            task["status"] = "BLOCKED_DECISION"
+            program.update(status="PROGRAM_BLOCKED", execution_blocker={"status": "EXECUTION_CONTRACT_MISSING", "task_id": task["task_id"]})
+            return {"decomposition_program": program, "integration_result": {"status": "EXECUTION_CONTRACT_MISSING"}}
         try:
-            for repository, result in worker.get("repositories", {}).items():
-                worktree, _ = _ensure_worktree(repository, program)
-                allowed, diff = _allowed(task, repository, program), str(result.get("diff", ""))
-                worker_changed = _worker_change_set(worker, repository)
-                changed = _changes(worktree)
-                if diff and not changed:
-                    checked = subprocess.run(["git", "apply", "--check", "--whitespace=nowarn", "-"], cwd=worktree, input=diff, text=True, capture_output=True)
-                    if checked.returncode:
-                        raise RuntimeError(f"APPLY_CONFLICT {repository}: {checked.stderr[-500:]}")
-                    subprocess.run(["git", "apply", "--whitespace=nowarn", "-"], cwd=worktree, input=diff, text=True, check=True, capture_output=True)
-                changed = _changes(worktree)
-                if worker_changed and sorted(changed) != worker_changed:
-                    raise RuntimeError(f"INTEGRATION_WORKTREE_MISMATCH {repository}: expected {worker_changed}, found {changed}")
-                if not _scope_ok(changed, allowed):
-                    raise RuntimeError(f"INTEGRATION_SCOPE_VIOLATION {repository}: {changed}")
-                if changed:
-                    stage = _stage_validated_changes(worktree, changed)
-                    if stage.get("status") != "STAGED":
-                        raise RuntimeError(f"{stage.get('status')} {repository}: {stage.get('stderr', '')}")
-                    committed = subprocess.run(["git", "commit", "--no-verify", "-m", f"refactor: {task['task_id']} [{task['task_id']}]"], cwd=worktree, capture_output=True, text=True)
-                    if committed.returncode:
-                        raise RuntimeError(f"COMMIT_FAILED {repository}: {committed.stderr[-500:]}")
-                    commits[repository] = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=worktree, text=True).strip()
+            roots = {repository: _ensure_worktree(repository, program)[0] for repository in worker.get("repositories", {})}
+            result = integrate_verified(store, request, worker, roots)
+            commits = result["commits"]
+            task["maintenance_progress"] = result["repositories"]
             task.update({"status": "DONE", "worker_execution": task.get("worker_execution"), "integration_commits": commits, "completed_at": datetime.now(UTC).isoformat()})
             program.update({"integration_head": commits, "current_migration_task": None, "status": "PLANNING_COMPLETE"})
-            return {"decomposition_program": program, "integration_result": {"status": "COMMITTED", "commits": commits}}
+            return {"decomposition_program": program, "integration_result": {**result, "status": "COMMITTED"}}
         except Exception as error:
             task["status"] = "BLOCKED_DECISION"
+            try:
+                task["maintenance_progress"] = store.verify(request).get("integration", {})
+            except ControlError:
+                pass
             program.update({"status": "PROGRAM_BLOCKED", "current_migration_task": task["task_id"], "execution_blocker": {"status": "INTEGRATION_FAILED", "task_id": task["task_id"], "reason": str(error)}})
             return {"decomposition_program": program, "integration_result": {"status": "INTEGRATION_FAILED", "reason": str(error)}}
 
@@ -765,6 +820,10 @@ def build_decomposition_graph():
             return "sync_base"
         if isinstance(state.get("proposal_spec"), dict) and state.get("proposal_spec"):
             return "propose_task"
+        if not state.get("execute") or state.get("worker_result", {}).get("status") == "STALE_EXECUTION_RESULT":
+            return END
+        if state.get("resume_dispatch"):
+            return "dispatch"
         if state.get("revalidate_worker"):
             return "validate"
         program = state.get("decomposition_program")
@@ -774,10 +833,15 @@ def build_decomposition_graph():
             return "integrate"
         return "freeze"
 
-    graph.add_conditional_edges("reconcile", route_after_reconcile, {END: END, "sync_base": "sync_base", "propose_task": "propose_task", "validate": "validate", "integrate": "integrate", "freeze": "freeze"})
+    graph.add_conditional_edges("reconcile", route_after_reconcile, {END: END, "dispatch":"dispatch", "sync_base": "sync_base", "propose_task": "propose_task", "validate": "validate", "integrate": "integrate", "freeze": "freeze"})
     graph.add_edge("sync_base", END)
     graph.add_edge("propose_task", END)
-    graph.add_conditional_edges("freeze", lambda state: "dispatch" if state.get("migration_request") else END, {"dispatch": "dispatch", END: END})
+    def route_after_freeze(state: State):
+        program = state.get("decomposition_program", {})
+        request = state.get("migration_request")
+        task = next((item for item in program.get("migration_tasks", []) if item.get("task_id") == program.get("current_migration_task")), {})
+        return "dispatch" if state.get("execute") and program.get("status") == "DISPATCHING" and request and request == task.get("execution_request") else END
+    graph.add_conditional_edges("freeze", route_after_freeze, {"dispatch": "dispatch", END: END})
     graph.add_edge("dispatch", "receive")
     graph.add_conditional_edges("receive", lambda state: "validate" if (state.get("worker_result") or {}).get("status") == "SUCCESS" else END, {"validate": "validate", END: END})
     graph.add_edge("validate", "review")

@@ -15,6 +15,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
 from agent_hub.projects.decomposition_config import load_decomposition_project
+from agent_hub.execution.control import ControlError, ExecutionStore
+from agent_hub.execution.validation import freeze_checks, run_checks, receipts_pass
 
 
 CLUSTER_ROOT = Path(os.environ.get("AGENT_HUB_DECOMPOSITION_CLUSTER_ROOT", str(load_decomposition_project().cluster_root)))
@@ -38,21 +40,42 @@ def _snapshot(worktree: Path) -> tuple[list[str], str]:
 class DecompositionCodeExecutor:
     """Run one frozen multi-repository task outside all managed worktrees."""
 
-    def __init__(self, cluster_root: Path | None = None, codex_binary: str = "codex") -> None:
+    def __init__(self, cluster_root: Path | None = None, codex_binary: str = "codex", control_root: Path | None = None) -> None:
         project = load_decomposition_project()
         selected_root = cluster_root or Path(os.environ.get("AGENT_HUB_DECOMPOSITION_CLUSTER_ROOT", str(CLUSTER_ROOT)))
         self.cluster_root = selected_root.resolve()
         self.repository_paths = project.repository_paths
         self.codex_binary = codex_binary
+        self.store = ExecutionStore(control_root)
 
     def execute(self, payload: dict[str, object]) -> dict[str, object]:
+        try:
+            with self.store.repositories(payload):
+                record = self.store.verify(payload)
+                if record.get("result"):
+                    return record["result"]
+                if record.get("phase") != "RESERVED":
+                    raise ControlError("EXECUTION_RECOVERY_REQUIRED")
+                record.update(phase="EXECUTING", pid=os.getpid())
+                self.store.save(payload, record)
+                result = self._execute(payload)
+                result.update({key: payload[key] for key in ("project_id", "attempt_id", "generation", "contract_sha256")})
+                record.update(phase="EXECUTED", result=result)
+                self.store.save(payload, record)
+                return result
+        except (ControlError, KeyError, TypeError, ValueError) as error:
+            result = self._result(str(payload.get("task_id", "")), "WORKER_CONTROL_REJECTED", str(error))
+            result.update({key: payload.get(key) for key in ("project_id", "attempt_id", "generation", "contract_sha256")})
+            return result
+
+    def _execute(self, payload: dict[str, object]) -> dict[str, object]:
         task_id = str(payload.get("task_id", ""))
         repositories = payload.get("repositories")
         payload_paths = payload.get("repository_paths")
         repository_paths = {
             str(repository): Path(str(path)).resolve()
             for repository, path in payload_paths.items()
-        } if isinstance(payload_paths, dict) else self.repository_paths
+        } if isinstance(payload_paths, dict) else {}
         cluster_root = Path(str(payload.get("cluster_root") or self.cluster_root)).resolve()
         scope, scope_error = self._writable_scope(payload)
         if not task_id or not isinstance(repositories, list) or not repositories or scope_error:
@@ -61,6 +84,10 @@ class DecompositionCodeExecutor:
             return self._result(task_id, "WORKER_SCOPE_CONFIGURATION_ERROR", "workspace_repositories_do_not_match_frozen_writable_scope")
         if any(not isinstance(item, dict) or not item.get("writable") for item in repositories):
             return self._result(task_id, "WORKER_SCOPE_CONFIGURATION_ERROR", "repository_missing_frozen_writable_role")
+        try:
+            checks = freeze_checks({"validation_by_repository": payload.get("validation_by_repository")}, list(scope))
+        except ControlError as error:
+            return self._result(task_id, "WORKER_SCOPE_CONFIGURATION_ERROR", str(error))
         execution_id = f"migration-{uuid4()}"
         root = Path(tempfile.mkdtemp(prefix="agent-hub-worker-"))
         worktrees: dict[str, Path] = {}
@@ -69,7 +96,9 @@ class DecompositionCodeExecutor:
                 if not isinstance(item, dict):
                     return self._result(task_id, "WORKER_DISPATCH_FAILED", "invalid_repository_entry", execution_id, root)
                 repository, base = str(item.get("repository", "")), str(item.get("base_revision", ""))
-                source = repository_paths.get(repository, cluster_root / repository)
+                source = repository_paths.get(repository)
+                if source is None:
+                    return self._result(task_id, "WORKER_DISPATCH_FAILED", "repository_mapping_missing", execution_id)
                 if not repository or not base or not source.is_dir():
                     return self._result(task_id, "WORKER_DISPATCH_FAILED", "invalid_repository_source", execution_id, root)
                 worktree = root / repository
@@ -108,6 +137,16 @@ class DecompositionCodeExecutor:
             unauthorized = self._unauthorized(payload, results)
             if unauthorized:
                 return self._result(task_id, "SCOPE_VIOLATION", "migration_scope_guard", execution_id, root, process.returncode, results, stdout, stderr, unauthorized)
+            for name, worktree in worktrees.items():
+                tree = subprocess.check_output(["git", "write-tree"], cwd=worktree, text=True).strip()
+                receipts = run_checks(worktree, checks[name], tree)
+                after_changed, after_diff = _snapshot(worktree)
+                after_tree = subprocess.check_output(["git", "write-tree"], cwd=worktree, text=True).strip()
+                results[name].update(output_tree_oid=tree, validation_receipts=receipts)
+                if after_tree != tree or after_changed != results[name]["changed_files"] or after_diff != results[name]["diff"]:
+                    return self._result(task_id, "VALIDATION_FAILED", "validation_changed_output", execution_id, root, exit_code, results)
+                if not receipts_pass(checks[name], receipts, tree):
+                    return self._result(task_id, "VALIDATION_FAILED", "required_validation_failed", execution_id, root, exit_code, results)
             return self._result(task_id, "SUCCESS", "", execution_id, root, process.returncode, results, stdout, stderr)
         except subprocess.TimeoutExpired as error:
             return self._result(task_id, "CODEX_EXECUTION_TIMEOUT", "timeout", execution_id, root, None, {}, getattr(error, "stdout", "") or "", getattr(error, "stderr", "") or "")
@@ -115,7 +154,7 @@ class DecompositionCodeExecutor:
             return self._result(task_id, "WORKER_DISPATCH_FAILED", str(error), execution_id, root)
         finally:
             for repository, worktree in worktrees.items():
-                source = repository_paths.get(repository, cluster_root / repository)
+                source = repository_paths[repository]
                 subprocess.run(["git", "worktree", "remove", "--force", str(worktree)], cwd=source, capture_output=True)
             shutil.rmtree(root, ignore_errors=True)
 

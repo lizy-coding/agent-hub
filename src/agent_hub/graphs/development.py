@@ -16,13 +16,17 @@ from urllib.request import Request, urlopen
 
 from langgraph.graph import END, START, StateGraph
 
-from agent_hub.execution.primary_apply import commit_approved
+from agent_hub.execution.control import ControlError, ExecutionStore
+from agent_hub.execution.validation import freeze_checks
+from agent_hub.execution.integration import integrate as integrate_verified, validate_result
 from agent_hub.projects import api as registry_api
 from agent_hub.workspace.config import WorkspaceConfig
 from agent_hub.workspace.runtime import RuntimeWorkspaceProvider
 
 
 class DevelopmentState(TypedDict, total=False):
+    stale_result_rejected: bool
+    resume_execution: bool
     requirement: str
     repository_id: str
     program: dict[str, object]
@@ -513,12 +517,13 @@ def _complete(program: dict[str, object]) -> bool:
     return units_done and issues_done and actionable_tasked and terminal and not program.get("blocked_tasks") and bool(program.get("final_rescan_completed"))
 
 
-def build_development_graph(config: WorkspaceConfig):
+def build_development_graph(config: WorkspaceConfig, control_root: Path | None = None):
+    store = ExecutionStore(control_root)
     provider = RuntimeWorkspaceProvider.from_config(config)
 
     def bootstrap_runtime(state: DevelopmentState): return {"result": {"runtime_workspace": provider.workspace.model_dump(mode="json")}}
 
-    def reconcile(state: DevelopmentState):
+    def reconcile_internal(state: DevelopmentState):
         repository_id = state.get("repository_id", "flutter_forge")
         if not state.get("program") and isinstance(state.get("development_task"), dict):
             supplied = state["development_task"]
@@ -527,6 +532,25 @@ def build_development_graph(config: WorkspaceConfig):
             return {"program": {"program_id": "externally-frozen-task", "repository": repository_id, "development_units": [{"inventory_completed": True}], "architecture_issues": [], "tasks": [frozen_task], "completed_tasks": [], "blocked_tasks": [], "current_task": None, "status": "READY"}}
         root = _integration_root(config, repository_id)
         existing = state.get("program") or {}
+        for active in existing.get("tasks", []):
+            request = active.get("execution_request")
+            if not request or active.get("status") == "DONE":
+                continue
+            try:
+                record = store.verify(request)
+            except ControlError:
+                continue
+            active["maintenance_progress"] = record.get("integration", {})
+            if record.get("phase") in {"EXECUTED", "INTEGRATING", "INTEGRATED"} and record.get("result", {}).get("status") == "SUCCESS":
+                active["status"] = "APPROVED"
+                existing["current_task"] = active["task_id"]
+                existing["blocked_tasks"] = [item for item in existing.get("blocked_tasks", []) if item.get("task_id") != active["task_id"]]
+                return {"program": existing, "development_task": request, "worker_result": record["result"], "retry_integration": True}
+            incoming = state.get("worker_result")
+            if record.get("phase") == "RESERVED" and incoming and incoming.get("status") == "STALE_EXECUTION_RESULT" and not incoming.get("attempt_id"):
+                return {"program": existing, "development_task": request, "worker_result": {}, "resume_execution": True}
+            if incoming and not store.result_matches(request, incoming):
+                return {"program": existing, "worker_result": {"status": "STALE_EXECUTION_RESULT"}, "stale_result_rejected": True}
         decision=state.get("decision")
         worker=state.get("worker_result")
         integration=state.get("integration_apply")
@@ -551,6 +575,12 @@ def build_development_graph(config: WorkspaceConfig):
             program["blocked_tasks"] = [item for item in program.get("blocked_tasks", []) if item.get("task_id") not in runtime_ids]
         return {"program": program}
 
+    def reconcile(state: DevelopmentState):
+        result = reconcile_internal(state)
+        result.setdefault("stale_result_rejected", False)
+        result.setdefault("resume_execution", False)
+        return result
+
     def inventory(state: DevelopmentState):
         program = state["program"]
         if program.get("program_id") == "externally-frozen-task": return {"program": program}
@@ -563,6 +593,8 @@ def build_development_graph(config: WorkspaceConfig):
         return {"program": program}
 
     def normalize(state: DevelopmentState):
+        if state.get("retry_integration") or state.get("stale_result_rejected") or state.get("resume_execution"):
+            return {"program": state["program"]}
         program = reconcile_program(state["program"], _integration_root(config, str(state["program"].get("repository", "flutter_forge"))))
         for issue in program.get("architecture_issues", []):
             if issue.get("status") == "RESOLVED_BY_DECISION": issue["status"] = "ACTIONABLE"
@@ -572,9 +604,29 @@ def build_development_graph(config: WorkspaceConfig):
         program = state["program"]
         selected = _select(program)
         if not selected: return {"program": program}
-        root = _integration_root(config, str(program["repository"]))
-        selected["status"] = "RUNNING"; program["current_task"] = selected["task_id"]
-        return {"program": program, "development_task": {"repository": str(program["repository"]), "base_revision": _git(root, "rev-parse", "HEAD"), "task_id": selected["task_id"], "requirement": selected["expected_change"], "allowed_paths": selected["candidate_paths"], "validation": selected["validation"]}}
+        repository = str(program["repository"])
+        root = _integration_root(config, repository)
+        project_id = str(program.get("project_id") or f"development:{program['program_id']}:{repository}")
+        request = {"execution_kind": "development", "project_id": project_id, "adapter": "generic",
+                   "task_id": selected["task_id"], "requirement": selected["expected_change"],
+                   "repository": repository, "base_revision": _git(root, "rev-parse", "HEAD"),
+                   "allowed_paths": selected["candidate_paths"], "validation": selected["validation"],
+                   "repository_paths": {repository: str(root)},
+                   "allowed_paths_by_repository": {repository: selected["candidate_paths"]},
+                   "writable_repositories": [{"repository": repository, "writable": True, "allowed_paths": selected["candidate_paths"]}],
+                   "repositories": [{"repository": repository, "base_revision": _git(root, "rev-parse", "HEAD"), "writable": True}]}
+        try:
+            request["validation_by_repository"] = freeze_checks({"validation_by_repository": {
+                repository: [{"check_id": value, "cwd": ".", "timeout_seconds": 300} for value in selected["validation"]]}}, [repository])
+            request = store.reserve(request, selected.get("execution_request"))
+        except ControlError as error:
+            selected["status"] = "BLOCKED_DECISION"
+            program["blocked_tasks"].append({"task_id": selected["task_id"], "reason": str(error)})
+            program["current_task"] = None
+            return {"program": program, "development_task": {}}
+        selected["execution_request"] = request
+        selected["status"] = "RUNNING"; program["current_task"] = selected["task_id"]; program["status"] = "RUNNING"
+        return {"program": program, "development_task": request}
 
     def execute(state: DevelopmentState):
         task = state.get("development_task")
@@ -584,19 +636,29 @@ def build_development_graph(config: WorkspaceConfig):
         worker, program = state.get("worker_result"), state["program"]
         task = next((item for item in program.get("tasks", []) if item.get("task_id") == program.get("current_task")), None)
         if not task or not isinstance(worker, dict): return {}
-        if worker.get("status") in {"SUCCESS", "READY_FOR_HUMAN_REVIEW"} and worker.get("review") == "APPROVED" and not worker.get("unauthorized_files"):
+        frozen = task.get("execution_request")
+        if frozen and not store.result_matches(frozen, worker):
+            return {"program": program, "worker_result": {"status": "STALE_EXECUTION_RESULT"}, "stale_result_rejected": True}
+        issues = validate_result(store, frozen, worker) if frozen else ["EXECUTION_CONTRACT_MISSING"]
+        if worker.get("status") == "SUCCESS" and not worker.get("unauthorized_files") and not issues:
             task["status"] = "APPROVED"
         else:
-            task["status"] = "BLOCKED_DECISION"; program["blocked_tasks"].append({"task_id": task["task_id"], "status": "BLOCKED_DECISION", "reason": str(worker.get("reason") or worker.get("status")), "decision_required": "Review Worker result before retrying."}); program["current_task"] = None
+            task["status"] = "BLOCKED_DECISION"; program["blocked_tasks"].append({"task_id": task["task_id"], "status": "BLOCKED_DECISION", "reason": ";".join(issues) or str(worker.get("reason") or worker.get("status")), "decision_required": "Review Worker result before retrying."}); program["current_task"] = None
         return {"program": program}
 
     def commit(state: DevelopmentState):
         program, frozen, worker = state["program"], state.get("development_task"), state.get("worker_result")
         if not isinstance(frozen, dict) or not isinstance(worker, dict): return {}
-        root = _integration_root(config, str(program["repository"])); result = commit_approved(root, frozen, worker)
+        repository = str(program["repository"])
+        root = _integration_root(config, repository)
+        try:
+            result = integrate_verified(store, frozen, worker, {repository: root})
+            result.update(status="COMMITTED", commit_hash=result["commits"][repository], committed_at=datetime.now(UTC).isoformat())
+        except (ControlError, KeyError, ValueError) as error:
+            result = {"status": "INTEGRATION_FAILED", "reason": str(error)}
         task = next((item for item in program["tasks"] if item.get("task_id") == program.get("current_task")), None)
         if task and result.get("status") == "COMMITTED":
-            task.update({"status": "DONE", "commit_hash": result.get("commit_hash"), "integration_base_revision": frozen["base_revision"], "committed_at": result.get("committed_at")}); program["completed_tasks"] = sorted(set([*program.get("completed_tasks", []), task["task_id"]])); program["current_task"] = None; program["base_revision"] = result["commit_hash"]
+            task.update({"status": "DONE", "commit_hash": result.get("commit_hash"), "integration_base_revision": frozen["base_revision"], "committed_at": result.get("committed_at"), "maintenance_progress": result["repositories"]}); program["completed_tasks"] = sorted(set([*program.get("completed_tasks", []), task["task_id"]])); program["current_task"] = None; program["base_revision"] = result["commit_hash"]
         elif task:
             task["status"] = "BLOCKED_DECISION"; program["blocked_tasks"].append({"task_id": task["task_id"], "status": "BLOCKED_DECISION", "reason": str(result.get("status")), "decision_required": "Resolve integration validation or apply failure."}); program["current_task"] = None
         return {"program": program, "integration_apply": result, "retry_integration": False}
@@ -608,13 +670,13 @@ def build_development_graph(config: WorkspaceConfig):
 
     def result(state: DevelopmentState):
         worker = state.get("worker_result") or {}
-        return {"result": {**worker, "status": state["program"].get("status") if not worker else worker.get("status"), "program": state["program"], "worker_result": worker, "integration_apply": state.get("integration_apply")}}
+        return {"result": {"status": state["program"].get("status"), "execution_status": worker.get("status"), "program": state["program"], "worker_result": worker, "integration_apply": state.get("integration_apply")}}
 
     graph = StateGraph(DevelopmentState)
     for name, node in [("bootstrap_runtime", bootstrap_runtime), ("reconcile", reconcile), ("inventory", inventory), ("normalize", normalize), ("prepare", prepare), ("execute", execute), ("review", review), ("commit", commit), ("final_rescan", final_rescan), ("result", result)]: graph.add_node(name, node)
     graph.add_edge(START, "bootstrap_runtime"); graph.add_edge("bootstrap_runtime", "reconcile"); graph.add_edge("reconcile", "inventory"); graph.add_edge("inventory", "normalize")
-    graph.add_conditional_edges("normalize", lambda s: "commit" if s.get("retry_integration") else "prepare" if _select(s["program"]) else "final_rescan", {"commit":"commit","prepare": "prepare", "final_rescan": "final_rescan"})
+    graph.add_conditional_edges("normalize", lambda s: "result" if s.get("stale_result_rejected") else "execute" if s.get("resume_execution") else "commit" if s.get("retry_integration") else "prepare" if _select(s["program"]) else "final_rescan", {"execute":"execute","result":"result","commit":"commit","prepare": "prepare", "final_rescan": "final_rescan"})
     graph.add_edge("prepare", "execute"); graph.add_edge("execute", "review")
-    graph.add_conditional_edges("review", lambda s: "commit" if s["program"].get("current_task") else "reconcile", {"commit": "commit", "reconcile": "reconcile"})
+    graph.add_conditional_edges("review", lambda s: "result" if s.get("stale_result_rejected") else "commit" if s["program"].get("current_task") else "reconcile", {"result":"result","commit": "commit", "reconcile": "reconcile"})
     graph.add_edge("commit", "reconcile"); graph.add_edge("final_rescan", "result"); graph.add_edge("result", END)
     return graph.compile()

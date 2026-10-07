@@ -79,12 +79,14 @@ def validate_applied(root: Path, task: dict[str, object]) -> dict[str, object]:
     return {"status":"APPLIED","changed_files":changed,"scope_guard":"PASS","validation":{"analyze":{"status":"PASS"}},"applied_to_primary":True}
 
 def commit_approved(root: Path, task: dict[str, object], worker: dict[str, object]) -> dict[str, object]:
-    result=apply_approved(root,task,worker)
-    if result.get("status") != "APPLIED": return result
-    paths=list(task.get("allowed_paths", []))
-    subprocess.run(["git","add","--",*paths],cwd=root,check=True,capture_output=True)
-    subprocess.run(["git","add","-u","--",*{str(Path(path).parent) for path in paths}],cwd=root,check=True,capture_output=True)
-    message=f"refactor: {task.get('task_id', 'approved task')} [{task.get('task_id', 'task')}]"
-    committed=subprocess.run(["git","commit","--no-verify","-m",message],cwd=root,text=True,capture_output=True)
-    if committed.returncode: return {"status":"COMMIT_FAILED","stderr":committed.stderr[-2000:],**result}
-    return {"status":"COMMITTED","commit_hash":subprocess.check_output(["git","rev-parse","HEAD"],cwd=root,text=True).strip(),"committed_at":datetime.now(UTC).isoformat(),**result}
+    """Compatibility entrypoint; commits require the durable execution lane."""
+    from agent_hub.execution.control import ControlError, ExecutionStore
+    from agent_hub.execution.integration import integrate
+    if not task.get("attempt_id"):
+        return {"status": "APPLY_REJECTED", "reason": "EXECUTION_CONTRACT_REQUIRED"}
+    try:
+        repository = str(task["repositories"][0]["repository"])
+        result = integrate(ExecutionStore(), task, worker, {repository: root})
+        return {**result, "status": "COMMITTED", "commit_hash": result["commits"][repository]}
+    except (ControlError, KeyError, ValueError) as error:
+        return {"status": "APPLY_REJECTED", "reason": str(error)}

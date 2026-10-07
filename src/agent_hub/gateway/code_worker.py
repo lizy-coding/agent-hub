@@ -20,7 +20,12 @@ class CodeWorkerHandler(BaseHTTPRequestHandler):
         try:
             length = int(self.headers.get("Content-Length", "0"))
             payload = json.loads(self.rfile.read(length))
-            result = DecompositionCodeExecutor().execute(payload) if payload.get("execution_kind") == "decomposition_migration" else execute_request(payload, self.executor)
+            if not isinstance(payload, dict):
+                raise ValueError("request must be an object")
+            if payload.get("execution_kind") in {"decomposition_migration", "development"}:
+                result = DecompositionCodeExecutor().execute(payload)
+            else:
+                result = {"status": "WORKER_CONTROL_REJECTED", "reason": "EXECUTION_CONTRACT_REQUIRED", "task_id": payload.get("task_id", "")}
             body = json.dumps(result).encode()
             self.send_response(200)
             self.send_header("Content-Type", "application/json")

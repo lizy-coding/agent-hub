@@ -1,8 +1,10 @@
 # 完成状态校验契约（独立试点）
 
-本试点仅新增 `execution/completion_evidence.py` 与定向 fixture；未接入
-Graph、Worker、CLI、注册表或共享 schema，未改变现有 DONE 判定。
-它校验单仓库、单冻结任务的结果，不负责调度、执行、修复或发布。
+校验器已通过 `execution/integration.py` 接入 development 与 decomposition Graph。
+Graph 冻结契约，本地 Worker 收集必需验证回执，可信控制记录核对执行身份。
+共享业务 schema 和注册表不变。校验器本身仍只判断单仓库、单冻结任务；
+多仓库进度、互斥与恢复由执行控制层负责。详见
+[架构控制进度](reports/ARCHITECTURE_CONTROL-20261002.md)。
 
 ## 权威来源
 
@@ -59,9 +61,9 @@ Git 回读要求：提供的路径是实际仓库根；提交等于当前 HEAD�
 - `contract_sha256` 是调用方提供的绑定值；本模块不替调用方重新冻结契约。
 - 未授权任何 release、push、merge 或业务仓库写入。
 
-下一步接入前，应由单一会话负责共享结果映射：从已有 WorkerResult 提取
-执行回执，由 Graph 获取实际 Git 树及验证回执，调用校验器并投影里程碑。
-此时才修改现有 Graph；不能直接信任 Worker 自报 `passed` 或 `DONE`。
+当前接入通过本地可信记录保存 collector 结果，Graph 将返回值与该记录核对，
+再检查冻结要求、回执与输出树，并在集成后回读提交证明。缺失旧执行契约
+会阻塞。不能直接信任 Worker 自报 `passed` 或 `DONE`。
 
 ## 定向验证
 

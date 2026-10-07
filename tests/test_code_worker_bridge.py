@@ -193,8 +193,8 @@ class DevelopmentGraphWorkerTest(unittest.TestCase):
                 workspace = discover(config)
                 (root / "registry.json").write_text(json.dumps(workspace.model_dump(mode="json")))
                 result = build_development_graph(config).invoke({"development_task": {"repository": "flutter_forge", "base_revision": base, "requirement": "x", "allowed_paths": ["lib/x.dart"], "validation": []}})["result"]
-            self.assertEqual(result["status"], "READY_FOR_HUMAN_REVIEW")
-            self.assertEqual(result["review"], "APPROVED")
+            self.assertEqual(result["status"], "PROGRAM_BLOCKED")
+            self.assertNotIn("review", result)
         finally:
             server.shutdown()
             server.server_close()

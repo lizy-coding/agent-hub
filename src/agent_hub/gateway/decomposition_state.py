@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from agent_hub.projects.decomposition_config import load_decomposition_project
+from agent_hub.execution.control import atomic_json
 
 
 ROOT = Path(__file__).resolve().parents[3] / ".decomposition" / "state"
@@ -33,7 +34,7 @@ def save(thread_id: str, state: dict[str, object], project_id: str | None = None
     for key in ("worker_result", "integration_result", "migration_request"):
         if isinstance(values.get(key), dict):
             payload[key] = values[key]
-    destination.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+    atomic_json(destination, payload)
 
 
 def load(thread_id: str, project_id: str | None = None) -> dict[str, object] | None:

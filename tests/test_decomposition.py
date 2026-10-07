@@ -289,9 +289,9 @@ class DecompositionTest(unittest.TestCase):
  def test_dispatch_evidence_precedes_running(self, worker, changes, ensure):
   from pathlib import Path
   ensure.side_effect=lambda repo,*_:(Path("/tmp") / repo,"decomposition/"+repo)
-  with patch("agent_hub.graphs.decomposition.subprocess.check_output",return_value="base\n"):
-   worker.return_value={"status":"WORKER_DISPATCH_FAILED","reason":"unreachable"}
-   program=build_decomposition_graph().invoke({"cluster_root":"/tmp","execute":True,"decomposition_program":{"migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_forge/packages/gcode_core"],"target_units":["packages/gcode_core"],"depends_on":[],"allowed_operations":[],"status":"READY"}]}})["decomposition_program"]
+  with patch("agent_hub.graphs.decomposition.subprocess.check_output",return_value="base\n"), patch("agent_hub.graphs.decomposition.ExecutionStore.reserve", side_effect=lambda request, previous=None: {**request,"project_id":"fixture","attempt_id":"attempt","generation":1,"contract_sha256":"a"*64}):
+   worker.side_effect=lambda request, *_: {"status":"WORKER_DISPATCH_FAILED","reason":"unreachable",**{key:request[key] for key in ("project_id","task_id","attempt_id","generation","contract_sha256")}}
+   program=build_decomposition_graph().invoke({"cluster_root":"/tmp","execute":True,"decomposition_program":{"migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_forge/packages/gcode_core"],"target_units":["packages/gcode_core"],"depends_on":[],"allowed_operations":[],"validation_by_repository":{"flutter_forge":[{"check_id":"flutter_test","cwd":"."}]},"status":"READY"}]}})["decomposition_program"]
   self.assertEqual(program["migration_tasks"][0]["status"],"BLOCKED_DECISION")
   self.assertEqual(program["execution_blocker"]["status"],"WORKER_DISPATCH_FAILED")
  @patch("agent_hub.graphs.decomposition._ensure_worktree")
@@ -302,8 +302,9 @@ class DecompositionTest(unittest.TestCase):
   from pathlib import Path
   ensure.side_effect=lambda repo,*_:(Path("/tmp") / repo,"decomposition/"+repo)
   worker.return_value={"status":"SUCCESS","scope_guard":"PASS","worker_execution_id":"execution-1","worker_workspace":"/tmp/agent-hub-worker-1","dispatched_at":"now","repositories":{}}
-  with patch("agent_hub.graphs.decomposition.subprocess.check_output",return_value="base\n"):
-   program=build_decomposition_graph().invoke({"cluster_root":"/tmp","execute":True,"decomposition_program":{"migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_forge/packages/gcode_core"],"target_units":["packages/gcode_core"],"depends_on":[],"allowed_operations":[],"status":"READY"}]}})["decomposition_program"]
+  worker.side_effect=lambda request, *_: {**worker.return_value, **{key:request[key] for key in ("project_id","task_id","attempt_id","generation","contract_sha256")}}
+  with patch("agent_hub.graphs.decomposition.subprocess.check_output",return_value="base\n"), patch("agent_hub.graphs.decomposition.ExecutionStore.reserve", side_effect=lambda request, previous=None: {**request,"project_id":"fixture","attempt_id":"attempt","generation":1,"contract_sha256":"a"*64}):
+   program=build_decomposition_graph().invoke({"cluster_root":"/tmp","execute":True,"decomposition_program":{"migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_forge/packages/gcode_core"],"target_units":["packages/gcode_core"],"depends_on":[],"allowed_operations":[],"validation_by_repository":{"flutter_forge":[{"check_id":"flutter_test","cwd":"."}]},"status":"READY"}]}})["decomposition_program"]
   task=program["migration_tasks"][0]
   self.assertEqual(task["status"],"BLOCKED_DECISION")
   self.assertEqual(task["worker_execution"]["worker_execution_id"],"execution-1")
@@ -351,8 +352,8 @@ class DecompositionTest(unittest.TestCase):
  def test_dispatch_bridge_exception_becomes_terminal_blocker(self, worker, changes, ensure):
   from pathlib import Path
   ensure.side_effect=lambda repo,*_:(Path("/tmp") / repo,"decomposition/"+repo)
-  with patch("agent_hub.graphs.decomposition.subprocess.check_output",return_value="base\n"):
-   program=build_decomposition_graph().invoke({"cluster_root":"/tmp","execute":True,"worker_endpoint":"http://worker/execute","decomposition_program":{"migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_forge/packages/gcode_core"],"target_units":["packages/gcode_core"],"depends_on":[],"allowed_operations":[],"status":"READY"}]}})["decomposition_program"]
+  with patch("agent_hub.graphs.decomposition.subprocess.check_output",return_value="base\n"), patch("agent_hub.graphs.decomposition.ExecutionStore.reserve", side_effect=lambda request, previous=None: {**request,"project_id":"fixture","attempt_id":"attempt","generation":1,"contract_sha256":"a"*64}):
+   program=build_decomposition_graph().invoke({"cluster_root":"/tmp","execute":True,"worker_endpoint":"http://worker/execute","decomposition_program":{"migration_tasks":[{"task_id":"merge-gcode-core-owners","source_units":["flutter_forge/packages/gcode_core"],"target_units":["packages/gcode_core"],"depends_on":[],"allowed_operations":[],"validation_by_repository":{"flutter_forge":[{"check_id":"flutter_test","cwd":"."}]},"status":"READY"}]}})["decomposition_program"]
   self.assertEqual(program["migration_tasks"][0]["status"],"BLOCKED_DECISION")
   self.assertEqual(program["execution_blocker"]["status"],"WORKER_DISPATCH_FAILED")
  def test_staging_uses_actual_deleted_paths_not_fixed_flutter_paths(self):
