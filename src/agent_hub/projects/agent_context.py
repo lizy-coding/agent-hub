@@ -4,6 +4,8 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import posixpath
+import re
 import subprocess
 import tempfile
 from datetime import UTC, datetime
@@ -11,7 +13,7 @@ from pathlib import Path
 
 import yaml
 
-from agent_hub.context.resolver import AGENT_RULE_NAMES, ancestor_agent_rules
+from agent_hub.context.resolver import AGENT_RULE_NAMES, ancestor_agent_rules, terms
 from agent_hub.graphs.capability_analysis import build_capability_analysis_graph
 from agent_hub.graphs.context_analysis import build_context_analysis_graph
 from agent_hub.projects.decomposition_config import AGENT_HUB_ROOT, DEFAULT_REGISTRY, load_decomposition_project
@@ -21,6 +23,121 @@ from agent_hub.workspace.config import WorkspaceConfig
 DEFAULT_OUTPUT = AGENT_HUB_ROOT / "workspace" / "agent-context.json"
 TEXT_SUFFIXES = {".dart", ".md", ".yaml", ".yml", ".json", ".js", ".ts", ".toml", ".py", ".sh", ".kts", ".gradle", ".xml", ".kt", ".java", ".cpp", ".cc", ".c", ".h", ".hpp", ".mm", ".m", ".swift", ".cmake", ".txt", ".ini", ".properties", ".iss", ".html", ".css", ".svg", ".lock", ".sql", ".bat", ".ps1", ".rst"}
 TEXT_NAMES = {"LICENSE", "NOTICE", "Makefile", ".gitignore", ".gitattributes", ".metadata"}
+
+
+def _within(path: Path, root: Path) -> bool:
+    return path == root or root in path.parents
+
+
+def _validate_output(output: Path, registry_path: Path, payload: dict) -> None:
+    """Reject writes to any managed repository before observing sources."""
+    protected = {registry_path.resolve()}
+    repositories = []
+    for entry in payload.get("projects", {}).values():
+        if not isinstance(entry, dict):
+            continue
+        configured = Path(str(entry.get("workspace_config", "")))
+        configured = configured if configured.is_absolute() else AGENT_HUB_ROOT / configured
+        protected.add(configured.resolve())
+        config = WorkspaceConfig.from_file(configured)
+        protected.update(path.resolve() for path in (config.registry_path, config.registry_storage_path) if path is not None)
+        runtime = config.runtime.get("repositories", {})
+        for repository in runtime.values():
+            if isinstance(repository, dict) and repository.get("runtime_path"):
+                repositories.append(Path(str(repository["runtime_path"])).resolve())
+    if output in protected or any(_within(output, repository) for repository in repositories):
+        raise ValueError("agent context output must not overwrite a managed repository or registry/configuration")
+    if _within(output, AGENT_HUB_ROOT):
+        relative = output.relative_to(AGENT_HUB_ROOT)
+        if relative.parts and relative.parts[0] in {"src", "tests", "scripts", ".git", ".agents", ".codex"}:
+            raise ValueError("agent context output must be an artifact, not Hub implementation or control data")
+        if relative.as_posix() in {"agent", "AGENTS.md", "README.md", "README.en.md", "pyproject.toml", "langgraph.json"}:
+            raise ValueError("agent context output must not overwrite Hub entrypoints")
+    if output.exists() and not output.is_file():
+        raise ValueError("agent context output must be a file")
+
+
+def _write_snapshot(output: Path, snapshot: dict) -> None:
+    output.parent.mkdir(parents=True, exist_ok=True)
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=output.parent, prefix=".agent-context-", delete=False) as handle:
+            temporary = Path(handle.name)
+            json.dump(snapshot, handle, ensure_ascii=False, indent=2)
+            handle.write("\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, output)
+    finally:
+        if temporary is not None and temporary.exists():
+            temporary.unlink()
+
+
+def _git_path(value) -> str | None:
+    if value is None:
+        return "."
+    if not isinstance(value, str) or "\0" in value:
+        return None
+    normalized = posixpath.normpath(value.replace("\\", "/"))
+    if normalized.startswith("/") or normalized == ".." or normalized.startswith("../"):
+        return None
+    return normalized
+
+
+def _path_words(value: str) -> set[str]:
+    expanded = re.sub(r"([a-z0-9])([A-Z])", r"\1 \2", value)
+    return {word.lower() for word in re.findall(r"[A-Za-z0-9]+", expanded)}
+
+
+def _path_score(value: str, query: list[str]) -> int:
+    words = _path_words(value)
+    basename = _path_words(Path(value).stem)
+    return sum(3 if term in basename else 1 for term in query if term in words)
+
+
+def _references(root: Path, value: str, text: str, package_roots: dict[str, Path]) -> list[str]:
+    """Follow literal declarations in already captured text, never walk."""
+    found = []
+    base = (root / value).parent
+
+    def admit(raw: str, directory: Path):
+        if not raw or "$" in raw or "*" in raw or raw.startswith(("dart:", "http:", "https:")):
+            return
+        if raw.startswith("package:"):
+            name, _, relative = raw[8:].partition("/")
+            if name not in package_roots:
+                return
+            target = package_roots[name] / "lib" / relative
+        else:
+            target = directory / raw
+        resolved = target.resolve()
+        if _within(resolved, root):
+            relative = resolved.relative_to(root).as_posix()
+            if _candidate_reason(root, relative) is None and relative not in found:
+                found.append(relative)
+
+    for raw in re.findall(r"(?:import|export)\s+['\"]([^'\"]+)['\"]", text):
+        admit(raw, base)
+    for raw in re.findall(r"require\(['\"]([^'\"]+)['\"]\)", text):
+        if raw.startswith('.'):
+            admit(raw if Path(raw).suffix else raw + '.js', base)
+    for raw in re.findall(r"`([^`\n]+)`", text):
+        if len(raw.split()) == 1 and Path(raw).suffix in TEXT_SUFFIXES:
+            admit(raw, root if raw.startswith(('lib/', 'apps/', 'packages/', 'tool/', 'scripts/', 'example/', '.github/')) else base)
+    if Path(value).suffix in {'.yml', '.yaml'}:
+        try:
+            workflow = yaml.safe_load(text)
+        except yaml.YAMLError:
+            workflow = None
+        jobs = workflow.get('jobs', {}) if isinstance(workflow, dict) else {}
+        for job in jobs.values() if isinstance(jobs, dict) else []:
+            for step in job.get('steps', []) if isinstance(job, dict) else []:
+                if not isinstance(step, dict):
+                    continue
+                directory = root / str(step.get('working-directory', '.'))
+                for raw in re.findall(r"[A-Za-z0-9_.\-/]+\.(?:sh|iss|py|dart|js|json|ya?ml)\b", str(step.get('run', ''))):
+                    admit(raw, directory)
+    return found
 
 
 def _git(root: Path, *args: str) -> tuple[str, str | None]:
@@ -115,11 +232,12 @@ def _manifest_facts(texts: dict[str, str]) -> tuple[str | None, str | None, list
                 description = locked.get("description") or {}
                 description = description if isinstance(description, dict) else {}
                 resolved = description.get("resolved-ref")
-                lock_matches = description.get("url") in (None, git.get("url")) and description.get("ref") in (None, requested)
+                declared_path, locked_path = _git_path(git.get("path")), _git_path(description.get("path"))
+                lock_matches = description.get("url") in (None, git.get("url")) and description.get("ref") in (None, requested) and declared_path is not None and declared_path == locked_path
                 state = "DECLARED_AND_LOCKED" if resolved and lock_matches else "MANIFEST_LOCK_REF_MISMATCH" if selected_lock and not lock_matches else "DECLARED_ONLY"
                 if state != "DECLARED_AND_LOCKED":
                     gaps.append(f"{state}: {package} in {manifest_path}")
-                pins.append({"package": str(package), "consumer_manifest": manifest_path, "section": section, "url": git.get("url"), "requested_ref": requested, "git_path": git.get("path"), "resolved_ref": resolved, "lockfile": lock_path, "locked_version": locked.get("version"), "binding_state": state})
+                pins.append({"package": str(package), "consumer_manifest": manifest_path, "section": section, "url": git.get("url"), "requested_ref": requested, "git_path": declared_path, "locked_git_path": locked_path, "resolved_ref": resolved, "lockfile": lock_path, "locked_version": locked.get("version"), "binding_state": state})
     return version, version_path, pins, gaps
 
 
@@ -171,7 +289,7 @@ def _target_repository(config: WorkspaceConfig, root: Path, repo_id: str) -> tup
     return repository, "CACHED_TARGET_METADATA", gaps
 
 
-def _refresh_project(project_id: str, entry: dict, registry_path: Path, max_files: int, protected_outputs: set[Path]) -> dict:
+def _refresh_project(project_id: str, entry: dict, registry_path: Path, max_files: int, protected_outputs: set[Path], requirement: str | None = None) -> dict:
     project = load_decomposition_project(project_id, registry_path=registry_path)
     root = project.repository_paths[project.primary_repository_id].resolve()
     config = _workspace_config(entry)
@@ -210,64 +328,95 @@ def _refresh_project(project_id: str, entry: dict, registry_path: Path, max_file
             sources = origins.setdefault(value, [])
             if origin not in sources:
                 sources.append(origin)
-    # Applicable guides are part of the evidence budget. Resolve only exact
-    # ancestor names for the explicit intake; cached unit roots are incomplete
-    # for repositories admitted through a root-only fallback.
-    required_rules: dict[str, list[str]] = {}
-    rule_origins: dict[str, list[str]] = {}
-    candidates: dict[str, list[str]] = {}
+    query = terms(requirement) if requirement else []
+    if requirement:
+        names, error = _git(root, "ls-files", "-z")
+        if error:
+            unknowns.append(f"GIT_PATH_INDEX_UNAVAILABLE: {error}")
+        else:
+            for value in _names(names):
+                if _path_score(value, query) > 0 and _candidate_reason(root, value) is None:
+                    origins.setdefault(value, []).append("query_path_metadata")
+    candidates = {}
     for value, origin in origins.items():
         reason = _candidate_reason(root, value)
         if reason:
             ignored.append({"path": value, "reason": reason, "origins": origin})
-            if reason != "UNSUPPORTED_TEXT_FORMAT":
-                unknowns.append(f"{reason}: {value}")
+            if reason != "UNSUPPORTED_TEXT_FORMAT": unknowns.append(f"{reason}: {value}")
             continue
-        path = root / value
-        rules = ancestor_agent_rules(root, path)
-        if path.name == "AGENTS.md" and any(rule.parent == path.parent and rule.name == "AGENTS.override.md" for rule in rules):
+        active = ancestor_agent_rules(root, root / value)
+        if Path(value).name == "AGENTS.md" and any(rule.parent == (root/value).parent and rule.name == "AGENTS.override.md" for rule in active):
             ignored.append({"path": value, "reason": "AGENT_GUIDE_OVERRIDDEN", "origins": origin})
-            for rule in rules:
-                rule_origins.setdefault(rule.relative_to(root).as_posix(), ["ancestor_rule"])
             continue
-        required_rules[value] = [rule.relative_to(root).as_posix() for rule in rules if rule != path]
-        for rule in rules:
-            rule_origins.setdefault(rule.relative_to(root).as_posix(), ["ancestor_rule"])
-        candidates[value] = origin
-    for value, origin in candidates.items():
-        if Path(value).name in AGENT_RULE_NAMES:
-            rule_origins[value] = list(dict.fromkeys(rule_origins.get(value, []) + origin))
-    intake = {**rule_origins, **{value: origin for value, origin in candidates.items() if value not in rule_origins}}
-    selected, inspected = [], 0
-    texts = {}
-    for value, origin in intake.items():
+        candidates[value] = list(dict.fromkeys(origin))
+    selected, inspected, texts = [], 0, {}
+    package_roots = {}
+    rule_origins = {}
+    attempted = set()
+    sequence = {value: index for index, value in enumerate(candidates)}
+
+    def capture(value, origin):
+        nonlocal inspected
+        if value in texts: return True
+        if value in attempted: return False
+        attempted.add(value)
         reason = _candidate_reason(root, value)
         if reason:
-            ignored.append({"path": value, "reason": reason, "origins": origin})
-            if reason != "UNSUPPORTED_TEXT_FORMAT":
-                unknowns.append(f"{reason}: {value}")
-            continue
-        if inspected >= max_files:
-            ignored.append({"path": value, "reason": "FILE_BUDGET_EXHAUSTED", "origins": origin})
-            unknowns.append(f"FILE_BUDGET_EXHAUSTED: {value}")
-            continue
-        missing_rules = [rule for rule in required_rules.get(value, []) if rule not in texts]
-        if missing_rules:
-            ignored.append({"path": value, "reason": "REQUIRED_AGENT_GUIDE_UNAVAILABLE", "origins": origin, "required_guides": missing_rules})
-            unknowns.append(f"REQUIRED_AGENT_GUIDE_UNAVAILABLE: {value}: {', '.join(missing_rules)}")
-            continue
+            ignored.append({"path": value, "reason": reason, "origins": origin});unknowns.append(f"{reason}: {value}");return False
         inspected += 1
         try:
-            data = (root / value).read_bytes()
-            text = data.decode("utf-8")
-            if b"\0" in data:
-                raise UnicodeError("NUL bytes")
+            data = (root / value).read_bytes();content = data.decode("utf-8")
+            if b"\0" in data: raise UnicodeError("NUL bytes")
         except (OSError, UnicodeError) as error:
-            ignored.append({"path": value, "reason": "BINARY_OR_UNREADABLE_FILE", "origins": origin})
-            unknowns.append(f"BINARY_OR_UNREADABLE_FILE: {value}: {error}")
-            continue
-        texts[value] = text
+            ignored.append({"path": value, "reason": "BINARY_OR_UNREADABLE_FILE", "origins": origin});unknowns.append(f"BINARY_OR_UNREADABLE_FILE: {value}: {error}");return False
+        texts[value] = content
         selected.append({"path": value, "sha256": hashlib.sha256(data).hexdigest(), "origins": origin, "content_state": "CURRENT_WORKTREE", "dirty_tracked": value in dirty})
+        if Path(value).name == "pubspec.yaml":
+            try: manifest = yaml.safe_load(content)
+            except yaml.YAMLError: manifest = None
+            if isinstance(manifest, dict) and manifest.get("name"): package_roots[str(manifest["name"])] = (root/value).parent
+        return True
+
+    pending = list(candidates)
+    deferred = []
+    while pending:
+        pending.sort(key=lambda value: (-_path_score(value, query) if requirement else 0, sequence[value]))
+        value = pending.pop(0)
+        guide_paths = [rule.relative_to(root).as_posix() for rule in ancestor_agent_rules(root, root / value)]
+        for rule in guide_paths: rule_origins.setdefault(rule, ["ancestor_rule"])
+        needed = list(dict.fromkeys([rule for rule in guide_paths if rule not in texts] + ([] if value in texts else [value])))
+        if inspected + len([path for path in needed if path not in attempted]) > max_files:
+            deferred.append((value, guide_paths));ignored.append({"path": value, "reason": "FILE_BUDGET_EXHAUSTED", "origins": candidates[value]});unknowns.append(f"FILE_BUDGET_EXHAUSTED: {value}");continue
+        missing = [rule for rule in guide_paths if rule not in texts and not capture(rule, rule_origins[rule])]
+        if missing:
+            ignored.append({"path": value, "reason": "REQUIRED_AGENT_GUIDE_UNAVAILABLE", "origins": candidates[value], "required_guides": missing});unknowns.append(f"REQUIRED_AGENT_GUIDE_UNAVAILABLE: {value}: {', '.join(missing)}");continue
+        if not capture(value, candidates[value]): continue
+        if requirement:
+            for reference in _references(root, value, texts[value], package_roots):
+                if reference not in candidates:
+                    candidates[reference] = ["literal_reference"]
+                    origins.setdefault(reference, ["literal_reference"])
+                    sequence[reference] = len(sequence)
+                    pending.append(reference)
+    # Partial control context is useful when no complete source closure fits.
+    # It is a fallback only, never an opportunity to displace a valid source.
+    if not selected:
+        for value, guides in deferred:
+            for guide in guides:
+                if inspected >= max_files: break
+                if guide not in texts: capture(guide, ["ancestor_rule", "partial_control_context"])
+            if inspected >= max_files: break
+    ignored_paths = {item['path'] for item in ignored}
+    for guide, origin in rule_origins.items():
+        if guide in texts or guide in ignored_paths:
+            continue
+        reason = 'FILE_BUDGET_EXHAUSTED' if inspected >= max_files else 'UNSELECTED_SOURCE_CLOSURE'
+        ignored.append({'path': guide, 'reason': reason, 'origins': origin})
+        if reason == 'FILE_BUDGET_EXHAUSTED':
+            unknowns.append(f'FILE_BUDGET_EXHAUSTED: {guide}')
+    selected_paths_set = set(texts)
+    if any(not set(rule.relative_to(root).as_posix() for rule in ancestor_agent_rules(root, root/item["path"])).issubset(selected_paths_set) for item in selected):
+        raise ValueError("selected evidence lacks its active ancestor guide")
     selected_paths = [item["path"] for item in selected]
     if selected_paths:
         tracked, error = _git(root, "ls-files", "-z", "--", *selected_paths)
@@ -291,7 +440,7 @@ def _refresh_project(project_id: str, entry: dict, registry_path: Path, max_file
         temporary_registry = Path(temporary) / "registry.json"
         temporary_registry.write_text(Workspace(workspace_root=root, allowed_paths=[root], excluded_paths=[], registry_path=temporary_registry, repositories=[repository]).model_dump_json(), encoding="utf-8")
         bounded_config = WorkspaceConfig(workspace_root=root, allowed_paths=[root], registry_path=temporary_registry, registry_storage_path=temporary_registry)
-        state = {"requirement": f"{project_id} agent contracts {spec.get('ownership', '')} public interface release parser controller widget", "target_repository": project.primary_repository_id, "candidate_paths": selected_paths, "limits": {"max_files": max_files, "max_symbols": 80, "max_dependency_depth": 0}}
+        state = {"requirement": requirement or f"{project_id} agent contracts {spec.get('ownership', '')} public interface release parser controller widget", "target_repository": project.primary_repository_id, "candidate_paths": selected_paths, "source_texts": dict(texts), "limits": {"max_files": max_files, "max_symbols": 80, "max_dependency_depth": 0}}
         context = build_context_analysis_graph(bounded_config).invoke(state)["context_package"]
         capabilities = build_capability_analysis_graph(bounded_config).invoke(state)["capability_analysis"]
     return {
@@ -301,12 +450,14 @@ def _refresh_project(project_id: str, entry: dict, registry_path: Path, max_file
         "workspace_dirty_paths": dirty, "worktree_dirty_paths": worktree, "index_dirty_paths": index,
         "untracked_inventory": "NOT_SCANNED_ONLY_EXPLICIT_FILES_CLASSIFIED", "recent_commit_limit": 6, "recent_changed_paths": recent,
         "selected_files": selected, "ignored_candidates": ignored, "unknowns": list(dict.fromkeys(unknowns)), "registry_metadata_mode": metadata_mode, "registry_metadata_freshness": repository.freshness,
+        "requirement": requirement, "evidence_mode": "FROZEN_SOURCE_TEXTS",
+        "source_snapshot_id": hashlib.sha256(json.dumps({"project_id": project_id, "source_sha": git_results["source_sha"].strip(), "files": {item["path"]: item["sha256"] for item in selected}}, sort_keys=True).encode()).hexdigest(),
         "scope": context["scope"], "metrics": {"candidate_files": len(set(origins) | set(rule_origins)), "rule_candidates": len(rule_origins), "inspected_files": inspected, "selected_files": len(selected), "max_files": max_files, "no_walk": True, "source_discovery_performed": False},
         "context_package": context, "capability_analysis": capabilities,
     }
 
 
-def refresh_agent_contexts(project_ids: list[str] | None = None, output_path: Path = DEFAULT_OUTPUT, max_files: int = 24, registry_path: Path | None = None) -> dict:
+def refresh_agent_contexts(project_ids: list[str] | None = None, output_path: Path = DEFAULT_OUTPUT, max_files: int = 24, registry_path: Path | None = None, *, requirement: str | None = None) -> dict:
     """Save bounded source observations; this grants no execution or acceptance.
 
     The registry argument identifies projects.json. Workspace registries are
@@ -314,8 +465,12 @@ def refresh_agent_contexts(project_ids: list[str] | None = None, output_path: Pa
     """
     if isinstance(max_files, bool) or not isinstance(max_files, int) or not 1 <= max_files <= 64:
         raise ValueError("max_files must be an integer between 1 and 64")
+    if requirement is not None and (not isinstance(requirement, str) or not requirement.strip()):
+        raise ValueError("requirement must be nonempty text")
     registry_path = Path(os.environ.get("AGENT_HUB_PROJECT_REGISTRY") or registry_path or DEFAULT_REGISTRY).expanduser().resolve()
     payload = json.loads(registry_path.read_text(encoding="utf-8"))
+    output = Path(output_path).expanduser().resolve()
+    _validate_output(output, registry_path, payload)
     entries = payload.get("projects", {})
     aliases = payload.get("aliases", {})
     selected_ids = project_ids if project_ids is not None else [key for key, entry in entries.items() if isinstance(entry, dict) and isinstance(entry.get("agent_context"), dict)]
@@ -328,10 +483,9 @@ def refresh_agent_contexts(project_ids: list[str] | None = None, output_path: Pa
             projects.append({"project_id": project_id, "status": "UNKNOWN_PROJECT_OR_CONTEXT_POLICY", "acceptance": False, "unknowns": ["No registered agent_context policy"]})
             continue
         try:
-            projects.append(_refresh_project(project_id, entry, registry_path, max_files, protected_outputs))
+            projects.append(_refresh_project(project_id, entry, registry_path, max_files, protected_outputs, requirement))
         except (OSError, ValueError, KeyError, subprocess.TimeoutExpired) as error:
             projects.append({"project_id": project_id, "status": "CONTEXT_REFRESH_FAILED", "acceptance": False, "unknowns": [str(error)]})
-    output = Path(output_path).expanduser().resolve()
     if output in protected_outputs:
         raise ValueError("agent context output must not overwrite a project or workspace registry")
     snapshot = {
@@ -341,6 +495,5 @@ def refresh_agent_contexts(project_ids: list[str] | None = None, output_path: Pa
         "budget": {"max_files_per_project": max_files, "recent_commits_per_project": 6}, "projects": projects,
         "summary": {"projects": len(projects), "refreshed": sum(item["status"].startswith("REFRESHED") for item in projects), "selected_files": sum(len(item.get("selected_files", [])) for item in projects), "unknowns": sum(len(item.get("unknowns", [])) for item in projects)},
     }
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    _write_snapshot(output, snapshot)
     return snapshot

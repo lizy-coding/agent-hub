@@ -3,7 +3,7 @@ from langgraph.graph import START, END, StateGraph
 from agent_hub.capability.analyzer import CapabilityAnalyzer
 from agent_hub.context.resolver import ContextLimits
 from agent_hub.workspace.config import WorkspaceConfig
-class CapabilityState(TypedDict,total=False): requirement:str; target_repository:str; candidate_paths:list[str] | None; limits:dict[str,int]; capability_analysis:dict[str,object]
+class CapabilityState(TypedDict,total=False): requirement:str; target_repository:str; candidate_paths:list[str] | None; source_texts:dict[str,str] | None; limits:dict[str,int]; capability_analysis:dict[str,object]
 def build_capability_analysis_graph(config:WorkspaceConfig):
  analyzer=CapabilityAnalyzer(config)
  def resolve_context(state): return {}
@@ -14,7 +14,7 @@ def build_capability_analysis_graph(config:WorkspaceConfig):
  def assess_extraction(state): return {}
  def build_analysis(state):
   limits=ContextLimits(**state['limits']) if state.get('limits') is not None else None
-  return {'capability_analysis':analyzer.analyze_capabilities(state['requirement'],state['target_repository'],candidate_paths=state.get('candidate_paths'),limits=limits).model_dump(mode='json')}
+  return {'capability_analysis':analyzer.analyze_capabilities(state['requirement'],state['target_repository'],candidate_paths=state.get('candidate_paths'),source_texts=state.get('source_texts'),limits=limits).model_dump(mode='json')}
  graph=StateGraph(CapabilityState)
  for name,fn in [('resolve_context',resolve_context),('discover_capabilities',discover_capabilities),('analyze_coupling',analyze_coupling),('classify_ownership',classify_ownership),('match_workspace_capabilities',match_workspace_capabilities),('assess_extraction',assess_extraction),('build_analysis',build_analysis)]: graph.add_node(name,fn)
  chain=['resolve_context','discover_capabilities','analyze_coupling','classify_ownership','match_workspace_capabilities','assess_extraction','build_analysis']; graph.add_edge(START,chain[0])

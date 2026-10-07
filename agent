@@ -33,14 +33,24 @@ def main() -> int:
     parser.add_argument("--project", help="Registered decomposition project id (default: registry default_project).")
     parser.add_argument("--max-files", type=int, default=24, help="Per-project explicit evidence budget for agent-context.")
     parser.add_argument("--output", type=Path, help="Hub snapshot output for agent-context.")
+    parser.add_argument("--requirement", help="Task requirement for bounded agent-context retrieval.")
     args = parser.parse_args()
     if args.command == "agent-context":
         from agent_hub.projects.agent_context import refresh_agent_contexts
         options = {"max_files": args.max_files}
         if args.output:
             options["output_path"] = args.output
-        result = refresh_agent_contexts([args.project] if args.project else None, **options)
-        print(json.dumps(result.get("summary", result), ensure_ascii=False, indent=2))
+        if args.requirement is not None:
+            options["requirement"] = args.requirement
+        try:
+            result = refresh_agent_contexts([args.project] if args.project else None, **options)
+        except (OSError, ValueError) as error:
+            print(f"CONTEXT_ERROR: {error}", file=sys.stderr)
+            return 2
+        failures = [{"project_id": p.get("project_id"), "status": p.get("status"), "reasons": p.get("unknowns", [])} for p in result.get("projects", []) if not str(p.get("status", "")).startswith("REFRESHED")]
+        print(json.dumps({"summary": result.get("summary", {}), "failed_projects": failures}, ensure_ascii=False, indent=2))
+        if failures:
+            return 1 if result.get("summary", {}).get("refreshed") else 2
         return 0
     refactor_thread = args.thread_id or DEFAULT_THREAD_ID
     if args.command == "refactor-status":

@@ -11,6 +11,7 @@ class ContextState(TypedDict, total=False):
     requirement: str
     target_repository: str | None
     candidate_paths: list[str] | None
+    source_texts: dict[str, str] | None
     limits: dict[str, int]
     context_package: dict[str, object]
 
@@ -29,11 +30,11 @@ def _refactor_plan_path(config: WorkspaceConfig) -> Path:
     candidates = sorted(config.workspace_root.glob("*/REFACTOR_PLAN.md"))
     return candidates[0] if candidates else config.workspace_root / "REFACTOR_PLAN.md"
 
-def _load_plan_entries(plan_path: Path) -> list[dict]:
-    if not plan_path.is_file():
+def _load_plan_entries(plan_path: Path, source_text: str | None = None) -> list[dict]:
+    if source_text is None and not plan_path.is_file():
         return []
     try:
-        payload = json.loads(plan_path.read_text(encoding="utf-8"))
+        payload = json.loads(source_text if source_text is not None else plan_path.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return []
     entries = payload.get("work_queue") if isinstance(payload, dict) else None
@@ -41,7 +42,7 @@ def _load_plan_entries(plan_path: Path) -> list[dict]:
         return []
     return [entry for entry in entries if isinstance(entry, dict)]
 
-def planned_capabilities(package: dict[str, object], config: WorkspaceConfig, *, target_repository: str | None = None, candidate_paths: list[str] | None = None) -> list[dict[str, object]]:
+def planned_capabilities(package: dict[str, object], config: WorkspaceConfig, *, target_repository: str | None = None, candidate_paths: list[str] | None = None, source_texts: dict[str, str] | None = None) -> list[dict[str, object]]:
     """Surface pending REFACTOR_PLAN work whose targets intersect resolved paths.
 
     Read-only and backward compatible: absent or unparsable plans yield an
@@ -50,6 +51,7 @@ def planned_capabilities(package: dict[str, object], config: WorkspaceConfig, *,
     """
     resolved = [str(item.get("relative_path", "")) for item in package.get("files", []) if isinstance(item, dict)]
     planned: list[dict[str, object]] = []
+    source_text = None
     if candidate_paths is not None:
         repo = registry_api.get_repository(config, target_repository) if target_repository else None
         if repo is None:
@@ -58,9 +60,11 @@ def planned_capabilities(package: dict[str, object], config: WorkspaceConfig, *,
         selected_paths = {Path(str(item.get("absolute_path", ""))).resolve() for item in package.get("files", []) if isinstance(item, dict)}
         if plan_path not in selected_paths:
             return []
+        if source_texts is not None:
+            source_text = source_texts["REFACTOR_PLAN.md"]
     else:
         plan_path = _refactor_plan_path(config)
-    for entry in _load_plan_entries(plan_path):
+    for entry in _load_plan_entries(plan_path, source_text):
         if str(entry.get("status", "")) != "pending":
             continue
         targets = [str(item) for item in entry.get("targets") or entry.get("changes") or [] if isinstance(item, str)]
@@ -78,9 +82,12 @@ def build_context_analysis_graph(config: WorkspaceConfig):
     def resolve_rules(state): return {}
     def build_context_package(state):
         limits = ContextLimits(**state["limits"]) if state.get("limits") is not None else None
-        package=resolver.resolve_context(state["requirement"], state.get("target_repository"), limits, candidate_paths=state.get("candidate_paths"))
+        source_texts = state.get("source_texts")
+        if isinstance(source_texts, dict):
+            source_texts = dict(source_texts)
+        package=resolver.resolve_context(state["requirement"], state.get("target_repository"), limits, candidate_paths=state.get("candidate_paths"), source_texts=source_texts)
         data=package.model_dump(mode="json")
-        data["planned_capabilities"]=planned_capabilities(data, config, target_repository=state.get("target_repository"), candidate_paths=state.get("candidate_paths"))
+        data["planned_capabilities"]=planned_capabilities(data, config, target_repository=state.get("target_repository"), candidate_paths=state.get("candidate_paths"), source_texts=source_texts)
         return {"context_package": data}
     graph=StateGraph(ContextState)
     graph.add_node("load_registry", load_registry); graph.add_node("resolve_candidates", resolve_candidates); graph.add_node("search_evidence", search_evidence); graph.add_node("resolve_rules", resolve_rules); graph.add_node("build_context_package", build_context_package)

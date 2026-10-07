@@ -177,6 +177,7 @@ class AgentContextTest(unittest.TestCase):
 
         with self.guarded() as stack:
             reads = self.track_reads(stack)
+            original = Path.read_bytes
             stack.enter_context(patch.object(Path, "read_bytes", new=deny_override))
             snapshot = refresh_agent_contexts(["fixture"], self.output, 3, self.project_registry)
         project = snapshot["projects"][0]

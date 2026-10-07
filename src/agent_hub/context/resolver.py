@@ -22,10 +22,82 @@ class ContextLimits:
     max_dependency_depth: int = 2
 
 
-STOP_TERMS = {"workspace", "current", "analysis", "capability", "package", "plugin", "existing", "related", "between", "with", "native", "flutter", "application"}
+STOP_TERMS = {"workspace", "current", "analysis", "capability", "package", "plugin", "existing", "related", "between", "with", "native", "flutter", "application", "and", "app", "the", "for", "from", "into", "to", "of", "in", "on", "an", "is", "are", "this", "that", "it", "as", "be", "by", "or", "all"}
 SEMANTIC_QUERY_TERMS = {"controller", "service", "adapter", "router", "route", "parser", "model", "render", "widget", "channel", "ffi", "pipeline", "state"}
+
+# Domain terms translate query intent; evidence still requires a real token in
+# the selected text. These aliases do not choose files or imply support.
+DOMAIN_QUERY_ALIASES = {
+    "主题": ("theme",), "令牌": ("token", "tokens"), "颜色": ("color",),
+    "深色": ("dark",), "浅色": ("light",), "蓝牙": ("bluetooth", "ble"),
+    "低功耗": ("ble",), "连接": ("connect", "connection"),
+    "解析": ("parse", "parser"), "模型": ("model",), "轨迹": ("toolpath",),
+    "渲染": ("render", "rendering"), "绘制": ("draw", "render", "rendering"),
+    "命令行": ("cli", "command"), "标准输出": ("stdout",), "标准错误": ("stderr",),
+    "规则": ("rule", "rules"), "指南": ("agents", "guide"), "契约": ("contract",),
+    "验证": ("validate", "validation"), "测试": ("test",),
+    "发布": ("release", "deploy", "deployment"), "构建": ("build",),
+    "安装": ("install", "installer"), "流水线": ("pipeline", "workflow"),
+    "窗口": ("window",), "路由": ("route", "router"), "表格": ("table",),
+    "弹窗": ("popup", "dialog"),
+    "扫描": ("scan", "scanner"), "输出": ("output",), "错误输出": ("stderr",),
+    "严重程度": ("severity",), "退出码": ("exit",), "超时": ("timeout",),
+    "编辑器": ("editor", "ide"), "适配": ("adapter",), "缓存": ("cache",),
+    "几何": ("geometry",), "缓冲": ("buffer",), "画布": ("canvas", "surface"),
+    "播放": ("playback",), "进度": ("progress",), "同步": ("sync",),
+    "持久化": ("persist", "persisted", "persistence"), "坐标": ("coordinate",),
+    "绝对": ("absolute",), "相对": ("relative",), "释放": ("dispose",),
+    "监听器": ("listener", "listeners"), "会话": ("session",), "注册表": ("registry",),
+    "生命周期": ("lifecycle",), "资源": ("resource", "resources"), "元数据": ("metadata",),
+    "默认": ("default",), "选项": ("option", "options"), "执行": ("execute",),
+    "版本": ("version",), "运行时": ("runtime",), "验收": ("acceptance",),
+    "苹果桌面": ("macos",), "安卓": ("android",), "微软桌面": ("windows",),
+}
+
+
+def identifier_terms(text: str) -> set[str]:
+    """Tokenize text and split language identifiers without substring matches."""
+    result = set()
+    for identifier in re.findall(r"[A-Za-z][A-Za-z0-9_]*", text):
+        result.add(identifier.lower())
+        for segment in identifier.split("_"):
+            # Handles camelCase, PascalCase, and acronym prefixes (BLESession).
+            result.update(part.lower() for part in re.findall(r"[A-Z]+(?=[A-Z][a-z]|[0-9]|$)|[A-Z]?[a-z]+|[0-9]+", segment) if len(part) >= 2 and not part.isdigit())
+    return result
+
+
 def terms(requirement: str) -> list[str]:
-    return [term for term in dict.fromkeys(term.lower() for term in re.findall(r"[A-Za-z_][A-Za-z0-9_]{2,}", requirement)) if term not in STOP_TERMS]
+    found = []
+    for identifier in re.findall(r"[A-Za-z][A-Za-z0-9_]*", requirement):
+        found.append(identifier.lower())
+        found.extend(sorted(identifier_terms(identifier) - {identifier.lower()}))
+    for phrase, aliases in DOMAIN_QUERY_ALIASES.items():
+        if phrase in requirement:
+            found.extend(aliases)
+    return [term for term in dict.fromkeys(found) if len(term) >= 2 and term not in STOP_TERMS]
+
+
+def first_matching_term(line: str, query_terms: list[str]) -> str | None:
+    tokens = identifier_terms(line)
+    return next((term for term in query_terms if term in tokens), None)
+
+
+def validate_source_texts(source_texts: dict[str, str] | None, candidate_paths: list[str], selected_paths: list[str]) -> None:
+    """Require a closed text snapshot of selected, explicit repo-relative files."""
+    if source_texts is None:
+        return
+    if not isinstance(source_texts, dict):
+        raise ValueError("source_texts must be a repository-relative text mapping")
+    candidates = {Path(value).as_posix() for value in candidate_paths}
+    for key, value in source_texts.items():
+        if not isinstance(key, str) or not isinstance(value, str):
+            raise ValueError("source_texts keys and values must be strings")
+        path = Path(key)
+        if path.is_absolute() or ".." in path.parts or key != path.as_posix() or key not in candidates:
+            raise ValueError(f"source_texts key is not an explicit repository-relative candidate: {key}")
+    missing = set(selected_paths) - source_texts.keys()
+    if missing:
+        raise ValueError(f"source_texts lacks selected candidates: {', '.join(sorted(missing))}")
 
 
 class RepositorySearcher:
@@ -235,9 +307,16 @@ class ContextResolver:
         return [] if not unit else self.searcher.search_callsites(unit, terms(query), 80)
     def resolve_rules_for_path(self, path_or_unit: str): return self.rules.resolve_rules_for_path(path_or_unit)
     def explain_candidate(self, candidate: ContextCandidate) -> dict: return candidate.model_dump()
-    def resolve_context(self, requirement: str, target_repository: str | None = None, limits: ContextLimits | None = None, *, candidate_paths: list[str] | None = None) -> ContextPackage:
+    def resolve_context(self, requirement: str, target_repository: str | None = None, limits: ContextLimits | None = None, *, candidate_paths: list[str] | None = None, source_texts: dict[str, str] | None = None) -> ContextPackage:
+        """Resolve evidence, optionally from a closed explicit text snapshot.
+
+        Snapshot keys are normalized repository-relative candidate paths. Every
+        selected file must have text; no source is reopened in snapshot mode.
+        """
         if candidate_paths is not None:
-            return self._resolve_bounded_context(requirement, target_repository, limits or ContextLimits(), candidate_paths)
+            return self._resolve_bounded_context(requirement, target_repository, limits or ContextLimits(), candidate_paths, source_texts)
+        if source_texts is not None:
+            raise ValueError("source_texts requires explicit candidate_paths")
         limits = limits or ContextLimits(); term_list = terms(requirement); repositories = registry_api.list_repositories(self.config)
         if target_repository:
             selected_repos = [repo for repo in repositories if repo.repo_id == target_repository]
@@ -305,7 +384,7 @@ class ContextResolver:
         package = ContextPackage(request={"requirement": requirement, "optional_target_repository": target_repository}, scope={"repositories": sorted({registry_api.get_development_unit(self.config, unit.unit_id).repo_id for unit in units}), "development_units": [unit.unit_id for unit in units]}, candidates=candidates, files=files[:limits.max_files], symbols=list(unique_symbols.values())[:limits.max_symbols], rules=list(unique_rules.values()), dependencies=list(unique_deps.values()), unknowns=unknowns, confidence="HIGH" if any(item.confidence == "HIGH" for item in candidates) else "MEDIUM" if any(item.confidence == "MEDIUM" for item in candidates) else "LOW", metrics={"searched_repositories": len(selected_repos), "searched_files": searched_files, "selected_files": len(files[:limits.max_files]), "evidence_count": len(unique_symbols)+len(unique_deps), "context_size_estimate": len(files)+len(unique_symbols)+len(unique_deps)+len(unique_rules)})
         return package
 
-    def _resolve_bounded_context(self, requirement: str, target_repository: str | None, limits: ContextLimits, candidate_paths: list[str]) -> ContextPackage:
+    def _resolve_bounded_context(self, requirement: str, target_repository: str | None, limits: ContextLimits, candidate_paths: list[str], source_texts: dict[str, str] | None = None) -> ContextPackage:
         """Resolve only explicit repository-relative files, without discovery.
 
         An empty list is an empty intake. Registry relationships remain context
@@ -321,6 +400,8 @@ class ContextResolver:
         repo_root = repo.path.resolve()
         paths: list[tuple[Path, DevelopmentUnit]] = []
         for value in candidate_paths:
+            if not isinstance(value, str):
+                raise ValueError("candidate paths must be repository-relative strings")
             relative = Path(value)
             if relative.is_absolute() or ".." in relative.parts:
                 raise ValueError(f"candidate must be repository-relative: {value}")
@@ -338,6 +419,9 @@ class ContextResolver:
             if resolved not in {item[0] for item in paths}:
                 paths.append((resolved, unit))
         selected = paths[:limits.max_files]
+        validate_source_texts(source_texts, candidate_paths, [path.relative_to(repo_root).as_posix() for path, _ in selected])
+        if source_texts is not None:
+            source_texts = dict(source_texts)
         selected_paths = {path for path, _ in selected}
         unit_map = {unit.unit_id: unit for _, unit in selected}
         term_list = terms(requirement)
@@ -345,26 +429,56 @@ class ContextResolver:
         read_files = 0
         readable_paths = set()
         refs_by_unit: dict[str, list[str]] = {unit_id: [] for unit_id in unit_map}
+        matches_by_file = []
         for path, unit in selected:
             relative = path.relative_to(self.config.workspace_root).as_posix()
             refs = [relative]
             try:
-                lines = path.read_text(encoding="utf-8").splitlines()
+                text = source_texts[path.relative_to(repo_root).as_posix()] if source_texts is not None else path.read_text(encoding="utf-8")
+                lines = text.splitlines()
                 read_files += 1
                 readable_paths.add(path)
             except (OSError, UnicodeDecodeError):
                 unknowns.append(ContextUnknown(subject=relative, reason="Explicit candidate could not be read as text.", required_evidence="Readable source or control document."))
                 lines = []
+            file_matches = []
             for number, line in enumerate(lines, 1):
+                term = first_matching_term(line, term_list)
+                if term:
+                    file_matches.append((number, term))
+                    # No file can consume more than the total package budget;
+                    # one match suffices to retain relevance when it is zero.
+                    if len(file_matches) >= max(1, limits.max_symbols):
+                        break
+            relevance = "explicit_candidate_query_match" if file_matches else "explicit_candidate_no_query_match" if path in readable_paths else "explicit_candidate_unreadable"
+            file = ContextFile(absolute_path=str(path), relative_path=relative, repo_id=unit.repo_id, unit_id=unit.unit_id, relevance=relevance, evidence_refs=refs)
+            files.append(file)
+            if file_matches:
+                matches_by_file.append((path, unit, file, file_matches))
+        # Selected implementation, script, and configuration evidence gets the
+        # first opportunity. Round robin then prevents any large file or guide
+        # from spending the entire symbol budget before other matching files.
+        def evidence_priority(item):
+            path, _, file, _ = item
+            path_terms = identifier_terms(path.relative_to(repo_root).as_posix())
+            document = path.suffix.lower() in {".md", ".rst"}
+            return document, -len(set(term_list) & path_terms), file.relative_path
+
+        matches_by_file.sort(key=evidence_priority)
+        for index in range(max((len(item[3]) for item in matches_by_file), default=0)):
+            if len(symbols) >= limits.max_symbols:
+                break
+            for path, _, file, file_matches in matches_by_file:
+                if index >= len(file_matches):
+                    continue
+                number, term = file_matches[index]
+                ref = f"{file.relative_path}:{number}"
+                file.evidence_refs.append(ref)
+                symbols.append(ContextSymbol(name=term, kind="symbol", file=str(path), line=number, evidence_refs=[ref]))
                 if len(symbols) >= limits.max_symbols:
                     break
-                term = next((term for term in term_list if re.search(rf"\b{re.escape(term)}\b", line, re.IGNORECASE)), None)
-                if term:
-                    ref = f"{relative}:{number}"
-                    refs.append(ref)
-                    symbols.append(ContextSymbol(name=term, kind="symbol", file=str(path), line=number, evidence_refs=[ref]))
-            files.append(ContextFile(absolute_path=str(path), relative_path=relative, repo_id=unit.repo_id, unit_id=unit.unit_id, relevance="explicit_candidate", evidence_refs=refs))
-            refs_by_unit[unit.unit_id].extend(refs)
+        for file in files:
+            refs_by_unit[file.unit_id].extend(file.evidence_refs)
         for unit_id, unit in unit_map.items():
             refs = refs_by_unit[unit_id]
             candidates.append(ContextCandidate(id=unit_id, classification="context_only", confidence="MEDIUM", reasons=["explicit bounded file intake"], evidence_refs=refs))
