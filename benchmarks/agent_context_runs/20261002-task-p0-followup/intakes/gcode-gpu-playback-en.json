@@ -1,0 +1,3178 @@
+{
+  "schema_version": "managed-agent-context.v1",
+  "generated_at": "2026-10-02T15:45:34.887502+00:00",
+  "read_only_business_repositories": true,
+  "acceptance": false,
+  "evidence_authority": "SOURCE_OBSERVATION_ONLY",
+  "snapshot_scope": "scoped_snapshot_not_full_registry",
+  "no_walk": true,
+  "budget": {
+    "max_files_per_project": 24,
+    "recent_commits_per_project": 6
+  },
+  "projects": [
+    {
+      "project_id": "gcode-core",
+      "repository_id": "gcode_core",
+      "repository_root": "/Users/forest/code/langGraph/gcode_core",
+      "adapter": "gcode_core",
+      "status": "REFRESHED_WITH_GAPS",
+      "source_sha": "22d76ad54e11ad752771b594b8345d5f9aab6a31",
+      "branch": "dev",
+      "version": null,
+      "version_source": null,
+      "dependency_pins": [],
+      "content_state": "CURRENT_WORKTREE",
+      "acceptance": false,
+      "workspace_dirty_paths": [
+        "AGENTS.md"
+      ],
+      "worktree_dirty_paths": [
+        "AGENTS.md"
+      ],
+      "index_dirty_paths": [],
+      "untracked_inventory": "NOT_SCANNED_ONLY_EXPLICIT_FILES_CLASSIFIED",
+      "recent_commit_limit": 6,
+      "recent_changed_paths": [
+        "AGENTS.md",
+        "CHANGELOG.md",
+        "README.md",
+        "docs/evidence/0.2.1-maintainer-acceptance.md",
+        "pubspec.yaml",
+        "example/android/app/src/main/AndroidManifest.xml",
+        "lib/src/rendering/gpu_toolpath_layer.dart",
+        "lib/src/rendering/toolpath_geometry.dart",
+        "test/rendering/toolpath_geometry_test.dart",
+        ".github/workflows/ci.yml",
+        ".pubignore",
+        "LICENSE",
+        "example/pubspec.lock",
+        "example/README.md",
+        "example/android/app/build.gradle.kts"
+      ],
+      "selected_files": [
+        {
+          "path": "AGENTS.md",
+          "sha256": "34885ba713f26c0563d04b1b944fbac1c30b92b436307ae9d5864e78c6974c69",
+          "origins": [
+            "ancestor_rule"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": true,
+          "tracked": true
+        },
+        {
+          "path": "docs/adr/0002-gpu-only-drawing.md",
+          "sha256": "d53ac36c1eb9e12a38af191f8b8a3d467ffc8466b8a9309d45a668f8a6c73a83",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "docs/macos-gpu-only-acceptance.md",
+          "sha256": "b631b47a946b72b8ad64789a6f4e6d5d4d6292c8a33aadbaabc45156c1b73d01",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/rendering/gpu_toolpath_layer.dart",
+          "sha256": "8be48ca5f2499f467f17859b72590b3d9240f9592b3fb3ad935296255355b085",
+          "origins": [
+            "seed",
+            "recent_commit",
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/rendering/toolpath_geometry.dart",
+          "sha256": "02b4b0f8e639402bd48e5f086c609726eb83bf06f96ea4ac253644e5e0939040",
+          "origins": [
+            "seed",
+            "recent_commit",
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "docs/adr/0001-macos-first-gpu-toolpath.md",
+          "sha256": "dc4caec148af9a68a89f23bcb30f96d0d44699bb8579562bb641bb0ce2d4e6e6",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "docs/evidence/gcode-gpu-release-build.txt",
+          "sha256": "fce98f558ffd1eb8681bbe37be867aebf73b06583cd2a74195077c38615ec0c5",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "docs/evidence/gcode-gpu-release-run.txt",
+          "sha256": "25c79c1e1ba65d3c5b8d401e77f22e3ab456e6664de8f4f9ebdcef58ed98fb5b",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "docs/evidence/macos-gpu-build.txt",
+          "sha256": "ca267a3c3f629499469385ad4037f5b87f8356438c6905214f7f8744ac31da39",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "docs/evidence/macos-gpu-profile-run1.txt",
+          "sha256": "00e9b297180291068ebbb122a1bc52046d62028fc1ae40991e23f9516996e38a",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "docs/evidence/macos-gpu-profile-run2.txt",
+          "sha256": "a0ef93b944bc21befb4aecb7f3d96bd2e8eac7ded75a32c73d3d56b2e1dc0cbc",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "docs/evidence/macos-gpu-profile-run3.txt",
+          "sha256": "83d4093ed2775cb15dfa1a0dce32f110802055b98bbe57b40c268696085c83c1",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "docs/flutter-gpu-assessment.md",
+          "sha256": "fcafb34d1f7673b64119f1345ec9da96d168b8d6792623d2be905960a84a647a",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "docs/macos-gpu-probe.md",
+          "sha256": "f3a98b6be1868a2c9c6537bed762828ea9999c26a66c31f3165e2e5192f7e6b8",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "example/lib/gpu_validation.dart",
+          "sha256": "e77263559809eb9f7e9d83c16b3a95ea42fbb0938cd8cfe35e44085a768d06c8",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "example/tool/build_gpu_shaders.py",
+          "sha256": "515aa9a7d6b6c88ee408d13e11408cb880fd3dfac916c2020315bd3d4be49281",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/models/toolpath_segment.dart",
+          "sha256": "e01bcfb52d6b2c369983f9994b6d43701d67e83114d8711b8d62d0efcfffe1d1",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/widgets/playback_controls.dart",
+          "sha256": "b3222699798e9c0c4e5bc9bc0f9a4bf55f267c6eab359fd40d494d94fc18dbe4",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "test/rendering/toolpath_geometry_test.dart",
+          "sha256": "030f21ddf6b615b96578a365a0e0e4ec0b6b80abc8677c2d47cd989df3d60d18",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "docs/evidence/macos-gpu-only/previous-report.json",
+          "sha256": "561ed4a867b0485dc99725864154ce722ad5489bf264469b347e9a0ae6b3606a",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "docs/evidence/macos-gpu-only/release-build.txt",
+          "sha256": "fce98f558ffd1eb8681bbe37be867aebf73b06583cd2a74195077c38615ec0c5",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "docs/evidence/macos-gpu-only/release-run.txt",
+          "sha256": "dbc01fad753a943417e50e983fddc5339e7268c74255b60f06d0b78ea171aa93",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "docs/evidence/macos-gpu-only/report.json",
+          "sha256": "e3948d14c9f48ea9c9a3495a7c056fd807b692690d2d2034243919c6fa43a315",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "docs/evidence/macos-gpu-only/run.txt",
+          "sha256": "63032a3b25a4d62eb6d83a7f1fe8e9849b8910b9e7da09299489e15af729404e",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        }
+      ],
+      "ignored_candidates": [
+        {
+          "path": "CHANGELOG.md",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "README.md",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "test/rendering/toolpath_geometry_test.dart",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": ".pubignore",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "LICENSE",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "example/pubspec.lock",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "example/README.md",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "docs/evidence/macos-gpu-only/source-sha256.json",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "query_path_metadata"
+          ]
+        },
+        {
+          "path": "CONTEXT.md",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "seed"
+          ]
+        },
+        {
+          "path": "pubspec.yaml",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "seed",
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "lib/gcode_core.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "seed"
+          ]
+        },
+        {
+          "path": "example/pubspec.yaml",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "seed"
+          ]
+        },
+        {
+          "path": ".github/workflows/ci.yml",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "seed",
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "docs/evidence/0.2.1-maintainer-acceptance.md",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "seed",
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "example/android/app/src/main/AndroidManifest.xml",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "seed",
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "example/android/app/build.gradle.kts",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "seed",
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "lib/src/core/gcode_bounds.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/core/gcode_style.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/rendering/toolpath_viewport.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/models/gcode_command.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "example/tool/macos_run.py",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/models/machine_position.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "example/lib/src/gcode_session_controller.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "example/lib/src/gcode_example_page.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        }
+      ],
+      "unknowns": [
+        "FILE_BUDGET_EXHAUSTED: docs/evidence/macos-gpu-only/source-sha256.json",
+        "FILE_BUDGET_EXHAUSTED: CONTEXT.md",
+        "FILE_BUDGET_EXHAUSTED: pubspec.yaml",
+        "FILE_BUDGET_EXHAUSTED: lib/gcode_core.dart",
+        "FILE_BUDGET_EXHAUSTED: example/pubspec.yaml",
+        "FILE_BUDGET_EXHAUSTED: .github/workflows/ci.yml",
+        "FILE_BUDGET_EXHAUSTED: docs/evidence/0.2.1-maintainer-acceptance.md",
+        "FILE_BUDGET_EXHAUSTED: example/android/app/src/main/AndroidManifest.xml",
+        "FILE_BUDGET_EXHAUSTED: example/android/app/build.gradle.kts",
+        "FILE_BUDGET_EXHAUSTED: lib/src/core/gcode_bounds.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/core/gcode_style.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/rendering/toolpath_viewport.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/models/gcode_command.dart",
+        "FILE_BUDGET_EXHAUSTED: example/tool/macos_run.py",
+        "FILE_BUDGET_EXHAUSTED: lib/src/models/machine_position.dart",
+        "FILE_BUDGET_EXHAUSTED: example/lib/src/gcode_session_controller.dart",
+        "FILE_BUDGET_EXHAUSTED: example/lib/src/gcode_example_page.dart",
+        "DIRTY_WORKSPACE: observations include current worktree content beyond source SHA",
+        "VERSION_NOT_OBSERVED_IN_SELECTED_MANIFESTS"
+      ],
+      "registry_metadata_mode": "CACHED_TARGET_METADATA",
+      "registry_metadata_freshness": "2026-09-05T10:52:44.470774+00:00",
+      "requirement": "Locate GPU playback progress updates and foregroundVertexCount uniforms; check whether progress-only changes reuse geometry, buffer and surface while preserving degenerate-segment prefixVertexCounts.",
+      "evidence_mode": "FROZEN_SOURCE_TEXTS",
+      "source_snapshot_id": "062482f93d5358000ff62f4d04f998fa81af0da1471abde8eb8ed816f623ae3e",
+      "scope": {
+        "repositories": [
+          "gcode_core"
+        ],
+        "development_units": [
+          "gcode_core:.",
+          "gcode_core:example"
+        ]
+      },
+      "metrics": {
+        "candidate_files": 41,
+        "rule_candidates": 1,
+        "inspected_files": 24,
+        "selected_files": 24,
+        "max_files": 24,
+        "no_walk": true,
+        "source_discovery_performed": false
+      },
+      "context_package": {
+        "request": {
+          "requirement": "Locate GPU playback progress updates and foregroundVertexCount uniforms; check whether progress-only changes reuse geometry, buffer and surface while preserving degenerate-segment prefixVertexCounts.",
+          "optional_target_repository": "gcode_core",
+          "candidate_paths": [
+            "AGENTS.md",
+            "docs/adr/0002-gpu-only-drawing.md",
+            "docs/macos-gpu-only-acceptance.md",
+            "lib/src/rendering/gpu_toolpath_layer.dart",
+            "lib/src/rendering/toolpath_geometry.dart",
+            "docs/adr/0001-macos-first-gpu-toolpath.md",
+            "docs/evidence/gcode-gpu-release-build.txt",
+            "docs/evidence/gcode-gpu-release-run.txt",
+            "docs/evidence/macos-gpu-build.txt",
+            "docs/evidence/macos-gpu-profile-run1.txt",
+            "docs/evidence/macos-gpu-profile-run2.txt",
+            "docs/evidence/macos-gpu-profile-run3.txt",
+            "docs/flutter-gpu-assessment.md",
+            "docs/macos-gpu-probe.md",
+            "example/lib/gpu_validation.dart",
+            "example/tool/build_gpu_shaders.py",
+            "lib/src/models/toolpath_segment.dart",
+            "lib/src/widgets/playback_controls.dart",
+            "test/rendering/toolpath_geometry_test.dart",
+            "docs/evidence/macos-gpu-only/previous-report.json",
+            "docs/evidence/macos-gpu-only/release-build.txt",
+            "docs/evidence/macos-gpu-only/release-run.txt",
+            "docs/evidence/macos-gpu-only/report.json",
+            "docs/evidence/macos-gpu-only/run.txt"
+          ]
+        },
+        "scope": {
+          "repositories": [
+            "gcode_core"
+          ],
+          "development_units": [
+            "gcode_core:.",
+            "gcode_core:example"
+          ]
+        },
+        "candidates": [
+          {
+            "id": "gcode_core:.",
+            "classification": "context_only",
+            "confidence": "MEDIUM",
+            "reasons": [
+              "explicit bounded file intake"
+            ],
+            "evidence_refs": [
+              "AGENTS.md",
+              "AGENTS.md:6",
+              "AGENTS.md:14",
+              "AGENTS.md:17",
+              "AGENTS.md:18",
+              "AGENTS.md:20",
+              "docs/adr/0002-gpu-only-drawing.md",
+              "docs/adr/0002-gpu-only-drawing.md:1",
+              "docs/adr/0002-gpu-only-drawing.md:3",
+              "docs/macos-gpu-only-acceptance.md",
+              "docs/macos-gpu-only-acceptance.md:1",
+              "docs/macos-gpu-only-acceptance.md:3",
+              "docs/macos-gpu-only-acceptance.md:7",
+              "docs/macos-gpu-only-acceptance.md:8",
+              "docs/macos-gpu-only-acceptance.md:9",
+              "lib/src/rendering/gpu_toolpath_layer.dart",
+              "lib/src/rendering/gpu_toolpath_layer.dart:6",
+              "lib/src/rendering/gpu_toolpath_layer.dart:10",
+              "lib/src/rendering/gpu_toolpath_layer.dart:11",
+              "lib/src/rendering/gpu_toolpath_layer.dart:14",
+              "lib/src/rendering/gpu_toolpath_layer.dart:15",
+              "lib/src/rendering/toolpath_geometry.dart",
+              "lib/src/rendering/toolpath_geometry.dart:6",
+              "lib/src/rendering/toolpath_geometry.dart:9",
+              "lib/src/rendering/toolpath_geometry.dart:10",
+              "lib/src/rendering/toolpath_geometry.dart:11",
+              "lib/src/rendering/toolpath_geometry.dart:14",
+              "docs/adr/0001-macos-first-gpu-toolpath.md",
+              "docs/adr/0001-macos-first-gpu-toolpath.md:1",
+              "docs/adr/0001-macos-first-gpu-toolpath.md:3",
+              "docs/adr/0001-macos-first-gpu-toolpath.md:5",
+              "docs/evidence/gcode-gpu-release-build.txt",
+              "docs/evidence/gcode-gpu-release-run.txt",
+              "docs/evidence/gcode-gpu-release-run.txt:1",
+              "docs/evidence/gcode-gpu-release-run.txt:2",
+              "docs/evidence/gcode-gpu-release-run.txt:3",
+              "docs/evidence/macos-gpu-build.txt",
+              "docs/evidence/macos-gpu-build.txt:113",
+              "docs/evidence/macos-gpu-build.txt:197",
+              "docs/evidence/macos-gpu-build.txt:213",
+              "docs/evidence/macos-gpu-build.txt:217",
+              "docs/evidence/macos-gpu-build.txt:401",
+              "docs/evidence/macos-gpu-build.txt:403",
+              "docs/evidence/macos-gpu-profile-run1.txt",
+              "docs/evidence/macos-gpu-profile-run1.txt:1",
+              "docs/evidence/macos-gpu-profile-run1.txt:3",
+              "docs/evidence/macos-gpu-profile-run1.txt:4",
+              "docs/evidence/macos-gpu-profile-run2.txt",
+              "docs/evidence/macos-gpu-profile-run2.txt:1",
+              "docs/evidence/macos-gpu-profile-run2.txt:3",
+              "docs/evidence/macos-gpu-profile-run2.txt:4",
+              "docs/evidence/macos-gpu-profile-run3.txt",
+              "docs/evidence/macos-gpu-profile-run3.txt:1",
+              "docs/evidence/macos-gpu-profile-run3.txt:3",
+              "docs/evidence/macos-gpu-profile-run3.txt:4",
+              "docs/flutter-gpu-assessment.md",
+              "docs/flutter-gpu-assessment.md:1",
+              "docs/flutter-gpu-assessment.md:14",
+              "docs/flutter-gpu-assessment.md:16",
+              "docs/flutter-gpu-assessment.md:21",
+              "docs/flutter-gpu-assessment.md:22",
+              "docs/macos-gpu-probe.md",
+              "docs/macos-gpu-probe.md:7",
+              "docs/macos-gpu-probe.md:17",
+              "docs/macos-gpu-probe.md:24",
+              "docs/macos-gpu-probe.md:25",
+              "docs/macos-gpu-probe.md:26",
+              "lib/src/models/toolpath_segment.dart",
+              "lib/src/models/toolpath_segment.dart:4",
+              "lib/src/models/toolpath_segment.dart:5",
+              "lib/src/models/toolpath_segment.dart:15",
+              "lib/src/widgets/playback_controls.dart",
+              "lib/src/widgets/playback_controls.dart:3",
+              "lib/src/widgets/playback_controls.dart:4",
+              "lib/src/widgets/playback_controls.dart:7",
+              "lib/src/widgets/playback_controls.dart:17",
+              "lib/src/widgets/playback_controls.dart:64",
+              "test/rendering/toolpath_geometry_test.dart",
+              "test/rendering/toolpath_geometry_test.dart:4",
+              "test/rendering/toolpath_geometry_test.dart:6",
+              "test/rendering/toolpath_geometry_test.dart:7",
+              "test/rendering/toolpath_geometry_test.dart:8",
+              "test/rendering/toolpath_geometry_test.dart:16",
+              "docs/evidence/macos-gpu-only/previous-report.json",
+              "docs/evidence/macos-gpu-only/release-build.txt",
+              "docs/evidence/macos-gpu-only/release-run.txt",
+              "docs/evidence/macos-gpu-only/release-run.txt:1",
+              "docs/evidence/macos-gpu-only/report.json",
+              "docs/evidence/macos-gpu-only/report.json:9",
+              "docs/evidence/macos-gpu-only/report.json:10",
+              "docs/evidence/macos-gpu-only/run.txt",
+              "docs/evidence/macos-gpu-only/run.txt:1",
+              "docs/evidence/macos-gpu-only/run.txt:2"
+            ]
+          },
+          {
+            "id": "gcode_core:example",
+            "classification": "context_only",
+            "confidence": "MEDIUM",
+            "reasons": [
+              "explicit bounded file intake"
+            ],
+            "evidence_refs": [
+              "example/lib/gpu_validation.dart",
+              "example/lib/gpu_validation.dart:1",
+              "example/lib/gpu_validation.dart:25",
+              "example/lib/gpu_validation.dart:26",
+              "example/lib/gpu_validation.dart:39",
+              "example/lib/gpu_validation.dart:64",
+              "example/tool/build_gpu_shaders.py",
+              "example/tool/build_gpu_shaders.py:1",
+              "example/tool/build_gpu_shaders.py:14",
+              "example/tool/build_gpu_shaders.py:16",
+              "example/tool/build_gpu_shaders.py:21"
+            ]
+          }
+        ],
+        "files": [
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/AGENTS.md",
+            "relative_path": "AGENTS.md",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "AGENTS.md",
+              "AGENTS.md:6",
+              "AGENTS.md:14",
+              "AGENTS.md:17",
+              "AGENTS.md:18",
+              "AGENTS.md:20"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/docs/adr/0002-gpu-only-drawing.md",
+            "relative_path": "docs/adr/0002-gpu-only-drawing.md",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "docs/adr/0002-gpu-only-drawing.md",
+              "docs/adr/0002-gpu-only-drawing.md:1",
+              "docs/adr/0002-gpu-only-drawing.md:3"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/docs/macos-gpu-only-acceptance.md",
+            "relative_path": "docs/macos-gpu-only-acceptance.md",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "docs/macos-gpu-only-acceptance.md",
+              "docs/macos-gpu-only-acceptance.md:1",
+              "docs/macos-gpu-only-acceptance.md:3",
+              "docs/macos-gpu-only-acceptance.md:7",
+              "docs/macos-gpu-only-acceptance.md:8",
+              "docs/macos-gpu-only-acceptance.md:9"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/gpu_toolpath_layer.dart",
+            "relative_path": "lib/src/rendering/gpu_toolpath_layer.dart",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/src/rendering/gpu_toolpath_layer.dart",
+              "lib/src/rendering/gpu_toolpath_layer.dart:6",
+              "lib/src/rendering/gpu_toolpath_layer.dart:10",
+              "lib/src/rendering/gpu_toolpath_layer.dart:11",
+              "lib/src/rendering/gpu_toolpath_layer.dart:14",
+              "lib/src/rendering/gpu_toolpath_layer.dart:15"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/toolpath_geometry.dart",
+            "relative_path": "lib/src/rendering/toolpath_geometry.dart",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_geometry.dart",
+              "lib/src/rendering/toolpath_geometry.dart:6",
+              "lib/src/rendering/toolpath_geometry.dart:9",
+              "lib/src/rendering/toolpath_geometry.dart:10",
+              "lib/src/rendering/toolpath_geometry.dart:11",
+              "lib/src/rendering/toolpath_geometry.dart:14"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/docs/adr/0001-macos-first-gpu-toolpath.md",
+            "relative_path": "docs/adr/0001-macos-first-gpu-toolpath.md",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "docs/adr/0001-macos-first-gpu-toolpath.md",
+              "docs/adr/0001-macos-first-gpu-toolpath.md:1",
+              "docs/adr/0001-macos-first-gpu-toolpath.md:3",
+              "docs/adr/0001-macos-first-gpu-toolpath.md:5"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/docs/evidence/gcode-gpu-release-build.txt",
+            "relative_path": "docs/evidence/gcode-gpu-release-build.txt",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_no_query_match",
+            "evidence_refs": [
+              "docs/evidence/gcode-gpu-release-build.txt"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/docs/evidence/gcode-gpu-release-run.txt",
+            "relative_path": "docs/evidence/gcode-gpu-release-run.txt",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "docs/evidence/gcode-gpu-release-run.txt",
+              "docs/evidence/gcode-gpu-release-run.txt:1",
+              "docs/evidence/gcode-gpu-release-run.txt:2",
+              "docs/evidence/gcode-gpu-release-run.txt:3"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-build.txt",
+            "relative_path": "docs/evidence/macos-gpu-build.txt",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-build.txt",
+              "docs/evidence/macos-gpu-build.txt:113",
+              "docs/evidence/macos-gpu-build.txt:197",
+              "docs/evidence/macos-gpu-build.txt:213",
+              "docs/evidence/macos-gpu-build.txt:217",
+              "docs/evidence/macos-gpu-build.txt:401",
+              "docs/evidence/macos-gpu-build.txt:403"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-profile-run1.txt",
+            "relative_path": "docs/evidence/macos-gpu-profile-run1.txt",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-profile-run1.txt",
+              "docs/evidence/macos-gpu-profile-run1.txt:1",
+              "docs/evidence/macos-gpu-profile-run1.txt:3",
+              "docs/evidence/macos-gpu-profile-run1.txt:4"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-profile-run2.txt",
+            "relative_path": "docs/evidence/macos-gpu-profile-run2.txt",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-profile-run2.txt",
+              "docs/evidence/macos-gpu-profile-run2.txt:1",
+              "docs/evidence/macos-gpu-profile-run2.txt:3",
+              "docs/evidence/macos-gpu-profile-run2.txt:4"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-profile-run3.txt",
+            "relative_path": "docs/evidence/macos-gpu-profile-run3.txt",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-profile-run3.txt",
+              "docs/evidence/macos-gpu-profile-run3.txt:1",
+              "docs/evidence/macos-gpu-profile-run3.txt:3",
+              "docs/evidence/macos-gpu-profile-run3.txt:4"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/docs/flutter-gpu-assessment.md",
+            "relative_path": "docs/flutter-gpu-assessment.md",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "docs/flutter-gpu-assessment.md",
+              "docs/flutter-gpu-assessment.md:1",
+              "docs/flutter-gpu-assessment.md:14",
+              "docs/flutter-gpu-assessment.md:16",
+              "docs/flutter-gpu-assessment.md:21",
+              "docs/flutter-gpu-assessment.md:22"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/docs/macos-gpu-probe.md",
+            "relative_path": "docs/macos-gpu-probe.md",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "docs/macos-gpu-probe.md",
+              "docs/macos-gpu-probe.md:7",
+              "docs/macos-gpu-probe.md:17",
+              "docs/macos-gpu-probe.md:24",
+              "docs/macos-gpu-probe.md:25",
+              "docs/macos-gpu-probe.md:26"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/example/lib/gpu_validation.dart",
+            "relative_path": "example/lib/gpu_validation.dart",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:example",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "example/lib/gpu_validation.dart",
+              "example/lib/gpu_validation.dart:1",
+              "example/lib/gpu_validation.dart:25",
+              "example/lib/gpu_validation.dart:26",
+              "example/lib/gpu_validation.dart:39",
+              "example/lib/gpu_validation.dart:64"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/example/tool/build_gpu_shaders.py",
+            "relative_path": "example/tool/build_gpu_shaders.py",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:example",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "example/tool/build_gpu_shaders.py",
+              "example/tool/build_gpu_shaders.py:1",
+              "example/tool/build_gpu_shaders.py:14",
+              "example/tool/build_gpu_shaders.py:16",
+              "example/tool/build_gpu_shaders.py:21"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/lib/src/models/toolpath_segment.dart",
+            "relative_path": "lib/src/models/toolpath_segment.dart",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/src/models/toolpath_segment.dart",
+              "lib/src/models/toolpath_segment.dart:4",
+              "lib/src/models/toolpath_segment.dart:5",
+              "lib/src/models/toolpath_segment.dart:15"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/lib/src/widgets/playback_controls.dart",
+            "relative_path": "lib/src/widgets/playback_controls.dart",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/src/widgets/playback_controls.dart",
+              "lib/src/widgets/playback_controls.dart:3",
+              "lib/src/widgets/playback_controls.dart:4",
+              "lib/src/widgets/playback_controls.dart:7",
+              "lib/src/widgets/playback_controls.dart:17",
+              "lib/src/widgets/playback_controls.dart:64"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/test/rendering/toolpath_geometry_test.dart",
+            "relative_path": "test/rendering/toolpath_geometry_test.dart",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "test/rendering/toolpath_geometry_test.dart",
+              "test/rendering/toolpath_geometry_test.dart:4",
+              "test/rendering/toolpath_geometry_test.dart:6",
+              "test/rendering/toolpath_geometry_test.dart:7",
+              "test/rendering/toolpath_geometry_test.dart:8",
+              "test/rendering/toolpath_geometry_test.dart:16"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-only/previous-report.json",
+            "relative_path": "docs/evidence/macos-gpu-only/previous-report.json",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_no_query_match",
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-only/previous-report.json"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-only/release-build.txt",
+            "relative_path": "docs/evidence/macos-gpu-only/release-build.txt",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_no_query_match",
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-only/release-build.txt"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-only/release-run.txt",
+            "relative_path": "docs/evidence/macos-gpu-only/release-run.txt",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-only/release-run.txt",
+              "docs/evidence/macos-gpu-only/release-run.txt:1"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-only/report.json",
+            "relative_path": "docs/evidence/macos-gpu-only/report.json",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-only/report.json",
+              "docs/evidence/macos-gpu-only/report.json:9",
+              "docs/evidence/macos-gpu-only/report.json:10"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-only/run.txt",
+            "relative_path": "docs/evidence/macos-gpu-only/run.txt",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-only/run.txt",
+              "docs/evidence/macos-gpu-only/run.txt:1",
+              "docs/evidence/macos-gpu-only/run.txt:2"
+            ]
+          }
+        ],
+        "symbols": [
+          {
+            "name": "surface",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-only/release-run.txt",
+            "line": 1,
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-only/release-run.txt:1"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-only/report.json",
+            "line": 9,
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-only/report.json:9"
+            ]
+          },
+          {
+            "name": "surface",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-only/run.txt",
+            "line": 1,
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-only/run.txt:1"
+            ]
+          },
+          {
+            "name": "surface",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/gcode-gpu-release-run.txt",
+            "line": 1,
+            "evidence_refs": [
+              "docs/evidence/gcode-gpu-release-run.txt:1"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-build.txt",
+            "line": 113,
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-build.txt:113"
+            ]
+          },
+          {
+            "name": "surface",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-profile-run1.txt",
+            "line": 1,
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-profile-run1.txt:1"
+            ]
+          },
+          {
+            "name": "surface",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-profile-run2.txt",
+            "line": 1,
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-profile-run2.txt:1"
+            ]
+          },
+          {
+            "name": "surface",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-profile-run3.txt",
+            "line": 1,
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-profile-run3.txt:1"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/example/lib/gpu_validation.dart",
+            "line": 1,
+            "evidence_refs": [
+              "example/lib/gpu_validation.dart:1"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/example/tool/build_gpu_shaders.py",
+            "line": 1,
+            "evidence_refs": [
+              "example/tool/build_gpu_shaders.py:1"
+            ]
+          },
+          {
+            "name": "segment",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/models/toolpath_segment.dart",
+            "line": 4,
+            "evidence_refs": [
+              "lib/src/models/toolpath_segment.dart:4"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/gpu_toolpath_layer.dart",
+            "line": 6,
+            "evidence_refs": [
+              "lib/src/rendering/gpu_toolpath_layer.dart:6"
+            ]
+          },
+          {
+            "name": "segment",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/toolpath_geometry.dart",
+            "line": 6,
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_geometry.dart:6"
+            ]
+          },
+          {
+            "name": "playback",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/widgets/playback_controls.dart",
+            "line": 3,
+            "evidence_refs": [
+              "lib/src/widgets/playback_controls.dart:3"
+            ]
+          },
+          {
+            "name": "geometry",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/rendering/toolpath_geometry_test.dart",
+            "line": 4,
+            "evidence_refs": [
+              "test/rendering/toolpath_geometry_test.dart:4"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/adr/0002-gpu-only-drawing.md",
+            "line": 1,
+            "evidence_refs": [
+              "docs/adr/0002-gpu-only-drawing.md:1"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/macos-gpu-only-acceptance.md",
+            "line": 1,
+            "evidence_refs": [
+              "docs/macos-gpu-only-acceptance.md:1"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/adr/0001-macos-first-gpu-toolpath.md",
+            "line": 1,
+            "evidence_refs": [
+              "docs/adr/0001-macos-first-gpu-toolpath.md:1"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/flutter-gpu-assessment.md",
+            "line": 1,
+            "evidence_refs": [
+              "docs/flutter-gpu-assessment.md:1"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/macos-gpu-probe.md",
+            "line": 7,
+            "evidence_refs": [
+              "docs/macos-gpu-probe.md:7"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/AGENTS.md",
+            "line": 6,
+            "evidence_refs": [
+              "AGENTS.md:6"
+            ]
+          },
+          {
+            "name": "count",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-only/report.json",
+            "line": 10,
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-only/report.json:10"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-only/run.txt",
+            "line": 2,
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-only/run.txt:2"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/gcode-gpu-release-run.txt",
+            "line": 2,
+            "evidence_refs": [
+              "docs/evidence/gcode-gpu-release-run.txt:2"
+            ]
+          },
+          {
+            "name": "only",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-build.txt",
+            "line": 197,
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-build.txt:197"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-profile-run1.txt",
+            "line": 3,
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-profile-run1.txt:3"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-profile-run2.txt",
+            "line": 3,
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-profile-run2.txt:3"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-profile-run3.txt",
+            "line": 3,
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-profile-run3.txt:3"
+            ]
+          },
+          {
+            "name": "segment",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/example/lib/gpu_validation.dart",
+            "line": 25,
+            "evidence_refs": [
+              "example/lib/gpu_validation.dart:25"
+            ]
+          },
+          {
+            "name": "vertex",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/example/tool/build_gpu_shaders.py",
+            "line": 14,
+            "evidence_refs": [
+              "example/tool/build_gpu_shaders.py:14"
+            ]
+          },
+          {
+            "name": "segment",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/models/toolpath_segment.dart",
+            "line": 5,
+            "evidence_refs": [
+              "lib/src/models/toolpath_segment.dart:5"
+            ]
+          },
+          {
+            "name": "segment",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/gpu_toolpath_layer.dart",
+            "line": 10,
+            "evidence_refs": [
+              "lib/src/rendering/gpu_toolpath_layer.dart:10"
+            ]
+          },
+          {
+            "name": "only",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/toolpath_geometry.dart",
+            "line": 9,
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_geometry.dart:9"
+            ]
+          },
+          {
+            "name": "playback",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/widgets/playback_controls.dart",
+            "line": 4,
+            "evidence_refs": [
+              "lib/src/widgets/playback_controls.dart:4"
+            ]
+          },
+          {
+            "name": "segment",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/rendering/toolpath_geometry_test.dart",
+            "line": 6,
+            "evidence_refs": [
+              "test/rendering/toolpath_geometry_test.dart:6"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/adr/0002-gpu-only-drawing.md",
+            "line": 3,
+            "evidence_refs": [
+              "docs/adr/0002-gpu-only-drawing.md:3"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/macos-gpu-only-acceptance.md",
+            "line": 3,
+            "evidence_refs": [
+              "docs/macos-gpu-only-acceptance.md:3"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/adr/0001-macos-first-gpu-toolpath.md",
+            "line": 3,
+            "evidence_refs": [
+              "docs/adr/0001-macos-first-gpu-toolpath.md:3"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/flutter-gpu-assessment.md",
+            "line": 14,
+            "evidence_refs": [
+              "docs/flutter-gpu-assessment.md:14"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/macos-gpu-probe.md",
+            "line": 17,
+            "evidence_refs": [
+              "docs/macos-gpu-probe.md:17"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/AGENTS.md",
+            "line": 14,
+            "evidence_refs": [
+              "AGENTS.md:14"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/gcode-gpu-release-run.txt",
+            "line": 3,
+            "evidence_refs": [
+              "docs/evidence/gcode-gpu-release-run.txt:3"
+            ]
+          },
+          {
+            "name": "only",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-build.txt",
+            "line": 213,
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-build.txt:213"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-profile-run1.txt",
+            "line": 4,
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-profile-run1.txt:4"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-profile-run2.txt",
+            "line": 4,
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-profile-run2.txt:4"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-profile-run3.txt",
+            "line": 4,
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-profile-run3.txt:4"
+            ]
+          },
+          {
+            "name": "progress",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/example/lib/gpu_validation.dart",
+            "line": 26,
+            "evidence_refs": [
+              "example/lib/gpu_validation.dart:26"
+            ]
+          },
+          {
+            "name": "vertex",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/example/tool/build_gpu_shaders.py",
+            "line": 16,
+            "evidence_refs": [
+              "example/tool/build_gpu_shaders.py:16"
+            ]
+          },
+          {
+            "name": "segment",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/models/toolpath_segment.dart",
+            "line": 15,
+            "evidence_refs": [
+              "lib/src/models/toolpath_segment.dart:15"
+            ]
+          },
+          {
+            "name": "geometry",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/gpu_toolpath_layer.dart",
+            "line": 11,
+            "evidence_refs": [
+              "lib/src/rendering/gpu_toolpath_layer.dart:11"
+            ]
+          },
+          {
+            "name": "geometry",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/toolpath_geometry.dart",
+            "line": 10,
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_geometry.dart:10"
+            ]
+          },
+          {
+            "name": "progress",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/widgets/playback_controls.dart",
+            "line": 7,
+            "evidence_refs": [
+              "lib/src/widgets/playback_controls.dart:7"
+            ]
+          },
+          {
+            "name": "segment",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/rendering/toolpath_geometry_test.dart",
+            "line": 7,
+            "evidence_refs": [
+              "test/rendering/toolpath_geometry_test.dart:7"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/macos-gpu-only-acceptance.md",
+            "line": 7,
+            "evidence_refs": [
+              "docs/macos-gpu-only-acceptance.md:7"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/adr/0001-macos-first-gpu-toolpath.md",
+            "line": 5,
+            "evidence_refs": [
+              "docs/adr/0001-macos-first-gpu-toolpath.md:5"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/flutter-gpu-assessment.md",
+            "line": 16,
+            "evidence_refs": [
+              "docs/flutter-gpu-assessment.md:16"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/macos-gpu-probe.md",
+            "line": 24,
+            "evidence_refs": [
+              "docs/macos-gpu-probe.md:24"
+            ]
+          },
+          {
+            "name": "playback",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/AGENTS.md",
+            "line": 17,
+            "evidence_refs": [
+              "AGENTS.md:17"
+            ]
+          },
+          {
+            "name": "only",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-build.txt",
+            "line": 217,
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-build.txt:217"
+            ]
+          },
+          {
+            "name": "progress",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/example/lib/gpu_validation.dart",
+            "line": 39,
+            "evidence_refs": [
+              "example/lib/gpu_validation.dart:39"
+            ]
+          },
+          {
+            "name": "check",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/example/tool/build_gpu_shaders.py",
+            "line": 21,
+            "evidence_refs": [
+              "example/tool/build_gpu_shaders.py:21"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/gpu_toolpath_layer.dart",
+            "line": 14,
+            "evidence_refs": [
+              "lib/src/rendering/gpu_toolpath_layer.dart:14"
+            ]
+          },
+          {
+            "name": "vertex",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/toolpath_geometry.dart",
+            "line": 11,
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_geometry.dart:11"
+            ]
+          },
+          {
+            "name": "progress",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/widgets/playback_controls.dart",
+            "line": 17,
+            "evidence_refs": [
+              "lib/src/widgets/playback_controls.dart:17"
+            ]
+          },
+          {
+            "name": "segment",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/rendering/toolpath_geometry_test.dart",
+            "line": 8,
+            "evidence_refs": [
+              "test/rendering/toolpath_geometry_test.dart:8"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/macos-gpu-only-acceptance.md",
+            "line": 8,
+            "evidence_refs": [
+              "docs/macos-gpu-only-acceptance.md:8"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/flutter-gpu-assessment.md",
+            "line": 21,
+            "evidence_refs": [
+              "docs/flutter-gpu-assessment.md:21"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/macos-gpu-probe.md",
+            "line": 25,
+            "evidence_refs": [
+              "docs/macos-gpu-probe.md:25"
+            ]
+          },
+          {
+            "name": "only",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/AGENTS.md",
+            "line": 18,
+            "evidence_refs": [
+              "AGENTS.md:18"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-build.txt",
+            "line": 401,
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-build.txt:401"
+            ]
+          },
+          {
+            "name": "buffer",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/example/lib/gpu_validation.dart",
+            "line": 64,
+            "evidence_refs": [
+              "example/lib/gpu_validation.dart:64"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/gpu_toolpath_layer.dart",
+            "line": 15,
+            "evidence_refs": [
+              "lib/src/rendering/gpu_toolpath_layer.dart:15"
+            ]
+          },
+          {
+            "name": "count",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/toolpath_geometry.dart",
+            "line": 14,
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_geometry.dart:14"
+            ]
+          },
+          {
+            "name": "progress",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/widgets/playback_controls.dart",
+            "line": 64,
+            "evidence_refs": [
+              "lib/src/widgets/playback_controls.dart:64"
+            ]
+          },
+          {
+            "name": "geometry",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/rendering/toolpath_geometry_test.dart",
+            "line": 16,
+            "evidence_refs": [
+              "test/rendering/toolpath_geometry_test.dart:16"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/macos-gpu-only-acceptance.md",
+            "line": 9,
+            "evidence_refs": [
+              "docs/macos-gpu-only-acceptance.md:9"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/flutter-gpu-assessment.md",
+            "line": 22,
+            "evidence_refs": [
+              "docs/flutter-gpu-assessment.md:22"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/macos-gpu-probe.md",
+            "line": 26,
+            "evidence_refs": [
+              "docs/macos-gpu-probe.md:26"
+            ]
+          },
+          {
+            "name": "gpu",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/AGENTS.md",
+            "line": 20,
+            "evidence_refs": [
+              "AGENTS.md:20"
+            ]
+          },
+          {
+            "name": "prefix",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/docs/evidence/macos-gpu-build.txt",
+            "line": 403,
+            "evidence_refs": [
+              "docs/evidence/macos-gpu-build.txt:403"
+            ]
+          }
+        ],
+        "rules": [
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:AGENTS.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:docs/adr/0002-gpu-only-drawing.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "docs/adr/0002-gpu-only-drawing.md",
+            "scope": "docs/adr",
+            "applies_to": "gcode_core:docs/adr/0002-gpu-only-drawing.md",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "docs/adr/0001-macos-first-gpu-toolpath.md",
+            "scope": "docs/adr",
+            "applies_to": "gcode_core:docs/adr/0002-gpu-only-drawing.md",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:docs/macos-gpu-only-acceptance.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/rendering/gpu_toolpath_layer.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/rendering/toolpath_geometry.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:docs/adr/0001-macos-first-gpu-toolpath.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "docs/adr/0002-gpu-only-drawing.md",
+            "scope": "docs/adr",
+            "applies_to": "gcode_core:docs/adr/0001-macos-first-gpu-toolpath.md",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "docs/adr/0001-macos-first-gpu-toolpath.md",
+            "scope": "docs/adr",
+            "applies_to": "gcode_core:docs/adr/0001-macos-first-gpu-toolpath.md",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:docs/evidence/gcode-gpu-release-build.txt",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:docs/evidence/gcode-gpu-release-run.txt",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:docs/evidence/macos-gpu-build.txt",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:docs/evidence/macos-gpu-profile-run1.txt",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:docs/evidence/macos-gpu-profile-run2.txt",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:docs/evidence/macos-gpu-profile-run3.txt",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:docs/flutter-gpu-assessment.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:docs/macos-gpu-probe.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:example/lib/gpu_validation.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:example/tool/build_gpu_shaders.py",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/models/toolpath_segment.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/widgets/playback_controls.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:test/rendering/toolpath_geometry_test.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:docs/evidence/macos-gpu-only/previous-report.json",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:docs/evidence/macos-gpu-only/release-build.txt",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:docs/evidence/macos-gpu-only/release-run.txt",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:docs/evidence/macos-gpu-only/report.json",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:docs/evidence/macos-gpu-only/run.txt",
+            "provenance": "filesystem_agent_ancestor"
+          }
+        ],
+        "dependencies": [
+          {
+            "source": "gcode_core:example",
+            "target": "gcode_core:.",
+            "kind": "path_dependency",
+            "evidence": {
+              "source": "filesystem",
+              "path": "example/pubspec.yaml",
+              "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+              "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+            }
+          }
+        ],
+        "unknowns": [
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:AGENTS.md.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:docs/adr/0002-gpu-only-drawing.md.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:docs/macos-gpu-only-acceptance.md.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:lib/src/rendering/gpu_toolpath_layer.dart.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:lib/src/rendering/toolpath_geometry.dart.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:docs/adr/0001-macos-first-gpu-toolpath.md.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:docs/evidence/gcode-gpu-release-build.txt.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:docs/evidence/gcode-gpu-release-run.txt.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:docs/evidence/macos-gpu-build.txt.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:docs/evidence/macos-gpu-profile-run1.txt.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:docs/evidence/macos-gpu-profile-run2.txt.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:docs/evidence/macos-gpu-profile-run3.txt.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:docs/flutter-gpu-assessment.md.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:docs/macos-gpu-probe.md.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:example/lib/gpu_validation.dart.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:example/tool/build_gpu_shaders.py.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:lib/src/models/toolpath_segment.dart.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:lib/src/widgets/playback_controls.dart.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:test/rendering/toolpath_geometry_test.dart.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:docs/evidence/macos-gpu-only/previous-report.json.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:docs/evidence/macos-gpu-only/release-build.txt.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:docs/evidence/macos-gpu-only/release-run.txt.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:docs/evidence/macos-gpu-only/report.json.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          },
+          {
+            "subject": "CONTEXT.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:docs/evidence/macos-gpu-only/run.txt.",
+            "required_evidence": "Include CONTEXT.md in explicit candidate_paths within the file budget."
+          }
+        ],
+        "confidence": "MEDIUM",
+        "metrics": {
+          "searched_repositories": 1,
+          "searched_files": 24,
+          "selected_files": 24,
+          "candidate_files": 24,
+          "evidence_count": 81,
+          "context_size_estimate": 133,
+          "rule_files": 3,
+          "rule_target_files": 24,
+          "missing_rule_candidates": 1
+        },
+        "planned_capabilities": []
+      },
+      "capability_analysis": {
+        "requirement": "Locate GPU playback progress updates and foregroundVertexCount uniforms; check whether progress-only changes reuse geometry, buffer and surface while preserving degenerate-segment prefixVertexCounts.",
+        "target_repository": "gcode_core",
+        "context_ref": {
+          "confidence": "MEDIUM",
+          "metrics": {
+            "searched_repositories": 1,
+            "searched_files": 24,
+            "selected_files": 24,
+            "candidate_files": 24,
+            "evidence_count": 81,
+            "context_size_estimate": 133,
+            "rule_files": 3,
+            "rule_target_files": 24,
+            "missing_rule_candidates": 1
+          },
+          "evidence_kinds": {
+            "AGENTS.md": "guidance",
+            "docs/adr/0002-gpu-only-drawing.md": "guidance",
+            "docs/macos-gpu-only-acceptance.md": "guidance",
+            "lib/src/rendering/gpu_toolpath_layer.dart": "source",
+            "lib/src/rendering/toolpath_geometry.dart": "source",
+            "docs/adr/0001-macos-first-gpu-toolpath.md": "guidance",
+            "docs/evidence/gcode-gpu-release-build.txt": "guidance",
+            "docs/evidence/gcode-gpu-release-run.txt": "guidance",
+            "docs/evidence/macos-gpu-build.txt": "guidance",
+            "docs/evidence/macos-gpu-profile-run1.txt": "guidance",
+            "docs/evidence/macos-gpu-profile-run2.txt": "guidance",
+            "docs/evidence/macos-gpu-profile-run3.txt": "guidance",
+            "docs/flutter-gpu-assessment.md": "guidance",
+            "docs/macos-gpu-probe.md": "guidance",
+            "example/lib/gpu_validation.dart": "source",
+            "example/tool/build_gpu_shaders.py": "source",
+            "lib/src/models/toolpath_segment.dart": "source",
+            "lib/src/widgets/playback_controls.dart": "source",
+            "test/rendering/toolpath_geometry_test.dart": "source",
+            "docs/evidence/macos-gpu-only/previous-report.json": "configuration",
+            "docs/evidence/macos-gpu-only/release-build.txt": "guidance",
+            "docs/evidence/macos-gpu-only/release-run.txt": "guidance",
+            "docs/evidence/macos-gpu-only/report.json": "configuration",
+            "docs/evidence/macos-gpu-only/run.txt": "guidance"
+          },
+          "query_relevance": {
+            "AGENTS.md": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "AGENTS.md:6",
+                "AGENTS.md:14",
+                "AGENTS.md:17",
+                "AGENTS.md:18",
+                "AGENTS.md:20",
+                "AGENTS.md:25",
+                "AGENTS.md:26",
+                "AGENTS.md:27",
+                "AGENTS.md:31",
+                "AGENTS.md:37",
+                "AGENTS.md:39",
+                "AGENTS.md:42",
+                "AGENTS.md:43",
+                "AGENTS.md:50",
+                "AGENTS.md:51",
+                "AGENTS.md:52",
+                "AGENTS.md:53",
+                "AGENTS.md:54",
+                "AGENTS.md:55",
+                "AGENTS.md:62",
+                "AGENTS.md:66",
+                "AGENTS.md:67",
+                "AGENTS.md:88",
+                "AGENTS.md:97",
+                "AGENTS.md:101",
+                "AGENTS.md:102",
+                "AGENTS.md:107"
+              ]
+            },
+            "docs/adr/0002-gpu-only-drawing.md": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "docs/adr/0002-gpu-only-drawing.md:1",
+                "docs/adr/0002-gpu-only-drawing.md:3"
+              ]
+            },
+            "docs/macos-gpu-only-acceptance.md": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "docs/macos-gpu-only-acceptance.md:1",
+                "docs/macos-gpu-only-acceptance.md:3",
+                "docs/macos-gpu-only-acceptance.md:7",
+                "docs/macos-gpu-only-acceptance.md:8",
+                "docs/macos-gpu-only-acceptance.md:9",
+                "docs/macos-gpu-only-acceptance.md:10",
+                "docs/macos-gpu-only-acceptance.md:15",
+                "docs/macos-gpu-only-acceptance.md:37",
+                "docs/macos-gpu-only-acceptance.md:39",
+                "docs/macos-gpu-only-acceptance.md:49",
+                "docs/macos-gpu-only-acceptance.md:50",
+                "docs/macos-gpu-only-acceptance.md:51",
+                "docs/macos-gpu-only-acceptance.md:55",
+                "docs/macos-gpu-only-acceptance.md:58"
+              ]
+            },
+            "lib/src/rendering/gpu_toolpath_layer.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/src/rendering/gpu_toolpath_layer.dart:6",
+                "lib/src/rendering/gpu_toolpath_layer.dart:10",
+                "lib/src/rendering/gpu_toolpath_layer.dart:11",
+                "lib/src/rendering/gpu_toolpath_layer.dart:14",
+                "lib/src/rendering/gpu_toolpath_layer.dart:15",
+                "lib/src/rendering/gpu_toolpath_layer.dart:16",
+                "lib/src/rendering/gpu_toolpath_layer.dart:20",
+                "lib/src/rendering/gpu_toolpath_layer.dart:22",
+                "lib/src/rendering/gpu_toolpath_layer.dart:24",
+                "lib/src/rendering/gpu_toolpath_layer.dart:27",
+                "lib/src/rendering/gpu_toolpath_layer.dart:30",
+                "lib/src/rendering/gpu_toolpath_layer.dart:31",
+                "lib/src/rendering/gpu_toolpath_layer.dart:41",
+                "lib/src/rendering/gpu_toolpath_layer.dart:44",
+                "lib/src/rendering/gpu_toolpath_layer.dart:45",
+                "lib/src/rendering/gpu_toolpath_layer.dart:46",
+                "lib/src/rendering/gpu_toolpath_layer.dart:47",
+                "lib/src/rendering/gpu_toolpath_layer.dart:48",
+                "lib/src/rendering/gpu_toolpath_layer.dart:50",
+                "lib/src/rendering/gpu_toolpath_layer.dart:57",
+                "lib/src/rendering/gpu_toolpath_layer.dart:80",
+                "lib/src/rendering/gpu_toolpath_layer.dart:83",
+                "lib/src/rendering/gpu_toolpath_layer.dart:85",
+                "lib/src/rendering/gpu_toolpath_layer.dart:90",
+                "lib/src/rendering/gpu_toolpath_layer.dart:91",
+                "lib/src/rendering/gpu_toolpath_layer.dart:93",
+                "lib/src/rendering/gpu_toolpath_layer.dart:94",
+                "lib/src/rendering/gpu_toolpath_layer.dart:97",
+                "lib/src/rendering/gpu_toolpath_layer.dart:98",
+                "lib/src/rendering/gpu_toolpath_layer.dart:100",
+                "lib/src/rendering/gpu_toolpath_layer.dart:101",
+                "lib/src/rendering/gpu_toolpath_layer.dart:102",
+                "lib/src/rendering/gpu_toolpath_layer.dart:103",
+                "lib/src/rendering/gpu_toolpath_layer.dart:106",
+                "lib/src/rendering/gpu_toolpath_layer.dart:107",
+                "lib/src/rendering/gpu_toolpath_layer.dart:108",
+                "lib/src/rendering/gpu_toolpath_layer.dart:112",
+                "lib/src/rendering/gpu_toolpath_layer.dart:113",
+                "lib/src/rendering/gpu_toolpath_layer.dart:115",
+                "lib/src/rendering/gpu_toolpath_layer.dart:123",
+                "lib/src/rendering/gpu_toolpath_layer.dart:124",
+                "lib/src/rendering/gpu_toolpath_layer.dart:127",
+                "lib/src/rendering/gpu_toolpath_layer.dart:145",
+                "lib/src/rendering/gpu_toolpath_layer.dart:146",
+                "lib/src/rendering/gpu_toolpath_layer.dart:147",
+                "lib/src/rendering/gpu_toolpath_layer.dart:148",
+                "lib/src/rendering/gpu_toolpath_layer.dart:150",
+                "lib/src/rendering/gpu_toolpath_layer.dart:151",
+                "lib/src/rendering/gpu_toolpath_layer.dart:152",
+                "lib/src/rendering/gpu_toolpath_layer.dart:154",
+                "lib/src/rendering/gpu_toolpath_layer.dart:155",
+                "lib/src/rendering/gpu_toolpath_layer.dart:162",
+                "lib/src/rendering/gpu_toolpath_layer.dart:163",
+                "lib/src/rendering/gpu_toolpath_layer.dart:164",
+                "lib/src/rendering/gpu_toolpath_layer.dart:168",
+                "lib/src/rendering/gpu_toolpath_layer.dart:169",
+                "lib/src/rendering/gpu_toolpath_layer.dart:170",
+                "lib/src/rendering/gpu_toolpath_layer.dart:171",
+                "lib/src/rendering/gpu_toolpath_layer.dart:175",
+                "lib/src/rendering/gpu_toolpath_layer.dart:189",
+                "lib/src/rendering/gpu_toolpath_layer.dart:194",
+                "lib/src/rendering/gpu_toolpath_layer.dart:198",
+                "lib/src/rendering/gpu_toolpath_layer.dart:199",
+                "lib/src/rendering/gpu_toolpath_layer.dart:201",
+                "lib/src/rendering/gpu_toolpath_layer.dart:202",
+                "lib/src/rendering/gpu_toolpath_layer.dart:217",
+                "lib/src/rendering/gpu_toolpath_layer.dart:229",
+                "lib/src/rendering/gpu_toolpath_layer.dart:233",
+                "lib/src/rendering/gpu_toolpath_layer.dart:236",
+                "lib/src/rendering/gpu_toolpath_layer.dart:237",
+                "lib/src/rendering/gpu_toolpath_layer.dart:238",
+                "lib/src/rendering/gpu_toolpath_layer.dart:239",
+                "lib/src/rendering/gpu_toolpath_layer.dart:241",
+                "lib/src/rendering/gpu_toolpath_layer.dart:244",
+                "lib/src/rendering/gpu_toolpath_layer.dart:247",
+                "lib/src/rendering/gpu_toolpath_layer.dart:248",
+                "lib/src/rendering/gpu_toolpath_layer.dart:249",
+                "lib/src/rendering/gpu_toolpath_layer.dart:251",
+                "lib/src/rendering/gpu_toolpath_layer.dart:252",
+                "lib/src/rendering/gpu_toolpath_layer.dart:259",
+                "lib/src/rendering/gpu_toolpath_layer.dart:260",
+                "lib/src/rendering/gpu_toolpath_layer.dart:261",
+                "lib/src/rendering/gpu_toolpath_layer.dart:262",
+                "lib/src/rendering/gpu_toolpath_layer.dart:263",
+                "lib/src/rendering/gpu_toolpath_layer.dart:267",
+                "lib/src/rendering/gpu_toolpath_layer.dart:268",
+                "lib/src/rendering/gpu_toolpath_layer.dart:285",
+                "lib/src/rendering/gpu_toolpath_layer.dart:291",
+                "lib/src/rendering/gpu_toolpath_layer.dart:309",
+                "lib/src/rendering/gpu_toolpath_layer.dart:313"
+              ]
+            },
+            "lib/src/rendering/toolpath_geometry.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/src/rendering/toolpath_geometry.dart:6",
+                "lib/src/rendering/toolpath_geometry.dart:9",
+                "lib/src/rendering/toolpath_geometry.dart:10",
+                "lib/src/rendering/toolpath_geometry.dart:11",
+                "lib/src/rendering/toolpath_geometry.dart:14",
+                "lib/src/rendering/toolpath_geometry.dart:15",
+                "lib/src/rendering/toolpath_geometry.dart:16",
+                "lib/src/rendering/toolpath_geometry.dart:18",
+                "lib/src/rendering/toolpath_geometry.dart:19",
+                "lib/src/rendering/toolpath_geometry.dart:20",
+                "lib/src/rendering/toolpath_geometry.dart:21",
+                "lib/src/rendering/toolpath_geometry.dart:22",
+                "lib/src/rendering/toolpath_geometry.dart:23",
+                "lib/src/rendering/toolpath_geometry.dart:26",
+                "lib/src/rendering/toolpath_geometry.dart:29",
+                "lib/src/rendering/toolpath_geometry.dart:35",
+                "lib/src/rendering/toolpath_geometry.dart:38",
+                "lib/src/rendering/toolpath_geometry.dart:39",
+                "lib/src/rendering/toolpath_geometry.dart:40",
+                "lib/src/rendering/toolpath_geometry.dart:44",
+                "lib/src/rendering/toolpath_geometry.dart:59",
+                "lib/src/rendering/toolpath_geometry.dart:61",
+                "lib/src/rendering/toolpath_geometry.dart:63",
+                "lib/src/rendering/toolpath_geometry.dart:64"
+              ]
+            },
+            "docs/adr/0001-macos-first-gpu-toolpath.md": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "docs/adr/0001-macos-first-gpu-toolpath.md:1",
+                "docs/adr/0001-macos-first-gpu-toolpath.md:3",
+                "docs/adr/0001-macos-first-gpu-toolpath.md:5"
+              ]
+            },
+            "docs/evidence/gcode-gpu-release-build.txt": {
+              "matched": false,
+              "status": "no_match",
+              "evidence_refs": []
+            },
+            "docs/evidence/gcode-gpu-release-run.txt": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "docs/evidence/gcode-gpu-release-run.txt:1",
+                "docs/evidence/gcode-gpu-release-run.txt:2",
+                "docs/evidence/gcode-gpu-release-run.txt:3"
+              ]
+            },
+            "docs/evidence/macos-gpu-build.txt": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "docs/evidence/macos-gpu-build.txt:113",
+                "docs/evidence/macos-gpu-build.txt:197",
+                "docs/evidence/macos-gpu-build.txt:213",
+                "docs/evidence/macos-gpu-build.txt:217",
+                "docs/evidence/macos-gpu-build.txt:401",
+                "docs/evidence/macos-gpu-build.txt:403",
+                "docs/evidence/macos-gpu-build.txt:442",
+                "docs/evidence/macos-gpu-build.txt:451",
+                "docs/evidence/macos-gpu-build.txt:469",
+                "docs/evidence/macos-gpu-build.txt:486",
+                "docs/evidence/macos-gpu-build.txt:504",
+                "docs/evidence/macos-gpu-build.txt:553",
+                "docs/evidence/macos-gpu-build.txt:593",
+                "docs/evidence/macos-gpu-build.txt:690"
+              ]
+            },
+            "docs/evidence/macos-gpu-profile-run1.txt": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "docs/evidence/macos-gpu-profile-run1.txt:1",
+                "docs/evidence/macos-gpu-profile-run1.txt:3",
+                "docs/evidence/macos-gpu-profile-run1.txt:4"
+              ]
+            },
+            "docs/evidence/macos-gpu-profile-run2.txt": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "docs/evidence/macos-gpu-profile-run2.txt:1",
+                "docs/evidence/macos-gpu-profile-run2.txt:3",
+                "docs/evidence/macos-gpu-profile-run2.txt:4"
+              ]
+            },
+            "docs/evidence/macos-gpu-profile-run3.txt": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "docs/evidence/macos-gpu-profile-run3.txt:1",
+                "docs/evidence/macos-gpu-profile-run3.txt:3",
+                "docs/evidence/macos-gpu-profile-run3.txt:4"
+              ]
+            },
+            "docs/flutter-gpu-assessment.md": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "docs/flutter-gpu-assessment.md:1",
+                "docs/flutter-gpu-assessment.md:14",
+                "docs/flutter-gpu-assessment.md:16",
+                "docs/flutter-gpu-assessment.md:21",
+                "docs/flutter-gpu-assessment.md:22",
+                "docs/flutter-gpu-assessment.md:23",
+                "docs/flutter-gpu-assessment.md:24",
+                "docs/flutter-gpu-assessment.md:30",
+                "docs/flutter-gpu-assessment.md:31",
+                "docs/flutter-gpu-assessment.md:32",
+                "docs/flutter-gpu-assessment.md:51",
+                "docs/flutter-gpu-assessment.md:54",
+                "docs/flutter-gpu-assessment.md:57",
+                "docs/flutter-gpu-assessment.md:59",
+                "docs/flutter-gpu-assessment.md:69",
+                "docs/flutter-gpu-assessment.md:71",
+                "docs/flutter-gpu-assessment.md:78",
+                "docs/flutter-gpu-assessment.md:82",
+                "docs/flutter-gpu-assessment.md:86",
+                "docs/flutter-gpu-assessment.md:87",
+                "docs/flutter-gpu-assessment.md:92",
+                "docs/flutter-gpu-assessment.md:100",
+                "docs/flutter-gpu-assessment.md:105"
+              ]
+            },
+            "docs/macos-gpu-probe.md": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "docs/macos-gpu-probe.md:7",
+                "docs/macos-gpu-probe.md:17",
+                "docs/macos-gpu-probe.md:24",
+                "docs/macos-gpu-probe.md:25",
+                "docs/macos-gpu-probe.md:26",
+                "docs/macos-gpu-probe.md:27",
+                "docs/macos-gpu-probe.md:30",
+                "docs/macos-gpu-probe.md:34",
+                "docs/macos-gpu-probe.md:44",
+                "docs/macos-gpu-probe.md:56",
+                "docs/macos-gpu-probe.md:60",
+                "docs/macos-gpu-probe.md:61",
+                "docs/macos-gpu-probe.md:63",
+                "docs/macos-gpu-probe.md:69",
+                "docs/macos-gpu-probe.md:71",
+                "docs/macos-gpu-probe.md:72",
+                "docs/macos-gpu-probe.md:73",
+                "docs/macos-gpu-probe.md:90",
+                "docs/macos-gpu-probe.md:97",
+                "docs/macos-gpu-probe.md:98",
+                "docs/macos-gpu-probe.md:99",
+                "docs/macos-gpu-probe.md:102"
+              ]
+            },
+            "example/lib/gpu_validation.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "example/lib/gpu_validation.dart:1",
+                "example/lib/gpu_validation.dart:25",
+                "example/lib/gpu_validation.dart:26",
+                "example/lib/gpu_validation.dart:39",
+                "example/lib/gpu_validation.dart:64",
+                "example/lib/gpu_validation.dart:81",
+                "example/lib/gpu_validation.dart:83",
+                "example/lib/gpu_validation.dart:85",
+                "example/lib/gpu_validation.dart:98",
+                "example/lib/gpu_validation.dart:99",
+                "example/lib/gpu_validation.dart:113",
+                "example/lib/gpu_validation.dart:146",
+                "example/lib/gpu_validation.dart:150",
+                "example/lib/gpu_validation.dart:153",
+                "example/lib/gpu_validation.dart:177"
+              ]
+            },
+            "example/tool/build_gpu_shaders.py": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "example/tool/build_gpu_shaders.py:1",
+                "example/tool/build_gpu_shaders.py:14",
+                "example/tool/build_gpu_shaders.py:16",
+                "example/tool/build_gpu_shaders.py:21"
+              ]
+            },
+            "lib/src/models/toolpath_segment.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/src/models/toolpath_segment.dart:4",
+                "lib/src/models/toolpath_segment.dart:5",
+                "lib/src/models/toolpath_segment.dart:15"
+              ]
+            },
+            "lib/src/widgets/playback_controls.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/src/widgets/playback_controls.dart:3",
+                "lib/src/widgets/playback_controls.dart:4",
+                "lib/src/widgets/playback_controls.dart:7",
+                "lib/src/widgets/playback_controls.dart:17",
+                "lib/src/widgets/playback_controls.dart:64",
+                "lib/src/widgets/playback_controls.dart:73"
+              ]
+            },
+            "test/rendering/toolpath_geometry_test.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "test/rendering/toolpath_geometry_test.dart:4",
+                "test/rendering/toolpath_geometry_test.dart:6",
+                "test/rendering/toolpath_geometry_test.dart:7",
+                "test/rendering/toolpath_geometry_test.dart:8",
+                "test/rendering/toolpath_geometry_test.dart:16",
+                "test/rendering/toolpath_geometry_test.dart:17",
+                "test/rendering/toolpath_geometry_test.dart:18",
+                "test/rendering/toolpath_geometry_test.dart:22",
+                "test/rendering/toolpath_geometry_test.dart:23",
+                "test/rendering/toolpath_geometry_test.dart:27",
+                "test/rendering/toolpath_geometry_test.dart:32",
+                "test/rendering/toolpath_geometry_test.dart:33",
+                "test/rendering/toolpath_geometry_test.dart:34",
+                "test/rendering/toolpath_geometry_test.dart:35",
+                "test/rendering/toolpath_geometry_test.dart:38",
+                "test/rendering/toolpath_geometry_test.dart:39",
+                "test/rendering/toolpath_geometry_test.dart:40",
+                "test/rendering/toolpath_geometry_test.dart:41",
+                "test/rendering/toolpath_geometry_test.dart:42",
+                "test/rendering/toolpath_geometry_test.dart:44",
+                "test/rendering/toolpath_geometry_test.dart:45",
+                "test/rendering/toolpath_geometry_test.dart:48",
+                "test/rendering/toolpath_geometry_test.dart:49",
+                "test/rendering/toolpath_geometry_test.dart:52",
+                "test/rendering/toolpath_geometry_test.dart:54",
+                "test/rendering/toolpath_geometry_test.dart:55",
+                "test/rendering/toolpath_geometry_test.dart:56",
+                "test/rendering/toolpath_geometry_test.dart:58",
+                "test/rendering/toolpath_geometry_test.dart:63",
+                "test/rendering/toolpath_geometry_test.dart:64",
+                "test/rendering/toolpath_geometry_test.dart:72",
+                "test/rendering/toolpath_geometry_test.dart:73",
+                "test/rendering/toolpath_geometry_test.dart:74",
+                "test/rendering/toolpath_geometry_test.dart:77",
+                "test/rendering/toolpath_geometry_test.dart:79",
+                "test/rendering/toolpath_geometry_test.dart:80",
+                "test/rendering/toolpath_geometry_test.dart:84"
+              ]
+            },
+            "docs/evidence/macos-gpu-only/previous-report.json": {
+              "matched": false,
+              "status": "no_match",
+              "evidence_refs": []
+            },
+            "docs/evidence/macos-gpu-only/release-build.txt": {
+              "matched": false,
+              "status": "no_match",
+              "evidence_refs": []
+            },
+            "docs/evidence/macos-gpu-only/release-run.txt": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "docs/evidence/macos-gpu-only/release-run.txt:1"
+              ]
+            },
+            "docs/evidence/macos-gpu-only/report.json": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "docs/evidence/macos-gpu-only/report.json:9",
+                "docs/evidence/macos-gpu-only/report.json:10"
+              ]
+            },
+            "docs/evidence/macos-gpu-only/run.txt": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "docs/evidence/macos-gpu-only/run.txt:1",
+                "docs/evidence/macos-gpu-only/run.txt:2"
+              ]
+            }
+          }
+        },
+        "capabilities": [
+          {
+            "capability_id": "capability:gcode_core:lib/src/rendering/gpu_toolpath_layer.dart",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:."
+            ],
+            "files": [
+              "lib/src/rendering/gpu_toolpath_layer.dart"
+            ],
+            "symbols": [
+              "gpu",
+              "segment",
+              "geometry",
+              "gpu",
+              "gpu"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "ui_only",
+            "coupling": {
+              "ui": "HIGH",
+              "application_state": "LOW",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "lib/src/rendering/gpu_toolpath_layer.dart",
+              "lib/src/rendering/gpu_toolpath_layer.dart:6",
+              "lib/src/rendering/gpu_toolpath_layer.dart:10",
+              "lib/src/rendering/gpu_toolpath_layer.dart:11",
+              "lib/src/rendering/gpu_toolpath_layer.dart:14",
+              "lib/src/rendering/gpu_toolpath_layer.dart:15",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH",
+            "unknowns": []
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/rendering/toolpath_geometry.dart",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:."
+            ],
+            "files": [
+              "lib/src/rendering/toolpath_geometry.dart"
+            ],
+            "symbols": [
+              "segment",
+              "only",
+              "geometry",
+              "vertex",
+              "count"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "unknown",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_geometry.dart",
+              "lib/src/rendering/toolpath_geometry.dart:6",
+              "lib/src/rendering/toolpath_geometry.dart:9",
+              "lib/src/rendering/toolpath_geometry.dart:10",
+              "lib/src/rendering/toolpath_geometry.dart:11",
+              "lib/src/rendering/toolpath_geometry.dart:14",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM",
+            "unknowns": [
+              "Insufficient bounded source evidence for ownership."
+            ]
+          },
+          {
+            "capability_id": "capability:gcode_core:example/lib/gpu_validation.dart",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:example"
+            ],
+            "files": [
+              "example/lib/gpu_validation.dart"
+            ],
+            "symbols": [
+              "gpu",
+              "segment",
+              "progress",
+              "progress",
+              "buffer"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "ui_only",
+            "coupling": {
+              "ui": "HIGH",
+              "application_state": "HIGH",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "example/lib/gpu_validation.dart",
+              "example/lib/gpu_validation.dart:1",
+              "example/lib/gpu_validation.dart:25",
+              "example/lib/gpu_validation.dart:26",
+              "example/lib/gpu_validation.dart:39",
+              "example/lib/gpu_validation.dart:64",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH",
+            "unknowns": []
+          },
+          {
+            "capability_id": "capability:gcode_core:example/tool/build_gpu_shaders.py",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:example"
+            ],
+            "files": [
+              "example/tool/build_gpu_shaders.py"
+            ],
+            "symbols": [
+              "gpu",
+              "vertex",
+              "vertex",
+              "check"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "unknown",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "example/tool/build_gpu_shaders.py",
+              "example/tool/build_gpu_shaders.py:1",
+              "example/tool/build_gpu_shaders.py:14",
+              "example/tool/build_gpu_shaders.py:16",
+              "example/tool/build_gpu_shaders.py:21",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM",
+            "unknowns": [
+              "Insufficient bounded source evidence for ownership."
+            ]
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/models/toolpath_segment.dart",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:."
+            ],
+            "files": [
+              "lib/src/models/toolpath_segment.dart"
+            ],
+            "symbols": [
+              "segment",
+              "segment",
+              "segment"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "unknown",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "lib/src/models/toolpath_segment.dart",
+              "lib/src/models/toolpath_segment.dart:4",
+              "lib/src/models/toolpath_segment.dart:5",
+              "lib/src/models/toolpath_segment.dart:15",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM",
+            "unknowns": [
+              "Insufficient bounded source evidence for ownership."
+            ]
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/widgets/playback_controls.dart",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:."
+            ],
+            "files": [
+              "lib/src/widgets/playback_controls.dart"
+            ],
+            "symbols": [
+              "playback",
+              "playback",
+              "progress",
+              "progress",
+              "progress"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "ui_only",
+            "coupling": {
+              "ui": "HIGH",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "lib/src/widgets/playback_controls.dart",
+              "lib/src/widgets/playback_controls.dart:3",
+              "lib/src/widgets/playback_controls.dart:4",
+              "lib/src/widgets/playback_controls.dart:7",
+              "lib/src/widgets/playback_controls.dart:17",
+              "lib/src/widgets/playback_controls.dart:64",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH",
+            "unknowns": []
+          },
+          {
+            "capability_id": "capability:gcode_core:test/rendering/toolpath_geometry_test.dart",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:."
+            ],
+            "files": [
+              "test/rendering/toolpath_geometry_test.dart"
+            ],
+            "symbols": [
+              "geometry",
+              "segment",
+              "segment",
+              "segment",
+              "geometry"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "unknown",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "test/rendering/toolpath_geometry_test.dart",
+              "test/rendering/toolpath_geometry_test.dart:4",
+              "test/rendering/toolpath_geometry_test.dart:6",
+              "test/rendering/toolpath_geometry_test.dart:7",
+              "test/rendering/toolpath_geometry_test.dart:8",
+              "test/rendering/toolpath_geometry_test.dart:16",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM",
+            "unknowns": [
+              "Insufficient bounded source evidence for ownership."
+            ]
+          }
+        ],
+        "workspace_matches": [
+          {
+            "source_capability_id": "capability:gcode_core:lib/src/rendering/gpu_toolpath_layer.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:lib/src/rendering/toolpath_geometry.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:example/lib/gpu_validation.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:example/tool/build_gpu_shaders.py",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:lib/src/models/toolpath_segment.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:lib/src/widgets/playback_controls.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:test/rendering/toolpath_geometry_test.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          }
+        ],
+        "extraction_assessments": [
+          {
+            "capability_id": "capability:gcode_core:lib/src/rendering/gpu_toolpath_layer.dart",
+            "decision": "UNKNOWN",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=ui_only"
+            ],
+            "blockers": [],
+            "evidence_refs": [
+              "lib/src/rendering/gpu_toolpath_layer.dart",
+              "lib/src/rendering/gpu_toolpath_layer.dart:6",
+              "lib/src/rendering/gpu_toolpath_layer.dart:10",
+              "lib/src/rendering/gpu_toolpath_layer.dart:11",
+              "lib/src/rendering/gpu_toolpath_layer.dart:14",
+              "lib/src/rendering/gpu_toolpath_layer.dart:15",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/rendering/toolpath_geometry.dart",
+            "decision": "NOT_ENOUGH_EVIDENCE",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=unknown"
+            ],
+            "blockers": [
+              "Insufficient bounded source evidence for ownership."
+            ],
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_geometry.dart",
+              "lib/src/rendering/toolpath_geometry.dart:6",
+              "lib/src/rendering/toolpath_geometry.dart:9",
+              "lib/src/rendering/toolpath_geometry.dart:10",
+              "lib/src/rendering/toolpath_geometry.dart:11",
+              "lib/src/rendering/toolpath_geometry.dart:14",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "capability_id": "capability:gcode_core:example/lib/gpu_validation.dart",
+            "decision": "UNKNOWN",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=ui_only"
+            ],
+            "blockers": [],
+            "evidence_refs": [
+              "example/lib/gpu_validation.dart",
+              "example/lib/gpu_validation.dart:1",
+              "example/lib/gpu_validation.dart:25",
+              "example/lib/gpu_validation.dart:26",
+              "example/lib/gpu_validation.dart:39",
+              "example/lib/gpu_validation.dart:64",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "capability_id": "capability:gcode_core:example/tool/build_gpu_shaders.py",
+            "decision": "NOT_ENOUGH_EVIDENCE",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=unknown"
+            ],
+            "blockers": [
+              "Insufficient bounded source evidence for ownership."
+            ],
+            "evidence_refs": [
+              "example/tool/build_gpu_shaders.py",
+              "example/tool/build_gpu_shaders.py:1",
+              "example/tool/build_gpu_shaders.py:14",
+              "example/tool/build_gpu_shaders.py:16",
+              "example/tool/build_gpu_shaders.py:21",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/models/toolpath_segment.dart",
+            "decision": "NOT_ENOUGH_EVIDENCE",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=unknown"
+            ],
+            "blockers": [
+              "Insufficient bounded source evidence for ownership."
+            ],
+            "evidence_refs": [
+              "lib/src/models/toolpath_segment.dart",
+              "lib/src/models/toolpath_segment.dart:4",
+              "lib/src/models/toolpath_segment.dart:5",
+              "lib/src/models/toolpath_segment.dart:15",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/widgets/playback_controls.dart",
+            "decision": "UNKNOWN",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=ui_only"
+            ],
+            "blockers": [],
+            "evidence_refs": [
+              "lib/src/widgets/playback_controls.dart",
+              "lib/src/widgets/playback_controls.dart:3",
+              "lib/src/widgets/playback_controls.dart:4",
+              "lib/src/widgets/playback_controls.dart:7",
+              "lib/src/widgets/playback_controls.dart:17",
+              "lib/src/widgets/playback_controls.dart:64",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "capability_id": "capability:gcode_core:test/rendering/toolpath_geometry_test.dart",
+            "decision": "NOT_ENOUGH_EVIDENCE",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=unknown"
+            ],
+            "blockers": [
+              "Insufficient bounded source evidence for ownership."
+            ],
+            "evidence_refs": [
+              "test/rendering/toolpath_geometry_test.dart",
+              "test/rendering/toolpath_geometry_test.dart:4",
+              "test/rendering/toolpath_geometry_test.dart:6",
+              "test/rendering/toolpath_geometry_test.dart:7",
+              "test/rendering/toolpath_geometry_test.dart:8",
+              "test/rendering/toolpath_geometry_test.dart:16",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          }
+        ],
+        "keep_in_application": [],
+        "extraction_candidates": [],
+        "unknowns": [
+          "Applicable cached rule is not selected for gcode_core:AGENTS.md.",
+          "Applicable cached rule is not selected for gcode_core:docs/adr/0002-gpu-only-drawing.md.",
+          "Applicable cached rule is not selected for gcode_core:docs/macos-gpu-only-acceptance.md.",
+          "Applicable cached rule is not selected for gcode_core:lib/src/rendering/gpu_toolpath_layer.dart.",
+          "Applicable cached rule is not selected for gcode_core:lib/src/rendering/toolpath_geometry.dart.",
+          "Applicable cached rule is not selected for gcode_core:docs/adr/0001-macos-first-gpu-toolpath.md.",
+          "Applicable cached rule is not selected for gcode_core:docs/evidence/gcode-gpu-release-build.txt.",
+          "Applicable cached rule is not selected for gcode_core:docs/evidence/gcode-gpu-release-run.txt.",
+          "Applicable cached rule is not selected for gcode_core:docs/evidence/macos-gpu-build.txt.",
+          "Applicable cached rule is not selected for gcode_core:docs/evidence/macos-gpu-profile-run1.txt.",
+          "Applicable cached rule is not selected for gcode_core:docs/evidence/macos-gpu-profile-run2.txt.",
+          "Applicable cached rule is not selected for gcode_core:docs/evidence/macos-gpu-profile-run3.txt.",
+          "Applicable cached rule is not selected for gcode_core:docs/flutter-gpu-assessment.md.",
+          "Applicable cached rule is not selected for gcode_core:docs/macos-gpu-probe.md.",
+          "Applicable cached rule is not selected for gcode_core:example/lib/gpu_validation.dart.",
+          "Applicable cached rule is not selected for gcode_core:example/tool/build_gpu_shaders.py.",
+          "Applicable cached rule is not selected for gcode_core:lib/src/models/toolpath_segment.dart.",
+          "Applicable cached rule is not selected for gcode_core:lib/src/widgets/playback_controls.dart.",
+          "Applicable cached rule is not selected for gcode_core:test/rendering/toolpath_geometry_test.dart.",
+          "Applicable cached rule is not selected for gcode_core:docs/evidence/macos-gpu-only/previous-report.json.",
+          "Applicable cached rule is not selected for gcode_core:docs/evidence/macos-gpu-only/release-build.txt.",
+          "Applicable cached rule is not selected for gcode_core:docs/evidence/macos-gpu-only/release-run.txt.",
+          "Applicable cached rule is not selected for gcode_core:docs/evidence/macos-gpu-only/report.json.",
+          "Applicable cached rule is not selected for gcode_core:docs/evidence/macos-gpu-only/run.txt.",
+          "Insufficient bounded source evidence for ownership.",
+          "Insufficient bounded source evidence for ownership.",
+          "Insufficient bounded source evidence for ownership.",
+          "Insufficient bounded source evidence for ownership."
+        ],
+        "evidence_summary": {
+          "context_evidence": 81,
+          "capability_nodes": 7
+        },
+        "metrics": {
+          "bounded_files_read": 24,
+          "capabilities": 7,
+          "matches": 7,
+          "control_evidence_files": 17,
+          "source_evidence_files": 7,
+          "script_evidence_files": 0,
+          "query_matched_capabilities": 7,
+          "query_unmatched_capabilities": 0,
+          "query_actionable_decisions": 0,
+          "abstained_extraction_decisions": 4
+        }
+      }
+    }
+  ],
+  "summary": {
+    "projects": 1,
+    "refreshed": 1,
+    "selected_files": 24,
+    "unknowns": 19
+  }
+}

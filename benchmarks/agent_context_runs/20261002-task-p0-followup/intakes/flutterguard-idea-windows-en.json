@@ -1,0 +1,3615 @@
+{
+  "schema_version": "managed-agent-context.v1",
+  "generated_at": "2026-10-02T15:45:36.306651+00:00",
+  "read_only_business_repositories": true,
+  "acceptance": false,
+  "evidence_authority": "SOURCE_OBSERVATION_ONLY",
+  "snapshot_scope": "scoped_snapshot_not_full_registry",
+  "no_walk": true,
+  "budget": {
+    "max_files_per_project": 24,
+    "recent_commits_per_project": 6
+  },
+  "projects": [
+    {
+      "project_id": "flutterguard",
+      "repository_id": "flutterguard",
+      "repository_root": "/Users/forest/code/flutterguard",
+      "adapter": "generic",
+      "status": "REFRESHED_WITH_GAPS",
+      "source_sha": "b3becede57d87b9d5a3c53e6a2bca79e3cb84e17",
+      "branch": "feature/ide-stdout-single-file",
+      "version": "0.7.1",
+      "version_source": "pubspec.yaml",
+      "dependency_pins": [],
+      "content_state": "CURRENT_WORKTREE",
+      "acceptance": false,
+      "workspace_dirty_paths": [
+        ".github/workflows/release.yml",
+        "AGENTS.md",
+        "CONTEXT.md",
+        "lib/src/cli/AGENTS.md",
+        "scripts/AGENTS.md"
+      ],
+      "worktree_dirty_paths": [
+        ".github/workflows/release.yml",
+        "AGENTS.md",
+        "CONTEXT.md",
+        "lib/src/cli/AGENTS.md",
+        "scripts/AGENTS.md"
+      ],
+      "index_dirty_paths": [],
+      "untracked_inventory": "NOT_SCANNED_ONLY_EXPLICIT_FILES_CLASSIFIED",
+      "recent_commit_limit": 6,
+      "recent_changed_paths": [
+        "AGENTS.md",
+        "bin/AGENTS.md",
+        "example/AGENTS.md",
+        "lib/AGENTS.md",
+        "lib/src/AGENTS.md",
+        "lib/src/cli/AGENTS.md",
+        "lib/src/rules/AGENTS.md",
+        "scripts/AGENTS.md",
+        "test/AGENTS.md",
+        "test/fixtures/AGENTS.md",
+        ".gitignore",
+        ".hermes/flutterguard-idea-plugin-bootstrap.codex.json",
+        ".hermes/flutterguard-idea-publish-readiness.codex.json",
+        "bin/flutterguard.dart",
+        "idea-plugin/.gitignore",
+        "idea-plugin/build.gradle.kts",
+        "idea-plugin/gradle.properties",
+        "idea-plugin/gradle/wrapper/gradle-wrapper.jar",
+        "idea-plugin/gradle/wrapper/gradle-wrapper.properties",
+        "idea-plugin/gradlew",
+        "idea-plugin/gradlew.bat",
+        "idea-plugin/settings.gradle.kts",
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardSettings.kt",
+        "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardStartupActivity.kt",
+        "idea-plugin/src/main/resources/META-INF/plugin.xml",
+        "idea-plugin/src/main/resources/META-INF/pluginIcon.svg",
+        "idea-plugin/src/main/resources/bin/.gitkeep",
+        "scripts/idea_plugin_preflight.sh",
+        "scripts/idea_plugin_publish.sh",
+        ".hermes/flutterguard-ide-readiness.codex.json",
+        "README.md",
+        "doc/FLUTTERGUARD_SPEC.md",
+        "lib/src/cli/baseline_commands.dart",
+        "lib/src/cli/cli_parsers.dart",
+        "lib/src/cli/scan_command.dart",
+        "lib/src/project_resolver.dart",
+        "lib/src/report_generator.dart",
+        "lib/src/scanner.dart",
+        "test/cli_test.dart",
+        "test/scanner_test.dart",
+        ".github/workflows/release.yml",
+        ".pubignore",
+        "CHANGELOG.md",
+        "EVOLUTION_PLAN.md",
+        "doc/EVOLUTION_ROADMAP.md",
+        "lib/src/rules/ble_scanning.dart",
+        "lib/src/rules/iot_security.dart",
+        "lib/src/rules/lifecycle_resource.dart",
+        "pubspec.yaml",
+        "scripts/release_preflight.sh",
+        "test/fixtures/ble_scanning_negative.dart",
+        "test/fixtures/ble_scanning_suppression.dart",
+        "test/fixtures/iot_security_negative.dart",
+        "test/fixtures/iot_security_suppression.dart",
+        "test/fixtures/lifecycle_issue.dart",
+        "test/fixtures/lifecycle_negative.dart",
+        "test/rules_test.dart",
+        ".github/workflows/flutterguard.yml",
+        "doc/ARCHITECTURE.md",
+        "example/README.md",
+        "example/flutterguard.yaml",
+        "example/lib/main.dart",
+        "example/lib/services/user_service.dart",
+        "example/lib/widgets/profile_card.dart",
+        "example/pubspec.yaml",
+        "scripts/package_release.ps1",
+        "scripts/package_release.sh"
+      ],
+      "selected_files": [
+        {
+          "path": "AGENTS.md",
+          "sha256": "eb4f2f8b8558c1bfa8c2333557d4da5793cdad622a000ebeb16ed8d5d0c9a51d",
+          "origins": [
+            "ancestor_rule"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": true,
+          "tracked": true
+        },
+        {
+          "path": "idea-plugin/AGENTS.md",
+          "sha256": "7c97e7b659be719da2e31a1effaf2b5a0f3db2fb094e3360c81351a673293e8c",
+          "origins": [
+            "ancestor_rule"
+          ],
+          "content_state": "UNTRACKED_EXPLICIT_FILE",
+          "dirty_tracked": false,
+          "tracked": false
+        },
+        {
+          "path": "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+          "sha256": "360fd3bf4979c2ab327cf05708ee914d8d44cb932130534c8b022d17f2a66309",
+          "origins": [
+            "recent_commit",
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/AGENTS.md",
+          "sha256": "81c2b541fb0d0ce4a8987a229f42c8546f405fa79f24daed94ff4d5252708c31",
+          "origins": [
+            "ancestor_rule"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/AGENTS.md",
+          "sha256": "8c1a8120437af459c576954fc75c68e1d5e5b10a06f02a08ae8f197a83b401cb",
+          "origins": [
+            "ancestor_rule"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/cli/AGENTS.md",
+          "sha256": "543ffbccb72d8c8d116c5c1a5ffa8da88dfa66498745317cc1b2ad9d02e2675c",
+          "origins": [
+            "ancestor_rule"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": true,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/cli/cli_parsers.dart",
+          "sha256": "2037b3293a6636e905d4193cd8815d1c1a9fda0d1e07b9d5fe8f799c1657b522",
+          "origins": [
+            "recent_commit",
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/flutterguard_cli.dart",
+          "sha256": "5037d38c3f981e62f53937a49281618307a962cee689862f3aede8a0104f442f",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/file_collector.dart",
+          "sha256": "a863351c2432018ef28bf14e0e75c740e18aa8b1a048f6e4181e3f58e4db1ace",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "test/AGENTS.md",
+          "sha256": "3f2ba6c7fab53d55aeee8048655ec09f99d72e751a5cbd6e0a1a6bd921961e68",
+          "origins": [
+            "ancestor_rule"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "test/cli_test.dart",
+          "sha256": "53613f9f17ad6b2b6e9d59bc908206b32ad0a8590fbf25230cb066c1da38663c",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "test/fixtures/AGENTS.md",
+          "sha256": "fcc1c109a436a3a36f672a90de5e931e40eff6df960a4808d346a8ff89c69bbd",
+          "origins": [
+            "ancestor_rule"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "test/fixtures/forbidden_file.dart",
+          "sha256": "ad8a02f0526fc4fd9a55676f5903284e44fcc39c8124ea72e154290abf4ce42d",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/cli/scan_command.dart",
+          "sha256": "895af14c8684ed7eb3ddfa9d664100f6805aab0edb45d6020db5ef86622f8183",
+          "origins": [
+            "seed",
+            "recent_commit",
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "idea-plugin/src/main/resources/META-INF/plugin.xml",
+          "sha256": "c5ec46d1bce10922990ec453c3978fa9b287c6f52dd738c2ba55c65e25edf782",
+          "origins": [
+            "recent_commit",
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "idea-plugin/src/main/resources/META-INF/pluginIcon.svg",
+          "sha256": "d847a879d7a6eb40aa30db74ea591b8f542ecc5168461a918846f6ac9ee001e8",
+          "origins": [
+            "recent_commit",
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/cli/baseline_commands.dart",
+          "sha256": "05a4aa3349f3a7223d73373c6cfd123069df8da971517951667ac2cc9f37e4b8",
+          "origins": [
+            "recent_commit",
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": ".hermes/flutterguard-ide-readiness.codex.json",
+          "sha256": "49e30ba849e509dad334a836c39821b823c4ddc4a1efc67880624a2292a12fb0",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": ".hermes/flutterguard-idea-plugin-bootstrap.codex.json",
+          "sha256": "fa645092ef326c013aade4c0ee7e1dff817d52b81466bde4a87dc5e74526687c",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": ".hermes/flutterguard-idea-publish-readiness.codex.json",
+          "sha256": "dc7721c276a447ad432cc248666f32514ca28196960fe4251a8de0bc93e7cbad",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/cli/config_commands.dart",
+          "sha256": "533881d380b671d389c829697c2e884447600630bc88fb2aad6baf90f95ec6e2",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/cli/rule_commands.dart",
+          "sha256": "48be31bc3f3687388b140259f6bfca3de88f81fedb1ab5ac5679ee3dd3c8b348",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "CONTEXT.md",
+          "sha256": "dd4b2b296539d9af8221131d3a5daf78df7896ee0d33a6914c09b839abc0fc72",
+          "origins": [
+            "seed",
+            "dirty_worktree"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": true,
+          "tracked": true
+        },
+        {
+          "path": "pubspec.yaml",
+          "sha256": "941d1527c6fa1b13f87e20e04a6da091c45e798a5a9bc42f7e92799b1c2bdc23",
+          "origins": [
+            "seed",
+            "recent_commit"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        }
+      ],
+      "ignored_candidates": [
+        {
+          "path": "example/AGENTS.md",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "lib/AGENTS.md",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "test/AGENTS.md",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "test/fixtures/AGENTS.md",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": ".gitignore",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": ".hermes/flutterguard-idea-plugin-bootstrap.codex.json",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": ".hermes/flutterguard-idea-publish-readiness.codex.json",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": ".hermes/flutterguard-ide-readiness.codex.json",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "README.md",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "doc/FLUTTERGUARD_SPEC.md",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "test/cli_test.dart",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "test/scanner_test.dart",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": ".pubignore",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "CHANGELOG.md",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "EVOLUTION_PLAN.md",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "doc/EVOLUTION_ROADMAP.md",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "test/fixtures/ble_scanning_negative.dart",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "test/fixtures/ble_scanning_suppression.dart",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "test/fixtures/iot_security_negative.dart",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "test/fixtures/iot_security_suppression.dart",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "test/fixtures/lifecycle_issue.dart",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "test/fixtures/lifecycle_negative.dart",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "test/rules_test.dart",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "doc/ARCHITECTURE.md",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "example/README.md",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "example/flutterguard.yaml",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "example/lib/main.dart",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "example/lib/services/user_service.dart",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "example/lib/widgets/profile_card.dart",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "example/pubspec.yaml",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "idea-plugin/gradle/wrapper/gradle-wrapper.jar",
+          "reason": "UNSUPPORTED_TEXT_FORMAT",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "idea-plugin/gradlew",
+          "reason": "UNSUPPORTED_TEXT_FORMAT",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "idea-plugin/src/main/resources/bin/.gitkeep",
+          "reason": "UNSUPPORTED_TEXT_FORMAT",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "bin/AGENTS.md",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "seed",
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "bin/flutterguard.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "seed",
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "lib/src/scan_context.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "seed"
+          ]
+        },
+        {
+          "path": "lib/src/source_workspace.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "seed"
+          ]
+        },
+        {
+          "path": "lib/src/rules/AGENTS.md",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "seed",
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "scripts/AGENTS.md",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "seed",
+            "dirty_worktree",
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "scripts/idea_plugin_preflight.sh",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "seed",
+            "recent_commit"
+          ]
+        },
+        {
+          "path": ".github/workflows/release.yml",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "seed",
+            "dirty_worktree",
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "idea-plugin/.gitignore",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "idea-plugin/build.gradle.kts",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "idea-plugin/gradle.properties",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "idea-plugin/gradle/wrapper/gradle-wrapper.properties",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "idea-plugin/gradlew.bat",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "idea-plugin/settings.gradle.kts",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardSettings.kt",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardStartupActivity.kt",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "scripts/idea_plugin_publish.sh",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "lib/src/project_resolver.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "lib/src/report_generator.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "lib/src/scanner.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "lib/src/rules/ble_scanning.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "lib/src/rules/iot_security.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "lib/src/rules/lifecycle_resource.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "scripts/release_preflight.sh",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": ".github/workflows/flutterguard.yml",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "scripts/package_release.ps1",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "scripts/package_release.sh",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "recent_commit"
+          ]
+        },
+        {
+          "path": "lib/src/config_loader.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/path_utils.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/baseline.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/config_tools.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/rules/registry.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/rules/rule.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "doc/FLUTTERGUARD_SPEC.md",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "doc/ARCHITECTURE.md",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "README.md",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "EVOLUTION_PLAN.md",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/import_graph.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/boundary_engine.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/sarif_report.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        }
+      ],
+      "unknowns": [
+        "FILE_BUDGET_EXHAUSTED: bin/AGENTS.md",
+        "FILE_BUDGET_EXHAUSTED: bin/flutterguard.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/scan_context.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/source_workspace.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/rules/AGENTS.md",
+        "FILE_BUDGET_EXHAUSTED: scripts/AGENTS.md",
+        "FILE_BUDGET_EXHAUSTED: scripts/idea_plugin_preflight.sh",
+        "FILE_BUDGET_EXHAUSTED: .github/workflows/release.yml",
+        "FILE_BUDGET_EXHAUSTED: idea-plugin/.gitignore",
+        "FILE_BUDGET_EXHAUSTED: idea-plugin/build.gradle.kts",
+        "FILE_BUDGET_EXHAUSTED: idea-plugin/gradle.properties",
+        "FILE_BUDGET_EXHAUSTED: idea-plugin/gradle/wrapper/gradle-wrapper.properties",
+        "FILE_BUDGET_EXHAUSTED: idea-plugin/gradlew.bat",
+        "FILE_BUDGET_EXHAUSTED: idea-plugin/settings.gradle.kts",
+        "FILE_BUDGET_EXHAUSTED: idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardSettings.kt",
+        "FILE_BUDGET_EXHAUSTED: idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardStartupActivity.kt",
+        "FILE_BUDGET_EXHAUSTED: scripts/idea_plugin_publish.sh",
+        "FILE_BUDGET_EXHAUSTED: lib/src/project_resolver.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/report_generator.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/scanner.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/rules/ble_scanning.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/rules/iot_security.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/rules/lifecycle_resource.dart",
+        "FILE_BUDGET_EXHAUSTED: scripts/release_preflight.sh",
+        "FILE_BUDGET_EXHAUSTED: .github/workflows/flutterguard.yml",
+        "FILE_BUDGET_EXHAUSTED: scripts/package_release.ps1",
+        "FILE_BUDGET_EXHAUSTED: scripts/package_release.sh",
+        "FILE_BUDGET_EXHAUSTED: lib/src/config_loader.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/path_utils.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/baseline.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/config_tools.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/rules/registry.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/rules/rule.dart",
+        "FILE_BUDGET_EXHAUSTED: doc/FLUTTERGUARD_SPEC.md",
+        "FILE_BUDGET_EXHAUSTED: doc/ARCHITECTURE.md",
+        "FILE_BUDGET_EXHAUSTED: README.md",
+        "FILE_BUDGET_EXHAUSTED: EVOLUTION_PLAN.md",
+        "FILE_BUDGET_EXHAUSTED: lib/src/import_graph.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/boundary_engine.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/sarif_report.dart",
+        "UNTRACKED_EXPLICIT_FILE: idea-plugin/AGENTS.md",
+        "DIRTY_WORKSPACE: observations include current worktree content beyond source SHA",
+        "TARGET_REGISTRY_METADATA_MISSING: using one explicit root unit"
+      ],
+      "registry_metadata_mode": "EXPLICIT_ROOT_FALLBACK",
+      "registry_metadata_freshness": "bounded_fallback",
+      "requirement": "Locate IntelliJ ExternalAnnotator adapter native CLI invocation and Windows packaged resources; compare resolveBinary lookup with .exe file names; preserve 30 second timeout and exit 1 structured JSON stdout semantics.",
+      "evidence_mode": "FROZEN_SOURCE_TEXTS",
+      "source_snapshot_id": "40d5f56b71d2f5f3014f0bdbfabd16a0d95f38774211d2fad719dfad3ffda9e0",
+      "scope": {
+        "repositories": [
+          "flutterguard"
+        ],
+        "development_units": [
+          "flutterguard:."
+        ]
+      },
+      "metrics": {
+        "candidate_files": 67,
+        "rule_candidates": 10,
+        "inspected_files": 24,
+        "selected_files": 24,
+        "max_files": 24,
+        "no_walk": true,
+        "source_discovery_performed": false
+      },
+      "context_package": {
+        "request": {
+          "requirement": "Locate IntelliJ ExternalAnnotator adapter native CLI invocation and Windows packaged resources; compare resolveBinary lookup with .exe file names; preserve 30 second timeout and exit 1 structured JSON stdout semantics.",
+          "optional_target_repository": "flutterguard",
+          "candidate_paths": [
+            "AGENTS.md",
+            "idea-plugin/AGENTS.md",
+            "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+            "lib/AGENTS.md",
+            "lib/src/AGENTS.md",
+            "lib/src/cli/AGENTS.md",
+            "lib/src/cli/cli_parsers.dart",
+            "lib/flutterguard_cli.dart",
+            "lib/src/file_collector.dart",
+            "test/AGENTS.md",
+            "test/cli_test.dart",
+            "test/fixtures/AGENTS.md",
+            "test/fixtures/forbidden_file.dart",
+            "lib/src/cli/scan_command.dart",
+            "idea-plugin/src/main/resources/META-INF/plugin.xml",
+            "idea-plugin/src/main/resources/META-INF/pluginIcon.svg",
+            "lib/src/cli/baseline_commands.dart",
+            ".hermes/flutterguard-ide-readiness.codex.json",
+            ".hermes/flutterguard-idea-plugin-bootstrap.codex.json",
+            ".hermes/flutterguard-idea-publish-readiness.codex.json",
+            "lib/src/cli/config_commands.dart",
+            "lib/src/cli/rule_commands.dart",
+            "CONTEXT.md",
+            "pubspec.yaml"
+          ]
+        },
+        "scope": {
+          "repositories": [
+            "flutterguard"
+          ],
+          "development_units": [
+            "flutterguard:."
+          ]
+        },
+        "candidates": [
+          {
+            "id": "flutterguard:.",
+            "classification": "context_only",
+            "confidence": "MEDIUM",
+            "reasons": [
+              "explicit bounded file intake"
+            ],
+            "evidence_refs": [
+              "AGENTS.md",
+              "AGENTS.md:5",
+              "AGENTS.md:6",
+              "AGENTS.md:7",
+              "AGENTS.md:11",
+              "idea-plugin/AGENTS.md",
+              "idea-plugin/AGENTS.md:1",
+              "idea-plugin/AGENTS.md:3",
+              "idea-plugin/AGENTS.md:8",
+              "idea-plugin/AGENTS.md:9",
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:5",
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:6",
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:7",
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:8",
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:9",
+              "lib/AGENTS.md",
+              "lib/AGENTS.md:3",
+              "lib/src/AGENTS.md",
+              "lib/src/AGENTS.md:3",
+              "lib/src/AGENTS.md:5",
+              "lib/src/AGENTS.md:14",
+              "lib/src/AGENTS.md:16",
+              "lib/src/cli/AGENTS.md",
+              "lib/src/cli/AGENTS.md:1",
+              "lib/src/cli/AGENTS.md:7",
+              "lib/src/cli/AGENTS.md:9",
+              "lib/src/cli/AGENTS.md:11",
+              "lib/src/cli/cli_parsers.dart",
+              "lib/src/cli/cli_parsers.dart:3",
+              "lib/src/cli/cli_parsers.dart:13",
+              "lib/src/cli/cli_parsers.dart:15",
+              "lib/src/cli/cli_parsers.dart:20",
+              "lib/flutterguard_cli.dart",
+              "lib/flutterguard_cli.dart:4",
+              "lib/src/file_collector.dart",
+              "lib/src/file_collector.dart:20",
+              "lib/src/file_collector.dart:28",
+              "lib/src/file_collector.dart:51",
+              "lib/src/file_collector.dart:53",
+              "test/AGENTS.md",
+              "test/AGENTS.md:5",
+              "test/AGENTS.md:7",
+              "test/AGENTS.md:12",
+              "test/AGENTS.md:13",
+              "test/cli_test.dart",
+              "test/cli_test.dart:9",
+              "test/cli_test.dart:15",
+              "test/cli_test.dart:16",
+              "test/cli_test.dart:33",
+              "test/fixtures/AGENTS.md",
+              "test/fixtures/AGENTS.md:7",
+              "test/fixtures/AGENTS.md:17",
+              "test/fixtures/forbidden_file.dart",
+              "test/fixtures/forbidden_file.dart:1",
+              "lib/src/cli/scan_command.dart",
+              "lib/src/cli/scan_command.dart:14",
+              "lib/src/cli/scan_command.dart:23",
+              "lib/src/cli/scan_command.dart:25",
+              "lib/src/cli/scan_command.dart:32",
+              "idea-plugin/src/main/resources/META-INF/plugin.xml",
+              "idea-plugin/src/main/resources/META-INF/plugin.xml:12",
+              "idea-plugin/src/main/resources/META-INF/plugin.xml:14",
+              "idea-plugin/src/main/resources/META-INF/plugin.xml:15",
+              "idea-plugin/src/main/resources/META-INF/plugin.xml:17",
+              "idea-plugin/src/main/resources/META-INF/pluginIcon.svg",
+              "lib/src/cli/baseline_commands.dart",
+              "lib/src/cli/baseline_commands.dart:17",
+              "lib/src/cli/baseline_commands.dart:24",
+              "lib/src/cli/baseline_commands.dart:30",
+              "lib/src/cli/baseline_commands.dart:43",
+              ".hermes/flutterguard-ide-readiness.codex.json",
+              ".hermes/flutterguard-ide-readiness.codex.json:3",
+              ".hermes/flutterguard-ide-readiness.codex.json:4",
+              ".hermes/flutterguard-ide-readiness.codex.json:9",
+              ".hermes/flutterguard-ide-readiness.codex.json:10",
+              ".hermes/flutterguard-ide-readiness.codex.json:11",
+              ".hermes/flutterguard-idea-plugin-bootstrap.codex.json",
+              ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:3",
+              ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:16",
+              ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:25",
+              ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:42",
+              ".hermes/flutterguard-idea-publish-readiness.codex.json",
+              ".hermes/flutterguard-idea-publish-readiness.codex.json:3",
+              ".hermes/flutterguard-idea-publish-readiness.codex.json:11",
+              ".hermes/flutterguard-idea-publish-readiness.codex.json:15",
+              ".hermes/flutterguard-idea-publish-readiness.codex.json:17",
+              "lib/src/cli/config_commands.dart",
+              "lib/src/cli/config_commands.dart:17",
+              "lib/src/cli/config_commands.dart:18",
+              "lib/src/cli/config_commands.dart:31",
+              "lib/src/cli/config_commands.dart:32",
+              "lib/src/cli/rule_commands.dart",
+              "lib/src/cli/rule_commands.dart:12",
+              "lib/src/cli/rule_commands.dart:15",
+              "lib/src/cli/rule_commands.dart:16",
+              "lib/src/cli/rule_commands.dart:17",
+              "CONTEXT.md",
+              "CONTEXT.md:20",
+              "CONTEXT.md:67",
+              "pubspec.yaml",
+              "pubspec.yaml:1",
+              "pubspec.yaml:2",
+              "pubspec.yaml:11"
+            ]
+          }
+        ],
+        "files": [
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/AGENTS.md",
+            "relative_path": "AGENTS.md",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "AGENTS.md",
+              "AGENTS.md:5",
+              "AGENTS.md:6",
+              "AGENTS.md:7",
+              "AGENTS.md:11"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/idea-plugin/AGENTS.md",
+            "relative_path": "idea-plugin/AGENTS.md",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "idea-plugin/AGENTS.md",
+              "idea-plugin/AGENTS.md:1",
+              "idea-plugin/AGENTS.md:3",
+              "idea-plugin/AGENTS.md:8",
+              "idea-plugin/AGENTS.md:9"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+            "relative_path": "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:5",
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:6",
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:7",
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:8",
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:9"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/lib/AGENTS.md",
+            "relative_path": "lib/AGENTS.md",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/AGENTS.md",
+              "lib/AGENTS.md:3"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/lib/src/AGENTS.md",
+            "relative_path": "lib/src/AGENTS.md",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/src/AGENTS.md",
+              "lib/src/AGENTS.md:3",
+              "lib/src/AGENTS.md:5",
+              "lib/src/AGENTS.md:14",
+              "lib/src/AGENTS.md:16"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/lib/src/cli/AGENTS.md",
+            "relative_path": "lib/src/cli/AGENTS.md",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/src/cli/AGENTS.md",
+              "lib/src/cli/AGENTS.md:1",
+              "lib/src/cli/AGENTS.md:7",
+              "lib/src/cli/AGENTS.md:9",
+              "lib/src/cli/AGENTS.md:11"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/lib/src/cli/cli_parsers.dart",
+            "relative_path": "lib/src/cli/cli_parsers.dart",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/src/cli/cli_parsers.dart",
+              "lib/src/cli/cli_parsers.dart:3",
+              "lib/src/cli/cli_parsers.dart:13",
+              "lib/src/cli/cli_parsers.dart:15",
+              "lib/src/cli/cli_parsers.dart:20"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/lib/flutterguard_cli.dart",
+            "relative_path": "lib/flutterguard_cli.dart",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/flutterguard_cli.dart",
+              "lib/flutterguard_cli.dart:4"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/lib/src/file_collector.dart",
+            "relative_path": "lib/src/file_collector.dart",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/src/file_collector.dart",
+              "lib/src/file_collector.dart:20",
+              "lib/src/file_collector.dart:28",
+              "lib/src/file_collector.dart:51",
+              "lib/src/file_collector.dart:53"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/test/AGENTS.md",
+            "relative_path": "test/AGENTS.md",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "test/AGENTS.md",
+              "test/AGENTS.md:5",
+              "test/AGENTS.md:7",
+              "test/AGENTS.md:12",
+              "test/AGENTS.md:13"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/test/cli_test.dart",
+            "relative_path": "test/cli_test.dart",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "test/cli_test.dart",
+              "test/cli_test.dart:9",
+              "test/cli_test.dart:15",
+              "test/cli_test.dart:16",
+              "test/cli_test.dart:33"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/test/fixtures/AGENTS.md",
+            "relative_path": "test/fixtures/AGENTS.md",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "test/fixtures/AGENTS.md",
+              "test/fixtures/AGENTS.md:7",
+              "test/fixtures/AGENTS.md:17"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/test/fixtures/forbidden_file.dart",
+            "relative_path": "test/fixtures/forbidden_file.dart",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "test/fixtures/forbidden_file.dart",
+              "test/fixtures/forbidden_file.dart:1"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/lib/src/cli/scan_command.dart",
+            "relative_path": "lib/src/cli/scan_command.dart",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/src/cli/scan_command.dart",
+              "lib/src/cli/scan_command.dart:14",
+              "lib/src/cli/scan_command.dart:23",
+              "lib/src/cli/scan_command.dart:25",
+              "lib/src/cli/scan_command.dart:32"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/idea-plugin/src/main/resources/META-INF/plugin.xml",
+            "relative_path": "idea-plugin/src/main/resources/META-INF/plugin.xml",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "idea-plugin/src/main/resources/META-INF/plugin.xml",
+              "idea-plugin/src/main/resources/META-INF/plugin.xml:12",
+              "idea-plugin/src/main/resources/META-INF/plugin.xml:14",
+              "idea-plugin/src/main/resources/META-INF/plugin.xml:15",
+              "idea-plugin/src/main/resources/META-INF/plugin.xml:17"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/idea-plugin/src/main/resources/META-INF/pluginIcon.svg",
+            "relative_path": "idea-plugin/src/main/resources/META-INF/pluginIcon.svg",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_no_query_match",
+            "evidence_refs": [
+              "idea-plugin/src/main/resources/META-INF/pluginIcon.svg"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/lib/src/cli/baseline_commands.dart",
+            "relative_path": "lib/src/cli/baseline_commands.dart",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/src/cli/baseline_commands.dart",
+              "lib/src/cli/baseline_commands.dart:17",
+              "lib/src/cli/baseline_commands.dart:24",
+              "lib/src/cli/baseline_commands.dart:30",
+              "lib/src/cli/baseline_commands.dart:43"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/.hermes/flutterguard-ide-readiness.codex.json",
+            "relative_path": ".hermes/flutterguard-ide-readiness.codex.json",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              ".hermes/flutterguard-ide-readiness.codex.json",
+              ".hermes/flutterguard-ide-readiness.codex.json:3",
+              ".hermes/flutterguard-ide-readiness.codex.json:4",
+              ".hermes/flutterguard-ide-readiness.codex.json:9",
+              ".hermes/flutterguard-ide-readiness.codex.json:10",
+              ".hermes/flutterguard-ide-readiness.codex.json:11"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/.hermes/flutterguard-idea-plugin-bootstrap.codex.json",
+            "relative_path": ".hermes/flutterguard-idea-plugin-bootstrap.codex.json",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              ".hermes/flutterguard-idea-plugin-bootstrap.codex.json",
+              ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:3",
+              ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:16",
+              ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:25",
+              ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:42"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/.hermes/flutterguard-idea-publish-readiness.codex.json",
+            "relative_path": ".hermes/flutterguard-idea-publish-readiness.codex.json",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              ".hermes/flutterguard-idea-publish-readiness.codex.json",
+              ".hermes/flutterguard-idea-publish-readiness.codex.json:3",
+              ".hermes/flutterguard-idea-publish-readiness.codex.json:11",
+              ".hermes/flutterguard-idea-publish-readiness.codex.json:15",
+              ".hermes/flutterguard-idea-publish-readiness.codex.json:17"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/lib/src/cli/config_commands.dart",
+            "relative_path": "lib/src/cli/config_commands.dart",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/src/cli/config_commands.dart",
+              "lib/src/cli/config_commands.dart:17",
+              "lib/src/cli/config_commands.dart:18",
+              "lib/src/cli/config_commands.dart:31",
+              "lib/src/cli/config_commands.dart:32"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/lib/src/cli/rule_commands.dart",
+            "relative_path": "lib/src/cli/rule_commands.dart",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/src/cli/rule_commands.dart",
+              "lib/src/cli/rule_commands.dart:12",
+              "lib/src/cli/rule_commands.dart:15",
+              "lib/src/cli/rule_commands.dart:16",
+              "lib/src/cli/rule_commands.dart:17"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/CONTEXT.md",
+            "relative_path": "CONTEXT.md",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "CONTEXT.md",
+              "CONTEXT.md:20",
+              "CONTEXT.md:67"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/flutterguard/pubspec.yaml",
+            "relative_path": "pubspec.yaml",
+            "repo_id": "flutterguard",
+            "unit_id": "flutterguard:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "pubspec.yaml",
+              "pubspec.yaml:1",
+              "pubspec.yaml:2",
+              "pubspec.yaml:11"
+            ]
+          }
+        ],
+        "symbols": [
+          {
+            "name": "intellij",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+            "line": 5,
+            "evidence_refs": [
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:5"
+            ]
+          },
+          {
+            "name": "file",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/.hermes/flutterguard-ide-readiness.codex.json",
+            "line": 3,
+            "evidence_refs": [
+              ".hermes/flutterguard-ide-readiness.codex.json:3"
+            ]
+          },
+          {
+            "name": "intellij",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/.hermes/flutterguard-idea-plugin-bootstrap.codex.json",
+            "line": 3,
+            "evidence_refs": [
+              ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:3"
+            ]
+          },
+          {
+            "name": "binary",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/.hermes/flutterguard-idea-publish-readiness.codex.json",
+            "line": 3,
+            "evidence_refs": [
+              ".hermes/flutterguard-idea-publish-readiness.codex.json:3"
+            ]
+          },
+          {
+            "name": "intellij",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/idea-plugin/src/main/resources/META-INF/plugin.xml",
+            "line": 12,
+            "evidence_refs": [
+              "idea-plugin/src/main/resources/META-INF/plugin.xml:12"
+            ]
+          },
+          {
+            "name": "cli",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/flutterguard_cli.dart",
+            "line": 4,
+            "evidence_refs": [
+              "lib/flutterguard_cli.dart:4"
+            ]
+          },
+          {
+            "name": "stdout",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/baseline_commands.dart",
+            "line": 17,
+            "evidence_refs": [
+              "lib/src/cli/baseline_commands.dart:17"
+            ]
+          },
+          {
+            "name": "cli",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/cli_parsers.dart",
+            "line": 3,
+            "evidence_refs": [
+              "lib/src/cli/cli_parsers.dart:3"
+            ]
+          },
+          {
+            "name": "stdout",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/config_commands.dart",
+            "line": 17,
+            "evidence_refs": [
+              "lib/src/cli/config_commands.dart:17"
+            ]
+          },
+          {
+            "name": "json",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/rule_commands.dart",
+            "line": 12,
+            "evidence_refs": [
+              "lib/src/cli/rule_commands.dart:12"
+            ]
+          },
+          {
+            "name": "stdout",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/scan_command.dart",
+            "line": 14,
+            "evidence_refs": [
+              "lib/src/cli/scan_command.dart:14"
+            ]
+          },
+          {
+            "name": "file",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/file_collector.dart",
+            "line": 20,
+            "evidence_refs": [
+              "lib/src/file_collector.dart:20"
+            ]
+          },
+          {
+            "name": "exit",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/test/cli_test.dart",
+            "line": 9,
+            "evidence_refs": [
+              "test/cli_test.dart:9"
+            ]
+          },
+          {
+            "name": "file",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/test/fixtures/forbidden_file.dart",
+            "line": 1,
+            "evidence_refs": [
+              "test/fixtures/forbidden_file.dart:1"
+            ]
+          },
+          {
+            "name": "cli",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/pubspec.yaml",
+            "line": 1,
+            "evidence_refs": [
+              "pubspec.yaml:1"
+            ]
+          },
+          {
+            "name": "cli",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/AGENTS.md",
+            "line": 1,
+            "evidence_refs": [
+              "lib/src/cli/AGENTS.md:1"
+            ]
+          },
+          {
+            "name": "cli",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/AGENTS.md",
+            "line": 5,
+            "evidence_refs": [
+              "AGENTS.md:5"
+            ]
+          },
+          {
+            "name": "file",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/CONTEXT.md",
+            "line": 20,
+            "evidence_refs": [
+              "CONTEXT.md:20"
+            ]
+          },
+          {
+            "name": "intellij",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/idea-plugin/AGENTS.md",
+            "line": 1,
+            "evidence_refs": [
+              "idea-plugin/AGENTS.md:1"
+            ]
+          },
+          {
+            "name": "cli",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/AGENTS.md",
+            "line": 3,
+            "evidence_refs": [
+              "lib/AGENTS.md:3"
+            ]
+          },
+          {
+            "name": "file",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/AGENTS.md",
+            "line": 3,
+            "evidence_refs": [
+              "lib/src/AGENTS.md:3"
+            ]
+          },
+          {
+            "name": "file",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/test/AGENTS.md",
+            "line": 5,
+            "evidence_refs": [
+              "test/AGENTS.md:5"
+            ]
+          },
+          {
+            "name": "file",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/test/fixtures/AGENTS.md",
+            "line": 7,
+            "evidence_refs": [
+              "test/fixtures/AGENTS.md:7"
+            ]
+          },
+          {
+            "name": "intellij",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+            "line": 6,
+            "evidence_refs": [
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:6"
+            ]
+          },
+          {
+            "name": "intellij",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/.hermes/flutterguard-ide-readiness.codex.json",
+            "line": 4,
+            "evidence_refs": [
+              ".hermes/flutterguard-ide-readiness.codex.json:4"
+            ]
+          },
+          {
+            "name": "intellij",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/.hermes/flutterguard-idea-plugin-bootstrap.codex.json",
+            "line": 16,
+            "evidence_refs": [
+              ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:16"
+            ]
+          },
+          {
+            "name": "exit",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/.hermes/flutterguard-idea-publish-readiness.codex.json",
+            "line": 11,
+            "evidence_refs": [
+              ".hermes/flutterguard-idea-publish-readiness.codex.json:11"
+            ]
+          },
+          {
+            "name": "intellij",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/idea-plugin/src/main/resources/META-INF/plugin.xml",
+            "line": 14,
+            "evidence_refs": [
+              "idea-plugin/src/main/resources/META-INF/plugin.xml:14"
+            ]
+          },
+          {
+            "name": "file",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/baseline_commands.dart",
+            "line": 24,
+            "evidence_refs": [
+              "lib/src/cli/baseline_commands.dart:24"
+            ]
+          },
+          {
+            "name": "cli",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/cli_parsers.dart",
+            "line": 13,
+            "evidence_refs": [
+              "lib/src/cli/cli_parsers.dart:13"
+            ]
+          },
+          {
+            "name": "stdout",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/config_commands.dart",
+            "line": 18,
+            "evidence_refs": [
+              "lib/src/cli/config_commands.dart:18"
+            ]
+          },
+          {
+            "name": "compare",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/rule_commands.dart",
+            "line": 15,
+            "evidence_refs": [
+              "lib/src/cli/rule_commands.dart:15"
+            ]
+          },
+          {
+            "name": "json",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/scan_command.dart",
+            "line": 23,
+            "evidence_refs": [
+              "lib/src/cli/scan_command.dart:23"
+            ]
+          },
+          {
+            "name": "file",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/file_collector.dart",
+            "line": 28,
+            "evidence_refs": [
+              "lib/src/file_collector.dart:28"
+            ]
+          },
+          {
+            "name": "cli",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/test/cli_test.dart",
+            "line": 15,
+            "evidence_refs": [
+              "test/cli_test.dart:15"
+            ]
+          },
+          {
+            "name": "cli",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/pubspec.yaml",
+            "line": 2,
+            "evidence_refs": [
+              "pubspec.yaml:2"
+            ]
+          },
+          {
+            "name": "file",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/AGENTS.md",
+            "line": 7,
+            "evidence_refs": [
+              "lib/src/cli/AGENTS.md:7"
+            ]
+          },
+          {
+            "name": "cli",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/AGENTS.md",
+            "line": 6,
+            "evidence_refs": [
+              "AGENTS.md:6"
+            ]
+          },
+          {
+            "name": "file",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/CONTEXT.md",
+            "line": 67,
+            "evidence_refs": [
+              "CONTEXT.md:67"
+            ]
+          },
+          {
+            "name": "cli",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/idea-plugin/AGENTS.md",
+            "line": 3,
+            "evidence_refs": [
+              "idea-plugin/AGENTS.md:3"
+            ]
+          },
+          {
+            "name": "file",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/AGENTS.md",
+            "line": 5,
+            "evidence_refs": [
+              "lib/src/AGENTS.md:5"
+            ]
+          },
+          {
+            "name": "cli",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/test/AGENTS.md",
+            "line": 7,
+            "evidence_refs": [
+              "test/AGENTS.md:7"
+            ]
+          },
+          {
+            "name": "file",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/test/fixtures/AGENTS.md",
+            "line": 17,
+            "evidence_refs": [
+              "test/fixtures/AGENTS.md:17"
+            ]
+          },
+          {
+            "name": "intellij",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+            "line": 7,
+            "evidence_refs": [
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:7"
+            ]
+          },
+          {
+            "name": "json",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/.hermes/flutterguard-ide-readiness.codex.json",
+            "line": 9,
+            "evidence_refs": [
+              ".hermes/flutterguard-ide-readiness.codex.json:9"
+            ]
+          },
+          {
+            "name": "intellij",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/.hermes/flutterguard-idea-plugin-bootstrap.codex.json",
+            "line": 25,
+            "evidence_refs": [
+              ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:25"
+            ]
+          },
+          {
+            "name": "binary",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/.hermes/flutterguard-idea-publish-readiness.codex.json",
+            "line": 15,
+            "evidence_refs": [
+              ".hermes/flutterguard-idea-publish-readiness.codex.json:15"
+            ]
+          },
+          {
+            "name": "externalannotator",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/idea-plugin/src/main/resources/META-INF/plugin.xml",
+            "line": 15,
+            "evidence_refs": [
+              "idea-plugin/src/main/resources/META-INF/plugin.xml:15"
+            ]
+          },
+          {
+            "name": "stdout",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/baseline_commands.dart",
+            "line": 30,
+            "evidence_refs": [
+              "lib/src/cli/baseline_commands.dart:30"
+            ]
+          },
+          {
+            "name": "file",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/cli_parsers.dart",
+            "line": 15,
+            "evidence_refs": [
+              "lib/src/cli/cli_parsers.dart:15"
+            ]
+          },
+          {
+            "name": "stdout",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/config_commands.dart",
+            "line": 31,
+            "evidence_refs": [
+              "lib/src/cli/config_commands.dart:31"
+            ]
+          },
+          {
+            "name": "json",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/rule_commands.dart",
+            "line": 16,
+            "evidence_refs": [
+              "lib/src/cli/rule_commands.dart:16"
+            ]
+          },
+          {
+            "name": "stdout",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/scan_command.dart",
+            "line": 25,
+            "evidence_refs": [
+              "lib/src/cli/scan_command.dart:25"
+            ]
+          },
+          {
+            "name": "stdout",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/file_collector.dart",
+            "line": 51,
+            "evidence_refs": [
+              "lib/src/file_collector.dart:51"
+            ]
+          },
+          {
+            "name": "file",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/test/cli_test.dart",
+            "line": 16,
+            "evidence_refs": [
+              "test/cli_test.dart:16"
+            ]
+          },
+          {
+            "name": "cli",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/pubspec.yaml",
+            "line": 11,
+            "evidence_refs": [
+              "pubspec.yaml:11"
+            ]
+          },
+          {
+            "name": "file",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/AGENTS.md",
+            "line": 9,
+            "evidence_refs": [
+              "lib/src/cli/AGENTS.md:9"
+            ]
+          },
+          {
+            "name": "cli",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/AGENTS.md",
+            "line": 7,
+            "evidence_refs": [
+              "AGENTS.md:7"
+            ]
+          },
+          {
+            "name": "annotator",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/idea-plugin/AGENTS.md",
+            "line": 8,
+            "evidence_refs": [
+              "idea-plugin/AGENTS.md:8"
+            ]
+          },
+          {
+            "name": "json",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/AGENTS.md",
+            "line": 14,
+            "evidence_refs": [
+              "lib/src/AGENTS.md:14"
+            ]
+          },
+          {
+            "name": "external",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/test/AGENTS.md",
+            "line": 12,
+            "evidence_refs": [
+              "test/AGENTS.md:12"
+            ]
+          },
+          {
+            "name": "intellij",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+            "line": 8,
+            "evidence_refs": [
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:8"
+            ]
+          },
+          {
+            "name": "file",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/.hermes/flutterguard-ide-readiness.codex.json",
+            "line": 10,
+            "evidence_refs": [
+              ".hermes/flutterguard-ide-readiness.codex.json:10"
+            ]
+          },
+          {
+            "name": "intellij",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/.hermes/flutterguard-idea-plugin-bootstrap.codex.json",
+            "line": 42,
+            "evidence_refs": [
+              ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:42"
+            ]
+          },
+          {
+            "name": "exe",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/.hermes/flutterguard-idea-publish-readiness.codex.json",
+            "line": 17,
+            "evidence_refs": [
+              ".hermes/flutterguard-idea-publish-readiness.codex.json:17"
+            ]
+          },
+          {
+            "name": "annotator",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/idea-plugin/src/main/resources/META-INF/plugin.xml",
+            "line": 17,
+            "evidence_refs": [
+              "idea-plugin/src/main/resources/META-INF/plugin.xml:17"
+            ]
+          },
+          {
+            "name": "exit",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/baseline_commands.dart",
+            "line": 43,
+            "evidence_refs": [
+              "lib/src/cli/baseline_commands.dart:43"
+            ]
+          },
+          {
+            "name": "json",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/cli_parsers.dart",
+            "line": 20,
+            "evidence_refs": [
+              "lib/src/cli/cli_parsers.dart:20"
+            ]
+          },
+          {
+            "name": "exit",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/config_commands.dart",
+            "line": 32,
+            "evidence_refs": [
+              "lib/src/cli/config_commands.dart:32"
+            ]
+          },
+          {
+            "name": "stdout",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/rule_commands.dart",
+            "line": 17,
+            "evidence_refs": [
+              "lib/src/cli/rule_commands.dart:17"
+            ]
+          },
+          {
+            "name": "exit",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/scan_command.dart",
+            "line": 32,
+            "evidence_refs": [
+              "lib/src/cli/scan_command.dart:32"
+            ]
+          },
+          {
+            "name": "exit",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/file_collector.dart",
+            "line": 53,
+            "evidence_refs": [
+              "lib/src/file_collector.dart:53"
+            ]
+          },
+          {
+            "name": "exit",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/test/cli_test.dart",
+            "line": 33,
+            "evidence_refs": [
+              "test/cli_test.dart:33"
+            ]
+          },
+          {
+            "name": "cli",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/cli/AGENTS.md",
+            "line": 11,
+            "evidence_refs": [
+              "lib/src/cli/AGENTS.md:11"
+            ]
+          },
+          {
+            "name": "intellij",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/AGENTS.md",
+            "line": 11,
+            "evidence_refs": [
+              "AGENTS.md:11"
+            ]
+          },
+          {
+            "name": "cli",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/idea-plugin/AGENTS.md",
+            "line": 9,
+            "evidence_refs": [
+              "idea-plugin/AGENTS.md:9"
+            ]
+          },
+          {
+            "name": "cli",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/lib/src/AGENTS.md",
+            "line": 16,
+            "evidence_refs": [
+              "lib/src/AGENTS.md:16"
+            ]
+          },
+          {
+            "name": "preserve",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/test/AGENTS.md",
+            "line": 13,
+            "evidence_refs": [
+              "test/AGENTS.md:13"
+            ]
+          },
+          {
+            "name": "intellij",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+            "line": 9,
+            "evidence_refs": [
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:9"
+            ]
+          },
+          {
+            "name": "file",
+            "kind": "symbol",
+            "file": "/Users/forest/code/flutterguard/.hermes/flutterguard-ide-readiness.codex.json",
+            "line": 11,
+            "evidence_refs": [
+              ".hermes/flutterguard-ide-readiness.codex.json:11"
+            ]
+          }
+        ],
+        "rules": [
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:AGENTS.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:idea-plugin/AGENTS.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "idea-plugin/AGENTS.md",
+            "scope": "idea-plugin",
+            "applies_to": "flutterguard:idea-plugin/AGENTS.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "idea-plugin/AGENTS.md",
+            "scope": "idea-plugin",
+            "applies_to": "flutterguard:idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:lib/AGENTS.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/AGENTS.md",
+            "scope": "lib",
+            "applies_to": "flutterguard:lib/AGENTS.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:lib/src/AGENTS.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/AGENTS.md",
+            "scope": "lib",
+            "applies_to": "flutterguard:lib/src/AGENTS.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/src/AGENTS.md",
+            "scope": "lib/src",
+            "applies_to": "flutterguard:lib/src/AGENTS.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:lib/src/cli/AGENTS.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/AGENTS.md",
+            "scope": "lib",
+            "applies_to": "flutterguard:lib/src/cli/AGENTS.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/src/AGENTS.md",
+            "scope": "lib/src",
+            "applies_to": "flutterguard:lib/src/cli/AGENTS.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/src/cli/AGENTS.md",
+            "scope": "lib/src/cli",
+            "applies_to": "flutterguard:lib/src/cli/AGENTS.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:lib/src/cli/cli_parsers.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/AGENTS.md",
+            "scope": "lib",
+            "applies_to": "flutterguard:lib/src/cli/cli_parsers.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/src/AGENTS.md",
+            "scope": "lib/src",
+            "applies_to": "flutterguard:lib/src/cli/cli_parsers.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/src/cli/AGENTS.md",
+            "scope": "lib/src/cli",
+            "applies_to": "flutterguard:lib/src/cli/cli_parsers.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:lib/flutterguard_cli.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/AGENTS.md",
+            "scope": "lib",
+            "applies_to": "flutterguard:lib/flutterguard_cli.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:lib/src/file_collector.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/AGENTS.md",
+            "scope": "lib",
+            "applies_to": "flutterguard:lib/src/file_collector.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/src/AGENTS.md",
+            "scope": "lib/src",
+            "applies_to": "flutterguard:lib/src/file_collector.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:test/AGENTS.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "test/AGENTS.md",
+            "scope": "test",
+            "applies_to": "flutterguard:test/AGENTS.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:test/cli_test.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "test/AGENTS.md",
+            "scope": "test",
+            "applies_to": "flutterguard:test/cli_test.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:test/fixtures/AGENTS.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "test/AGENTS.md",
+            "scope": "test",
+            "applies_to": "flutterguard:test/fixtures/AGENTS.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "test/fixtures/AGENTS.md",
+            "scope": "test/fixtures",
+            "applies_to": "flutterguard:test/fixtures/AGENTS.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:test/fixtures/forbidden_file.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "test/AGENTS.md",
+            "scope": "test",
+            "applies_to": "flutterguard:test/fixtures/forbidden_file.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "test/fixtures/AGENTS.md",
+            "scope": "test/fixtures",
+            "applies_to": "flutterguard:test/fixtures/forbidden_file.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:lib/src/cli/scan_command.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/AGENTS.md",
+            "scope": "lib",
+            "applies_to": "flutterguard:lib/src/cli/scan_command.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/src/AGENTS.md",
+            "scope": "lib/src",
+            "applies_to": "flutterguard:lib/src/cli/scan_command.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/src/cli/AGENTS.md",
+            "scope": "lib/src/cli",
+            "applies_to": "flutterguard:lib/src/cli/scan_command.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:idea-plugin/src/main/resources/META-INF/plugin.xml",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "idea-plugin/AGENTS.md",
+            "scope": "idea-plugin",
+            "applies_to": "flutterguard:idea-plugin/src/main/resources/META-INF/plugin.xml",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:idea-plugin/src/main/resources/META-INF/pluginIcon.svg",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "idea-plugin/AGENTS.md",
+            "scope": "idea-plugin",
+            "applies_to": "flutterguard:idea-plugin/src/main/resources/META-INF/pluginIcon.svg",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:lib/src/cli/baseline_commands.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/AGENTS.md",
+            "scope": "lib",
+            "applies_to": "flutterguard:lib/src/cli/baseline_commands.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/src/AGENTS.md",
+            "scope": "lib/src",
+            "applies_to": "flutterguard:lib/src/cli/baseline_commands.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/src/cli/AGENTS.md",
+            "scope": "lib/src/cli",
+            "applies_to": "flutterguard:lib/src/cli/baseline_commands.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:.hermes/flutterguard-ide-readiness.codex.json",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:.hermes/flutterguard-idea-plugin-bootstrap.codex.json",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:.hermes/flutterguard-idea-publish-readiness.codex.json",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:lib/src/cli/config_commands.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/AGENTS.md",
+            "scope": "lib",
+            "applies_to": "flutterguard:lib/src/cli/config_commands.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/src/AGENTS.md",
+            "scope": "lib/src",
+            "applies_to": "flutterguard:lib/src/cli/config_commands.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/src/cli/AGENTS.md",
+            "scope": "lib/src/cli",
+            "applies_to": "flutterguard:lib/src/cli/config_commands.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:lib/src/cli/rule_commands.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/AGENTS.md",
+            "scope": "lib",
+            "applies_to": "flutterguard:lib/src/cli/rule_commands.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/src/AGENTS.md",
+            "scope": "lib/src",
+            "applies_to": "flutterguard:lib/src/cli/rule_commands.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "lib/src/cli/AGENTS.md",
+            "scope": "lib/src/cli",
+            "applies_to": "flutterguard:lib/src/cli/rule_commands.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:CONTEXT.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "flutterguard:pubspec.yaml",
+            "provenance": "filesystem_agent_ancestor"
+          }
+        ],
+        "dependencies": [],
+        "unknowns": [],
+        "confidence": "MEDIUM",
+        "metrics": {
+          "searched_repositories": 1,
+          "searched_files": 24,
+          "selected_files": 24,
+          "candidate_files": 24,
+          "evidence_count": 80,
+          "context_size_estimate": 162,
+          "rule_files": 7,
+          "rule_target_files": 24,
+          "missing_rule_candidates": 0
+        },
+        "planned_capabilities": []
+      },
+      "capability_analysis": {
+        "requirement": "Locate IntelliJ ExternalAnnotator adapter native CLI invocation and Windows packaged resources; compare resolveBinary lookup with .exe file names; preserve 30 second timeout and exit 1 structured JSON stdout semantics.",
+        "target_repository": "flutterguard",
+        "context_ref": {
+          "confidence": "MEDIUM",
+          "metrics": {
+            "searched_repositories": 1,
+            "searched_files": 24,
+            "selected_files": 24,
+            "candidate_files": 24,
+            "evidence_count": 80,
+            "context_size_estimate": 162,
+            "rule_files": 7,
+            "rule_target_files": 24,
+            "missing_rule_candidates": 0
+          },
+          "evidence_kinds": {
+            "AGENTS.md": "guidance",
+            "idea-plugin/AGENTS.md": "guidance",
+            "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt": "source",
+            "lib/AGENTS.md": "guidance",
+            "lib/src/AGENTS.md": "guidance",
+            "lib/src/cli/AGENTS.md": "guidance",
+            "lib/src/cli/cli_parsers.dart": "source",
+            "lib/flutterguard_cli.dart": "source",
+            "lib/src/file_collector.dart": "source",
+            "test/AGENTS.md": "guidance",
+            "test/cli_test.dart": "source",
+            "test/fixtures/AGENTS.md": "guidance",
+            "test/fixtures/forbidden_file.dart": "source",
+            "lib/src/cli/scan_command.dart": "source",
+            "idea-plugin/src/main/resources/META-INF/plugin.xml": "configuration",
+            "idea-plugin/src/main/resources/META-INF/pluginIcon.svg": "unsupported",
+            "lib/src/cli/baseline_commands.dart": "source",
+            ".hermes/flutterguard-ide-readiness.codex.json": "configuration",
+            ".hermes/flutterguard-idea-plugin-bootstrap.codex.json": "configuration",
+            ".hermes/flutterguard-idea-publish-readiness.codex.json": "configuration",
+            "lib/src/cli/config_commands.dart": "source",
+            "lib/src/cli/rule_commands.dart": "source",
+            "CONTEXT.md": "guidance",
+            "pubspec.yaml": "configuration"
+          },
+          "query_relevance": {
+            "AGENTS.md": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "AGENTS.md:5",
+                "AGENTS.md:6",
+                "AGENTS.md:7",
+                "AGENTS.md:11",
+                "AGENTS.md:12",
+                "AGENTS.md:23",
+                "AGENTS.md:25",
+                "AGENTS.md:26",
+                "AGENTS.md:28",
+                "AGENTS.md:30",
+                "AGENTS.md:36",
+                "AGENTS.md:38",
+                "AGENTS.md:43",
+                "AGENTS.md:45",
+                "AGENTS.md:51",
+                "AGENTS.md:56",
+                "AGENTS.md:59",
+                "AGENTS.md:60",
+                "AGENTS.md:66",
+                "AGENTS.md:68",
+                "AGENTS.md:83",
+                "AGENTS.md:91",
+                "AGENTS.md:93",
+                "AGENTS.md:94",
+                "AGENTS.md:96",
+                "AGENTS.md:97",
+                "AGENTS.md:98",
+                "AGENTS.md:106",
+                "AGENTS.md:108",
+                "AGENTS.md:109",
+                "AGENTS.md:110",
+                "AGENTS.md:112",
+                "AGENTS.md:113",
+                "AGENTS.md:114",
+                "AGENTS.md:115",
+                "AGENTS.md:116",
+                "AGENTS.md:117",
+                "AGENTS.md:118",
+                "AGENTS.md:125",
+                "AGENTS.md:128",
+                "AGENTS.md:136",
+                "AGENTS.md:139"
+              ]
+            },
+            "idea-plugin/AGENTS.md": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "idea-plugin/AGENTS.md:1",
+                "idea-plugin/AGENTS.md:3",
+                "idea-plugin/AGENTS.md:8",
+                "idea-plugin/AGENTS.md:9",
+                "idea-plugin/AGENTS.md:14",
+                "idea-plugin/AGENTS.md:16",
+                "idea-plugin/AGENTS.md:17",
+                "idea-plugin/AGENTS.md:19",
+                "idea-plugin/AGENTS.md:20",
+                "idea-plugin/AGENTS.md:21",
+                "idea-plugin/AGENTS.md:23",
+                "idea-plugin/AGENTS.md:25",
+                "idea-plugin/AGENTS.md:28",
+                "idea-plugin/AGENTS.md:29",
+                "idea-plugin/AGENTS.md:30",
+                "idea-plugin/AGENTS.md:31",
+                "idea-plugin/AGENTS.md:36",
+                "idea-plugin/AGENTS.md:37",
+                "idea-plugin/AGENTS.md:38",
+                "idea-plugin/AGENTS.md:43",
+                "idea-plugin/AGENTS.md:44",
+                "idea-plugin/AGENTS.md:45"
+              ]
+            },
+            "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:5",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:6",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:7",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:8",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:9",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:10",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:11",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:14",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:15",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:20",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:21",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:33",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:35",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:37",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:43",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:44",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:47",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:51",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:53",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:55",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:56",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:60",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:64",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:70",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:72",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:78",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:86",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:90",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:110",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:115",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:116",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:117",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:124",
+                "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:134"
+              ]
+            },
+            "lib/AGENTS.md": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/AGENTS.md:3"
+              ]
+            },
+            "lib/src/AGENTS.md": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/src/AGENTS.md:3",
+                "lib/src/AGENTS.md:5",
+                "lib/src/AGENTS.md:14",
+                "lib/src/AGENTS.md:16"
+              ]
+            },
+            "lib/src/cli/AGENTS.md": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/src/cli/AGENTS.md:1",
+                "lib/src/cli/AGENTS.md:7",
+                "lib/src/cli/AGENTS.md:9",
+                "lib/src/cli/AGENTS.md:11",
+                "lib/src/cli/AGENTS.md:12",
+                "lib/src/cli/AGENTS.md:19",
+                "lib/src/cli/AGENTS.md:21",
+                "lib/src/cli/AGENTS.md:24",
+                "lib/src/cli/AGENTS.md:25",
+                "lib/src/cli/AGENTS.md:27",
+                "lib/src/cli/AGENTS.md:28",
+                "lib/src/cli/AGENTS.md:29",
+                "lib/src/cli/AGENTS.md:30",
+                "lib/src/cli/AGENTS.md:32"
+              ]
+            },
+            "lib/src/cli/cli_parsers.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/src/cli/cli_parsers.dart:3",
+                "lib/src/cli/cli_parsers.dart:13",
+                "lib/src/cli/cli_parsers.dart:15",
+                "lib/src/cli/cli_parsers.dart:20",
+                "lib/src/cli/cli_parsers.dart:24",
+                "lib/src/cli/cli_parsers.dart:26",
+                "lib/src/cli/cli_parsers.dart:47",
+                "lib/src/cli/cli_parsers.dart:72"
+              ]
+            },
+            "lib/flutterguard_cli.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/flutterguard_cli.dart:4"
+              ]
+            },
+            "lib/src/file_collector.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/src/file_collector.dart:20",
+                "lib/src/file_collector.dart:28",
+                "lib/src/file_collector.dart:51",
+                "lib/src/file_collector.dart:53",
+                "lib/src/file_collector.dart:55",
+                "lib/src/file_collector.dart:56",
+                "lib/src/file_collector.dart:59",
+                "lib/src/file_collector.dart:67",
+                "lib/src/file_collector.dart:69",
+                "lib/src/file_collector.dart:77",
+                "lib/src/file_collector.dart:82",
+                "lib/src/file_collector.dart:84",
+                "lib/src/file_collector.dart:93",
+                "lib/src/file_collector.dart:95",
+                "lib/src/file_collector.dart:102",
+                "lib/src/file_collector.dart:114"
+              ]
+            },
+            "test/AGENTS.md": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "test/AGENTS.md:5",
+                "test/AGENTS.md:7",
+                "test/AGENTS.md:12",
+                "test/AGENTS.md:13"
+              ]
+            },
+            "test/cli_test.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "test/cli_test.dart:9",
+                "test/cli_test.dart:15",
+                "test/cli_test.dart:16",
+                "test/cli_test.dart:33",
+                "test/cli_test.dart:34",
+                "test/cli_test.dart:41",
+                "test/cli_test.dart:55",
+                "test/cli_test.dart:61",
+                "test/cli_test.dart:64",
+                "test/cli_test.dart:65",
+                "test/cli_test.dart:72",
+                "test/cli_test.dart:82",
+                "test/cli_test.dart:86",
+                "test/cli_test.dart:87",
+                "test/cli_test.dart:88",
+                "test/cli_test.dart:91",
+                "test/cli_test.dart:93",
+                "test/cli_test.dart:106",
+                "test/cli_test.dart:107",
+                "test/cli_test.dart:113",
+                "test/cli_test.dart:114",
+                "test/cli_test.dart:117",
+                "test/cli_test.dart:120",
+                "test/cli_test.dart:122",
+                "test/cli_test.dart:126",
+                "test/cli_test.dart:127",
+                "test/cli_test.dart:131",
+                "test/cli_test.dart:137",
+                "test/cli_test.dart:151",
+                "test/cli_test.dart:153",
+                "test/cli_test.dart:154",
+                "test/cli_test.dart:158",
+                "test/cli_test.dart:159",
+                "test/cli_test.dart:165",
+                "test/cli_test.dart:169",
+                "test/cli_test.dart:171",
+                "test/cli_test.dart:174",
+                "test/cli_test.dart:184",
+                "test/cli_test.dart:186",
+                "test/cli_test.dart:187",
+                "test/cli_test.dart:191",
+                "test/cli_test.dart:192",
+                "test/cli_test.dart:193",
+                "test/cli_test.dart:196",
+                "test/cli_test.dart:198",
+                "test/cli_test.dart:202",
+                "test/cli_test.dart:203",
+                "test/cli_test.dart:207",
+                "test/cli_test.dart:223",
+                "test/cli_test.dart:224",
+                "test/cli_test.dart:228",
+                "test/cli_test.dart:229",
+                "test/cli_test.dart:232",
+                "test/cli_test.dart:235",
+                "test/cli_test.dart:237",
+                "test/cli_test.dart:241",
+                "test/cli_test.dart:263",
+                "test/cli_test.dart:269",
+                "test/cli_test.dart:270",
+                "test/cli_test.dart:271",
+                "test/cli_test.dart:272",
+                "test/cli_test.dart:276",
+                "test/cli_test.dart:283",
+                "test/cli_test.dart:287",
+                "test/cli_test.dart:305",
+                "test/cli_test.dart:306",
+                "test/cli_test.dart:312",
+                "test/cli_test.dart:320",
+                "test/cli_test.dart:323",
+                "test/cli_test.dart:327",
+                "test/cli_test.dart:342",
+                "test/cli_test.dart:348",
+                "test/cli_test.dart:350",
+                "test/cli_test.dart:351"
+              ]
+            },
+            "test/fixtures/AGENTS.md": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "test/fixtures/AGENTS.md:7",
+                "test/fixtures/AGENTS.md:17"
+              ]
+            },
+            "test/fixtures/forbidden_file.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "test/fixtures/forbidden_file.dart:1"
+              ]
+            },
+            "lib/src/cli/scan_command.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/src/cli/scan_command.dart:14",
+                "lib/src/cli/scan_command.dart:23",
+                "lib/src/cli/scan_command.dart:25",
+                "lib/src/cli/scan_command.dart:32",
+                "lib/src/cli/scan_command.dart:35",
+                "lib/src/cli/scan_command.dart:41",
+                "lib/src/cli/scan_command.dart:49",
+                "lib/src/cli/scan_command.dart:50",
+                "lib/src/cli/scan_command.dart:56",
+                "lib/src/cli/scan_command.dart:62",
+                "lib/src/cli/scan_command.dart:64",
+                "lib/src/cli/scan_command.dart:70",
+                "lib/src/cli/scan_command.dart:76",
+                "lib/src/cli/scan_command.dart:78",
+                "lib/src/cli/scan_command.dart:81",
+                "lib/src/cli/scan_command.dart:85",
+                "lib/src/cli/scan_command.dart:92"
+              ]
+            },
+            "idea-plugin/src/main/resources/META-INF/plugin.xml": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "idea-plugin/src/main/resources/META-INF/plugin.xml:12",
+                "idea-plugin/src/main/resources/META-INF/plugin.xml:14",
+                "idea-plugin/src/main/resources/META-INF/plugin.xml:15",
+                "idea-plugin/src/main/resources/META-INF/plugin.xml:17"
+              ]
+            },
+            "idea-plugin/src/main/resources/META-INF/pluginIcon.svg": {
+              "matched": false,
+              "status": "no_match",
+              "evidence_refs": []
+            },
+            "lib/src/cli/baseline_commands.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/src/cli/baseline_commands.dart:17",
+                "lib/src/cli/baseline_commands.dart:24",
+                "lib/src/cli/baseline_commands.dart:30",
+                "lib/src/cli/baseline_commands.dart:43"
+              ]
+            },
+            ".hermes/flutterguard-ide-readiness.codex.json": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                ".hermes/flutterguard-ide-readiness.codex.json:3",
+                ".hermes/flutterguard-ide-readiness.codex.json:4",
+                ".hermes/flutterguard-ide-readiness.codex.json:9",
+                ".hermes/flutterguard-ide-readiness.codex.json:10",
+                ".hermes/flutterguard-ide-readiness.codex.json:11",
+                ".hermes/flutterguard-ide-readiness.codex.json:15",
+                ".hermes/flutterguard-ide-readiness.codex.json:16",
+                ".hermes/flutterguard-ide-readiness.codex.json:18",
+                ".hermes/flutterguard-ide-readiness.codex.json:20",
+                ".hermes/flutterguard-ide-readiness.codex.json:21",
+                ".hermes/flutterguard-ide-readiness.codex.json:23",
+                ".hermes/flutterguard-ide-readiness.codex.json:25",
+                ".hermes/flutterguard-ide-readiness.codex.json:26",
+                ".hermes/flutterguard-ide-readiness.codex.json:31",
+                ".hermes/flutterguard-ide-readiness.codex.json:32",
+                ".hermes/flutterguard-ide-readiness.codex.json:34",
+                ".hermes/flutterguard-ide-readiness.codex.json:35",
+                ".hermes/flutterguard-ide-readiness.codex.json:36",
+                ".hermes/flutterguard-ide-readiness.codex.json:37",
+                ".hermes/flutterguard-ide-readiness.codex.json:38",
+                ".hermes/flutterguard-ide-readiness.codex.json:42",
+                ".hermes/flutterguard-ide-readiness.codex.json:45",
+                ".hermes/flutterguard-ide-readiness.codex.json:46",
+                ".hermes/flutterguard-ide-readiness.codex.json:52",
+                ".hermes/flutterguard-ide-readiness.codex.json:54",
+                ".hermes/flutterguard-ide-readiness.codex.json:55",
+                ".hermes/flutterguard-ide-readiness.codex.json:60",
+                ".hermes/flutterguard-ide-readiness.codex.json:61",
+                ".hermes/flutterguard-ide-readiness.codex.json:63",
+                ".hermes/flutterguard-ide-readiness.codex.json:64",
+                ".hermes/flutterguard-ide-readiness.codex.json:65",
+                ".hermes/flutterguard-ide-readiness.codex.json:70",
+                ".hermes/flutterguard-ide-readiness.codex.json:73",
+                ".hermes/flutterguard-ide-readiness.codex.json:74",
+                ".hermes/flutterguard-ide-readiness.codex.json:77",
+                ".hermes/flutterguard-ide-readiness.codex.json:78",
+                ".hermes/flutterguard-ide-readiness.codex.json:82",
+                ".hermes/flutterguard-ide-readiness.codex.json:88",
+                ".hermes/flutterguard-ide-readiness.codex.json:91",
+                ".hermes/flutterguard-ide-readiness.codex.json:95",
+                ".hermes/flutterguard-ide-readiness.codex.json:112",
+                ".hermes/flutterguard-ide-readiness.codex.json:129",
+                ".hermes/flutterguard-ide-readiness.codex.json:130",
+                ".hermes/flutterguard-ide-readiness.codex.json:131",
+                ".hermes/flutterguard-ide-readiness.codex.json:132",
+                ".hermes/flutterguard-ide-readiness.codex.json:133"
+              ]
+            },
+            ".hermes/flutterguard-idea-plugin-bootstrap.codex.json": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:3",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:16",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:25",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:42",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:54",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:55",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:56",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:60",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:65",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:66",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:67",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:88",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:89",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:90",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:94",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:95",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:96",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:97",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:98",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:99",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:100",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:101",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:104",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:107",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:112",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:113",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:125",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:127",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:129",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:135",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:136",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:140",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:144",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:145",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:146",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:148",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:156",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:163",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:165",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:181",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:186",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:187",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:194",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:204",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:218",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:223",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:224",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:228",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:250",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:251",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:257",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:258",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:263",
+                ".hermes/flutterguard-idea-plugin-bootstrap.codex.json:273"
+              ]
+            },
+            ".hermes/flutterguard-idea-publish-readiness.codex.json": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                ".hermes/flutterguard-idea-publish-readiness.codex.json:3",
+                ".hermes/flutterguard-idea-publish-readiness.codex.json:11",
+                ".hermes/flutterguard-idea-publish-readiness.codex.json:15",
+                ".hermes/flutterguard-idea-publish-readiness.codex.json:17",
+                ".hermes/flutterguard-idea-publish-readiness.codex.json:18",
+                ".hermes/flutterguard-idea-publish-readiness.codex.json:21",
+                ".hermes/flutterguard-idea-publish-readiness.codex.json:22",
+                ".hermes/flutterguard-idea-publish-readiness.codex.json:24",
+                ".hermes/flutterguard-idea-publish-readiness.codex.json:25",
+                ".hermes/flutterguard-idea-publish-readiness.codex.json:36",
+                ".hermes/flutterguard-idea-publish-readiness.codex.json:46",
+                ".hermes/flutterguard-idea-publish-readiness.codex.json:52"
+              ]
+            },
+            "lib/src/cli/config_commands.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/src/cli/config_commands.dart:17",
+                "lib/src/cli/config_commands.dart:18",
+                "lib/src/cli/config_commands.dart:31",
+                "lib/src/cli/config_commands.dart:32",
+                "lib/src/cli/config_commands.dart:42"
+              ]
+            },
+            "lib/src/cli/rule_commands.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/src/cli/rule_commands.dart:12",
+                "lib/src/cli/rule_commands.dart:15",
+                "lib/src/cli/rule_commands.dart:16",
+                "lib/src/cli/rule_commands.dart:17",
+                "lib/src/cli/rule_commands.dart:18",
+                "lib/src/cli/rule_commands.dart:20",
+                "lib/src/cli/rule_commands.dart:24",
+                "lib/src/cli/rule_commands.dart:26",
+                "lib/src/cli/rule_commands.dart:32",
+                "lib/src/cli/rule_commands.dart:33",
+                "lib/src/cli/rule_commands.dart:36",
+                "lib/src/cli/rule_commands.dart:40",
+                "lib/src/cli/rule_commands.dart:42",
+                "lib/src/cli/rule_commands.dart:43",
+                "lib/src/cli/rule_commands.dart:50",
+                "lib/src/cli/rule_commands.dart:51",
+                "lib/src/cli/rule_commands.dart:52",
+                "lib/src/cli/rule_commands.dart:53",
+                "lib/src/cli/rule_commands.dart:54",
+                "lib/src/cli/rule_commands.dart:55",
+                "lib/src/cli/rule_commands.dart:56",
+                "lib/src/cli/rule_commands.dart:57",
+                "lib/src/cli/rule_commands.dart:58",
+                "lib/src/cli/rule_commands.dart:59",
+                "lib/src/cli/rule_commands.dart:60"
+              ]
+            },
+            "CONTEXT.md": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "CONTEXT.md:20",
+                "CONTEXT.md:67"
+              ]
+            },
+            "pubspec.yaml": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "pubspec.yaml:1",
+                "pubspec.yaml:2",
+                "pubspec.yaml:11"
+              ]
+            }
+          }
+        },
+        "capabilities": [
+          {
+            "capability_id": "capability:flutterguard:idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+            "label": "source_evidence",
+            "target_repo": "flutterguard",
+            "development_units": [
+              "flutterguard:."
+            ],
+            "files": [
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt"
+            ],
+            "symbols": [
+              "intellij",
+              "intellij",
+              "intellij",
+              "intellij",
+              "intellij"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "adapter",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "HIGH",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [],
+            "evidence_refs": [
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:5",
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:6",
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:7",
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:8",
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:9"
+            ],
+            "confidence": "HIGH",
+            "unknowns": []
+          },
+          {
+            "capability_id": "capability:flutterguard:lib/src/cli/cli_parsers.dart",
+            "label": "source_evidence",
+            "target_repo": "flutterguard",
+            "development_units": [
+              "flutterguard:."
+            ],
+            "files": [
+              "lib/src/cli/cli_parsers.dart"
+            ],
+            "symbols": [
+              "cli",
+              "cli",
+              "file",
+              "json"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "adapter",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [],
+            "evidence_refs": [
+              "lib/src/cli/cli_parsers.dart",
+              "lib/src/cli/cli_parsers.dart:3",
+              "lib/src/cli/cli_parsers.dart:13",
+              "lib/src/cli/cli_parsers.dart:15",
+              "lib/src/cli/cli_parsers.dart:20"
+            ],
+            "confidence": "HIGH",
+            "unknowns": []
+          },
+          {
+            "capability_id": "capability:flutterguard:lib/flutterguard_cli.dart",
+            "label": "source_evidence",
+            "target_repo": "flutterguard",
+            "development_units": [
+              "flutterguard:."
+            ],
+            "files": [
+              "lib/flutterguard_cli.dart"
+            ],
+            "symbols": [
+              "cli"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "unknown",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [],
+            "evidence_refs": [
+              "lib/flutterguard_cli.dart",
+              "lib/flutterguard_cli.dart:4"
+            ],
+            "confidence": "MEDIUM",
+            "unknowns": [
+              "Insufficient bounded source evidence for ownership."
+            ]
+          },
+          {
+            "capability_id": "capability:flutterguard:lib/src/file_collector.dart",
+            "label": "source_evidence",
+            "target_repo": "flutterguard",
+            "development_units": [
+              "flutterguard:."
+            ],
+            "files": [
+              "lib/src/file_collector.dart"
+            ],
+            "symbols": [
+              "file",
+              "file",
+              "stdout",
+              "exit"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "adapter",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [],
+            "evidence_refs": [
+              "lib/src/file_collector.dart",
+              "lib/src/file_collector.dart:20",
+              "lib/src/file_collector.dart:28",
+              "lib/src/file_collector.dart:51",
+              "lib/src/file_collector.dart:53"
+            ],
+            "confidence": "HIGH",
+            "unknowns": []
+          },
+          {
+            "capability_id": "capability:flutterguard:test/cli_test.dart",
+            "label": "source_evidence",
+            "target_repo": "flutterguard",
+            "development_units": [
+              "flutterguard:."
+            ],
+            "files": [
+              "test/cli_test.dart"
+            ],
+            "symbols": [
+              "exit",
+              "cli",
+              "file",
+              "exit"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "adapter",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "LOW",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [],
+            "evidence_refs": [
+              "test/cli_test.dart",
+              "test/cli_test.dart:9",
+              "test/cli_test.dart:15",
+              "test/cli_test.dart:16",
+              "test/cli_test.dart:33"
+            ],
+            "confidence": "HIGH",
+            "unknowns": []
+          },
+          {
+            "capability_id": "capability:flutterguard:test/fixtures/forbidden_file.dart",
+            "label": "source_evidence",
+            "target_repo": "flutterguard",
+            "development_units": [
+              "flutterguard:."
+            ],
+            "files": [
+              "test/fixtures/forbidden_file.dart"
+            ],
+            "symbols": [
+              "file"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "ui_only",
+            "coupling": {
+              "ui": "HIGH",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [],
+            "evidence_refs": [
+              "test/fixtures/forbidden_file.dart",
+              "test/fixtures/forbidden_file.dart:1"
+            ],
+            "confidence": "HIGH",
+            "unknowns": []
+          },
+          {
+            "capability_id": "capability:flutterguard:lib/src/cli/scan_command.dart",
+            "label": "source_evidence",
+            "target_repo": "flutterguard",
+            "development_units": [
+              "flutterguard:."
+            ],
+            "files": [
+              "lib/src/cli/scan_command.dart"
+            ],
+            "symbols": [
+              "stdout",
+              "json",
+              "stdout",
+              "exit"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "adapter",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [],
+            "evidence_refs": [
+              "lib/src/cli/scan_command.dart",
+              "lib/src/cli/scan_command.dart:14",
+              "lib/src/cli/scan_command.dart:23",
+              "lib/src/cli/scan_command.dart:25",
+              "lib/src/cli/scan_command.dart:32"
+            ],
+            "confidence": "HIGH",
+            "unknowns": []
+          },
+          {
+            "capability_id": "capability:flutterguard:lib/src/cli/baseline_commands.dart",
+            "label": "source_evidence",
+            "target_repo": "flutterguard",
+            "development_units": [
+              "flutterguard:."
+            ],
+            "files": [
+              "lib/src/cli/baseline_commands.dart"
+            ],
+            "symbols": [
+              "stdout",
+              "file",
+              "stdout",
+              "exit"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "adapter",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [],
+            "evidence_refs": [
+              "lib/src/cli/baseline_commands.dart",
+              "lib/src/cli/baseline_commands.dart:17",
+              "lib/src/cli/baseline_commands.dart:24",
+              "lib/src/cli/baseline_commands.dart:30",
+              "lib/src/cli/baseline_commands.dart:43"
+            ],
+            "confidence": "HIGH",
+            "unknowns": []
+          },
+          {
+            "capability_id": "capability:flutterguard:lib/src/cli/config_commands.dart",
+            "label": "source_evidence",
+            "target_repo": "flutterguard",
+            "development_units": [
+              "flutterguard:."
+            ],
+            "files": [
+              "lib/src/cli/config_commands.dart"
+            ],
+            "symbols": [
+              "stdout",
+              "stdout",
+              "stdout",
+              "exit"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "adapter",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "LOW",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [],
+            "evidence_refs": [
+              "lib/src/cli/config_commands.dart",
+              "lib/src/cli/config_commands.dart:17",
+              "lib/src/cli/config_commands.dart:18",
+              "lib/src/cli/config_commands.dart:31",
+              "lib/src/cli/config_commands.dart:32"
+            ],
+            "confidence": "HIGH",
+            "unknowns": []
+          },
+          {
+            "capability_id": "capability:flutterguard:lib/src/cli/rule_commands.dart",
+            "label": "source_evidence",
+            "target_repo": "flutterguard",
+            "development_units": [
+              "flutterguard:."
+            ],
+            "files": [
+              "lib/src/cli/rule_commands.dart"
+            ],
+            "symbols": [
+              "json",
+              "compare",
+              "json",
+              "stdout"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "adapter",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [],
+            "evidence_refs": [
+              "lib/src/cli/rule_commands.dart",
+              "lib/src/cli/rule_commands.dart:12",
+              "lib/src/cli/rule_commands.dart:15",
+              "lib/src/cli/rule_commands.dart:16",
+              "lib/src/cli/rule_commands.dart:17"
+            ],
+            "confidence": "HIGH",
+            "unknowns": []
+          }
+        ],
+        "workspace_matches": [],
+        "extraction_assessments": [
+          {
+            "capability_id": "capability:flutterguard:idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+            "decision": "ADAPTER_ONLY",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=adapter"
+            ],
+            "blockers": [],
+            "evidence_refs": [
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:5",
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:6",
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:7",
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:8",
+              "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt:9"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "capability_id": "capability:flutterguard:lib/src/cli/cli_parsers.dart",
+            "decision": "ADAPTER_ONLY",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=adapter"
+            ],
+            "blockers": [],
+            "evidence_refs": [
+              "lib/src/cli/cli_parsers.dart",
+              "lib/src/cli/cli_parsers.dart:3",
+              "lib/src/cli/cli_parsers.dart:13",
+              "lib/src/cli/cli_parsers.dart:15",
+              "lib/src/cli/cli_parsers.dart:20"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "capability_id": "capability:flutterguard:lib/flutterguard_cli.dart",
+            "decision": "NOT_ENOUGH_EVIDENCE",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=unknown"
+            ],
+            "blockers": [
+              "Insufficient bounded source evidence for ownership."
+            ],
+            "evidence_refs": [
+              "lib/flutterguard_cli.dart",
+              "lib/flutterguard_cli.dart:4"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "capability_id": "capability:flutterguard:lib/src/file_collector.dart",
+            "decision": "ADAPTER_ONLY",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=adapter"
+            ],
+            "blockers": [],
+            "evidence_refs": [
+              "lib/src/file_collector.dart",
+              "lib/src/file_collector.dart:20",
+              "lib/src/file_collector.dart:28",
+              "lib/src/file_collector.dart:51",
+              "lib/src/file_collector.dart:53"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "capability_id": "capability:flutterguard:test/cli_test.dart",
+            "decision": "ADAPTER_ONLY",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=adapter"
+            ],
+            "blockers": [],
+            "evidence_refs": [
+              "test/cli_test.dart",
+              "test/cli_test.dart:9",
+              "test/cli_test.dart:15",
+              "test/cli_test.dart:16",
+              "test/cli_test.dart:33"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "capability_id": "capability:flutterguard:test/fixtures/forbidden_file.dart",
+            "decision": "UNKNOWN",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=ui_only"
+            ],
+            "blockers": [],
+            "evidence_refs": [
+              "test/fixtures/forbidden_file.dart",
+              "test/fixtures/forbidden_file.dart:1"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "capability_id": "capability:flutterguard:lib/src/cli/scan_command.dart",
+            "decision": "ADAPTER_ONLY",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=adapter"
+            ],
+            "blockers": [],
+            "evidence_refs": [
+              "lib/src/cli/scan_command.dart",
+              "lib/src/cli/scan_command.dart:14",
+              "lib/src/cli/scan_command.dart:23",
+              "lib/src/cli/scan_command.dart:25",
+              "lib/src/cli/scan_command.dart:32"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "capability_id": "capability:flutterguard:lib/src/cli/baseline_commands.dart",
+            "decision": "ADAPTER_ONLY",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=adapter"
+            ],
+            "blockers": [],
+            "evidence_refs": [
+              "lib/src/cli/baseline_commands.dart",
+              "lib/src/cli/baseline_commands.dart:17",
+              "lib/src/cli/baseline_commands.dart:24",
+              "lib/src/cli/baseline_commands.dart:30",
+              "lib/src/cli/baseline_commands.dart:43"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "capability_id": "capability:flutterguard:lib/src/cli/config_commands.dart",
+            "decision": "ADAPTER_ONLY",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=adapter"
+            ],
+            "blockers": [],
+            "evidence_refs": [
+              "lib/src/cli/config_commands.dart",
+              "lib/src/cli/config_commands.dart:17",
+              "lib/src/cli/config_commands.dart:18",
+              "lib/src/cli/config_commands.dart:31",
+              "lib/src/cli/config_commands.dart:32"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "capability_id": "capability:flutterguard:lib/src/cli/rule_commands.dart",
+            "decision": "ADAPTER_ONLY",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=adapter"
+            ],
+            "blockers": [],
+            "evidence_refs": [
+              "lib/src/cli/rule_commands.dart",
+              "lib/src/cli/rule_commands.dart:12",
+              "lib/src/cli/rule_commands.dart:15",
+              "lib/src/cli/rule_commands.dart:16",
+              "lib/src/cli/rule_commands.dart:17"
+            ],
+            "confidence": "HIGH"
+          }
+        ],
+        "keep_in_application": [],
+        "extraction_candidates": [],
+        "unknowns": [
+          "Insufficient bounded source evidence for ownership."
+        ],
+        "evidence_summary": {
+          "context_evidence": 80,
+          "capability_nodes": 10
+        },
+        "metrics": {
+          "bounded_files_read": 24,
+          "capabilities": 10,
+          "matches": 0,
+          "control_evidence_files": 14,
+          "source_evidence_files": 10,
+          "script_evidence_files": 0,
+          "query_matched_capabilities": 10,
+          "query_unmatched_capabilities": 0,
+          "query_actionable_decisions": 0,
+          "abstained_extraction_decisions": 1
+        }
+      }
+    }
+  ],
+  "summary": {
+    "projects": 1,
+    "refreshed": 1,
+    "selected_files": 24,
+    "unknowns": 43
+  }
+}

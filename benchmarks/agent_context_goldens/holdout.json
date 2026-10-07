@@ -1,0 +1,86 @@
+{
+  "schema": "bounded-agent-hit-goldens.v2",
+  "independent_of_predictions": true,
+  "method": "Three new maintenance tasks frozen before graph predictions. Source review followed registered project paths, recent Git filenames, and named guides; no recursive discovery and at most six distinct files read per repository. Positive targets are partial required sets, not complete relevance labels.",
+  "source_review": {
+    "flutter-forge": {
+      "source_sha": "f799663",
+      "reviewed_paths": ["AGENTS.md", "apps/flutter_forge/lib/shared/popup/AI_ANALYSIS.md", "apps/flutter_forge/lib/shared/popup/popup_scope.dart"],
+      "reason": "Recent shared PopupScope introduction, separate from theme/window and BLE cases."
+    },
+    "gcode-core": {
+      "source_sha": "22d76ad",
+      "reviewed_paths": ["AGENTS.md", "example/android/app/src/main/AndroidManifest.xml", "example/android/app/build.gradle.kts", ".github/workflows/ci.yml"],
+      "reason": "Android host metadata and packaged API/ABI enforcement, separate from parser/GPU progress and runtime evidence cases."
+    },
+    "flutterguard": {
+      "source_sha": "b3beced",
+      "reviewed_paths": ["AGENTS.md", "lib/AGENTS.md", "lib/src/AGENTS.md", "lib/src/cli/AGENTS.md", "lib/src/cli/baseline_commands.dart", "lib/src/baseline.dart"],
+      "reason": "Baseline creation and stable issue fingerprint path handling, separate from scan stdout, rule registry and IDEA adapter cases."
+    }
+  },
+  "cases": [
+    {
+      "id": "holdout-forge-popup-resource-ownership",
+      "project_id": "flutter-forge",
+      "negative": false,
+      "query_zh": "维护共享弹出层的资源所有权：关闭整组浮层时同时清理遮罩，页面退出只移除自己创建的弹窗路由；同一通道重新开始或关闭后立即取消延迟打开队列。",
+      "query_en": "Maintain shared popup resource ownership: closeOverlay removes its whole group including modal barriers, dispose removes only owned routes, and replacing a sequence channel immediately cancels delayed opens.",
+      "must_hit": ["apps/flutter_forge/lib/shared/popup/popup_scope.dart", "apps/flutter_forge/lib/shared/popup/AI_ANALYSIS.md"],
+      "rule_entries": ["AGENTS.md"],
+      "rule_target_pairs": [{"rule": "AGENTS.md", "target": "apps/flutter_forge/lib/shared/popup/popup_scope.dart"}],
+      "evidence_expectations": {"apps/flutter_forge/lib/shared/popup/popup_scope.dart": "source", "apps/flutter_forge/lib/shared/popup/AI_ANALYSIS.md": "configuration"},
+      "ownership_expectation": null,
+      "known_irrelevant": ["apps/flutter_forge/lib/app/theme/app_theme_controller.dart"],
+      "rationale": "The scoped machine contract owns overlay_group_lifecycle and cancellable_sequences; PopupScope implements keyed routes, owned overlay groups, channel tokens, pauses, and deferred route removal on disposal.",
+      "negative_expectation": null
+    },
+    {
+      "id": "holdout-gcode-android-host-artifact-contract",
+      "project_id": "gcode-core",
+      "negative": false,
+      "query_zh": "检查安卓示例宿主的图形能力开关与产物契约是否一致：应用级启用 Flutter GPU，最低 API 29 且只允许 ARM64；持续集成必须检查打包后 APK 的最低系统版本和 ABI。这里只核对配置，不声明设备运行验收。",
+      "query_en": "Check Android example host and artifact contracts: enable Flutter GPU in application metadata, require minSdk 29 and arm64-v8a only, and keep CI packaged APK min-sdk and ABI verification consistent with Gradle.",
+      "must_hit": ["example/android/app/src/main/AndroidManifest.xml", "example/android/app/build.gradle.kts", ".github/workflows/ci.yml"],
+      "rule_entries": ["AGENTS.md"],
+      "rule_target_pairs": [
+        {"rule": "AGENTS.md", "target": "example/android/app/src/main/AndroidManifest.xml"},
+        {"rule": "AGENTS.md", "target": "example/android/app/build.gradle.kts"},
+        {"rule": "AGENTS.md", "target": ".github/workflows/ci.yml"}
+      ],
+      "evidence_expectations": {"example/android/app/src/main/AndroidManifest.xml": "configuration", "example/android/app/build.gradle.kts": "configuration", ".github/workflows/ci.yml": "configuration"},
+      "ownership_expectation": null,
+      "known_irrelevant": ["lib/src/parser/gcode_parser.dart"],
+      "rationale": "The manifest declares application-level EnableFlutterGPU; Gradle fixes minSdk 29 and sole arm64-v8a ABI; CI verifies min-sdk with apkanalyzer and APK lib ABI inventory. Those are configuration/build facts only.",
+      "negative_expectation": null
+    },
+    {
+      "id": "holdout-flutterguard-baseline-fingerprint",
+      "project_id": "flutterguard",
+      "negative": false,
+      "query_zh": "维护基线创建与匹配的一致性：创建基线时采集未抑制的原始发现，按解析后的项目目录处理相对输出路径；问题指纹采用项目相对路径并统一路径分隔符，去重排序后写入基线。",
+      "query_en": "Maintain baseline create and matching consistency: collect unsuppressed rawIssues, resolve relative output under the scanned project root, normalize project-relative separators in Baseline fingerprints, and encode sorted unique fingerprints.",
+      "must_hit": ["lib/src/cli/baseline_commands.dart", "lib/src/baseline.dart"],
+      "rule_entries": ["AGENTS.md", "lib/AGENTS.md", "lib/src/AGENTS.md", "lib/src/cli/AGENTS.md"],
+      "rule_target_pairs": [
+        {"rule": "AGENTS.md", "target": "lib/src/cli/baseline_commands.dart"},
+        {"rule": "lib/AGENTS.md", "target": "lib/src/cli/baseline_commands.dart"},
+        {"rule": "lib/src/AGENTS.md", "target": "lib/src/cli/baseline_commands.dart"},
+        {"rule": "lib/src/cli/AGENTS.md", "target": "lib/src/cli/baseline_commands.dart"},
+        {"rule": "AGENTS.md", "target": "lib/src/baseline.dart"},
+        {"rule": "lib/AGENTS.md", "target": "lib/src/baseline.dart"},
+        {"rule": "lib/src/AGENTS.md", "target": "lib/src/baseline.dart"}
+      ],
+      "ownership_expectation": {"path": "lib/src/cli/baseline_commands.dart", "classification": "adapter", "rationale": "The CLI routes arguments/output, delegates scan to the kernel and fingerprints to Baseline; source ownership is adapter even though it imports dart:io for command I/O."},
+      "known_irrelevant": ["idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt"],
+      "rationale": "BaselineCommands.create passes applySuppression:false and serializes result.rawIssues, while Baseline.fingerprint shares path normalization with contains and encode sorts unique fingerprints.",
+      "negative_expectation": null
+    }
+  ],
+  "limitations": [
+    "Holdout tasks are independent additions frozen before predictions, but all are from the same three local worktrees; this is not a generalization claim across new repositories.",
+    "must_hit is a partial required path set and cannot measure precision.",
+    "Only explicit rule-target expectations and actual returned target files establish pair coverage; source existence is never used to remove expected denominator entries.",
+    "No semantic platform acceptance or release readiness is scored."
+  ]
+}

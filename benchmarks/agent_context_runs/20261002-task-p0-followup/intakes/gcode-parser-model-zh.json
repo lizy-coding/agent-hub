@@ -1,0 +1,3879 @@
+{
+  "schema_version": "managed-agent-context.v1",
+  "generated_at": "2026-10-02T15:45:34.260311+00:00",
+  "read_only_business_repositories": true,
+  "acceptance": false,
+  "evidence_authority": "SOURCE_OBSERVATION_ONLY",
+  "snapshot_scope": "scoped_snapshot_not_full_registry",
+  "no_walk": true,
+  "budget": {
+    "max_files_per_project": 24,
+    "recent_commits_per_project": 6
+  },
+  "projects": [
+    {
+      "project_id": "gcode-core",
+      "repository_id": "gcode_core",
+      "repository_root": "/Users/forest/code/langGraph/gcode_core",
+      "adapter": "gcode_core",
+      "status": "REFRESHED_WITH_GAPS",
+      "source_sha": "22d76ad54e11ad752771b594b8345d5f9aab6a31",
+      "branch": "dev",
+      "version": "0.2.1",
+      "version_source": "pubspec.yaml",
+      "dependency_pins": [],
+      "content_state": "CURRENT_WORKTREE",
+      "acceptance": false,
+      "workspace_dirty_paths": [
+        "AGENTS.md"
+      ],
+      "worktree_dirty_paths": [
+        "AGENTS.md"
+      ],
+      "index_dirty_paths": [],
+      "untracked_inventory": "NOT_SCANNED_ONLY_EXPLICIT_FILES_CLASSIFIED",
+      "recent_commit_limit": 6,
+      "recent_changed_paths": [
+        "AGENTS.md",
+        "CHANGELOG.md",
+        "README.md",
+        "docs/evidence/0.2.1-maintainer-acceptance.md",
+        "pubspec.yaml",
+        "example/android/app/src/main/AndroidManifest.xml",
+        "lib/src/rendering/gpu_toolpath_layer.dart",
+        "lib/src/rendering/toolpath_geometry.dart",
+        "test/rendering/toolpath_geometry_test.dart",
+        ".github/workflows/ci.yml",
+        ".pubignore",
+        "LICENSE",
+        "example/pubspec.lock",
+        "example/README.md",
+        "example/android/app/build.gradle.kts"
+      ],
+      "selected_files": [
+        {
+          "path": "AGENTS.md",
+          "sha256": "34885ba713f26c0563d04b1b944fbac1c30b92b436307ae9d5864e78c6974c69",
+          "origins": [
+            "ancestor_rule"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": true,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/parser/gcode_parse_result.dart",
+          "sha256": "0b27e709b734bd2dc72a128825f6d28beee27a16e897ca3c27946587e59fb2db",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/rendering/gpu_toolpath_layer.dart",
+          "sha256": "8be48ca5f2499f467f17859b72590b3d9240f9592b3fb3ad935296255355b085",
+          "origins": [
+            "seed",
+            "recent_commit",
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/rendering/toolpath_geometry.dart",
+          "sha256": "02b4b0f8e639402bd48e5f086c609726eb83bf06f96ea4ac253644e5e0939040",
+          "origins": [
+            "seed",
+            "recent_commit",
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "docs/adr/0001-macos-first-gpu-toolpath.md",
+          "sha256": "dc4caec148af9a68a89f23bcb30f96d0d44699bb8579562bb641bb0ce2d4e6e6",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/models/toolpath_segment.dart",
+          "sha256": "e01bcfb52d6b2c369983f9994b6d43701d67e83114d8711b8d62d0efcfffe1d1",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/parser/gcode_parser.dart",
+          "sha256": "10a539b1c7e46ff811b96b26c45b0957430a68d8d4fb6ee228515599460ef0e4",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/rendering/toolpath_viewport.dart",
+          "sha256": "cbaafa99c92a15c0f1fa37df6d4e5fdd378c3cc53cdbfb450879622ad16f138f",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/services/toolpath_builder.dart",
+          "sha256": "00b38766875bf82cedd1ceb635aa6be04e89cd3b5c7d88f12c33262242e5bd70",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "test/gcode_parser_test.dart",
+          "sha256": "012ad90cb17259a7aaf3ae0fd35b7a70bd2b30be0588b3fe7b307a5528521475",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "test/rendering/toolpath_geometry_test.dart",
+          "sha256": "030f21ddf6b615b96578a365a0e0e4ec0b6b80abc8677c2d47cd989df3d60d18",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "test/rendering/toolpath_viewport_test.dart",
+          "sha256": "988e5857c3d1c0c576cf4e8652f5ce524e1e40fda22cf1f677d878345e54a449",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "test/toolpath_builder_test.dart",
+          "sha256": "25ff389f13d37dfce7c3513781d61c02ab4e5208b13020ef8dfce2ce488b0b50",
+          "origins": [
+            "query_path_metadata"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "CONTEXT.md",
+          "sha256": "964e0f4ffbe24021d0f52fe964e1dfee7e48919956e1d79d976b9127a1a7ebb4",
+          "origins": [
+            "seed"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "pubspec.yaml",
+          "sha256": "27b4494220439366a151464f3bc225514553e6574de672752319e47a3356226c",
+          "origins": [
+            "seed",
+            "recent_commit"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/gcode_core.dart",
+          "sha256": "51e07b4aabb3a710fda8367b7ea9a0d404c4cb68fc9860fe862a5616ed0b50e7",
+          "origins": [
+            "seed"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "example/pubspec.yaml",
+          "sha256": "8f4a33b15f10090cf666f1e34d40af7c87281169b4c42dcbdc146069d6aa2acc",
+          "origins": [
+            "seed"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": ".github/workflows/ci.yml",
+          "sha256": "dcdee96601a9540d7c41d4fa496a28a6f19bd0c27260a2e9b9bf0cce5c82e413",
+          "origins": [
+            "seed",
+            "recent_commit"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "docs/evidence/0.2.1-maintainer-acceptance.md",
+          "sha256": "9bbabff9a873e188079e95a1644059b4b9247f67753937d56a9995cf4d4ee6fa",
+          "origins": [
+            "seed",
+            "recent_commit"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "example/android/app/src/main/AndroidManifest.xml",
+          "sha256": "fa21c0beb160ed843d326c3b4a9d0f3d54b7f687bed25e5f9dba034e1ba0a5a9",
+          "origins": [
+            "seed",
+            "recent_commit"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "example/android/app/build.gradle.kts",
+          "sha256": "8d3e427f9d58f493d1472902f4f85d7e23bdc83c0e22e638f6aa5c6495bffb57",
+          "origins": [
+            "seed",
+            "recent_commit"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/models/gcode_command.dart",
+          "sha256": "7161359e104e0dd1f065514a5c93ee6cf20b39ff49963a1bcb6e33135e8f35d5",
+          "origins": [
+            "literal_reference"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/core/gcode_bounds.dart",
+          "sha256": "c209017e9b1974d3d07b159c05de49526e8e40f9f0d94bd6b12b2840596a5d6d",
+          "origins": [
+            "literal_reference"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        },
+        {
+          "path": "lib/src/core/gcode_style.dart",
+          "sha256": "d885041a8cbd1606d966f18d23cf0721fbc0d5b2a2c49c925dd23d0454cd9657",
+          "origins": [
+            "literal_reference"
+          ],
+          "content_state": "CURRENT_WORKTREE",
+          "dirty_tracked": false,
+          "tracked": true
+        }
+      ],
+      "ignored_candidates": [
+        {
+          "path": "CHANGELOG.md",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "README.md",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "test/rendering/toolpath_geometry_test.dart",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": ".pubignore",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "LICENSE",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "example/pubspec.lock",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "example/README.md",
+          "reason": "OUTSIDE_MONITORED_CHANGE_PREFIXES",
+          "origin": "recent_commit"
+        },
+        {
+          "path": "lib/src/models/machine_position.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/domain/gcode_line_record.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/domain/parsed_gcode_line.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "example/lib/src/gcode_session_controller.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "example/lib/src/gcode_example_page.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "example/lib/gpu_validation.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/application/gcode_readline_pipeline.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/data/readers/file_gcode_line_reader.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/data/readers/gcode_line_reader.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/data/readers/string_gcode_line_reader.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/domain/gcode_load_snapshot.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/domain/gcode_load_stage.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/widgets/command_timeline.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/widgets/gcode_canvas.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "lib/src/widgets/playback_controls.dart",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "example/analysis_options.yaml",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        },
+        {
+          "path": "example/tool/macos_run.py",
+          "reason": "FILE_BUDGET_EXHAUSTED",
+          "origins": [
+            "literal_reference"
+          ]
+        }
+      ],
+      "unknowns": [
+        "FILE_BUDGET_EXHAUSTED: lib/src/models/machine_position.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/domain/gcode_line_record.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/domain/parsed_gcode_line.dart",
+        "FILE_BUDGET_EXHAUSTED: example/lib/src/gcode_session_controller.dart",
+        "FILE_BUDGET_EXHAUSTED: example/lib/src/gcode_example_page.dart",
+        "FILE_BUDGET_EXHAUSTED: example/lib/gpu_validation.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/application/gcode_readline_pipeline.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/data/readers/file_gcode_line_reader.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/data/readers/gcode_line_reader.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/data/readers/string_gcode_line_reader.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/domain/gcode_load_snapshot.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/domain/gcode_load_stage.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/widgets/command_timeline.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/widgets/gcode_canvas.dart",
+        "FILE_BUDGET_EXHAUSTED: lib/src/widgets/playback_controls.dart",
+        "FILE_BUDGET_EXHAUSTED: example/analysis_options.yaml",
+        "FILE_BUDGET_EXHAUSTED: example/tool/macos_run.py",
+        "DIRTY_WORKSPACE: observations include current worktree content beyond source SHA"
+      ],
+      "registry_metadata_mode": "CACHED_TARGET_METADATA",
+      "registry_metadata_freshness": "2026-09-05T10:52:44.470774+00:00",
+      "requirement": "定位直线运动与绝对、相对坐标的解析逻辑以及轨迹线段模型，评估解析和数据契约是否独立于页面状态。",
+      "evidence_mode": "FROZEN_SOURCE_TEXTS",
+      "source_snapshot_id": "2980d827031069a10818af572d0842b738fcb3c52ceac09bc22ebc111cc9df05",
+      "scope": {
+        "repositories": [
+          "gcode_core"
+        ],
+        "development_units": [
+          "gcode_core:.",
+          "gcode_core:example"
+        ]
+      },
+      "metrics": {
+        "candidate_files": 41,
+        "rule_candidates": 1,
+        "inspected_files": 24,
+        "selected_files": 24,
+        "max_files": 24,
+        "no_walk": true,
+        "source_discovery_performed": false
+      },
+      "context_package": {
+        "request": {
+          "requirement": "定位直线运动与绝对、相对坐标的解析逻辑以及轨迹线段模型，评估解析和数据契约是否独立于页面状态。",
+          "optional_target_repository": "gcode_core",
+          "candidate_paths": [
+            "AGENTS.md",
+            "lib/src/parser/gcode_parse_result.dart",
+            "lib/src/rendering/gpu_toolpath_layer.dart",
+            "lib/src/rendering/toolpath_geometry.dart",
+            "docs/adr/0001-macos-first-gpu-toolpath.md",
+            "lib/src/models/toolpath_segment.dart",
+            "lib/src/parser/gcode_parser.dart",
+            "lib/src/rendering/toolpath_viewport.dart",
+            "lib/src/services/toolpath_builder.dart",
+            "test/gcode_parser_test.dart",
+            "test/rendering/toolpath_geometry_test.dart",
+            "test/rendering/toolpath_viewport_test.dart",
+            "test/toolpath_builder_test.dart",
+            "CONTEXT.md",
+            "pubspec.yaml",
+            "lib/gcode_core.dart",
+            "example/pubspec.yaml",
+            ".github/workflows/ci.yml",
+            "docs/evidence/0.2.1-maintainer-acceptance.md",
+            "example/android/app/src/main/AndroidManifest.xml",
+            "example/android/app/build.gradle.kts",
+            "lib/src/models/gcode_command.dart",
+            "lib/src/core/gcode_bounds.dart",
+            "lib/src/core/gcode_style.dart"
+          ]
+        },
+        "scope": {
+          "repositories": [
+            "gcode_core"
+          ],
+          "development_units": [
+            "gcode_core:.",
+            "gcode_core:example"
+          ]
+        },
+        "candidates": [
+          {
+            "id": "gcode_core:.",
+            "classification": "context_only",
+            "confidence": "MEDIUM",
+            "reasons": [
+              "explicit bounded file intake"
+            ],
+            "evidence_refs": [
+              "AGENTS.md",
+              "AGENTS.md:12",
+              "AGENTS.md:23",
+              "AGENTS.md:41",
+              "AGENTS.md:61",
+              "AGENTS.md:101",
+              "AGENTS.md:104",
+              "lib/src/parser/gcode_parse_result.dart",
+              "lib/src/parser/gcode_parse_result.dart:3",
+              "lib/src/parser/gcode_parse_result.dart:4",
+              "lib/src/parser/gcode_parse_result.dart:18",
+              "lib/src/parser/gcode_parse_result.dart:19",
+              "lib/src/parser/gcode_parse_result.dart:25",
+              "lib/src/rendering/gpu_toolpath_layer.dart",
+              "lib/src/rendering/gpu_toolpath_layer.dart:10",
+              "lib/src/rendering/gpu_toolpath_layer.dart:11",
+              "lib/src/rendering/gpu_toolpath_layer.dart:12",
+              "lib/src/rendering/gpu_toolpath_layer.dart:15",
+              "lib/src/rendering/gpu_toolpath_layer.dart:16",
+              "lib/src/rendering/gpu_toolpath_layer.dart:22",
+              "lib/src/rendering/toolpath_geometry.dart",
+              "lib/src/rendering/toolpath_geometry.dart:6",
+              "lib/src/rendering/toolpath_geometry.dart:7",
+              "lib/src/rendering/toolpath_geometry.dart:10",
+              "lib/src/rendering/toolpath_geometry.dart:11",
+              "lib/src/rendering/toolpath_geometry.dart:26",
+              "lib/src/rendering/toolpath_geometry.dart:29",
+              "docs/adr/0001-macos-first-gpu-toolpath.md",
+              "lib/src/models/toolpath_segment.dart",
+              "lib/src/models/toolpath_segment.dart:4",
+              "lib/src/models/toolpath_segment.dart:5",
+              "lib/src/parser/gcode_parser.dart",
+              "lib/src/parser/gcode_parser.dart:4",
+              "lib/src/parser/gcode_parser.dart:6",
+              "lib/src/parser/gcode_parser.dart:10",
+              "lib/src/parser/gcode_parser.dart:12",
+              "lib/src/parser/gcode_parser.dart:21",
+              "lib/src/parser/gcode_parser.dart:30",
+              "lib/src/parser/gcode_parser.dart:33",
+              "lib/src/rendering/toolpath_viewport.dart",
+              "lib/src/rendering/toolpath_viewport.dart:4",
+              "lib/src/rendering/toolpath_viewport.dart:6",
+              "lib/src/rendering/toolpath_viewport.dart:7",
+              "lib/src/rendering/toolpath_viewport.dart:8",
+              "lib/src/rendering/toolpath_viewport.dart:32",
+              "lib/src/rendering/toolpath_viewport.dart:41",
+              "lib/src/services/toolpath_builder.dart",
+              "lib/src/services/toolpath_builder.dart:4",
+              "lib/src/services/toolpath_builder.dart:6",
+              "lib/src/services/toolpath_builder.dart:9",
+              "lib/src/services/toolpath_builder.dart:10",
+              "lib/src/services/toolpath_builder.dart:20",
+              "lib/src/services/toolpath_builder.dart:21",
+              "test/gcode_parser_test.dart",
+              "test/gcode_parser_test.dart:5",
+              "test/gcode_parser_test.dart:6",
+              "test/gcode_parser_test.dart:9",
+              "test/gcode_parser_test.dart:17",
+              "test/gcode_parser_test.dart:26",
+              "test/gcode_parser_test.dart:33",
+              "test/rendering/toolpath_geometry_test.dart",
+              "test/rendering/toolpath_geometry_test.dart:4",
+              "test/rendering/toolpath_geometry_test.dart:6",
+              "test/rendering/toolpath_geometry_test.dart:8",
+              "test/rendering/toolpath_geometry_test.dart:17",
+              "test/rendering/toolpath_geometry_test.dart:22",
+              "test/rendering/toolpath_geometry_test.dart:33",
+              "test/rendering/toolpath_viewport_test.dart",
+              "test/rendering/toolpath_viewport_test.dart:4",
+              "test/rendering/toolpath_viewport_test.dart:7",
+              "test/rendering/toolpath_viewport_test.dart:8",
+              "test/rendering/toolpath_viewport_test.dart:9",
+              "test/rendering/toolpath_viewport_test.dart:11",
+              "test/rendering/toolpath_viewport_test.dart:12",
+              "test/toolpath_builder_test.dart",
+              "test/toolpath_builder_test.dart:5",
+              "test/toolpath_builder_test.dart:22",
+              "test/toolpath_builder_test.dart:44",
+              "test/toolpath_builder_test.dart:50",
+              "test/toolpath_builder_test.dart:66",
+              "test/toolpath_builder_test.dart:84",
+              "CONTEXT.md",
+              "CONTEXT.md:7",
+              "CONTEXT.md:10",
+              "pubspec.yaml",
+              "pubspec.yaml:2",
+              "pubspec.yaml:24",
+              "lib/gcode_core.dart",
+              "lib/gcode_core.dart:15",
+              "lib/gcode_core.dart:16",
+              "lib/gcode_core.dart:17",
+              "lib/gcode_core.dart:18",
+              ".github/workflows/ci.yml",
+              ".github/workflows/ci.yml:50",
+              ".github/workflows/ci.yml:75",
+              ".github/workflows/ci.yml:76",
+              "docs/evidence/0.2.1-maintainer-acceptance.md",
+              "lib/src/models/gcode_command.dart",
+              "lib/src/core/gcode_bounds.dart",
+              "lib/src/core/gcode_style.dart"
+            ]
+          },
+          {
+            "id": "gcode_core:example",
+            "classification": "context_only",
+            "confidence": "MEDIUM",
+            "reasons": [
+              "explicit bounded file intake"
+            ],
+            "evidence_refs": [
+              "example/pubspec.yaml",
+              "example/android/app/src/main/AndroidManifest.xml",
+              "example/android/app/build.gradle.kts",
+              "example/android/app/build.gradle.kts:23"
+            ]
+          }
+        ],
+        "files": [
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/AGENTS.md",
+            "relative_path": "AGENTS.md",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "AGENTS.md",
+              "AGENTS.md:12",
+              "AGENTS.md:23",
+              "AGENTS.md:41",
+              "AGENTS.md:61",
+              "AGENTS.md:101",
+              "AGENTS.md:104"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/lib/src/parser/gcode_parse_result.dart",
+            "relative_path": "lib/src/parser/gcode_parse_result.dart",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/src/parser/gcode_parse_result.dart",
+              "lib/src/parser/gcode_parse_result.dart:3",
+              "lib/src/parser/gcode_parse_result.dart:4",
+              "lib/src/parser/gcode_parse_result.dart:18",
+              "lib/src/parser/gcode_parse_result.dart:19",
+              "lib/src/parser/gcode_parse_result.dart:25"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/gpu_toolpath_layer.dart",
+            "relative_path": "lib/src/rendering/gpu_toolpath_layer.dart",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/src/rendering/gpu_toolpath_layer.dart",
+              "lib/src/rendering/gpu_toolpath_layer.dart:10",
+              "lib/src/rendering/gpu_toolpath_layer.dart:11",
+              "lib/src/rendering/gpu_toolpath_layer.dart:12",
+              "lib/src/rendering/gpu_toolpath_layer.dart:15",
+              "lib/src/rendering/gpu_toolpath_layer.dart:16",
+              "lib/src/rendering/gpu_toolpath_layer.dart:22"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/toolpath_geometry.dart",
+            "relative_path": "lib/src/rendering/toolpath_geometry.dart",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_geometry.dart",
+              "lib/src/rendering/toolpath_geometry.dart:6",
+              "lib/src/rendering/toolpath_geometry.dart:7",
+              "lib/src/rendering/toolpath_geometry.dart:10",
+              "lib/src/rendering/toolpath_geometry.dart:11",
+              "lib/src/rendering/toolpath_geometry.dart:26",
+              "lib/src/rendering/toolpath_geometry.dart:29"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/docs/adr/0001-macos-first-gpu-toolpath.md",
+            "relative_path": "docs/adr/0001-macos-first-gpu-toolpath.md",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_no_query_match",
+            "evidence_refs": [
+              "docs/adr/0001-macos-first-gpu-toolpath.md"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/lib/src/models/toolpath_segment.dart",
+            "relative_path": "lib/src/models/toolpath_segment.dart",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/src/models/toolpath_segment.dart",
+              "lib/src/models/toolpath_segment.dart:4",
+              "lib/src/models/toolpath_segment.dart:5"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/lib/src/parser/gcode_parser.dart",
+            "relative_path": "lib/src/parser/gcode_parser.dart",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/src/parser/gcode_parser.dart",
+              "lib/src/parser/gcode_parser.dart:4",
+              "lib/src/parser/gcode_parser.dart:6",
+              "lib/src/parser/gcode_parser.dart:10",
+              "lib/src/parser/gcode_parser.dart:12",
+              "lib/src/parser/gcode_parser.dart:21",
+              "lib/src/parser/gcode_parser.dart:30",
+              "lib/src/parser/gcode_parser.dart:33"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/toolpath_viewport.dart",
+            "relative_path": "lib/src/rendering/toolpath_viewport.dart",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_viewport.dart",
+              "lib/src/rendering/toolpath_viewport.dart:4",
+              "lib/src/rendering/toolpath_viewport.dart:6",
+              "lib/src/rendering/toolpath_viewport.dart:7",
+              "lib/src/rendering/toolpath_viewport.dart:8",
+              "lib/src/rendering/toolpath_viewport.dart:32",
+              "lib/src/rendering/toolpath_viewport.dart:41"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/lib/src/services/toolpath_builder.dart",
+            "relative_path": "lib/src/services/toolpath_builder.dart",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/src/services/toolpath_builder.dart",
+              "lib/src/services/toolpath_builder.dart:4",
+              "lib/src/services/toolpath_builder.dart:6",
+              "lib/src/services/toolpath_builder.dart:9",
+              "lib/src/services/toolpath_builder.dart:10",
+              "lib/src/services/toolpath_builder.dart:20",
+              "lib/src/services/toolpath_builder.dart:21"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/test/gcode_parser_test.dart",
+            "relative_path": "test/gcode_parser_test.dart",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "test/gcode_parser_test.dart",
+              "test/gcode_parser_test.dart:5",
+              "test/gcode_parser_test.dart:6",
+              "test/gcode_parser_test.dart:9",
+              "test/gcode_parser_test.dart:17",
+              "test/gcode_parser_test.dart:26",
+              "test/gcode_parser_test.dart:33"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/test/rendering/toolpath_geometry_test.dart",
+            "relative_path": "test/rendering/toolpath_geometry_test.dart",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "test/rendering/toolpath_geometry_test.dart",
+              "test/rendering/toolpath_geometry_test.dart:4",
+              "test/rendering/toolpath_geometry_test.dart:6",
+              "test/rendering/toolpath_geometry_test.dart:8",
+              "test/rendering/toolpath_geometry_test.dart:17",
+              "test/rendering/toolpath_geometry_test.dart:22",
+              "test/rendering/toolpath_geometry_test.dart:33"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/test/rendering/toolpath_viewport_test.dart",
+            "relative_path": "test/rendering/toolpath_viewport_test.dart",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "test/rendering/toolpath_viewport_test.dart",
+              "test/rendering/toolpath_viewport_test.dart:4",
+              "test/rendering/toolpath_viewport_test.dart:7",
+              "test/rendering/toolpath_viewport_test.dart:8",
+              "test/rendering/toolpath_viewport_test.dart:9",
+              "test/rendering/toolpath_viewport_test.dart:11",
+              "test/rendering/toolpath_viewport_test.dart:12"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/test/toolpath_builder_test.dart",
+            "relative_path": "test/toolpath_builder_test.dart",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "test/toolpath_builder_test.dart",
+              "test/toolpath_builder_test.dart:5",
+              "test/toolpath_builder_test.dart:22",
+              "test/toolpath_builder_test.dart:44",
+              "test/toolpath_builder_test.dart:50",
+              "test/toolpath_builder_test.dart:66",
+              "test/toolpath_builder_test.dart:84"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/CONTEXT.md",
+            "relative_path": "CONTEXT.md",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "CONTEXT.md",
+              "CONTEXT.md:7",
+              "CONTEXT.md:10"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/pubspec.yaml",
+            "relative_path": "pubspec.yaml",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "pubspec.yaml",
+              "pubspec.yaml:2",
+              "pubspec.yaml:24"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/lib/gcode_core.dart",
+            "relative_path": "lib/gcode_core.dart",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "lib/gcode_core.dart",
+              "lib/gcode_core.dart:15",
+              "lib/gcode_core.dart:16",
+              "lib/gcode_core.dart:17",
+              "lib/gcode_core.dart:18"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/example/pubspec.yaml",
+            "relative_path": "example/pubspec.yaml",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:example",
+            "relevance": "explicit_candidate_no_query_match",
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/.github/workflows/ci.yml",
+            "relative_path": ".github/workflows/ci.yml",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              ".github/workflows/ci.yml",
+              ".github/workflows/ci.yml:50",
+              ".github/workflows/ci.yml:75",
+              ".github/workflows/ci.yml:76"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/docs/evidence/0.2.1-maintainer-acceptance.md",
+            "relative_path": "docs/evidence/0.2.1-maintainer-acceptance.md",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_no_query_match",
+            "evidence_refs": [
+              "docs/evidence/0.2.1-maintainer-acceptance.md"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/example/android/app/src/main/AndroidManifest.xml",
+            "relative_path": "example/android/app/src/main/AndroidManifest.xml",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:example",
+            "relevance": "explicit_candidate_no_query_match",
+            "evidence_refs": [
+              "example/android/app/src/main/AndroidManifest.xml"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/example/android/app/build.gradle.kts",
+            "relative_path": "example/android/app/build.gradle.kts",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:example",
+            "relevance": "explicit_candidate_query_match",
+            "evidence_refs": [
+              "example/android/app/build.gradle.kts",
+              "example/android/app/build.gradle.kts:23"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/lib/src/models/gcode_command.dart",
+            "relative_path": "lib/src/models/gcode_command.dart",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_no_query_match",
+            "evidence_refs": [
+              "lib/src/models/gcode_command.dart"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/lib/src/core/gcode_bounds.dart",
+            "relative_path": "lib/src/core/gcode_bounds.dart",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_no_query_match",
+            "evidence_refs": [
+              "lib/src/core/gcode_bounds.dart"
+            ]
+          },
+          {
+            "absolute_path": "/Users/forest/code/langGraph/gcode_core/lib/src/core/gcode_style.dart",
+            "relative_path": "lib/src/core/gcode_style.dart",
+            "repo_id": "gcode_core",
+            "unit_id": "gcode_core:.",
+            "relevance": "explicit_candidate_no_query_match",
+            "evidence_refs": [
+              "lib/src/core/gcode_style.dart"
+            ]
+          }
+        ],
+        "symbols": [
+          {
+            "name": "parse",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/parser/gcode_parse_result.dart",
+            "line": 3,
+            "evidence_refs": [
+              "lib/src/parser/gcode_parse_result.dart:3"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/models/toolpath_segment.dart",
+            "line": 4,
+            "evidence_refs": [
+              "lib/src/models/toolpath_segment.dart:4"
+            ]
+          },
+          {
+            "name": "parse",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/parser/gcode_parser.dart",
+            "line": 4,
+            "evidence_refs": [
+              "lib/src/parser/gcode_parser.dart:4"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/gpu_toolpath_layer.dart",
+            "line": 10,
+            "evidence_refs": [
+              "lib/src/rendering/gpu_toolpath_layer.dart:10"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/toolpath_geometry.dart",
+            "line": 6,
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_geometry.dart:6"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/toolpath_viewport.dart",
+            "line": 4,
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_viewport.dart:4"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/services/toolpath_builder.dart",
+            "line": 4,
+            "evidence_refs": [
+              "lib/src/services/toolpath_builder.dart:4"
+            ]
+          },
+          {
+            "name": "parser",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/gcode_parser_test.dart",
+            "line": 5,
+            "evidence_refs": [
+              "test/gcode_parser_test.dart:5"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/rendering/toolpath_geometry_test.dart",
+            "line": 4,
+            "evidence_refs": [
+              "test/rendering/toolpath_geometry_test.dart:4"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/rendering/toolpath_viewport_test.dart",
+            "line": 4,
+            "evidence_refs": [
+              "test/rendering/toolpath_viewport_test.dart:4"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/toolpath_builder_test.dart",
+            "line": 5,
+            "evidence_refs": [
+              "test/toolpath_builder_test.dart:5"
+            ]
+          },
+          {
+            "name": "contract",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/.github/workflows/ci.yml",
+            "line": 50,
+            "evidence_refs": [
+              ".github/workflows/ci.yml:50"
+            ]
+          },
+          {
+            "name": "contract",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/example/android/app/build.gradle.kts",
+            "line": 23,
+            "evidence_refs": [
+              "example/android/app/build.gradle.kts:23"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/gcode_core.dart",
+            "line": 15,
+            "evidence_refs": [
+              "lib/gcode_core.dart:15"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/pubspec.yaml",
+            "line": 2,
+            "evidence_refs": [
+              "pubspec.yaml:2"
+            ]
+          },
+          {
+            "name": "parser",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/AGENTS.md",
+            "line": 12,
+            "evidence_refs": [
+              "AGENTS.md:12"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/CONTEXT.md",
+            "line": 7,
+            "evidence_refs": [
+              "CONTEXT.md:7"
+            ]
+          },
+          {
+            "name": "parse",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/parser/gcode_parse_result.dart",
+            "line": 4,
+            "evidence_refs": [
+              "lib/src/parser/gcode_parse_result.dart:4"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/models/toolpath_segment.dart",
+            "line": 5,
+            "evidence_refs": [
+              "lib/src/models/toolpath_segment.dart:5"
+            ]
+          },
+          {
+            "name": "parser",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/parser/gcode_parser.dart",
+            "line": 6,
+            "evidence_refs": [
+              "lib/src/parser/gcode_parser.dart:6"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/gpu_toolpath_layer.dart",
+            "line": 11,
+            "evidence_refs": [
+              "lib/src/rendering/gpu_toolpath_layer.dart:11"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/toolpath_geometry.dart",
+            "line": 7,
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_geometry.dart:7"
+            ]
+          },
+          {
+            "name": "coordinate",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/toolpath_viewport.dart",
+            "line": 6,
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_viewport.dart:6"
+            ]
+          },
+          {
+            "name": "coordinate",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/services/toolpath_builder.dart",
+            "line": 6,
+            "evidence_refs": [
+              "lib/src/services/toolpath_builder.dart:6"
+            ]
+          },
+          {
+            "name": "parser",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/gcode_parser_test.dart",
+            "line": 6,
+            "evidence_refs": [
+              "test/gcode_parser_test.dart:6"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/rendering/toolpath_geometry_test.dart",
+            "line": 6,
+            "evidence_refs": [
+              "test/rendering/toolpath_geometry_test.dart:6"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/rendering/toolpath_viewport_test.dart",
+            "line": 7,
+            "evidence_refs": [
+              "test/rendering/toolpath_viewport_test.dart:7"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/toolpath_builder_test.dart",
+            "line": 22,
+            "evidence_refs": [
+              "test/toolpath_builder_test.dart:22"
+            ]
+          },
+          {
+            "name": "contract",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/.github/workflows/ci.yml",
+            "line": 75,
+            "evidence_refs": [
+              ".github/workflows/ci.yml:75"
+            ]
+          },
+          {
+            "name": "parse",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/gcode_core.dart",
+            "line": 16,
+            "evidence_refs": [
+              "lib/gcode_core.dart:16"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/pubspec.yaml",
+            "line": 24,
+            "evidence_refs": [
+              "pubspec.yaml:24"
+            ]
+          },
+          {
+            "name": "contract",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/AGENTS.md",
+            "line": 23,
+            "evidence_refs": [
+              "AGENTS.md:23"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/CONTEXT.md",
+            "line": 10,
+            "evidence_refs": [
+              "CONTEXT.md:10"
+            ]
+          },
+          {
+            "name": "parse",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/parser/gcode_parse_result.dart",
+            "line": 18,
+            "evidence_refs": [
+              "lib/src/parser/gcode_parse_result.dart:18"
+            ]
+          },
+          {
+            "name": "parse",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/parser/gcode_parser.dart",
+            "line": 10,
+            "evidence_refs": [
+              "lib/src/parser/gcode_parser.dart:10"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/gpu_toolpath_layer.dart",
+            "line": 12,
+            "evidence_refs": [
+              "lib/src/rendering/gpu_toolpath_layer.dart:12"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/toolpath_geometry.dart",
+            "line": 10,
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_geometry.dart:10"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/toolpath_viewport.dart",
+            "line": 7,
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_viewport.dart:7"
+            ]
+          },
+          {
+            "name": "coordinate",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/services/toolpath_builder.dart",
+            "line": 9,
+            "evidence_refs": [
+              "lib/src/services/toolpath_builder.dart:9"
+            ]
+          },
+          {
+            "name": "parse",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/gcode_parser_test.dart",
+            "line": 9,
+            "evidence_refs": [
+              "test/gcode_parser_test.dart:9"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/rendering/toolpath_geometry_test.dart",
+            "line": 8,
+            "evidence_refs": [
+              "test/rendering/toolpath_geometry_test.dart:8"
+            ]
+          },
+          {
+            "name": "parse",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/rendering/toolpath_viewport_test.dart",
+            "line": 8,
+            "evidence_refs": [
+              "test/rendering/toolpath_viewport_test.dart:8"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/toolpath_builder_test.dart",
+            "line": 44,
+            "evidence_refs": [
+              "test/toolpath_builder_test.dart:44"
+            ]
+          },
+          {
+            "name": "contract",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/.github/workflows/ci.yml",
+            "line": 76,
+            "evidence_refs": [
+              ".github/workflows/ci.yml:76"
+            ]
+          },
+          {
+            "name": "parser",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/gcode_core.dart",
+            "line": 17,
+            "evidence_refs": [
+              "lib/gcode_core.dart:17"
+            ]
+          },
+          {
+            "name": "contract",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/AGENTS.md",
+            "line": 41,
+            "evidence_refs": [
+              "AGENTS.md:41"
+            ]
+          },
+          {
+            "name": "parse",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/parser/gcode_parse_result.dart",
+            "line": 19,
+            "evidence_refs": [
+              "lib/src/parser/gcode_parse_result.dart:19"
+            ]
+          },
+          {
+            "name": "parse",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/parser/gcode_parser.dart",
+            "line": 12,
+            "evidence_refs": [
+              "lib/src/parser/gcode_parser.dart:12"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/gpu_toolpath_layer.dart",
+            "line": 15,
+            "evidence_refs": [
+              "lib/src/rendering/gpu_toolpath_layer.dart:15"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/toolpath_geometry.dart",
+            "line": 11,
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_geometry.dart:11"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/toolpath_viewport.dart",
+            "line": 8,
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_viewport.dart:8"
+            ]
+          },
+          {
+            "name": "coordinate",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/services/toolpath_builder.dart",
+            "line": 10,
+            "evidence_refs": [
+              "lib/src/services/toolpath_builder.dart:10"
+            ]
+          },
+          {
+            "name": "parse",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/gcode_parser_test.dart",
+            "line": 17,
+            "evidence_refs": [
+              "test/gcode_parser_test.dart:17"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/rendering/toolpath_geometry_test.dart",
+            "line": 17,
+            "evidence_refs": [
+              "test/rendering/toolpath_geometry_test.dart:17"
+            ]
+          },
+          {
+            "name": "coordinate",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/rendering/toolpath_viewport_test.dart",
+            "line": 9,
+            "evidence_refs": [
+              "test/rendering/toolpath_viewport_test.dart:9"
+            ]
+          },
+          {
+            "name": "coordinate",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/toolpath_builder_test.dart",
+            "line": 50,
+            "evidence_refs": [
+              "test/toolpath_builder_test.dart:50"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/gcode_core.dart",
+            "line": 18,
+            "evidence_refs": [
+              "lib/gcode_core.dart:18"
+            ]
+          },
+          {
+            "name": "parser",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/AGENTS.md",
+            "line": 61,
+            "evidence_refs": [
+              "AGENTS.md:61"
+            ]
+          },
+          {
+            "name": "parse",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/parser/gcode_parse_result.dart",
+            "line": 25,
+            "evidence_refs": [
+              "lib/src/parser/gcode_parse_result.dart:25"
+            ]
+          },
+          {
+            "name": "parse",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/parser/gcode_parser.dart",
+            "line": 21,
+            "evidence_refs": [
+              "lib/src/parser/gcode_parser.dart:21"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/gpu_toolpath_layer.dart",
+            "line": 16,
+            "evidence_refs": [
+              "lib/src/rendering/gpu_toolpath_layer.dart:16"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/toolpath_geometry.dart",
+            "line": 26,
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_geometry.dart:26"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/toolpath_viewport.dart",
+            "line": 32,
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_viewport.dart:32"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/services/toolpath_builder.dart",
+            "line": 20,
+            "evidence_refs": [
+              "lib/src/services/toolpath_builder.dart:20"
+            ]
+          },
+          {
+            "name": "parse",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/gcode_parser_test.dart",
+            "line": 26,
+            "evidence_refs": [
+              "test/gcode_parser_test.dart:26"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/rendering/toolpath_geometry_test.dart",
+            "line": 22,
+            "evidence_refs": [
+              "test/rendering/toolpath_geometry_test.dart:22"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/rendering/toolpath_viewport_test.dart",
+            "line": 11,
+            "evidence_refs": [
+              "test/rendering/toolpath_viewport_test.dart:11"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/toolpath_builder_test.dart",
+            "line": 66,
+            "evidence_refs": [
+              "test/toolpath_builder_test.dart:66"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/AGENTS.md",
+            "line": 101,
+            "evidence_refs": [
+              "AGENTS.md:101"
+            ]
+          },
+          {
+            "name": "parse",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/parser/gcode_parser.dart",
+            "line": 30,
+            "evidence_refs": [
+              "lib/src/parser/gcode_parser.dart:30"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/gpu_toolpath_layer.dart",
+            "line": 22,
+            "evidence_refs": [
+              "lib/src/rendering/gpu_toolpath_layer.dart:22"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/toolpath_geometry.dart",
+            "line": 29,
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_geometry.dart:29"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/rendering/toolpath_viewport.dart",
+            "line": 41,
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_viewport.dart:41"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/services/toolpath_builder.dart",
+            "line": 21,
+            "evidence_refs": [
+              "lib/src/services/toolpath_builder.dart:21"
+            ]
+          },
+          {
+            "name": "parse",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/gcode_parser_test.dart",
+            "line": 33,
+            "evidence_refs": [
+              "test/gcode_parser_test.dart:33"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/rendering/toolpath_geometry_test.dart",
+            "line": 33,
+            "evidence_refs": [
+              "test/rendering/toolpath_geometry_test.dart:33"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/rendering/toolpath_viewport_test.dart",
+            "line": 12,
+            "evidence_refs": [
+              "test/rendering/toolpath_viewport_test.dart:12"
+            ]
+          },
+          {
+            "name": "toolpath",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/test/toolpath_builder_test.dart",
+            "line": 84,
+            "evidence_refs": [
+              "test/toolpath_builder_test.dart:84"
+            ]
+          },
+          {
+            "name": "contract",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/AGENTS.md",
+            "line": 104,
+            "evidence_refs": [
+              "AGENTS.md:104"
+            ]
+          },
+          {
+            "name": "parse",
+            "kind": "symbol",
+            "file": "/Users/forest/code/langGraph/gcode_core/lib/src/parser/gcode_parser.dart",
+            "line": 33,
+            "evidence_refs": [
+              "lib/src/parser/gcode_parser.dart:33"
+            ]
+          }
+        ],
+        "rules": [
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:AGENTS.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:AGENTS.md",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/parser/gcode_parse_result.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/parser/gcode_parse_result.dart",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/rendering/gpu_toolpath_layer.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/rendering/gpu_toolpath_layer.dart",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/rendering/toolpath_geometry.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/rendering/toolpath_geometry.dart",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:docs/adr/0001-macos-first-gpu-toolpath.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:docs/adr/0001-macos-first-gpu-toolpath.md",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "docs/adr/0001-macos-first-gpu-toolpath.md",
+            "scope": "docs/adr",
+            "applies_to": "gcode_core:docs/adr/0001-macos-first-gpu-toolpath.md",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/models/toolpath_segment.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/models/toolpath_segment.dart",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/parser/gcode_parser.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/parser/gcode_parser.dart",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/rendering/toolpath_viewport.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/rendering/toolpath_viewport.dart",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/services/toolpath_builder.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/services/toolpath_builder.dart",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:test/gcode_parser_test.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:test/gcode_parser_test.dart",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:test/rendering/toolpath_geometry_test.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:test/rendering/toolpath_geometry_test.dart",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:test/rendering/toolpath_viewport_test.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:test/rendering/toolpath_viewport_test.dart",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:test/toolpath_builder_test.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:test/toolpath_builder_test.dart",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:CONTEXT.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:CONTEXT.md",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:pubspec.yaml",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:pubspec.yaml",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/gcode_core.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/gcode_core.dart",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:example/pubspec.yaml",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:example/pubspec.yaml",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:.github/workflows/ci.yml",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:.github/workflows/ci.yml",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:docs/evidence/0.2.1-maintainer-acceptance.md",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:docs/evidence/0.2.1-maintainer-acceptance.md",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:example/android/app/src/main/AndroidManifest.xml",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:example/android/app/src/main/AndroidManifest.xml",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:example/android/app/build.gradle.kts",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:example/android/app/build.gradle.kts",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/models/gcode_command.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/models/gcode_command.dart",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/core/gcode_bounds.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/core/gcode_bounds.dart",
+            "provenance": "filesystem_control_contract"
+          },
+          {
+            "path": "AGENTS.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/core/gcode_style.dart",
+            "provenance": "filesystem_agent_ancestor"
+          },
+          {
+            "path": "CONTEXT.md",
+            "scope": ".",
+            "applies_to": "gcode_core:lib/src/core/gcode_style.dart",
+            "provenance": "filesystem_control_contract"
+          }
+        ],
+        "dependencies": [
+          {
+            "source": "gcode_core:example",
+            "target": "gcode_core:.",
+            "kind": "path_dependency",
+            "evidence": {
+              "source": "filesystem",
+              "path": "example/pubspec.yaml",
+              "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+              "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+            }
+          }
+        ],
+        "unknowns": [
+          {
+            "subject": "docs/adr/0002-gpu-only-drawing.md",
+            "reason": "Applicable cached rule is not selected for gcode_core:docs/adr/0001-macos-first-gpu-toolpath.md.",
+            "required_evidence": "Include docs/adr/0002-gpu-only-drawing.md in explicit candidate_paths within the file budget."
+          }
+        ],
+        "confidence": "MEDIUM",
+        "metrics": {
+          "searched_repositories": 1,
+          "searched_files": 24,
+          "selected_files": 24,
+          "candidate_files": 24,
+          "evidence_count": 81,
+          "context_size_estimate": 154,
+          "rule_files": 3,
+          "rule_target_files": 24,
+          "missing_rule_candidates": 1
+        },
+        "planned_capabilities": []
+      },
+      "capability_analysis": {
+        "requirement": "定位直线运动与绝对、相对坐标的解析逻辑以及轨迹线段模型，评估解析和数据契约是否独立于页面状态。",
+        "target_repository": "gcode_core",
+        "context_ref": {
+          "confidence": "MEDIUM",
+          "metrics": {
+            "searched_repositories": 1,
+            "searched_files": 24,
+            "selected_files": 24,
+            "candidate_files": 24,
+            "evidence_count": 81,
+            "context_size_estimate": 154,
+            "rule_files": 3,
+            "rule_target_files": 24,
+            "missing_rule_candidates": 1
+          },
+          "evidence_kinds": {
+            "AGENTS.md": "guidance",
+            "lib/src/parser/gcode_parse_result.dart": "source",
+            "lib/src/rendering/gpu_toolpath_layer.dart": "source",
+            "lib/src/rendering/toolpath_geometry.dart": "source",
+            "docs/adr/0001-macos-first-gpu-toolpath.md": "guidance",
+            "lib/src/models/toolpath_segment.dart": "source",
+            "lib/src/parser/gcode_parser.dart": "source",
+            "lib/src/rendering/toolpath_viewport.dart": "source",
+            "lib/src/services/toolpath_builder.dart": "source",
+            "test/gcode_parser_test.dart": "source",
+            "test/rendering/toolpath_geometry_test.dart": "source",
+            "test/rendering/toolpath_viewport_test.dart": "source",
+            "test/toolpath_builder_test.dart": "source",
+            "CONTEXT.md": "guidance",
+            "pubspec.yaml": "configuration",
+            "lib/gcode_core.dart": "source",
+            "example/pubspec.yaml": "configuration",
+            ".github/workflows/ci.yml": "configuration",
+            "docs/evidence/0.2.1-maintainer-acceptance.md": "guidance",
+            "example/android/app/src/main/AndroidManifest.xml": "configuration",
+            "example/android/app/build.gradle.kts": "configuration",
+            "lib/src/models/gcode_command.dart": "source",
+            "lib/src/core/gcode_bounds.dart": "source",
+            "lib/src/core/gcode_style.dart": "source"
+          },
+          "query_relevance": {
+            "AGENTS.md": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "AGENTS.md:12",
+                "AGENTS.md:23",
+                "AGENTS.md:41",
+                "AGENTS.md:61",
+                "AGENTS.md:101",
+                "AGENTS.md:104"
+              ]
+            },
+            "lib/src/parser/gcode_parse_result.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/src/parser/gcode_parse_result.dart:3",
+                "lib/src/parser/gcode_parse_result.dart:4",
+                "lib/src/parser/gcode_parse_result.dart:18",
+                "lib/src/parser/gcode_parse_result.dart:19",
+                "lib/src/parser/gcode_parse_result.dart:25"
+              ]
+            },
+            "lib/src/rendering/gpu_toolpath_layer.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/src/rendering/gpu_toolpath_layer.dart:10",
+                "lib/src/rendering/gpu_toolpath_layer.dart:11",
+                "lib/src/rendering/gpu_toolpath_layer.dart:12",
+                "lib/src/rendering/gpu_toolpath_layer.dart:15",
+                "lib/src/rendering/gpu_toolpath_layer.dart:16",
+                "lib/src/rendering/gpu_toolpath_layer.dart:22",
+                "lib/src/rendering/gpu_toolpath_layer.dart:27",
+                "lib/src/rendering/gpu_toolpath_layer.dart:30",
+                "lib/src/rendering/gpu_toolpath_layer.dart:42",
+                "lib/src/rendering/gpu_toolpath_layer.dart:43",
+                "lib/src/rendering/gpu_toolpath_layer.dart:45",
+                "lib/src/rendering/gpu_toolpath_layer.dart:104",
+                "lib/src/rendering/gpu_toolpath_layer.dart:108",
+                "lib/src/rendering/gpu_toolpath_layer.dart:127",
+                "lib/src/rendering/gpu_toolpath_layer.dart:140",
+                "lib/src/rendering/gpu_toolpath_layer.dart:144",
+                "lib/src/rendering/gpu_toolpath_layer.dart:146",
+                "lib/src/rendering/gpu_toolpath_layer.dart:171",
+                "lib/src/rendering/gpu_toolpath_layer.dart:261"
+              ]
+            },
+            "lib/src/rendering/toolpath_geometry.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/src/rendering/toolpath_geometry.dart:6",
+                "lib/src/rendering/toolpath_geometry.dart:7",
+                "lib/src/rendering/toolpath_geometry.dart:10",
+                "lib/src/rendering/toolpath_geometry.dart:11",
+                "lib/src/rendering/toolpath_geometry.dart:26",
+                "lib/src/rendering/toolpath_geometry.dart:29",
+                "lib/src/rendering/toolpath_geometry.dart:32",
+                "lib/src/rendering/toolpath_geometry.dart:63"
+              ]
+            },
+            "docs/adr/0001-macos-first-gpu-toolpath.md": {
+              "matched": false,
+              "status": "no_match",
+              "evidence_refs": []
+            },
+            "lib/src/models/toolpath_segment.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/src/models/toolpath_segment.dart:4",
+                "lib/src/models/toolpath_segment.dart:5"
+              ]
+            },
+            "lib/src/parser/gcode_parser.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/src/parser/gcode_parser.dart:4",
+                "lib/src/parser/gcode_parser.dart:6",
+                "lib/src/parser/gcode_parser.dart:10",
+                "lib/src/parser/gcode_parser.dart:12",
+                "lib/src/parser/gcode_parser.dart:21",
+                "lib/src/parser/gcode_parser.dart:30",
+                "lib/src/parser/gcode_parser.dart:33",
+                "lib/src/parser/gcode_parser.dart:34",
+                "lib/src/parser/gcode_parser.dart:42",
+                "lib/src/parser/gcode_parser.dart:53",
+                "lib/src/parser/gcode_parser.dart:58",
+                "lib/src/parser/gcode_parser.dart:65",
+                "lib/src/parser/gcode_parser.dart:66",
+                "lib/src/parser/gcode_parser.dart:79",
+                "lib/src/parser/gcode_parser.dart:80",
+                "lib/src/parser/gcode_parser.dart:90",
+                "lib/src/parser/gcode_parser.dart:91",
+                "lib/src/parser/gcode_parser.dart:98",
+                "lib/src/parser/gcode_parser.dart:100",
+                "lib/src/parser/gcode_parser.dart:101",
+                "lib/src/parser/gcode_parser.dart:111",
+                "lib/src/parser/gcode_parser.dart:173",
+                "lib/src/parser/gcode_parser.dart:174",
+                "lib/src/parser/gcode_parser.dart:176",
+                "lib/src/parser/gcode_parser.dart:177",
+                "lib/src/parser/gcode_parser.dart:178",
+                "lib/src/parser/gcode_parser.dart:182",
+                "lib/src/parser/gcode_parser.dart:193",
+                "lib/src/parser/gcode_parser.dart:198",
+                "lib/src/parser/gcode_parser.dart:200",
+                "lib/src/parser/gcode_parser.dart:203"
+              ]
+            },
+            "lib/src/rendering/toolpath_viewport.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/src/rendering/toolpath_viewport.dart:4",
+                "lib/src/rendering/toolpath_viewport.dart:6",
+                "lib/src/rendering/toolpath_viewport.dart:7",
+                "lib/src/rendering/toolpath_viewport.dart:8",
+                "lib/src/rendering/toolpath_viewport.dart:32",
+                "lib/src/rendering/toolpath_viewport.dart:41"
+              ]
+            },
+            "lib/src/services/toolpath_builder.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/src/services/toolpath_builder.dart:4",
+                "lib/src/services/toolpath_builder.dart:6",
+                "lib/src/services/toolpath_builder.dart:9",
+                "lib/src/services/toolpath_builder.dart:10",
+                "lib/src/services/toolpath_builder.dart:20",
+                "lib/src/services/toolpath_builder.dart:21",
+                "lib/src/services/toolpath_builder.dart:22",
+                "lib/src/services/toolpath_builder.dart:24",
+                "lib/src/services/toolpath_builder.dart:28",
+                "lib/src/services/toolpath_builder.dart:32",
+                "lib/src/services/toolpath_builder.dart:43",
+                "lib/src/services/toolpath_builder.dart:59",
+                "lib/src/services/toolpath_builder.dart:62",
+                "lib/src/services/toolpath_builder.dart:68",
+                "lib/src/services/toolpath_builder.dart:70",
+                "lib/src/services/toolpath_builder.dart:72",
+                "lib/src/services/toolpath_builder.dart:76",
+                "lib/src/services/toolpath_builder.dart:89",
+                "lib/src/services/toolpath_builder.dart:105"
+              ]
+            },
+            "test/gcode_parser_test.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "test/gcode_parser_test.dart:5",
+                "test/gcode_parser_test.dart:6",
+                "test/gcode_parser_test.dart:9",
+                "test/gcode_parser_test.dart:17",
+                "test/gcode_parser_test.dart:26",
+                "test/gcode_parser_test.dart:33",
+                "test/gcode_parser_test.dart:36",
+                "test/gcode_parser_test.dart:41",
+                "test/gcode_parser_test.dart:47",
+                "test/gcode_parser_test.dart:53",
+                "test/gcode_parser_test.dart:65",
+                "test/gcode_parser_test.dart:71",
+                "test/gcode_parser_test.dart:77",
+                "test/gcode_parser_test.dart:84",
+                "test/gcode_parser_test.dart:91",
+                "test/gcode_parser_test.dart:97",
+                "test/gcode_parser_test.dart:98",
+                "test/gcode_parser_test.dart:109",
+                "test/gcode_parser_test.dart:116",
+                "test/gcode_parser_test.dart:123",
+                "test/gcode_parser_test.dart:126",
+                "test/gcode_parser_test.dart:130",
+                "test/gcode_parser_test.dart:137",
+                "test/gcode_parser_test.dart:138"
+              ]
+            },
+            "test/rendering/toolpath_geometry_test.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "test/rendering/toolpath_geometry_test.dart:4",
+                "test/rendering/toolpath_geometry_test.dart:6",
+                "test/rendering/toolpath_geometry_test.dart:8",
+                "test/rendering/toolpath_geometry_test.dart:17",
+                "test/rendering/toolpath_geometry_test.dart:22",
+                "test/rendering/toolpath_geometry_test.dart:33",
+                "test/rendering/toolpath_geometry_test.dart:44",
+                "test/rendering/toolpath_geometry_test.dart:48",
+                "test/rendering/toolpath_geometry_test.dart:58",
+                "test/rendering/toolpath_geometry_test.dart:72",
+                "test/rendering/toolpath_geometry_test.dart:79"
+              ]
+            },
+            "test/rendering/toolpath_viewport_test.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "test/rendering/toolpath_viewport_test.dart:4",
+                "test/rendering/toolpath_viewport_test.dart:7",
+                "test/rendering/toolpath_viewport_test.dart:8",
+                "test/rendering/toolpath_viewport_test.dart:9",
+                "test/rendering/toolpath_viewport_test.dart:11",
+                "test/rendering/toolpath_viewport_test.dart:12",
+                "test/rendering/toolpath_viewport_test.dart:21"
+              ]
+            },
+            "test/toolpath_builder_test.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "test/toolpath_builder_test.dart:5",
+                "test/toolpath_builder_test.dart:22",
+                "test/toolpath_builder_test.dart:44",
+                "test/toolpath_builder_test.dart:50",
+                "test/toolpath_builder_test.dart:66",
+                "test/toolpath_builder_test.dart:84",
+                "test/toolpath_builder_test.dart:89",
+                "test/toolpath_builder_test.dart:93",
+                "test/toolpath_builder_test.dart:109",
+                "test/toolpath_builder_test.dart:115",
+                "test/toolpath_builder_test.dart:137",
+                "test/toolpath_builder_test.dart:163",
+                "test/toolpath_builder_test.dart:195",
+                "test/toolpath_builder_test.dart:197",
+                "test/toolpath_builder_test.dart:199"
+              ]
+            },
+            "CONTEXT.md": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "CONTEXT.md:7",
+                "CONTEXT.md:10"
+              ]
+            },
+            "pubspec.yaml": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "pubspec.yaml:2",
+                "pubspec.yaml:24"
+              ]
+            },
+            "lib/gcode_core.dart": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "lib/gcode_core.dart:15",
+                "lib/gcode_core.dart:16",
+                "lib/gcode_core.dart:17",
+                "lib/gcode_core.dart:18"
+              ]
+            },
+            "example/pubspec.yaml": {
+              "matched": false,
+              "status": "no_match",
+              "evidence_refs": []
+            },
+            ".github/workflows/ci.yml": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                ".github/workflows/ci.yml:50",
+                ".github/workflows/ci.yml:75",
+                ".github/workflows/ci.yml:76"
+              ]
+            },
+            "docs/evidence/0.2.1-maintainer-acceptance.md": {
+              "matched": false,
+              "status": "no_match",
+              "evidence_refs": []
+            },
+            "example/android/app/src/main/AndroidManifest.xml": {
+              "matched": false,
+              "status": "no_match",
+              "evidence_refs": []
+            },
+            "example/android/app/build.gradle.kts": {
+              "matched": true,
+              "status": "matched",
+              "evidence_refs": [
+                "example/android/app/build.gradle.kts:23"
+              ]
+            },
+            "lib/src/models/gcode_command.dart": {
+              "matched": false,
+              "status": "no_match",
+              "evidence_refs": []
+            },
+            "lib/src/core/gcode_bounds.dart": {
+              "matched": false,
+              "status": "no_match",
+              "evidence_refs": []
+            },
+            "lib/src/core/gcode_style.dart": {
+              "matched": false,
+              "status": "no_match",
+              "evidence_refs": []
+            }
+          }
+        },
+        "capabilities": [
+          {
+            "capability_id": "capability:gcode_core:lib/src/parser/gcode_parse_result.dart",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:."
+            ],
+            "files": [
+              "lib/src/parser/gcode_parse_result.dart"
+            ],
+            "symbols": [
+              "parse",
+              "parse",
+              "parse",
+              "parse",
+              "parse"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "shared_core",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "lib/src/parser/gcode_parse_result.dart",
+              "lib/src/parser/gcode_parse_result.dart:3",
+              "lib/src/parser/gcode_parse_result.dart:4",
+              "lib/src/parser/gcode_parse_result.dart:18",
+              "lib/src/parser/gcode_parse_result.dart:19",
+              "lib/src/parser/gcode_parse_result.dart:25",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH",
+            "unknowns": []
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/rendering/gpu_toolpath_layer.dart",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:."
+            ],
+            "files": [
+              "lib/src/rendering/gpu_toolpath_layer.dart"
+            ],
+            "symbols": [
+              "toolpath",
+              "toolpath",
+              "toolpath",
+              "toolpath",
+              "toolpath",
+              "toolpath"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "ui_only",
+            "coupling": {
+              "ui": "HIGH",
+              "application_state": "LOW",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "lib/src/rendering/gpu_toolpath_layer.dart",
+              "lib/src/rendering/gpu_toolpath_layer.dart:10",
+              "lib/src/rendering/gpu_toolpath_layer.dart:11",
+              "lib/src/rendering/gpu_toolpath_layer.dart:12",
+              "lib/src/rendering/gpu_toolpath_layer.dart:15",
+              "lib/src/rendering/gpu_toolpath_layer.dart:16",
+              "lib/src/rendering/gpu_toolpath_layer.dart:22",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH",
+            "unknowns": []
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/rendering/toolpath_geometry.dart",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:."
+            ],
+            "files": [
+              "lib/src/rendering/toolpath_geometry.dart"
+            ],
+            "symbols": [
+              "toolpath",
+              "toolpath",
+              "toolpath",
+              "toolpath",
+              "toolpath",
+              "toolpath"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "unknown",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_geometry.dart",
+              "lib/src/rendering/toolpath_geometry.dart:6",
+              "lib/src/rendering/toolpath_geometry.dart:7",
+              "lib/src/rendering/toolpath_geometry.dart:10",
+              "lib/src/rendering/toolpath_geometry.dart:11",
+              "lib/src/rendering/toolpath_geometry.dart:26",
+              "lib/src/rendering/toolpath_geometry.dart:29",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM",
+            "unknowns": [
+              "Insufficient bounded source evidence for ownership."
+            ]
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/models/toolpath_segment.dart",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:."
+            ],
+            "files": [
+              "lib/src/models/toolpath_segment.dart"
+            ],
+            "symbols": [
+              "toolpath",
+              "toolpath"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "unknown",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "lib/src/models/toolpath_segment.dart",
+              "lib/src/models/toolpath_segment.dart:4",
+              "lib/src/models/toolpath_segment.dart:5",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM",
+            "unknowns": [
+              "Insufficient bounded source evidence for ownership."
+            ]
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/parser/gcode_parser.dart",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:."
+            ],
+            "files": [
+              "lib/src/parser/gcode_parser.dart"
+            ],
+            "symbols": [
+              "parse",
+              "parser",
+              "parse",
+              "parse",
+              "parse",
+              "parse",
+              "parse"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "shared_core",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "lib/src/parser/gcode_parser.dart",
+              "lib/src/parser/gcode_parser.dart:4",
+              "lib/src/parser/gcode_parser.dart:6",
+              "lib/src/parser/gcode_parser.dart:10",
+              "lib/src/parser/gcode_parser.dart:12",
+              "lib/src/parser/gcode_parser.dart:21",
+              "lib/src/parser/gcode_parser.dart:30",
+              "lib/src/parser/gcode_parser.dart:33",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH",
+            "unknowns": []
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/rendering/toolpath_viewport.dart",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:."
+            ],
+            "files": [
+              "lib/src/rendering/toolpath_viewport.dart"
+            ],
+            "symbols": [
+              "toolpath",
+              "coordinate",
+              "toolpath",
+              "toolpath",
+              "toolpath",
+              "toolpath"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "unknown",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_viewport.dart",
+              "lib/src/rendering/toolpath_viewport.dart:4",
+              "lib/src/rendering/toolpath_viewport.dart:6",
+              "lib/src/rendering/toolpath_viewport.dart:7",
+              "lib/src/rendering/toolpath_viewport.dart:8",
+              "lib/src/rendering/toolpath_viewport.dart:32",
+              "lib/src/rendering/toolpath_viewport.dart:41",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM",
+            "unknowns": [
+              "Insufficient bounded source evidence for ownership."
+            ]
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/services/toolpath_builder.dart",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:."
+            ],
+            "files": [
+              "lib/src/services/toolpath_builder.dart"
+            ],
+            "symbols": [
+              "toolpath",
+              "coordinate",
+              "coordinate",
+              "coordinate",
+              "toolpath",
+              "toolpath"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "unknown",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "lib/src/services/toolpath_builder.dart",
+              "lib/src/services/toolpath_builder.dart:4",
+              "lib/src/services/toolpath_builder.dart:6",
+              "lib/src/services/toolpath_builder.dart:9",
+              "lib/src/services/toolpath_builder.dart:10",
+              "lib/src/services/toolpath_builder.dart:20",
+              "lib/src/services/toolpath_builder.dart:21",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM",
+            "unknowns": [
+              "Insufficient bounded source evidence for ownership."
+            ]
+          },
+          {
+            "capability_id": "capability:gcode_core:test/gcode_parser_test.dart",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:."
+            ],
+            "files": [
+              "test/gcode_parser_test.dart"
+            ],
+            "symbols": [
+              "parser",
+              "parser",
+              "parse",
+              "parse",
+              "parse",
+              "parse"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "shared_core",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "test/gcode_parser_test.dart",
+              "test/gcode_parser_test.dart:5",
+              "test/gcode_parser_test.dart:6",
+              "test/gcode_parser_test.dart:9",
+              "test/gcode_parser_test.dart:17",
+              "test/gcode_parser_test.dart:26",
+              "test/gcode_parser_test.dart:33",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH",
+            "unknowns": []
+          },
+          {
+            "capability_id": "capability:gcode_core:test/rendering/toolpath_geometry_test.dart",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:."
+            ],
+            "files": [
+              "test/rendering/toolpath_geometry_test.dart"
+            ],
+            "symbols": [
+              "toolpath",
+              "toolpath",
+              "toolpath",
+              "toolpath",
+              "toolpath",
+              "toolpath"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "unknown",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "test/rendering/toolpath_geometry_test.dart",
+              "test/rendering/toolpath_geometry_test.dart:4",
+              "test/rendering/toolpath_geometry_test.dart:6",
+              "test/rendering/toolpath_geometry_test.dart:8",
+              "test/rendering/toolpath_geometry_test.dart:17",
+              "test/rendering/toolpath_geometry_test.dart:22",
+              "test/rendering/toolpath_geometry_test.dart:33",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM",
+            "unknowns": [
+              "Insufficient bounded source evidence for ownership."
+            ]
+          },
+          {
+            "capability_id": "capability:gcode_core:test/rendering/toolpath_viewport_test.dart",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:."
+            ],
+            "files": [
+              "test/rendering/toolpath_viewport_test.dart"
+            ],
+            "symbols": [
+              "toolpath",
+              "toolpath",
+              "parse",
+              "coordinate",
+              "toolpath",
+              "toolpath"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "shared_core",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "test/rendering/toolpath_viewport_test.dart",
+              "test/rendering/toolpath_viewport_test.dart:4",
+              "test/rendering/toolpath_viewport_test.dart:7",
+              "test/rendering/toolpath_viewport_test.dart:8",
+              "test/rendering/toolpath_viewport_test.dart:9",
+              "test/rendering/toolpath_viewport_test.dart:11",
+              "test/rendering/toolpath_viewport_test.dart:12",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH",
+            "unknowns": []
+          },
+          {
+            "capability_id": "capability:gcode_core:test/toolpath_builder_test.dart",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:."
+            ],
+            "files": [
+              "test/toolpath_builder_test.dart"
+            ],
+            "symbols": [
+              "toolpath",
+              "toolpath",
+              "toolpath",
+              "coordinate",
+              "toolpath",
+              "toolpath"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "unknown",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "test/toolpath_builder_test.dart",
+              "test/toolpath_builder_test.dart:5",
+              "test/toolpath_builder_test.dart:22",
+              "test/toolpath_builder_test.dart:44",
+              "test/toolpath_builder_test.dart:50",
+              "test/toolpath_builder_test.dart:66",
+              "test/toolpath_builder_test.dart:84",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM",
+            "unknowns": [
+              "Insufficient bounded source evidence for ownership."
+            ]
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/gcode_core.dart",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:."
+            ],
+            "files": [
+              "lib/gcode_core.dart"
+            ],
+            "symbols": [
+              "toolpath",
+              "parse",
+              "parser",
+              "toolpath"
+            ],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "unknown",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "lib/gcode_core.dart",
+              "lib/gcode_core.dart:15",
+              "lib/gcode_core.dart:16",
+              "lib/gcode_core.dart:17",
+              "lib/gcode_core.dart:18",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM",
+            "unknowns": [
+              "Insufficient bounded source evidence for ownership."
+            ]
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/models/gcode_command.dart",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:."
+            ],
+            "files": [
+              "lib/src/models/gcode_command.dart"
+            ],
+            "symbols": [],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "unknown",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "lib/src/models/gcode_command.dart",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM",
+            "unknowns": [
+              "Insufficient bounded source evidence for ownership.",
+              "No source evidence matches the current query; extraction requires relevant evidence."
+            ]
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/core/gcode_bounds.dart",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:."
+            ],
+            "files": [
+              "lib/src/core/gcode_bounds.dart"
+            ],
+            "symbols": [],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "unknown",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "lib/src/core/gcode_bounds.dart",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM",
+            "unknowns": [
+              "Insufficient bounded source evidence for ownership.",
+              "No source evidence matches the current query; extraction requires relevant evidence."
+            ]
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/core/gcode_style.dart",
+            "label": "source_evidence",
+            "target_repo": "gcode_core",
+            "development_units": [
+              "gcode_core:."
+            ],
+            "files": [
+              "lib/src/core/gcode_style.dart"
+            ],
+            "symbols": [],
+            "responsibilities": [
+              "source evidence anchor"
+            ],
+            "ownership": "unknown",
+            "coupling": {
+              "ui": "NONE",
+              "application_state": "NONE",
+              "platform": "NONE",
+              "external_contract": "NONE"
+            },
+            "dependencies": [
+              {
+                "source": "gcode_core:example",
+                "target": "gcode_core:.",
+                "kind": "path_dependency",
+                "evidence": {
+                  "source": "filesystem",
+                  "path": "example/pubspec.yaml",
+                  "discovered_at": "2026-09-05T10:52:44.497199+00:00",
+                  "detail": "dependencies.gcode_core.path;sha256=8f4a33b15f10090c"
+                }
+              }
+            ],
+            "evidence_refs": [
+              "lib/src/core/gcode_style.dart",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM",
+            "unknowns": [
+              "Insufficient bounded source evidence for ownership.",
+              "No source evidence matches the current query; extraction requires relevant evidence."
+            ]
+          }
+        ],
+        "workspace_matches": [
+          {
+            "source_capability_id": "capability:gcode_core:lib/src/parser/gcode_parse_result.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_strong_match",
+            "matched_contracts": [
+              "lib/src/parser/gcode_parse_result.dart"
+            ],
+            "matched_symbols": [
+              "parse",
+              "parse",
+              "parse",
+              "parse",
+              "parse"
+            ],
+            "evidence_refs": [
+              "example/pubspec.yaml",
+              "lib/src/parser/gcode_parse_result.dart",
+              "lib/src/parser/gcode_parse_result.dart:3",
+              "lib/src/parser/gcode_parse_result.dart:4",
+              "lib/src/parser/gcode_parse_result.dart:18",
+              "lib/src/parser/gcode_parse_result.dart:19",
+              "lib/src/parser/gcode_parse_result.dart:25",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:lib/src/parser/gcode_parse_result.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:lib/src/rendering/gpu_toolpath_layer.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:lib/src/rendering/toolpath_geometry.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:lib/src/models/toolpath_segment.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_strong_match",
+            "matched_contracts": [
+              "lib/src/models/toolpath_segment.dart"
+            ],
+            "matched_symbols": [
+              "toolpath",
+              "toolpath"
+            ],
+            "evidence_refs": [
+              "example/pubspec.yaml",
+              "lib/src/models/toolpath_segment.dart",
+              "lib/src/models/toolpath_segment.dart:4",
+              "lib/src/models/toolpath_segment.dart:5",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:lib/src/models/toolpath_segment.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:lib/src/parser/gcode_parser.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_strong_match",
+            "matched_contracts": [
+              "lib/src/parser/gcode_parser.dart"
+            ],
+            "matched_symbols": [
+              "parse",
+              "parser",
+              "parse",
+              "parse",
+              "parse",
+              "parse",
+              "parse"
+            ],
+            "evidence_refs": [
+              "example/pubspec.yaml",
+              "lib/src/parser/gcode_parser.dart",
+              "lib/src/parser/gcode_parser.dart:4",
+              "lib/src/parser/gcode_parser.dart:6",
+              "lib/src/parser/gcode_parser.dart:10",
+              "lib/src/parser/gcode_parser.dart:12",
+              "lib/src/parser/gcode_parser.dart:21",
+              "lib/src/parser/gcode_parser.dart:30",
+              "lib/src/parser/gcode_parser.dart:33",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:lib/src/parser/gcode_parser.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:lib/src/rendering/toolpath_viewport.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:lib/src/services/toolpath_builder.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_strong_match",
+            "matched_contracts": [
+              "lib/src/services/toolpath_builder.dart"
+            ],
+            "matched_symbols": [
+              "toolpath",
+              "coordinate",
+              "coordinate",
+              "coordinate",
+              "toolpath",
+              "toolpath"
+            ],
+            "evidence_refs": [
+              "example/pubspec.yaml",
+              "lib/src/services/toolpath_builder.dart",
+              "lib/src/services/toolpath_builder.dart:4",
+              "lib/src/services/toolpath_builder.dart:6",
+              "lib/src/services/toolpath_builder.dart:9",
+              "lib/src/services/toolpath_builder.dart:10",
+              "lib/src/services/toolpath_builder.dart:20",
+              "lib/src/services/toolpath_builder.dart:21",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:lib/src/services/toolpath_builder.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:test/gcode_parser_test.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:test/rendering/toolpath_geometry_test.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:test/rendering/toolpath_viewport_test.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:test/toolpath_builder_test.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:lib/gcode_core.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:lib/src/models/gcode_command.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_strong_match",
+            "matched_contracts": [
+              "lib/src/models/gcode_command.dart"
+            ],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml",
+              "lib/src/models/gcode_command.dart",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:lib/src/models/gcode_command.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:lib/src/core/gcode_bounds.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_strong_match",
+            "matched_contracts": [
+              "lib/src/core/gcode_bounds.dart"
+            ],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml",
+              "lib/src/core/gcode_bounds.dart",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:lib/src/core/gcode_bounds.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:lib/src/core/gcode_style.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_strong_match",
+            "matched_contracts": [
+              "lib/src/core/gcode_style.dart"
+            ],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml",
+              "lib/src/core/gcode_style.dart",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "source_capability_id": "capability:gcode_core:lib/src/core/gcode_style.dart",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "match_type": "existing_unit_partial_overlap",
+            "matched_contracts": [],
+            "matched_symbols": [],
+            "evidence_refs": [
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          }
+        ],
+        "extraction_assessments": [
+          {
+            "capability_id": "capability:gcode_core:lib/src/parser/gcode_parse_result.dart",
+            "decision": "MOVE_TO_EXISTING_UNIT",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "reasons": [
+              "ownership=shared_core"
+            ],
+            "blockers": [],
+            "evidence_refs": [
+              "lib/src/parser/gcode_parse_result.dart",
+              "lib/src/parser/gcode_parse_result.dart:3",
+              "lib/src/parser/gcode_parse_result.dart:4",
+              "lib/src/parser/gcode_parse_result.dart:18",
+              "lib/src/parser/gcode_parse_result.dart:19",
+              "lib/src/parser/gcode_parse_result.dart:25",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/rendering/gpu_toolpath_layer.dart",
+            "decision": "UNKNOWN",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=ui_only"
+            ],
+            "blockers": [],
+            "evidence_refs": [
+              "lib/src/rendering/gpu_toolpath_layer.dart",
+              "lib/src/rendering/gpu_toolpath_layer.dart:10",
+              "lib/src/rendering/gpu_toolpath_layer.dart:11",
+              "lib/src/rendering/gpu_toolpath_layer.dart:12",
+              "lib/src/rendering/gpu_toolpath_layer.dart:15",
+              "lib/src/rendering/gpu_toolpath_layer.dart:16",
+              "lib/src/rendering/gpu_toolpath_layer.dart:22",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/rendering/toolpath_geometry.dart",
+            "decision": "NOT_ENOUGH_EVIDENCE",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=unknown"
+            ],
+            "blockers": [
+              "Insufficient bounded source evidence for ownership."
+            ],
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_geometry.dart",
+              "lib/src/rendering/toolpath_geometry.dart:6",
+              "lib/src/rendering/toolpath_geometry.dart:7",
+              "lib/src/rendering/toolpath_geometry.dart:10",
+              "lib/src/rendering/toolpath_geometry.dart:11",
+              "lib/src/rendering/toolpath_geometry.dart:26",
+              "lib/src/rendering/toolpath_geometry.dart:29",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/models/toolpath_segment.dart",
+            "decision": "NOT_ENOUGH_EVIDENCE",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=unknown"
+            ],
+            "blockers": [
+              "Insufficient bounded source evidence for ownership."
+            ],
+            "evidence_refs": [
+              "lib/src/models/toolpath_segment.dart",
+              "lib/src/models/toolpath_segment.dart:4",
+              "lib/src/models/toolpath_segment.dart:5",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/parser/gcode_parser.dart",
+            "decision": "MOVE_TO_EXISTING_UNIT",
+            "target_repo": "gcode_core",
+            "target_unit": "gcode_core:.",
+            "reasons": [
+              "ownership=shared_core"
+            ],
+            "blockers": [],
+            "evidence_refs": [
+              "lib/src/parser/gcode_parser.dart",
+              "lib/src/parser/gcode_parser.dart:4",
+              "lib/src/parser/gcode_parser.dart:6",
+              "lib/src/parser/gcode_parser.dart:10",
+              "lib/src/parser/gcode_parser.dart:12",
+              "lib/src/parser/gcode_parser.dart:21",
+              "lib/src/parser/gcode_parser.dart:30",
+              "lib/src/parser/gcode_parser.dart:33",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/rendering/toolpath_viewport.dart",
+            "decision": "NOT_ENOUGH_EVIDENCE",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=unknown"
+            ],
+            "blockers": [
+              "Insufficient bounded source evidence for ownership."
+            ],
+            "evidence_refs": [
+              "lib/src/rendering/toolpath_viewport.dart",
+              "lib/src/rendering/toolpath_viewport.dart:4",
+              "lib/src/rendering/toolpath_viewport.dart:6",
+              "lib/src/rendering/toolpath_viewport.dart:7",
+              "lib/src/rendering/toolpath_viewport.dart:8",
+              "lib/src/rendering/toolpath_viewport.dart:32",
+              "lib/src/rendering/toolpath_viewport.dart:41",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/services/toolpath_builder.dart",
+            "decision": "NOT_ENOUGH_EVIDENCE",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=unknown"
+            ],
+            "blockers": [
+              "Insufficient bounded source evidence for ownership."
+            ],
+            "evidence_refs": [
+              "lib/src/services/toolpath_builder.dart",
+              "lib/src/services/toolpath_builder.dart:4",
+              "lib/src/services/toolpath_builder.dart:6",
+              "lib/src/services/toolpath_builder.dart:9",
+              "lib/src/services/toolpath_builder.dart:10",
+              "lib/src/services/toolpath_builder.dart:20",
+              "lib/src/services/toolpath_builder.dart:21",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "capability_id": "capability:gcode_core:test/gcode_parser_test.dart",
+            "decision": "NEW_SHARED_CORE_CANDIDATE",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=shared_core"
+            ],
+            "blockers": [],
+            "evidence_refs": [
+              "test/gcode_parser_test.dart",
+              "test/gcode_parser_test.dart:5",
+              "test/gcode_parser_test.dart:6",
+              "test/gcode_parser_test.dart:9",
+              "test/gcode_parser_test.dart:17",
+              "test/gcode_parser_test.dart:26",
+              "test/gcode_parser_test.dart:33",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "capability_id": "capability:gcode_core:test/rendering/toolpath_geometry_test.dart",
+            "decision": "NOT_ENOUGH_EVIDENCE",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=unknown"
+            ],
+            "blockers": [
+              "Insufficient bounded source evidence for ownership."
+            ],
+            "evidence_refs": [
+              "test/rendering/toolpath_geometry_test.dart",
+              "test/rendering/toolpath_geometry_test.dart:4",
+              "test/rendering/toolpath_geometry_test.dart:6",
+              "test/rendering/toolpath_geometry_test.dart:8",
+              "test/rendering/toolpath_geometry_test.dart:17",
+              "test/rendering/toolpath_geometry_test.dart:22",
+              "test/rendering/toolpath_geometry_test.dart:33",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "capability_id": "capability:gcode_core:test/rendering/toolpath_viewport_test.dart",
+            "decision": "NEW_SHARED_CORE_CANDIDATE",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=shared_core"
+            ],
+            "blockers": [],
+            "evidence_refs": [
+              "test/rendering/toolpath_viewport_test.dart",
+              "test/rendering/toolpath_viewport_test.dart:4",
+              "test/rendering/toolpath_viewport_test.dart:7",
+              "test/rendering/toolpath_viewport_test.dart:8",
+              "test/rendering/toolpath_viewport_test.dart:9",
+              "test/rendering/toolpath_viewport_test.dart:11",
+              "test/rendering/toolpath_viewport_test.dart:12",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "HIGH"
+          },
+          {
+            "capability_id": "capability:gcode_core:test/toolpath_builder_test.dart",
+            "decision": "NOT_ENOUGH_EVIDENCE",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=unknown"
+            ],
+            "blockers": [
+              "Insufficient bounded source evidence for ownership."
+            ],
+            "evidence_refs": [
+              "test/toolpath_builder_test.dart",
+              "test/toolpath_builder_test.dart:5",
+              "test/toolpath_builder_test.dart:22",
+              "test/toolpath_builder_test.dart:44",
+              "test/toolpath_builder_test.dart:50",
+              "test/toolpath_builder_test.dart:66",
+              "test/toolpath_builder_test.dart:84",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/gcode_core.dart",
+            "decision": "NOT_ENOUGH_EVIDENCE",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=unknown"
+            ],
+            "blockers": [
+              "Insufficient bounded source evidence for ownership."
+            ],
+            "evidence_refs": [
+              "lib/gcode_core.dart",
+              "lib/gcode_core.dart:15",
+              "lib/gcode_core.dart:16",
+              "lib/gcode_core.dart:17",
+              "lib/gcode_core.dart:18",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/models/gcode_command.dart",
+            "decision": "NOT_ENOUGH_EVIDENCE",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=unknown",
+              "No source evidence matches the current query."
+            ],
+            "blockers": [
+              "Insufficient bounded source evidence for ownership.",
+              "No source evidence matches the current query; extraction requires relevant evidence."
+            ],
+            "evidence_refs": [
+              "lib/src/models/gcode_command.dart",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/core/gcode_bounds.dart",
+            "decision": "NOT_ENOUGH_EVIDENCE",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=unknown",
+              "No source evidence matches the current query."
+            ],
+            "blockers": [
+              "Insufficient bounded source evidence for ownership.",
+              "No source evidence matches the current query; extraction requires relevant evidence."
+            ],
+            "evidence_refs": [
+              "lib/src/core/gcode_bounds.dart",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          },
+          {
+            "capability_id": "capability:gcode_core:lib/src/core/gcode_style.dart",
+            "decision": "NOT_ENOUGH_EVIDENCE",
+            "target_repo": null,
+            "target_unit": null,
+            "reasons": [
+              "ownership=unknown",
+              "No source evidence matches the current query."
+            ],
+            "blockers": [
+              "Insufficient bounded source evidence for ownership.",
+              "No source evidence matches the current query; extraction requires relevant evidence."
+            ],
+            "evidence_refs": [
+              "lib/src/core/gcode_style.dart",
+              "example/pubspec.yaml"
+            ],
+            "confidence": "MEDIUM"
+          }
+        ],
+        "keep_in_application": [],
+        "extraction_candidates": [
+          "capability:gcode_core:lib/src/parser/gcode_parse_result.dart",
+          "capability:gcode_core:lib/src/parser/gcode_parser.dart",
+          "capability:gcode_core:test/gcode_parser_test.dart",
+          "capability:gcode_core:test/rendering/toolpath_viewport_test.dart"
+        ],
+        "unknowns": [
+          "Applicable cached rule is not selected for gcode_core:docs/adr/0001-macos-first-gpu-toolpath.md.",
+          "Insufficient bounded source evidence for ownership.",
+          "Insufficient bounded source evidence for ownership.",
+          "Insufficient bounded source evidence for ownership.",
+          "Insufficient bounded source evidence for ownership.",
+          "Insufficient bounded source evidence for ownership.",
+          "Insufficient bounded source evidence for ownership.",
+          "Insufficient bounded source evidence for ownership.",
+          "Insufficient bounded source evidence for ownership.",
+          "No source evidence matches the current query; extraction requires relevant evidence.",
+          "Insufficient bounded source evidence for ownership.",
+          "No source evidence matches the current query; extraction requires relevant evidence.",
+          "Insufficient bounded source evidence for ownership.",
+          "No source evidence matches the current query; extraction requires relevant evidence."
+        ],
+        "evidence_summary": {
+          "context_evidence": 81,
+          "capability_nodes": 15
+        },
+        "metrics": {
+          "bounded_files_read": 24,
+          "capabilities": 15,
+          "matches": 22,
+          "control_evidence_files": 9,
+          "source_evidence_files": 15,
+          "script_evidence_files": 0,
+          "query_matched_capabilities": 12,
+          "query_unmatched_capabilities": 3,
+          "query_actionable_decisions": 4,
+          "abstained_extraction_decisions": 10
+        }
+      }
+    }
+  ],
+  "summary": {
+    "projects": 1,
+    "refreshed": 1,
+    "selected_files": 24,
+    "unknowns": 18
+  }
+}
