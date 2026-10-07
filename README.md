@@ -154,6 +154,18 @@ Flutter Forge 的 PC 封板与 Android readiness 任务由项目 adapter 冻结�
 
 这些任务只允许修改 adapter 冻结的应用、测试、文档和 Android host 路径；不修改通用 Graph，也不允许宿主自动 push、merge 或 release。
 
+### 5.4.1 执行控制与仓库维护进度
+
+development 与 decomposition 的执行结果必须绑定 project/task、冻结契约哈希、
+attempt 和输出树。必需检查缺失、失败或输出树变化时不得集成；同 Git 仓库
+的写入通过 OS 锁串行化。旧任务缺少 `validation_by_repository` 时需要补充
+检查并重新冻结，不会自动接受历史 SUCCESS 回执。
+
+多仓库任务先整体预检，再逐仓持久化集成 phase、commit 与 gate。dashboard
+展示这些维护进度；中断后校对 Git 事实续跑，不重复提交已完成仓库。
+发布完成还要求回读远端产物的大小与 SHA256。具体格式、恢复规则和验证边界
+见 [架构控制进度](docs/reports/ARCHITECTURE_CONTROL-20261002.md)。
+
 ### 5.5 安装包发布托管（release_hosting Graph，scene#22 CI/CD）
 
 ```bash
@@ -166,9 +178,9 @@ Flutter Forge 的 PC 封板与 Android readiness 任务由项目 adapter 冻结�
 - 发布目标在 `workspace/projects.json` 的 `release` 段冻结：`github_repo`（发布前必须配置，否则以 `RELEASE_NOT_CONFIGURED` 阻塞）、`tag_prefix`、`artifact_root`、默认 draft/prerelease。
 - Flutter Forge 约定：安装包由 CI 或本地构建预置到 `<repo>/release/<version>/`，命名 `FlutterForge-<version>-<platform>.<ext>`（apk/aab/dmg/exe/msix/zip/ipa/tar.gz），可选 `SHA256SUMS` 交叉校验；版本默认取 `apps/flutter_forge/pubspec.yaml`。
 - 图只消费预构建的安装包，**从不运行构建**；发布前逐文件重算 sha256 与冻结值比对，路径逃逸、缺失或校验和不匹配都会阻塞。
-- 发布通道是 `forbid_release` 的唯一显式例外（`policies/safety.py::validate_release_command`）：仅允许 `gh release create/upload/view/list`、`gh auth status`、`gh repo view`，且 `--repo` 必须等于冻结仓库；`delete`/`edit`/push/merge 仍被拒绝。凭据来自运维者本人的 `gh auth` 会话，宿主不存储任何 token。
+- 发布通道是 `forbid_release` 的唯一显式例外（`policies/safety.py::validate_release_command`）：仅允许 `gh release create/upload/view/list/download`、`gh auth status`、`gh repo view`，且 `--repo` 必须等于冻结仓库；`delete`/`edit`/push/merge 仍被拒绝。凭据来自运维者本人的 `gh auth` 会话，宿主不存储任何 token。
 - 发布工作流所有权固定为 `agent_hub.gateway.release`（`policies/safety.py::validate_release_entrypoint`）。业务仓库的 CI 只能构建/暂存产物，不得直接创建、编辑或上传 Release；发布必须通过 `release-plan` 冻结后再由 `release-run --execute` 进入 `release_hosting` 图。
-- 幂等恢复：tag 已存在时进入 RESUME 模式只补传缺失资产；上传中断以 `PARTIAL_PUBLISH` 阻塞，经 `release-decide` 重试后从断点续传；发布完成后回读 release 校验资产名与大小一致才标记 `PUBLISHED`。
+- 幂等恢复：tag 已存在时进入 RESUME 模式只补传缺失资产；上传中断以 `PARTIAL_PUBLISH` 阻塞，经 `release-decide` 重试后从断点续传；发布完成后回读 release 校验资产名与大小，并下载逐项核对 SHA256 后才标记 `PUBLISHED`。
 - release spec（`--spec`）只允许请求 `version`/`tag`/`name`/`notes`/`draft`/`prerelease`/显式 `artifacts`；`github_repo`、`repository_paths` 等 Graph 自有字段一律拒绝。
 
 ---

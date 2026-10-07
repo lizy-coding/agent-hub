@@ -14,6 +14,7 @@ import hashlib
 import json
 import logging
 import subprocess
+import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import TypedDict
@@ -22,6 +23,7 @@ from langgraph.graph import END, START, StateGraph
 
 from agent_hub.policies.safety import validate_release_command
 from agent_hub.projects.adapters import get_adapter
+from agent_hub.execution.control import ControlError, DEFAULT_CONTROL_ROOT, digest, file_lock
 
 LOGGER = logging.getLogger(__name__)
 
@@ -72,6 +74,22 @@ def _gh(argv: list[str], github_repo: str) -> dict[str, object]:
     return {"ok": result["returncode"] == 0, "verdict": verdict, **result}
 
 
+def _remote_checksum(github_repo: str, tag: str, artifact: dict) -> dict:
+    name = str(artifact.get("asset_name") or "")
+    if not name or name in {".", ".."} or any(character in name for character in "/\\*?[]\0\r\n"):
+        return {"status": "FAIL", "reason": "invalid_asset_name"}
+    with tempfile.TemporaryDirectory(prefix="agent-hub-release-proof-") as raw:
+        directory = Path(raw)
+        fetched = _gh(["gh", "release", "download", tag, "--repo", github_repo,
+                       "--pattern", name, "--dir", str(directory)], github_repo)
+        downloaded = directory / name
+        if not fetched["ok"] or not downloaded.is_file() or downloaded.is_symlink():
+            return {"status": "FAIL", "reason": "remote_checksum_unavailable"}
+        actual = _sha256(downloaded)
+        return {"status": "PASS" if actual == artifact.get("sha256") and downloaded.stat().st_size == artifact.get("size") else "FAIL",
+                "sha256": actual, "size": downloaded.stat().st_size}
+
+
 def _repository_root(program: dict[str, object], context: dict[str, object]) -> Path:
     primary = str(program.get("primary_repository_id") or context.get("primary_repository_id") or "primary")
     paths = context.get("repository_paths")
@@ -91,7 +109,7 @@ def _block(program: dict[str, object], status: str, reason: str, **extra: object
     return {"release_program": program}
 
 
-def build_release_hosting_graph():
+def build_release_hosting_graph(control_root: Path | None = None):
     graph = StateGraph(State)
 
     def reconcile(state: State):
@@ -238,6 +256,8 @@ def build_release_hosting_graph():
                 uploaded.append(str(artifact.get("asset_name")))
                 continue
             full = root / str(artifact.get("path"))
+            if not full.is_file() or _sha256(full) != artifact.get("sha256") or full.stat().st_size != artifact.get("size"):
+                return _block(program, "ARTIFACT_CHECKSUM_MISMATCH", "artifact changed after preflight")
             upload = _gh(["gh", "release", "upload", tag, f"{full}#{artifact.get('asset_name')}", "--repo", github_repo, "--clobber"], github_repo)
             if not upload["ok"]:
                 artifact["status"] = "FAILED"
@@ -275,8 +295,15 @@ def build_release_hosting_graph():
         mismatched = sorted(name for name, size in expected.items() if name in remote and size and remote[name] != size)
         if missing or mismatched:
             return {**_block(program, "RELEASE_VERIFY_MISMATCH", f"remote release does not match the frozen manifest; missing: {missing or '—'}, size mismatch: {mismatched or '—'}", tag=tag, missing=missing, mismatched=mismatched), "verify_result": {"status": "MISMATCH", "tag": tag, "missing": missing, "mismatched": mismatched}}
+        proofs = {}
+        for artifact in release.get("artifacts", []):
+            proof = _remote_checksum(github_repo, tag, artifact)
+            proofs[str(artifact.get("asset_name"))] = proof
+            if proof.get("status") != "PASS":
+                return {**_block(program, "RELEASE_VERIFY_MISMATCH", "remote content hash verification failed", checksum_proofs=proofs),
+                        "verify_result": {"status": "CHECKSUM_MISMATCH", "checksum_proofs": proofs}}
         program = dict(program)
-        artifacts = [{**artifact, "status": "VERIFIED"} for artifact in release.get("artifacts", [])]
+        artifacts = [{**artifact, "status": "VERIFIED", "remote_sha256": proofs[str(artifact.get("asset_name"))]["sha256"]} for artifact in release.get("artifacts", [])]
         program["release"] = {**release, "artifacts": artifacts}
         program["status"] = "PUBLISHED"
         program["release_url"] = str(payload.get("url") or program.get("release_url") or "")
@@ -292,22 +319,34 @@ def build_release_hosting_graph():
             return "publish"
         return END
 
-    def route_after_publish(state: State):
-        if (state.get("publish_result") or {}).get("status") == "PUBLISH_COMPLETE":
-            return "verify_release"
-        return END
+    def publish_and_verify(state: State):
+        program = state.get("release_program") or {}
+        identity = [program.get("github_repo"), program.get("release", {}).get("tag")]
+        lock = (control_root or DEFAULT_CONTROL_ROOT) / "release-locks" / f"{digest(identity)}.lock"
+        try:
+            with file_lock(lock):
+                # Refresh remote existence inside the lock, then keep publication
+                # and checksum verification in the same critical section.
+                current = {**state, **preflight(state)}
+                if current.get("release_program", {}).get("status") == "PROGRAM_BLOCKED":
+                    return {"release_program": current["release_program"]}
+                output = publish(current)
+                current.update(output)
+                if current.get("publish_result", {}).get("status") == "PUBLISH_COMPLETE":
+                    output.update(verify_release(current))
+                return output
+        except ControlError as error:
+            return _block(program, "RELEASE_BUSY", str(error))
 
     graph.add_node("reconcile", reconcile)
     graph.add_node("freeze", freeze)
     graph.add_node("verify_artifacts", verify_artifacts)
     graph.add_node("preflight", preflight)
-    graph.add_node("publish", publish)
-    graph.add_node("verify_release", verify_release)
+    graph.add_node("publish", publish_and_verify)
     graph.add_edge(START, "reconcile")
     graph.add_edge("reconcile", "freeze")
     graph.add_edge("freeze", "verify_artifacts")
     graph.add_edge("verify_artifacts", "preflight")
     graph.add_conditional_edges("preflight", route_after_preflight, {"publish": "publish", END: END})
-    graph.add_conditional_edges("publish", route_after_publish, {"verify_release": "verify_release", END: END})
-    graph.add_edge("verify_release", END)
+    graph.add_edge("publish", END)
     return graph.compile()

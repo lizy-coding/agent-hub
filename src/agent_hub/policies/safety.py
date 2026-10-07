@@ -37,7 +37,7 @@ def validate_release_entrypoint(entrypoint: str) -> dict[str, object]:
 # release subcommands in the allowlist, and a ``--repo`` value pinned to the
 # repository frozen by the project release configuration.  Push, merge,
 # release delete/edit, and every non-release command stay forbidden.
-RELEASE_LANE_ALLOWED_ACTIONS = frozenset({"create", "upload", "view", "list"})
+RELEASE_LANE_ALLOWED_ACTIONS = frozenset({"create", "upload", "view", "list", "download"})
 
 _REPO_FLAGS = frozenset({"--repo", "-R"})
 
@@ -53,7 +53,7 @@ def validate_release_command(argv: list[str], frozen_repo: str) -> dict[str, obj
     denied by default.  The lane covers exactly:
       * ``gh auth status``                         (preflight)
       * ``gh repo view <frozen_repo>``             (preflight)
-      * ``gh release create|upload|view|list ...`` (publish / verify / resume)
+      * ``gh release create|upload|view|list|download ...`` (publish / verify / resume)
     """
 
     command = [str(part) for part in argv]
@@ -73,9 +73,13 @@ def validate_release_command(argv: list[str], frozen_repo: str) -> dict[str, obj
         return _reject("release_lane_forbids_non_release_commands", command)
     if len(rest) < 2 or rest[1] not in RELEASE_LANE_ALLOWED_ACTIONS:
         return _reject("release_action_forbidden", command)
+    repo_seen = False
     for index, part in enumerate(command):
         if part in _REPO_FLAGS:
+            repo_seen = True
             value = command[index + 1] if index + 1 < len(command) else ""
             if value != frozen:
                 return _reject("release_repo_mismatch", command)
+    if not repo_seen:
+        return _reject("release_repo_not_explicit", command)
     return {"status": "PASS", "lane": f"release_{rest[1]}", "command": command}
