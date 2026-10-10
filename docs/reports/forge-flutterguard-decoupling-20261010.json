@@ -1,0 +1,206 @@
+{
+  "date": "2026-10-10",
+  "verdict": "PASS_LOCAL_DECOUPLING",
+  "scope": "current worktree, not tag or remote CI acceptance",
+  "source_observations": [
+    {
+      "context": "/private/tmp/forge-decoupling-context-20261010.json",
+      "project": "flutter-forge",
+      "source_sha": "75a57d1cdab644d3499f77eade3f1c668acbec83",
+      "observed_files": 32,
+      "changed_since_snapshot": []
+    },
+    {
+      "context": "/private/tmp/forge-decoupling-contracts-20261010.json",
+      "project": "flutter-forge",
+      "source_sha": "75a57d1cdab644d3499f77eade3f1c668acbec83",
+      "observed_files": 32,
+      "changed_since_snapshot": []
+    },
+    {
+      "context": "/private/tmp/flutterguard-decoupling-context-20261010.json",
+      "project": "flutterguard",
+      "source_sha": "b3becede57d87b9d5a3c53e6a2bca79e3cb84e17",
+      "observed_files": 24,
+      "changed_since_snapshot": []
+    }
+  ],
+  "forge": {
+    "dependency_and_package_config": "PASS_NO_FLUTTERGUARD",
+    "offline_enforce_lockfile": "PASS",
+    "quality_gate": "PASS_5_OF_5",
+    "flutter_tests": 367,
+    "node_tests": 22,
+    "scaffold": "PASS",
+    "module_test_presence": "27/27",
+    "generator_outputs_checked": 59,
+    "generated_contracts_valid": 53,
+    "format_checked_files": 335,
+    "log": "/private/tmp/forge-decoupling-quality-20261010.log"
+  },
+  "flutterguard": {
+    "analyze": "PASS_NO_ISSUES",
+    "focused_contract_tests": 21,
+    "native_acceptance": {
+      "status": "PASS",
+      "fixture": "/private/tmp/fg-independent-acceptance-p8hk2jv0",
+      "binary": "/private/tmp/flutterguard-decoupling-20261010",
+      "sha256": "976066b0121362764eeb43a6b395e5031b4aa947756b9d7c8a2faddd82b9caf0",
+      "version": "flutterguard 0.7.1",
+      "no_report_or_other_file_write": true,
+      "cases": [
+        {
+          "case": "json_findings",
+          "exit_code": 1,
+          "format": "json",
+          "status": "PASS",
+          "stderr": "CI gate failed: Issues found at or above \"high\" level."
+        },
+        {
+          "case": "json_clean",
+          "exit_code": 0,
+          "format": "json",
+          "status": "PASS",
+          "stderr": ""
+        },
+        {
+          "case": "sarif_findings",
+          "exit_code": 0,
+          "format": "sarif",
+          "status": "PASS",
+          "stderr": ""
+        },
+        {
+          "case": "invalid_target",
+          "exit_code": 2,
+          "format": "json",
+          "status": "PASS",
+          "stderr": "Error: Project path \"/private/tmp/fg-independent-acceptance-p8hk2jv0/lib/missing.dart\" does not exist."
+        }
+      ]
+    },
+    "test_log": "/private/tmp/flutterguard-decoupling-tests-20261010.log"
+  },
+  "pending": [
+    "remote CI and deployment failure-blocking acceptance at committed SHA",
+    "IDE Gradle/native resources and real IDE acceptance",
+    "Windows resource lookup mismatch remains"
+  ],
+  "nonblocking_cleanup": [
+    {
+      "item": "Forge generator obsolete FlutterGuard facts and external_tool",
+      "status": "REMOVED"
+    },
+    {
+      "item": "Forge Node test count in CICD_GATE_MIGRATION",
+      "status": "CORRECTED_22"
+    },
+    {
+      "item": "Hub adapter obsolete flutterguard.yaml allowed paths",
+      "status": "REMOVED"
+    }
+  ],
+  "business_source_modifications_by_this_acceptance": false,
+  "committed_or_published": false,
+  "record_type": "historical_local_acceptance_with_followup_cleanup",
+  "maintenance_checklist": "managed-project-maintenance-20261010.md",
+  "residue_cleanup": {
+    "date": "2026-10-10",
+    "status": "PASS",
+    "hub_focused_tests": {
+      "run": 3,
+      "pass": 3
+    },
+    "generator": {
+      "outputs": 59,
+      "changed": 0,
+      "valid_contracts": 53
+    },
+    "scope": [
+      "agent-hub/src/agent_hub/projects/flutter_forge_adapter.py",
+      "flutter-forge/tool/agent_indexes/plan.js",
+      "flutter-forge/docs/reports/CICD_GATE_MIGRATION-20261010.md"
+    ],
+    "committed_or_published": false,
+    "quality_gate": {
+      "stages_passed": [
+        "Generated contracts",
+        "Dart format (read only)",
+        "Flutter analyze",
+        "Workspace and tool tests",
+        "Module test presence"
+      ],
+      "flutter_test_counts": [
+        236,
+        8,
+        22,
+        3,
+        95,
+        3
+      ],
+      "flutter_test_total": 367,
+      "node_tests": 22,
+      "scaffold": "PASS",
+      "module_test_presence": "27/27"
+    },
+    "file_sha256": {
+      "/Users/forest/code/agent-hub/src/agent_hub/projects/flutter_forge_adapter.py": "194ab39ff8482af5a1f372be3ea79fbec4f61931db4d47cfd5b3ee0ddc6cd957",
+      "/Users/forest/code/langGraph/flutter_forge/tool/agent_indexes/plan.js": "53ddf80f22598057f7439ffdface5c923c6b9a18acc325359eb26b54edf0103c",
+      "/Users/forest/code/langGraph/flutter_forge/docs/reports/CICD_GATE_MIGRATION-20261010.md": "de3f6f1bd1e194d6237e25daff1b4864fe428c5514e6ace9077a05ca0affdaad"
+    },
+    "logs": [
+      {
+        "path": "/private/tmp/forge-residue-quality-20261010.log",
+        "sha256": "5e43889587216ad2353026915810702bc30f364bcfaebf7acec04113ab8db51e",
+        "storage": "TEMPORARY"
+      },
+      {
+        "path": "/private/tmp/forge-residue-tests-20261010.log",
+        "sha256": "64c5859f397d630db3b7bd61bbebc77fd67ee77037f05ee26310f5d1b8172770",
+        "storage": "TEMPORARY"
+      },
+      {
+        "path": "/private/tmp/forge-residue-generation-20261010.log",
+        "sha256": "460ceb609d02ee14e1f79606d3e5677d95c5217ba6d25d3d57bc344ebd683afd",
+        "storage": "TEMPORARY"
+      }
+    ],
+    "quality_log_excerpt": [
+      "=== Generated contracts ===",
+      "agent_indexes:checked:59:changed:0",
+      "agent_docs_valid:53",
+      "PASS: Generated contracts",
+      "=== Dart format (read only) ===",
+      "Formatted 335 files (0 changed) in 0.53 seconds.",
+      "PASS: Dart format (read only)",
+      "=== Flutter analyze ===",
+      "No issues found! (ran in 4.6s)",
+      "PASS: Flutter analyze",
+      "=== Workspace and tool tests ===",
+      "=== Tests: apps/flutter_forge ===",
+      "00:11 +236: All tests passed!",
+      "=== Tests: packages/file_picker_bridge ===",
+      "00:00 +8: All tests passed!",
+      "=== Tests: packages/flutter_ioc_core ===",
+      "00:00 +22: All tests passed!",
+      "=== Tests: packages/desktop_multi_window ===",
+      "00:00 +3: All tests passed!",
+      "=== Tests: packages/flutter_battery ===",
+      "00:00 +95: All tests passed!",
+      "=== Tests: packages/usb_network_bridge ===",
+      "00:00 +3: All tests passed!",
+      "# tests 22",
+      "# pass 22",
+      "# fail 0",
+      "module_scaffold_test: PASS",
+      "PASS: Workspace and tool tests",
+      "=== Module test presence ===",
+      "=== Module Test Coverage ===",
+      "Modules: 27",
+      "Tests present: 27",
+      "Tests missing: 0",
+      "PASS: Module test presence"
+    ]
+  },
+  "source_observations_note": "Original acceptance source observations precede this cleanup. Followup hashes are recorded separately; original CLI acceptance is not expanded to IDE or remote CI."
+}
