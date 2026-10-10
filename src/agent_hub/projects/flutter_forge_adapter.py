@@ -612,7 +612,7 @@ def app_relocation_contract() -> dict[str, object]:
         "depends_on": ["merge-gcode-core-owners", "merge-file-picker-bridge-owners"],
         "allowed_operations": ["MOVE", "RENAME", "DEPENDENCY_REWRITE", "API_BREAK"],
         "target_creation_allowed": True,
-        "allowed_paths_by_repository": {"flutter_forge": ["apps/flutter_forge", "lib", "macos", "windows", "android", "ios", "linux", "web", "assets", "test", "integration_test", "pubspec.yaml", "pubspec.lock", ".metadata", "analysis_options.yaml", "l10n.yaml", "flutterguard.yaml"]},
+        "allowed_paths_by_repository": {"flutter_forge": ["apps/flutter_forge", "lib", "macos", "windows", "android", "ios", "linux", "web", "assets", "test", "integration_test", "pubspec.yaml", "pubspec.lock", ".metadata", "analysis_options.yaml", "l10n.yaml"]},
         "dependency_constraints": ["apps/flutter_forge may depend on packages/* and plugins/*", "packages/* and plugins/* must not depend on apps/flutter_forge", "workspace dependency cycles must remain zero"],
         "execution_instructions": ["Create apps/flutter_forge as a Flutter application with pubspec.yaml and lib/main.dart.", "Move only app-owned runtime sources, hosts, assets, tests and configuration after inspecting ownership; do not move packages/* or plugins/*.", "Rewrite app package paths relative to apps/flutter_forge and retain root pubspec.yaml only as a workspace/container manifest without Flutter Application ownership.", "Move the existing macos and windows hosts; move other platform hosts only when they exist."],
         "acceptance": ["apps/flutter_forge/pubspec.yaml and apps/flutter_forge/lib/main.dart exist", "root has no lib/main.dart or lib/app duplicate App owner", "packages/* and plugins/* remain at workspace root", "app package paths resolve from apps/flutter_forge", "changed repository receives one integration commit"],
@@ -633,7 +633,7 @@ def default_allowed_paths(task_id: str, repository: str) -> list[str]:
     return {
         "merge-gcode-core-owners": {"flutter_forge": ["packages/gcode_core"]},
         "merge-file-picker-bridge-owners": {"flutter_forge": ["packages/file_picker_bridge"]},
-        "relocate-flutter-forge-app": {"flutter_forge": ["lib/app", "lib", "pubspec.yaml", "flutterguard.yaml"]},
+        "relocate-flutter-forge-app": {"flutter_forge": ["lib/app", "lib", "pubspec.yaml"]},
         "responsive_navigation_policy": {"flutter_forge": ["apps/flutter_forge/lib/app", "apps/flutter_forge/test/shared", "AGENTS.md", "docs/adr", "tool/generate_agent_indexes.js"]},
         "android_mobile_navigation_baseline": {"flutter_forge": ["apps/flutter_forge/lib/app", "apps/flutter_forge/lib/modules", "apps/flutter_forge/test", "apps/flutter_forge/integration_test"]},
         "pc_window_lifecycle_baseline": {"flutter_forge": ["apps/flutter_forge/lib/app", "apps/flutter_forge/lib/shared/multi_window", "apps/flutter_forge/test", "apps/flutter_forge/macos", "docs/adr"]},
