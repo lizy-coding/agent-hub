@@ -1,0 +1,97 @@
+{
+  "schema_version": "workflow-optimization-evidence.v1",
+  "date": "2026-10-13",
+  "hub_base_sha": "bd6daadecb8d66fd34b61f5bf95e433f782ec1dc",
+  "content_state": "UNCOMMITTED_WORKTREE",
+  "decisions": {
+    "Q1": "SHARED_64_FILE_BUDGET",
+    "Q2": "SUCCESS_PARTIAL_BLOCKED_0_1_2",
+    "Q3": "PROVEN_HISTORICAL_OPTIONAL_RETIREMENT",
+    "Q4": "BREAKING_CHANGES_ACCEPTED"
+  },
+  "validation": {
+    "maintenance": {
+      "status": "PASS",
+      "tests": 49,
+      "log_sha256": "916fb10fcb8247444307c4fffb6e0eefec06b1798f00828e1d06c74ac85c24de"
+    },
+    "execution_default_environment": {
+      "status": "PASS",
+      "tests": 47,
+      "log_sha256": "05810c10fd81232a4435f9e8b8760d5fcdd14d7f3beaa47c92ab60c2f004dea4"
+    },
+    "release": {
+      "status": "PASS",
+      "tests": 18,
+      "log_sha256": "36d4f2f757c5df2bb76834dcd4ba9829766635f1a595b1ffc2e5701446f77219"
+    },
+    "integration_recheck": {
+      "status": "PASS",
+      "tests": 19,
+      "log_sha256": "6300d905671be72956bbc3899100dfe75f7d3c20a76353a446a8af2cf7e6fab7"
+    }
+  },
+  "cache_regression": {
+    "before": "FAIL: validation_changed_output in default Python environment",
+    "after": "PASS: default environment executor and actual-mutation rejection"
+  },
+  "source_checks": [
+    {
+      "project_id": "gcode-core",
+      "source_sha": "2c6945da2f0f1c721fcbae9043b25d3c2f92dcfc",
+      "status": "SUCCESS",
+      "inspected_files": 19,
+      "gaps": 0,
+      "selected_hash_verification": "PASS"
+    },
+    {
+      "project_id": "flutter-forge",
+      "source_sha": "b90d5971a8af6de4a6eaedf979344a9e53ef0cac",
+      "status": "PARTIAL",
+      "inspected_files": 64,
+      "gaps": 44,
+      "selected_hash_verification": "PASS"
+    },
+    {
+      "project_id": "flutterguard",
+      "source_sha": "fb86f4ffa322bb0dbe69748c5c594296bf44657d",
+      "status": "PARTIAL",
+      "inspected_files": 33,
+      "gaps": 2,
+      "selected_hash_verification": "PASS"
+    }
+  ],
+  "sync_plan": {
+    "path": "docs/reports/workflow-optimization-sync-20261013.json",
+    "plan_id": "86c77df4cbe23daa4b36f8a9fc82b6bc3d1983b4457824897043c81fff80a92d",
+    "sha256": "04681e930cd13551908439794484a5114ff9eacef8420126f61936c67986192d",
+    "exit_code": 1,
+    "scope": "PLAN_ONLY"
+  },
+  "release_workflow_declarations": "MATCH",
+  "producer_contract": {
+    "path": "/Users/forest/code/langGraph/flutter_forge/tool/release_metadata.js",
+    "sha256": "f24d502d84c7ced6a66b3f9a47d00b4ecbf6331b2fdd12b0da83080aaaa78651",
+    "status": "PENDING_PRODUCER_ARCHITECTURE_AND_TOOLCHAIN_FIELDS",
+    "publication": "BLOCKED_UNTIL_REQUIRED_EVIDENCE_EXISTS"
+  },
+  "runtime_checkpoint": "NOT_MUTATED",
+  "business_repositories": "READ_ONLY",
+  "remote_ci_or_publication": "NOT_RUN_FIXTURES_ONLY",
+  "platform_acceptance": false,
+  "implementation_hashes": {
+    "agent": "6abf12246e497a07099493b6035e0d31b2c4bff3e7ddfc14ca412762625978f3",
+    "workspace/projects.json": "a619d18814e3d24f3162ad5ba4dc5f24fa8c03136282389c7d148bb1c620d2a3",
+    "src/agent_hub/projects/sync_plan.py": "3686e9082764d2370a0d695311e1775419fcd3561328e585b84ff26f56ce746f",
+    "src/agent_hub/projects/agent_context.py": "3c3b1b34e85f2f0bd106674f511b86a2cbd635b9e9e9c2897b38de6e27cf665a",
+    "src/agent_hub/projects/release_contract.py": "15bd5213df7d5d9dd5b7c46b3f6ea0a407424ca5b391b5c3a90a56ea752b6559",
+    "src/agent_hub/graphs/release_hosting.py": "eda79e7bf5663bdb2683786bfa3838b72e0309afbd2afefeb6876dde92028ff3",
+    "src/agent_hub/policies/safety.py": "33b05b0011378de34690477dd71df6f678c23ffc500099ca5b4f3b6e0b532fab",
+    "src/agent_hub/execution/validation.py": "07b217ecad7c66bfa3753c592b70c0eef5c35b58bcfc006991fb6c5e71579680",
+    "src/agent_hub/validation/profiles.py": "46577c8a8ccd5fdc1ca489b92080861c9dbb2921bec4c5fbcc6c91808aa8982b",
+    "scripts/project_inventory.py": "3ff0be838e085b24ec6a9aeec3dce1a5dd19af61c7bbd6e905d9598f0bd1e278",
+    "tests/test_sync_plan.py": "1ed2aa7c6bb495adf384cf9ecac6952f740265b8005a24b3af46fd1ddc7176a9",
+    "tests/test_validation_cache.py": "123115669553bcb59833eea69ac4744ed442715d5a565d5d1c9c369922b26dc3",
+    "tests/test_release_contract.py": "82db8e36a99e77f129677002b9a752f870b313d4380a38d84ab3255a58798e92"
+  }
+}

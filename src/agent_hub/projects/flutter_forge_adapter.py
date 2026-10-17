@@ -567,7 +567,7 @@ def build_program(root: Path, context: dict[str, object]) -> dict[str, object]:
             if task["task_id"] == "establish-package-boundary-contracts":
                 task["target_units"] = [p for p in task.get("target_units", []) if p != "packages/gcode_core"]
                 task["allowed_paths_by_repository"][primary] = [p for p in task["allowed_paths_by_repository"].get(primary, []) if p != "packages/gcode_core"]
-    return {
+    program = {
         "project_id": str(context.get("project_id") or "flutter-forge"),
         "program_id": str(context.get("program_id") or "flutter-forge-decomposition-program"),
         "adapter": "flutter_forge",
@@ -601,6 +601,13 @@ def build_program(root: Path, context: dict[str, object]) -> dict[str, object]:
         "execution_mode": "PLAN_ONLY",
         "status": "PLANNING_COMPLETE",
     }
+
+    if context.get("project_inventory"):
+        from agent_hub.projects.inventory import merge_inventory, read_project_inventory
+        inventory = read_project_inventory(repository_root, primary, context["project_inventory"],
+                                           str(context.get("primary_manifest") or "apps/flutter_forge/pubspec.yaml"))
+        merge_inventory(program, inventory)
+    return program
 
 
 def app_relocation_contract() -> dict[str, object]:
@@ -1030,7 +1037,7 @@ _RELEASE_ASSET_EXTENSIONS = ("apk", "aab", "dmg", "exe", "msix", "zip", "ipa", "
 
 
 def _app_version(repository_root: Path) -> str:
-    for pubspec in (repository_root / "apps/flutter_forge/pubspec.yaml", repository_root / "pubspec.yaml"):
+    for pubspec in (repository_root / "apps/flutter_forge/pubspec.yaml",):
         if pubspec.is_file():
             match = re.search(r"^version:\s*(\d+\.\d+\.\d+)", pubspec.read_text(encoding="utf-8"), re.M)
             if match:
@@ -1112,9 +1119,14 @@ def release_inventory(context: dict[str, object], spec: dict[str, object]) -> di
         checksums = _sha256sums(staging)
         evidence.append(f"artifacts discovered in {root_prefix}/{version}/" + (" with SHA256SUMS cross-check" if checksums else ""))
     artifacts = artifact_entries(artifact_paths, checksums)
+    from agent_hub.projects.release_contract import freeze_release_provenance
+    provenance = freeze_release_provenance(repository_root, config, version, tag, artifacts, spec)
+    if provenance['status'] == 'BLOCKED':
+        return blocked_release_program(context, 'RELEASE_PROVENANCE_INVALID', provenance['reason'])
+    artifacts = provenance['artifacts']
     name = str(spec.get("name") or f"FlutterForge {tag}")
     notes = str(spec.get("notes") or "FlutterForge " + tag + " installer packages.\n\n" + "\n".join(f"- {entry['asset_name']}" for entry in artifacts))
-    return build_release_program(
+    program = build_release_program(
         context,
         version=version,
         tag=tag,
@@ -1125,3 +1137,8 @@ def release_inventory(context: dict[str, object], spec: dict[str, object]) -> di
         artifacts=artifacts,
         evidence=evidence,
     )
+    if provenance['status'] == 'FROZEN':
+        program['provenance_policy'] = config['provenance_policy']
+        program['release']['provenance'] = {k:v for k,v in provenance.items() if k != 'artifacts'}
+        program['release']['target_commitish'] = provenance['source_sha']
+    return program

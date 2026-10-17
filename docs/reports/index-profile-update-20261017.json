@@ -1,0 +1,29 @@
+{
+  "schema_version": "index-profile-update.v1",
+  "date": "2026-10-17",
+  "reason": "manifest and IDE descriptor declare BoundaryLens in current worktree",
+  "stable_project_id": "flutterguard",
+  "stable_snapshot_namespace": "flutterguard",
+  "alias_added": "boundarylens",
+  "runtime_path_unchanged": true,
+  "removed_explicit_candidates": [
+    "bin/flutterguard.dart"
+  ],
+  "new_required_files": [
+    "bin/boundarylens.dart",
+    "idea-plugin/src/main/resources/META-INF/plugin.xml"
+  ],
+  "new_optional_files": [
+    "idea-plugin/src/main/kotlin/com/boundarylens/BoundaryLensConfigurable.kt",
+    "idea-plugin/src/main/kotlin/com/boundarylens/BoundaryLensGuideAction.kt",
+    "idea-plugin/src/main/kotlin/com/boundarylens/BoundaryLensScanAction.kt",
+    "idea-plugin/src/main/kotlin/com/boundarylens/BoundaryLensSettings.kt"
+  ],
+  "source_binding": {
+    "source_sha": "ca8092573a05abd7341b3f05b9c6402c568779d3",
+    "source_snapshot_id": "8c7afd0cf7791332aeee7160b1fd5af08d212b45582a9bb88618ac7c99950027",
+    "pubspec_sha256": "34a2f2486eed37f5ec7e7fe2077427eeeec0fb549ca45e5cab2820ec825a196d",
+    "descriptor_sha256": "77ead689e6692708b86b20b74d78563b8d7bf68fe554119ada6b2109abdd0f19"
+  },
+  "scope": "Hub registration only; uncommitted source declarations do not establish delivery or acceptance"
+}

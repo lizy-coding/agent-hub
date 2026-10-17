@@ -77,7 +77,7 @@ class GenericProjectAdapter:
                             "public_api_intent": "adapter-defined",
                             "migration_priority": 1,
                         })
-        return {
+        program = {
             "project_id": str(context.get("project_id") or "generic-project"),
             "program_id": str(context.get("program_id") or "generic-decomposition-program"),
             "adapter": self.name,
@@ -93,6 +93,14 @@ class GenericProjectAdapter:
             "execution_mode": "PLAN_ONLY",
             "status": "PLANNING_COMPLETE",
         }
+
+        if context.get("project_inventory"):
+            from agent_hub.projects.inventory import merge_inventory, read_project_inventory
+            repository_root = Path(str(repository_paths[primary]))
+            inventory = read_project_inventory(repository_root, primary, context["project_inventory"],
+                                               str(context.get("primary_manifest") or "pubspec.yaml"))
+            merge_inventory(program, inventory)
+        return program
 
     def architecture_guard(self, task, worker, program):
         repositories = worker.get("repositories")

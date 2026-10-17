@@ -27,10 +27,10 @@ class ReleaseProgramTest(unittest.TestCase):
         self.assertEqual(matrix["macos-x64"]["commands"], ["flutter build macos --release"])
         self.assertEqual(matrix["windows-x64"]["commands"], ["flutter build windows --release"])
         self.assertIn("--debug --target-platform android-arm64", matrix["android-arm64"]["commands"][0])
-        self.assertEqual(matrix["android-arm64"]["artifacts"], ["app-arm64-v8a-debug.apk"])
+        self.assertEqual(matrix["android-arm64"]["artifacts"], ["verified-release/FlutterForge-<version>-android-arm64-v8a-debug.apk"])
         self.assertEqual(matrix["android-arm64"]["build_mode"], "debug")
         self.assertEqual(matrix["web"]["commands"], ["bash ../../tool/build_web_release.sh"])
-        self.assertEqual(matrix["web"]["artifacts"], ["build/web"])
+        self.assertEqual(matrix["web"]["artifacts"], ["verified-release/FlutterForge-<version>-web.zip"])
         self.assertEqual(load_release_project("flutter-forge").graph_input()["release"]["github_repo"], "lizy-coding/flutter_forge")
 
 

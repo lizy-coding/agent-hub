@@ -1,6 +1,9 @@
 {
   "default_project": "flutter-forge",
-  "aliases": {"forge": "flutter-forge"},
+  "aliases": {
+    "forge": "flutter-forge",
+    "boundarylens": "flutterguard"
+  },
   "projects": {
     "gcode-core": {
       "adapter": "gcode_core",
@@ -9,9 +12,34 @@
       "snapshot_namespace": "gcode-core",
       "workspace_config": "workspace/gcode-core.json",
       "agent_context": {
-        "seed_files": ["AGENTS.md", "CONTEXT.md", "pubspec.yaml", "lib/gcode_core.dart", "example/pubspec.yaml", ".github/workflows/ci.yml", "docs/evidence/0.2.1-maintainer-acceptance.md", "example/android/app/src/main/AndroidManifest.xml", "example/android/app/build.gradle.kts", "lib/src/rendering/gpu_toolpath_layer.dart", "lib/src/rendering/toolpath_geometry.dart"],
-        "change_prefixes": ["lib/", "example/lib/", "example/android/", "docs/evidence/", ".github/"],
+        "primary_manifest": "pubspec.yaml",
+        "change_prefixes": [
+          "lib/",
+          "example/lib/",
+          "example/android/",
+          "docs/evidence/",
+          ".github/"
+        ],
         "ownership": "independent_flutter_gpu_package"
+      },
+      "sync_profiles": {
+        "maintenance": {
+          "required_files": [
+            "pubspec.yaml",
+            "example/pubspec.yaml",
+            ".github/workflows/ci.yml"
+          ],
+          "candidate_paths": [
+            "AGENTS.md",
+            "CONTEXT.md",
+            "lib/gcode_core.dart",
+            "docs/evidence/0.2.1-maintainer-acceptance.md",
+            "example/android/app/src/main/AndroidManifest.xml",
+            "example/android/app/build.gradle.kts",
+            "lib/src/rendering/gpu_toolpath_layer.dart",
+            "lib/src/rendering/toolpath_geometry.dart"
+          ]
+        }
       }
     },
     "flutter-forge": {
@@ -21,15 +49,30 @@
       "snapshot_namespace": "flutter-forge",
       "workspace_config": "workspace/config.json",
       "agent_context": {
-        "seed_files": ["AGENTS.md", "AI_ANALYSIS_SCHEMA.json", "AI_PROJECT_CONTEXT.md", "REFACTOR_PLAN.md", "apps/flutter_forge/lib/modules/platform/usb_network/AI_ANALYSIS.md", "apps/flutter_forge/lib/modules/platform/usb_network/module_entry.dart", "apps/flutter_forge/lib/modules/platform/usb_network/usb_network_session.dart", "packages/usb_network_bridge/AI_ANALYSIS.md", "packages/usb_network_bridge/pubspec.yaml", "packages/usb_network_bridge/lib/usb_network_bridge.dart", "packages/usb_network_bridge/lib/src/api.dart", "packages/usb_network_bridge/lib/src/backend_native.dart", "packages/flutter_battery/lib/battery_monitoring.dart", "packages/flutter_battery/lib/battery_result.dart", "packages/flutter_battery/lib/src/native_battery_monitoring.dart", "apps/flutter_forge/lib/modules/platform/battery_monitor/AI_ANALYSIS.md", "apps/flutter_forge/lib/modules/platform/battery_monitor/module_entry.dart", "apps/flutter_forge/lib/modules/platform/battery_monitor/battery_session.dart", "packages/flutter_battery/AI_ANALYSIS.md", "packages/flutter_battery/pubspec.yaml", "packages/flutter_battery/lib/flutter_battery.dart", "packages/flutter_battery/lib/src/platform_capabilities.dart", "packages/flutter_battery/integration/channel/contracts/channel_contract.yaml", "apps/flutter_forge/pubspec.yaml", "pubspec.lock", "tool/generate_agent_indexes.js", "tool/agent_indexes/generator.js", "tool/agent_indexes/project.js", "tool/agent_indexes/contracts.js", "tool/agent_indexes/AGENTS.md", "apps/flutter_forge/lib/app/AGENTS.md", "apps/flutter_forge/lib/app/AI_ANALYSIS.md", "apps/flutter_forge/lib/app/theme/app_theme_controller.dart", "apps/flutter_forge/lib/app/theme/forge_theme_tokens.dart", "apps/flutter_forge/lib/modules/platform/bluetooth_ble/AI_ANALYSIS.md", "apps/flutter_forge/lib/shared/popup/AI_ANALYSIS.md", "apps/flutter_forge/lib/shared/table/AI_ANALYSIS.md", ".github/workflows/release.yml"],
-        "change_prefixes": ["apps/flutter_forge/lib/modules/platform/usb_network/", "packages/usb_network_bridge/", "apps/flutter_forge/lib/modules/platform/battery_monitor/", "packages/flutter_battery/", "apps/flutter_forge/lib/app/", "apps/flutter_forge/lib/shared/", "apps/flutter_forge/lib/modules/platform/bluetooth_ble/", "tool/agent_indexes/", ".github/"],
+        "primary_manifest": "apps/flutter_forge/pubspec.yaml",
+        "change_prefixes": [
+          "apps/flutter_forge/lib/modules/platform/usb_network/",
+          "packages/usb_network_bridge/",
+          "apps/flutter_forge/lib/modules/platform/battery_monitor/",
+          "packages/flutter_battery/",
+          "apps/flutter_forge/lib/app/",
+          "apps/flutter_forge/lib/shared/",
+          "apps/flutter_forge/lib/modules/platform/bluetooth_ble/",
+          "tool/agent_indexes/",
+          ".github/"
+        ],
         "ownership": "flutter_app_and_generator_owned_contracts"
       },
       "delivery_stage": {
         "stage_id": "cross-platform-foundation-v1",
         "status": "COMPLETE",
         "completed_on": "2026-09-12",
-        "supported_platforms": ["windows", "macos", "android", "web"],
+        "supported_platforms": [
+          "windows",
+          "macos",
+          "android",
+          "web"
+        ],
         "next_stage": "feature-expansion",
         "next_stage_status": "READY_FOR_PROPOSALS"
       },
@@ -37,47 +80,155 @@
         "github_repo": "lizy-coding/flutter_forge",
         "tag_prefix": "v",
         "artifact_root": "release",
-        "platforms": ["macos-x64", "windows-x64", "android-arm64", "web"],
+        "platforms": [
+          "macos-x64",
+          "windows-x64",
+          "android-arm64",
+          "web"
+        ],
         "android_target_platform": "android-arm64",
         "android_abi": "arm64-v8a",
         "build_matrix": {
           "macos-x64": {
-            "runner": "macos-latest",
+            "runner": "macos-15-intel",
             "working_directory": "apps/flutter_forge",
-            "commands": ["flutter build macos --release"],
+            "commands": [
+              "flutter build macos --release"
+            ],
             "package_format": "DMG",
             "package_commands": [
               "Copy Flutter Forge.app into a DMG staging directory and add an Applications symlink",
               "hdiutil create -volname 'Flutter Forge' -srcfolder <staging> -fs HFS+ -format UDZO -ov <dmg>",
               "hdiutil verify <dmg>"
             ],
-            "artifacts": ["release-assets/FlutterForge-<version>-macos-x64.dmg"],
+            "artifacts": [
+              "verified-release/FlutterForge-<version>-macos-x64.dmg"
+            ],
             "code_signed": false,
-            "notarized": false
+            "notarized": false,
+            "architecture": "x64",
+            "signing": "unsigned"
           },
           "windows-x64": {
             "runner": "windows-latest",
             "working_directory": "apps/flutter_forge",
-            "commands": ["flutter build windows --release"],
-            "artifacts": ["build/windows/x64/runner/Release"]
+            "commands": [
+              "flutter build windows --release"
+            ],
+            "artifacts": [
+              "verified-release/FlutterForge-<version>-windows-x64.exe"
+            ],
+            "package_format": "EXE",
+            "package_commands": [
+              "Build the x64 Inno Setup installer after verifying the PE architecture"
+            ],
+            "architecture": "x64",
+            "signing": "unsigned"
           },
           "android-arm64": {
             "runner": "ubuntu-latest",
             "working_directory": "apps/flutter_forge",
-            "commands": ["flutter build apk --debug --target-platform android-arm64 --split-per-abi"],
-            "artifacts": ["app-arm64-v8a-debug.apk"],
+            "commands": [
+              "flutter build apk --debug --target-platform android-arm64 --split-per-abi"
+            ],
+            "artifacts": [
+              "verified-release/FlutterForge-<version>-android-arm64-v8a-debug.apk"
+            ],
             "build_mode": "debug",
-            "signing": "Android debug certificate"
+            "signing": "Android debug certificate",
+            "architecture": "arm64-v8a"
           },
           "web": {
             "runner": "ubuntu-latest",
             "working_directory": "apps/flutter_forge",
-            "commands": ["bash ../../tool/build_web_release.sh"],
-            "artifacts": ["build/web"]
+            "commands": [
+              "bash ../../tool/build_web_release.sh"
+            ],
+            "artifacts": [
+              "verified-release/FlutterForge-<version>-web.zip"
+            ],
+            "package_format": "ZIP",
+            "architecture": "not applicable",
+            "signing": "not applicable"
           }
         },
         "default_draft": false,
-        "default_prerelease": false
+        "default_prerelease": false,
+        "workflow_contract": {
+          "path": ".github/workflows/release.yml",
+          "build_job": "build",
+          "quality_job": "quality",
+          "staging_step": "Stage verified platform artifacts",
+          "platform_labels": {
+            "macos-x64": "macos",
+            "windows-x64": "windows",
+            "android-arm64": "android",
+            "web": "web"
+          },
+          "environment": {
+            "FLUTTER_VERSION": "3.47.2",
+            "NODE_VERSION": "24"
+          }
+        },
+        "provenance_policy": {
+          "schema": "flutter_forge.release_manifest.v1",
+          "toolchain": {
+            "flutter": "3.47.2",
+            "node": "24"
+          },
+          "workflow_name": "Release installers",
+          "ci_artifact_name_template": "flutter_forge-{platform}-{source_sha}"
+        }
+      },
+      "sync_profiles": {
+        "maintenance": {
+          "required_files": [
+            "apps/flutter_forge/pubspec.yaml",
+            "pubspec.yaml",
+            "pubspec.lock",
+            "REFACTOR_PLAN.md",
+            ".github/workflows/ci.yml",
+            ".github/workflows/release.yml",
+            "tool/release_metadata.js"
+          ],
+          "candidate_paths": [
+            "packages/file_picker_bridge/AI_ANALYSIS.md",
+            "packages/flutter_ioc_core/AI_ANALYSIS.md",
+            "packages/desktop_multi_window/AI_ANALYSIS.md",
+            "packages/flutter_battery/AI_ANALYSIS.md",
+            "packages/usb_network_bridge/AI_ANALYSIS.md",
+            "apps/flutter_forge/lib/modules/platform/battery_monitor/AI_ANALYSIS.md",
+            "apps/flutter_forge/lib/modules/platform/usb_network/AI_ANALYSIS.md",
+            "AGENTS.md",
+            "AI_ANALYSIS_SCHEMA.json",
+            "AI_PROJECT_CONTEXT.md",
+            "apps/flutter_forge/lib/modules/platform/usb_network/module_entry.dart",
+            "apps/flutter_forge/lib/modules/platform/usb_network/usb_network_session.dart",
+            "packages/usb_network_bridge/lib/usb_network_bridge.dart",
+            "packages/usb_network_bridge/lib/src/api.dart",
+            "packages/usb_network_bridge/lib/src/backend_native.dart",
+            "packages/flutter_battery/lib/battery_monitoring.dart",
+            "packages/flutter_battery/lib/battery_result.dart",
+            "packages/flutter_battery/lib/src/native_battery_monitoring.dart",
+            "apps/flutter_forge/lib/modules/platform/battery_monitor/module_entry.dart",
+            "apps/flutter_forge/lib/modules/platform/battery_monitor/battery_session.dart",
+            "packages/flutter_battery/lib/flutter_battery.dart",
+            "packages/flutter_battery/lib/src/platform_capabilities.dart",
+            "packages/flutter_battery/integration/channel/contracts/channel_contract.yaml",
+            "tool/generate_agent_indexes.js",
+            "tool/agent_indexes/generator.js",
+            "tool/agent_indexes/project.js",
+            "tool/agent_indexes/contracts.js",
+            "tool/agent_indexes/AGENTS.md",
+            "apps/flutter_forge/lib/app/AGENTS.md",
+            "apps/flutter_forge/lib/app/AI_ANALYSIS.md",
+            "apps/flutter_forge/lib/app/theme/app_theme_controller.dart",
+            "apps/flutter_forge/lib/app/theme/forge_theme_tokens.dart",
+            "apps/flutter_forge/lib/modules/platform/bluetooth_ble/AI_ANALYSIS.md",
+            "apps/flutter_forge/lib/shared/popup/AI_ANALYSIS.md",
+            "apps/flutter_forge/lib/shared/table/AI_ANALYSIS.md"
+          ]
+        }
       }
     },
     "flutterguard": {
@@ -87,10 +238,45 @@
       "snapshot_namespace": "flutterguard",
       "workspace_config": "workspace/flutterguard.json",
       "agent_context": {
-        "seed_files": ["AGENTS.md", "CONTEXT.md", "pubspec.yaml", "bin/AGENTS.md", "bin/flutterguard.dart", "lib/src/AGENTS.md", "lib/src/cli/AGENTS.md", "lib/src/cli/scan_command.dart", "lib/src/scan_context.dart", "lib/src/source_workspace.dart", "lib/src/rules/AGENTS.md", "scripts/AGENTS.md", "idea-plugin/AGENTS.md", "scripts/idea_plugin_preflight.sh", ".github/workflows/release.yml"],
-        "change_prefixes": ["bin/", "lib/src/", "scripts/", "idea-plugin/", ".github/"],
+        "primary_manifest": "pubspec.yaml",
+        "change_prefixes": [
+          "bin/",
+          "lib/src/",
+          "scripts/",
+          "idea-plugin/",
+          ".github/"
+        ],
         "ownership": "executable_cli_with_separate_ide_adapter"
-      }
+      },
+      "sync_profiles": {
+        "maintenance": {
+          "required_files": [
+            "pubspec.yaml",
+            ".github/workflows/release.yml",
+            "bin/boundarylens.dart",
+            "idea-plugin/src/main/resources/META-INF/plugin.xml"
+          ],
+          "candidate_paths": [
+            "idea-plugin/src/main/kotlin/com/boundarylens/BoundaryLensConfigurable.kt",
+            "idea-plugin/src/main/kotlin/com/boundarylens/BoundaryLensGuideAction.kt",
+            "idea-plugin/src/main/kotlin/com/boundarylens/BoundaryLensScanAction.kt",
+            "idea-plugin/src/main/kotlin/com/boundarylens/BoundaryLensSettings.kt",
+            "AGENTS.md",
+            "CONTEXT.md",
+            "bin/AGENTS.md",
+            "lib/src/AGENTS.md",
+            "lib/src/cli/AGENTS.md",
+            "lib/src/cli/scan_command.dart",
+            "lib/src/scan_context.dart",
+            "lib/src/source_workspace.dart",
+            "lib/src/rules/AGENTS.md",
+            "scripts/AGENTS.md",
+            "idea-plugin/AGENTS.md",
+            "scripts/idea_plugin_preflight.sh"
+          ]
+        }
+      },
+      "display_name": "BoundaryLens"
     }
   }
 }

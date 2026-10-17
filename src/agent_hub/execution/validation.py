@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import platform
+import os
+import tempfile
 import subprocess
 import sys
 from pathlib import Path, PurePosixPath
@@ -70,14 +72,20 @@ def run_checks(root: Path, checks: list[dict], tree_oid: str) -> list[dict]:
             raise ControlError("VALIDATION_PATH_ESCAPE")
         status, code, output = "FAIL", None, ""
         try:
-            result = subprocess.run(command(check["check_id"]), cwd=cwd,
-                                    capture_output=True, text=True, timeout=check["timeout_seconds"])
+            with tempfile.TemporaryDirectory(prefix='agent-hub-validation-') as cache:
+                # A successful validator must not change the frozen output tree.
+                # Python bytecode is disabled; tools respecting XDG use a tree-external cache.
+                env = {**os.environ, 'PYTHONDONTWRITEBYTECODE': '1',
+                       'PYTHONPYCACHEPREFIX': str(Path(cache) / 'python'), 'XDG_CACHE_HOME': cache}
+                result = subprocess.run(command(check["check_id"]), cwd=cwd, env=env,
+                                        capture_output=True, text=True, timeout=check["timeout_seconds"])
             code, output = result.returncode, result.stdout + result.stderr
             status = "PASS" if code == 0 else "FAIL"
         except (OSError, subprocess.TimeoutExpired) as error:
             output = type(error).__name__
         receipts.append({**check, "status": status, "exit_code": code, "output_tree_oid": tree_oid,
-                         "environment": {"os": platform.system(), "machine": platform.machine()},
+                         "environment": {"os": platform.system(), "machine": platform.machine(),
+                                         "python_bytecode": "DISABLED", "cache_scope": "OUTSIDE_OUTPUT_TREE"},
                          "log_sha256": digest(output), "output_tail": output[-2000:]})
     return receipts
 

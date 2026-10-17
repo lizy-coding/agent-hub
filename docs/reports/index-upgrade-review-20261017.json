@@ -1,0 +1,394 @@
+{
+  "schema_version": "index-upgrade-review.v1",
+  "date": "2026-10-17",
+  "scope": "ALL_THREE_REGISTERED_PROJECTS_WITH_BOUNDED_CAPTURE",
+  "mode": "PLAN_ONLY",
+  "acceptance": false,
+  "hub_source_sha": "bd6daadecb8d66fd34b61f5bf95e433f782ec1dc",
+  "canonical": "workspace/sync-plan.json",
+  "archive": "docs/reports/index-upgrade-20261017.json",
+  "canonical_sha256": "390b5148b9e2cc2e8f5232724f00f790a93ebf4383547f34dcd470dcd4b7c100",
+  "registry_sha256": "8e5cd23b9115c3a586e9d2bd0d4585716cce23a9ea72dcc5dc92861df60519fa",
+  "baseline": "docs/reports/workflow-optimization-sync-20261013.json",
+  "plan_id": "7fe5089062c07312d161f8321983ad3e84f6fc9f267b6f3d70cb7c2897ce6dec",
+  "summary": {
+    "success": 2,
+    "partial": 1,
+    "blocked": 0
+  },
+  "exit_code": 1,
+  "capture_rounds": [
+    {
+      "phase": "initial",
+      "artifact": "docs/reports/index-upgrade-before-20261017.json"
+    },
+    {
+      "phase": "profile_calibration",
+      "artifact": "docs/reports/index-upgrade-calibrated-20261017.json"
+    },
+    {
+      "phase": "one_bounded_retry_after_concurrent_changes",
+      "artifact": "docs/reports/index-upgrade-20261017.json"
+    }
+  ],
+  "budget_note": "Each capture round has its own 64-file per-project cap. Rounds are not combined into a claim of complete repository coverage.",
+  "projects": [
+    {
+      "project_id": "gcode-core",
+      "status": "SUCCESS",
+      "source_sha": "2c6945da2f0f1c721fcbae9043b25d3c2f92dcfc",
+      "current_sha_at_verification": "2c6945da2f0f1c721fcbae9043b25d3c2f92dcfc",
+      "branch": "dev",
+      "version": "0.2.1",
+      "package_names": [
+        "example",
+        "gcode_core"
+      ],
+      "selected_files": 19,
+      "candidate_files": 19,
+      "gaps": 0,
+      "gap_counts": {},
+      "warnings": [
+        "DIRTY_WORKSPACE: observations include current worktree content beyond source SHA"
+      ],
+      "blockers": [],
+      "retired_candidates": [],
+      "source_snapshot_id": "9c2323c8c84f71543ec0a8dd32a17fba0d9feddfe5300b9b60c7b327f0f093f9",
+      "plan_id": "63d2c87ef67c17c3cb0631e1dc14b8245933f50c199b539bb27dbfd842d325df",
+      "previous_source_sha": "2c6945da2f0f1c721fcbae9043b25d3c2f92dcfc",
+      "previous_gaps": 0,
+      "content_changed_since_previous": false,
+      "freshness": "STABLE_AT_VERIFICATION",
+      "changed_selected_paths_after_capture": [],
+      "queue_status": "NOT_OBSERVED",
+      "queue_tasks": 0,
+      "queue_delta": {
+        "status": "COMPARED",
+        "added": [],
+        "removed": [],
+        "changed": []
+      },
+      "release_contract": {
+        "status": "NOT_CONFIGURED",
+        "unknowns": []
+      },
+      "metadata_mode": "CACHED_TARGET_METADATA"
+    },
+    {
+      "project_id": "flutter-forge",
+      "status": "SUCCESS",
+      "source_sha": "6910044320f33ae27aa32d8ff5e2617672ccb248",
+      "current_sha_at_verification": "6910044320f33ae27aa32d8ff5e2617672ccb248",
+      "branch": "dev",
+      "version": "1.2.8+2",
+      "package_names": [
+        "flutter_forge_app",
+        "desktop_multi_window",
+        "file_picker_bridge",
+        "flutter_battery",
+        "flutter_ioc_core",
+        "usb_network_bridge",
+        "flutter_forge_workspace"
+      ],
+      "selected_files": 62,
+      "candidate_files": 62,
+      "gaps": 0,
+      "gap_counts": {},
+      "warnings": [],
+      "blockers": [],
+      "retired_candidates": [],
+      "source_snapshot_id": "9b1a4c981ab74d7917afde344ee428d8eafaae950e7511d3814657397586e987",
+      "plan_id": "91e05c31fb1f64d22d3c47b8742aa10622c3a04344fa989201fb53cf442bb6e8",
+      "previous_source_sha": "b90d5971a8af6de4a6eaedf979344a9e53ef0cac",
+      "previous_gaps": 44,
+      "content_changed_since_previous": true,
+      "freshness": "STABLE_AT_VERIFICATION",
+      "changed_selected_paths_after_capture": [],
+      "queue_status": "OBSERVED",
+      "queue_tasks": 20,
+      "queue_delta": {
+        "status": "COMPARED",
+        "added": [],
+        "removed": [],
+        "changed": []
+      },
+      "release_contract": {
+        "status": "MATCH",
+        "unknowns": [],
+        "observed_platforms": {
+          "macos-x64": {
+            "runner": "macos-15-intel",
+            "label": "macos"
+          },
+          "windows-x64": {
+            "runner": "windows-latest",
+            "label": "windows"
+          },
+          "android-arm64": {
+            "runner": "ubuntu-latest",
+            "label": "android"
+          },
+          "web": {
+            "runner": "ubuntu-latest",
+            "label": "web"
+          }
+        },
+        "source": ".github/workflows/release.yml",
+        "evidence_scope": "WORKFLOW_DECLARATION_ONLY",
+        "remote_acceptance": false
+      },
+      "metadata_mode": "CACHED_TARGET_METADATA"
+    },
+    {
+      "project_id": "flutterguard",
+      "status": "PARTIAL",
+      "source_sha": "ca8092573a05abd7341b3f05b9c6402c568779d3",
+      "current_sha_at_verification": "ca8092573a05abd7341b3f05b9c6402c568779d3",
+      "branch": "feature/ide-stdout-single-file",
+      "version": "0.7.1",
+      "package_names": [
+        "boundarylens_inspection_scenarios",
+        "boundarylens_setup_failure",
+        "module_boundary_example",
+        "boundarylens_cli"
+      ],
+      "selected_files": 64,
+      "candidate_files": 116,
+      "gaps": 44,
+      "gap_counts": {
+        "FILE_BUDGET_EXHAUSTED": 25,
+        "MISSING_OR_DELETED": 18,
+        "TARGET_REGISTRY_METADATA_MISSING": 1
+      },
+      "warnings": [
+        "DIRTY_WORKSPACE: observations include current worktree content beyond source SHA",
+        "UNTRACKED_EXPLICIT_FILE: bin/boundarylens.dart",
+        "UNTRACKED_EXPLICIT_FILE: idea-plugin/src/main/kotlin/com/boundarylens/BoundaryLensConfigurable.kt",
+        "UNTRACKED_EXPLICIT_FILE: idea-plugin/src/main/kotlin/com/boundarylens/BoundaryLensGuideAction.kt",
+        "UNTRACKED_EXPLICIT_FILE: idea-plugin/src/main/kotlin/com/boundarylens/BoundaryLensScanAction.kt",
+        "UNTRACKED_EXPLICIT_FILE: idea-plugin/src/main/kotlin/com/boundarylens/BoundaryLensSettings.kt"
+      ],
+      "blockers": [],
+      "retired_candidates": [
+        {
+          "path": "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardStartupActivity.kt",
+          "reason": "HISTORICAL_INPUT_DELETED",
+          "deletion_commit": "ca8092573a05abd7341b3f05b9c6402c568779d3",
+          "origins": [
+            "recent_commit"
+          ]
+        }
+      ],
+      "source_snapshot_id": "e0f2dc1d56210e9c5babf0f25ef73bf82b3ef8690a588607fdba4c5c77ff112e",
+      "plan_id": "33409efcdbfd4768715abff6b2aa1c497a757719321cbd94271216b07a1378ed",
+      "previous_source_sha": "fb86f4ffa322bb0dbe69748c5c594296bf44657d",
+      "previous_gaps": 2,
+      "content_changed_since_previous": true,
+      "freshness": "CHANGED_AFTER_CAPTURE",
+      "changed_selected_paths_after_capture": [
+        ".github/workflows/release.yml",
+        "idea-plugin/AGENTS.md",
+        "idea-plugin/src/main/resources/META-INF/plugin.xml",
+        "scripts/AGENTS.md",
+        "scripts/idea_plugin_preflight.sh",
+        "idea-plugin/RELEASING.md",
+        "idea-plugin/docs/changelog.html",
+        "idea-plugin/docs/guide.html"
+      ],
+      "queue_status": "NOT_OBSERVED",
+      "queue_tasks": 0,
+      "queue_delta": {
+        "status": "COMPARED",
+        "added": [],
+        "removed": [],
+        "changed": []
+      },
+      "release_contract": {
+        "status": "NOT_CONFIGURED",
+        "unknowns": []
+      },
+      "metadata_mode": "EXPLICIT_ROOT_FALLBACK"
+    }
+  ],
+  "optimization_items": [
+    {
+      "id": "O1",
+      "priority": "P1",
+      "state": "NEW",
+      "owner": "Agent Hub",
+      "title": "索引发布前增加整批新鲜度核对",
+      "evidence": "两轮后置核对捕捉到 Forge HEAD 前进与 BoundaryLens 的 plugin.xml/preflight 改动；末轮所选输入仍可能在投影后变化",
+      "action": "捕获后、所有投影结束后及更新 latest 指针前统一核对 source SHA、配置和选中文件哈希；最多有限重采，仍变化则保留旧观察并明确标为 stale",
+      "acceptance": [
+        "并发改写 fixture 不会被标为当前可用索引",
+        "内容观察身份不被覆盖；新鲜度独立记录",
+        "重采有明确上限，不无限追逐移动工作区"
+      ],
+      "status": "PROPOSED_NOT_FROZEN",
+      "allowed_operations": [],
+      "allowed_paths_by_repository": {}
+    },
+    {
+      "id": "O2",
+      "priority": "P1",
+      "state": "PARTLY_DONE_THIS_RUN",
+      "owner": "Agent Hub",
+      "title": "入口索引从产品声明生成校准提案",
+      "evidence": "当前 pubspec 声明 boundarylens_cli/boundarylens，插件 descriptor 声明 com.boundarylens；旧 bin/flutterguard.dart 已不存在",
+      "action": "本轮已补 boundarylens 别名与新 CLI/IDE 路径；后续从有限读取的 executables 与 descriptor 引用生成 profile 差异提案，避免再手改长清单",
+      "acceptance": [
+        "稳定 project_id、namespace、运行路径和权限不因品牌变更而改变",
+        "不按引用关系自动读其他仓库",
+        "提案路径通过规则、越界及共享预算检查"
+      ],
+      "status": "PROPOSED_NOT_FROZEN",
+      "allowed_operations": [],
+      "allowed_paths_by_repository": {}
+    },
+    {
+      "id": "O3",
+      "priority": "P1",
+      "state": "NEW",
+      "owner": "Agent Hub with project maintainer",
+      "title": "区分工作区迁移和已提交退役",
+      "evidence": "Forge 3 个历史生成器路径已获 Git 删除证明；BoundaryLens 18 个旧路径仍涉及工作区删除，不能按已提交历史退役处理",
+      "action": "输出工作区删除/声明替代/历史删除的分项状态；不把已找到替代入口等同于源迁移已完成；提交后再按 D08 分类退役",
+      "acceptance": [
+        "仅历史可选输入且有删除提交证明时自动退役",
+        "必需输入缺失始终阻断",
+        "旧路径与新声明的映射保留来源，不靠全库搜索猜测"
+      ],
+      "status": "PROPOSED_NOT_FROZEN",
+      "allowed_operations": [],
+      "allowed_paths_by_repository": {}
+    },
+    {
+      "id": "O4",
+      "priority": "P1",
+      "state": "CONTINUING",
+      "owner": "Agent Hub",
+      "title": "按任务拆分有界采集 profile",
+      "evidence": "BoundaryLens 116 个候选在 64 文件预算内仍有 25 个预算缺口；新 CLI/IDE 核心入口纳入后，可选覆盖相应减少",
+      "action": "拆分 daily、IDE、release 等有限任务 profile；优先关键声明与变更路径，报告 profile 的实际覆盖，不通过叠加多个轮次宣称整库完整",
+      "acceptance": [
+        "每项目每轮所有投影共享最多 64 个内容读取",
+        "祖先指南占用同一预算",
+        "核心入口与必需闭包完整，可选遗漏逐项可追溯"
+      ],
+      "status": "PROPOSED_NOT_FROZEN",
+      "allowed_operations": [],
+      "allowed_paths_by_repository": {}
+    },
+    {
+      "id": "O5",
+      "priority": "P1",
+      "state": "EXTERNAL_PRODUCER_PENDING",
+      "owner": "flutter-forge",
+      "title": "补齐 producer manifest 的架构与工具链字段",
+      "evidence": "本轮发布工作流声明 MATCH，但已选中的 tool/release_metadata.js 仍未输出 architecture/toolchain 字段",
+      "action": "由 Forge 更新生成源并输出真实构建字段，随后再做同 SHA 的 CI 与发布来源校验；Hub 门禁继续阻断不完整的旧 manifest",
+      "acceptance": [
+        "必需平台、架构、工具链、签名、模式及源 SHA 完整",
+        "CI run/attempt 与 producer manifest 哈希一致",
+        "真实远端执行与本地 fixture 结果分开"
+      ],
+      "status": "PROPOSED_NOT_FROZEN",
+      "allowed_operations": [],
+      "allowed_paths_by_repository": {}
+    },
+    {
+      "id": "O6",
+      "priority": "P1",
+      "state": "CONTINUING",
+      "owner": "Agent Hub",
+      "title": "为已注册 CLI 提供有限元数据缓存入口",
+      "evidence": "flutterguard/BoundaryLens 仍为 EXPLICIT_ROOT_FALLBACK，存在 TARGET_REGISTRY_METADATA_MISSING",
+      "action": "从已选 manifest 与规则构造根开发单元并绑定来源及新鲜度，不调用全量 WorkspaceRegistry.refresh；缓存与事实采集保持权限独立",
+      "acceptance": [
+        "缓存含稳定 repository_id 与来源绑定",
+        "品牌更名不会造成重复项目或权限提升",
+        "缺指南保持未知；禁用 walk/glob/rglob 的 fixture 通过"
+      ],
+      "status": "PROPOSED_NOT_FROZEN",
+      "allowed_operations": [],
+      "allowed_paths_by_repository": {}
+    },
+    {
+      "id": "O7",
+      "priority": "P2",
+      "state": "NEW",
+      "owner": "Agent Hub",
+      "title": "区分未观察队列与空队列的差异结果",
+      "evidence": "gcode-core 和 BoundaryLens 的 queue_status=NOT_OBSERVED，但 queue_delta 仍为 COMPARED 且三个差异列表为空",
+      "action": "区分 NOT_CONFIGURED、NOT_OBSERVED、OBSERVED_EMPTY 和 OBSERVED；只有可比较的队列观察才计算 delta",
+      "acceptance": [
+        "缺队列输入不被解读成已证实无变化",
+        "Forge 已观察的 20 项声明仍可比较",
+        "不写入运行任务状态或授予执行范围"
+      ],
+      "status": "PROPOSED_NOT_FROZEN",
+      "allowed_operations": [],
+      "allowed_paths_by_repository": {}
+    },
+    {
+      "id": "O8",
+      "priority": "P2",
+      "state": "NEW",
+      "owner": "Agent Hub",
+      "title": "统一归档和项目级增量失效依据",
+      "evidence": "本轮手动维护首次、校准、重采快照；全局注册表 alias 更新也会改变未变动项目的 plan_id",
+      "action": "增加 canonical 与 dated archive 的统一发布步骤和哈希清单；评估按项目有效配置计算缓存失效，同时保留全局配置哈希作为证据",
+      "acceptance": [
+        "一次命令可追溯基线、有效配置、快照与报告",
+        "内容身份和策略身份继续分开",
+        "若改变身份绑定规则，另行更新 ADR，不静默放松"
+      ],
+      "status": "PROPOSED_NOT_FROZEN",
+      "allowed_operations": [],
+      "allowed_paths_by_repository": {}
+    }
+  ],
+  "validation": {
+    "maintenance_fixture": {
+      "status": "PASS",
+      "tests": 49,
+      "log_sha256": "427d7576a13c7aa151698d11bf3aef99f5b4a4ebcd6b0851f79ceb3761be4148"
+    },
+    "registry_check": {
+      "ok": true,
+      "errors": [],
+      "warnings": [],
+      "projects": [
+        {
+          "project_id": "gcode-core",
+          "adapter": "gcode_core",
+          "primary_repository_id": "gcode_core",
+          "repository_path": "/Users/forest/code/langGraph/gcode_core",
+          "writable": true
+        },
+        {
+          "project_id": "flutter-forge",
+          "adapter": "flutter_forge",
+          "primary_repository_id": "flutter_forge",
+          "repository_path": "/Users/forest/code/langGraph/flutter_forge",
+          "writable": true
+        },
+        {
+          "project_id": "flutterguard",
+          "adapter": "generic",
+          "primary_repository_id": "flutterguard",
+          "repository_path": "/Users/forest/code/flutterguard",
+          "writable": false
+        }
+      ],
+      "source_discovery_performed": false
+    },
+    "source_freshness": "PER_PROJECT_RECORDED",
+    "runtime_checkpoint": "NOT_INSPECTED_OR_MUTATED",
+    "remote_ci_release_platform_acceptance": "NOT_RUN"
+  },
+  "business_checkout_edits": "NONE_BY_THIS_TASK",
+  "hub_changes": "Registry/profile calibration and index/report artifacts only; earlier uncommitted implementation preserved",
+  "allowed_operations": [],
+  "allowed_paths_by_repository": {}
+}

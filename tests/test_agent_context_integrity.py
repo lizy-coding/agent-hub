@@ -49,7 +49,7 @@ class AgentContextIntegrityTest(unittest.TestCase):
         root = Path(__file__).resolve().parents[1]
         result = subprocess.run([str(root/'.venv/bin/python'), str(root/'agent'), 'agent-context', '--project', 'missing-project', '--output', str(f.output)], cwd=root, env=env, capture_output=True, text=True)
         self.assertEqual(result.returncode, 2)
-        self.assertIn('UNKNOWN_PROJECT_OR_CONTEXT_POLICY', result.stdout + result.stderr)
+        self.assertIn('UNKNOWN_PROJECT', result.stdout + result.stderr)
 
     def test_budget_packs_first_source_with_its_guides_before_other_branches(self):
         f = self.fixture

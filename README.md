@@ -107,10 +107,10 @@ python -c 'from pathlib import Path; from agent_hub.workspace.config import Work
 ./agent agent-context --project flutter-forge
 ./agent agent-context --project gcode-core
 ./agent agent-context --project flutterguard
-./agent agent-context --max-files 24
+./agent sync-plan --max-files 64
 ```
 
-该入口从项目注册与 Git 近期文件出发，选择 `agent_context.seed_files` 和允许前缀下的变更文件，再将明确的 `candidate_paths` 传入现有 `context_analysis` 与 `capability_analysis` 图。默认写入 Hub 的 `workspace/agent-context.json`；只更新已选证据的快照，不调用全量发现或覆盖 `workspace/registry.json`。`--output` 可指定其他快照路径。
+事实入口从注册的 `sync_profiles` 与 Git 近期文件出发，优先主 manifest、必需文件及声明的局部依赖，再将明确的 `candidate_paths` 和冻结文本传入现有 context/capability 图。默认写入 `workspace/sync-plan.json`，返回 `sync-plan.v1` 和 0/1/2 结果协议；不调用全量发现或覆盖 `workspace/registry.json`。`--output` 可指定其他观察文件。
 
 显式文件列表约束实际读取范围；缺失、删除、目录、symlink 与超过预算的候选会记录为缺口。未提交工作区、历史证据与当前提交验收分别记录。未传 `candidate_paths` 的兼容解析入口仍可能遍历源码，不能用结果数量上限代替本入口的范围约束。
 
@@ -243,3 +243,26 @@ python -m unittest discover -s tests
 
 - 已实现：启动自检、工作区注册表、上下文解析、能力分析、影子基准、迁移规划/执行骨架、development 重构程序、decomposition 拆解程序、release_hosting 安装包发布托管（PLAN_ONLY 默认 + 显式 `--execute` 发布通道）。
 - 有意不在范围内：需求分析器、通用 RAG、外部项目管理集成；除 release_hosting 冻结通道外，宿主不 push / 不 merge / 不发布。
+
+### 统一事实同步与验证
+
+```bash
+./agent sync-plan --output workspace/sync-plan.json
+./agent sync-plan --project forge --profile maintenance --max-files 64 --output /private/tmp/forge-plan.json
+./agent sync-plan --project forge --previous /private/tmp/forge-plan.json --output /private/tmp/forge-plan-next.json
+./agent maintenance-test --profile maintenance
+./agent maintenance-test --profile execution
+./agent maintenance-test --profile release
+```
+
+注册项的 `sync_profiles` 是统一输入配置。主 manifest、required_files 与活动祖先指南优先；workspace/path 依赖只从已捕获的 manifest 定点扩展。每项目整轮共享最多 64 个文件的内容读取预算，context、capability、inventory、队列和发布声明检查复用同一冻结文本，不各自重置预算。内容读取失败也计入；候选路径探测有独立上限。必需闭包不完整为 BLOCKED，可选缺口为 PARTIAL。
+
+公共命令使用 `sync-plan.v1`：SUCCESS 退出 0，PARTIAL 退出 1，BLOCKED 或入口错误退出 2。`agent-context` 和 `scripts/project_inventory.py` 已改用这一协议，旧 JSON schema 与退出码没有兼容承诺。dirty 工作区与显式未跟踪内容作为来源说明，不据此判定功能失败。
+
+`source_snapshot_id` 绑定选中内容；`plan_id` 另绑定配置、profile、预算、需求及比较依据。队列 delta 是源契约声明的变化，不更新执行任务状态。默认不读取运行检查点；`--checkpoint <local-file> --project <id>` 仅核对指定本地快照，不恢复、不协调、不快进，并不证明最新运行状态。
+
+注册校验仍可独立运行 `.venv/bin/python scripts/check_project_registry.py`。测试菜单只包含显式 fixture，维护菜单不会调用全量 discover、旧 shadow benchmark 或业务全库扫描。验证器缓存位于输出树外，Python 字节码关闭；源码变化拒绝仍保留。
+
+发布声明核对使用捕获的 workflow 与 Hub 策略，正式发布继续走 `release-plan` / `release-run --execute`。必须提供每个必需平台的 producer manifest，绑定源码 SHA、成功 CI run/attempt、架构、工具链、签名、模式、产物大小和 SHA256；缺失或不一致阻断。当前 Forge producer 尚缺架构与工具链字段，Hub 不伪造，生产端补齐前旧 manifest 不能通过新门禁。
+
+决议与边界见 [工作流优化决议](docs/reports/workflow-optimization-decisions-20261013.md)。

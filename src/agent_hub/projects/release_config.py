@@ -2,11 +2,11 @@
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
-
-_ROOT = Path(__file__).resolve().parents[3]
+from agent_hub.projects.decomposition_config import DEFAULT_REGISTRY, load_decomposition_project
 
 
 @dataclass(frozen=True)
@@ -17,12 +17,13 @@ class ReleaseProjectConfig:
     primary_repository_id: str
     repository_path: Path
     release: dict[str, object]
+    adapter: str = "generic"
 
     def graph_input(self) -> dict[str, object]:
         return {
             "project_id": self.project_id,
             "program_id": self.program_id,
-            "adapter": "flutter_forge" if self.project_id == "flutter-forge" else "generic",
+            "adapter": self.adapter,
             "cluster_root": str(self.cluster_root),
             "primary_repository_id": self.primary_repository_id,
             "repository_paths": {self.primary_repository_id: str(self.repository_path)},
@@ -30,12 +31,20 @@ class ReleaseProjectConfig:
         }
 
 
-def load_release_project(project_id: str | None = None) -> ReleaseProjectConfig:
-    payload = json.loads((_ROOT / "workspace" / "projects.json").read_text(encoding="utf-8"))
-    selected = project_id or str(payload.get("default_project") or "flutter-forge")
-    project = (payload.get("projects") or {}).get(selected)
-    if not isinstance(project, dict):
-        raise ValueError(f"unknown project: {selected}")
-    repository_id = str(project.get("adapter") or selected.replace("-", "_"))
-    repository_path = (_ROOT / ".." / "langGraph" / repository_id).resolve()
-    return ReleaseProjectConfig(selected, f"{selected}-release-program", _ROOT / ".." / "langGraph", repository_id, repository_path, dict(project.get("release") or {}))
+def load_release_project(project_id: str | None = None, *, registry_path: Path | None = None) -> ReleaseProjectConfig:
+    path = Path(os.environ.get("AGENT_HUB_PROJECT_REGISTRY") or registry_path or DEFAULT_REGISTRY)
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    try:
+        config = load_decomposition_project(project_id, registry_path=path)
+    except KeyError as error:
+        raise ValueError(str(error)) from error
+    project = payload["projects"][config.project_id]
+    return ReleaseProjectConfig(
+        project_id=config.project_id,
+        program_id=f"{config.project_id}-release-program",
+        cluster_root=config.cluster_root,
+        primary_repository_id=config.primary_repository_id,
+        repository_path=config.repository_paths[config.primary_repository_id],
+        release=dict(project.get("release") or {}),
+        adapter=config.adapter,
+    )

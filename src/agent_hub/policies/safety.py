@@ -54,6 +54,7 @@ def validate_release_command(argv: list[str], frozen_repo: str) -> dict[str, obj
       * ``gh auth status``                         (preflight)
       * ``gh repo view <frozen_repo>``             (preflight)
       * ``gh release create|upload|view|list|download ...`` (publish / verify / resume)
+      * one exact ``gh run view`` shape (read-only frozen CI source verification)
     """
 
     command = [str(part) for part in argv]
@@ -69,6 +70,16 @@ def validate_release_command(argv: list[str], frozen_repo: str) -> dict[str, obj
         if rest[2] != frozen:
             return _reject("release_repo_mismatch", command)
         return {"status": "PASS", "lane": "repo_preflight", "command": command}
+    if (len(rest) == 9 and rest[:2] == ['run', 'view'] and rest[2].isdigit() and int(rest[2]) > 0
+            and rest[3] == '--attempt' and rest[4].isdigit() and int(rest[4]) > 0
+            and rest[5:8] == ['--repo', frozen, '--json']
+            and rest[8] == 'attempt,headSha,status,conclusion,workflowName'):
+        return {"status": "PASS", "lane": "release_ci_read_only", "command": command}
+    if (len(rest) == 9 and rest[:2] == ['run', 'download'] and rest[2].isdigit() and int(rest[2]) > 0
+            and rest[3:6] == ['--repo', frozen, '--name']
+            and rest[6] and all(c.isalnum() or c in '_.-' for c in rest[6])
+            and rest[7] == '--dir' and rest[8]):
+        return {"status": "PASS", "lane": "release_ci_artifact_read_only", "command": command}
     if rest[0] != "release":
         return _reject("release_lane_forbids_non_release_commands", command)
     if len(rest) < 2 or rest[1] not in RELEASE_LANE_ALLOWED_ACTIONS:

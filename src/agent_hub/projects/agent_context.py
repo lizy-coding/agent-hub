@@ -39,9 +39,15 @@ def _validate_output(output: Path, registry_path: Path, payload: dict) -> None:
         configured = Path(str(entry.get("workspace_config", "")))
         configured = configured if configured.is_absolute() else AGENT_HUB_ROOT / configured
         protected.add(configured.resolve())
-        config = WorkspaceConfig.from_file(configured)
+        try:
+            config = WorkspaceConfig.from_file(configured)
+        except (OSError, ValueError):
+            # Invalid registrations block their project; valid projects can still diagnose.
+            continue
         protected.update(path.resolve() for path in (config.registry_path, config.registry_storage_path) if path is not None)
         runtime = config.runtime.get("repositories", {})
+        if not isinstance(runtime, dict):
+            continue
         for repository in runtime.values():
             if isinstance(repository, dict) and repository.get("runtime_path"):
                 repositories.append(Path(str(repository["runtime_path"])).resolve())
@@ -49,9 +55,9 @@ def _validate_output(output: Path, registry_path: Path, payload: dict) -> None:
         raise ValueError("agent context output must not overwrite a managed repository or registry/configuration")
     if _within(output, AGENT_HUB_ROOT):
         relative = output.relative_to(AGENT_HUB_ROOT)
-        if relative.parts and relative.parts[0] in {"src", "tests", "scripts", ".git", ".agents", ".codex"}:
+        if relative.parts and relative.parts[0] in {"src", "tests", "scripts", ".git", ".agents", ".codex", ".decomposition", ".integration", ".agent-hub", ".execution"}:
             raise ValueError("agent context output must be an artifact, not Hub implementation or control data")
-        if relative.as_posix() in {"agent", "AGENTS.md", "README.md", "README.en.md", "pyproject.toml", "langgraph.json"}:
+        if relative.as_posix() in {"agent", "AGENTS.md", "CONTEXT.md", "README.md", "README.en.md", "pyproject.toml", "langgraph.json"}:
             raise ValueError("agent context output must not overwrite Hub entrypoints")
     if output.exists() and not output.is_file():
         raise ValueError("agent context output must be a file")
@@ -95,12 +101,14 @@ def _path_score(value: str, query: list[str]) -> int:
     return sum(3 if term in basename else 1 for term in query if term in words)
 
 
-def _references(root: Path, value: str, text: str, package_roots: dict[str, Path]) -> list[str]:
+def _references(root: Path, value: str, text: str, package_roots: dict[str, Path], *, max_candidates: int | None = None, known_paths: set[str] | None = None) -> list[str]:
     """Follow literal declarations in already captured text, never walk."""
     found = []
     base = (root / value).parent
 
     def admit(raw: str, directory: Path):
+        if max_candidates is not None and len(found) >= max_candidates:
+            return
         if not raw or "$" in raw or "*" in raw or raw.startswith(("dart:", "http:", "https:")):
             return
         if raw.startswith("package:"):
@@ -113,7 +121,7 @@ def _references(root: Path, value: str, text: str, package_roots: dict[str, Path
         resolved = target.resolve()
         if _within(resolved, root):
             relative = resolved.relative_to(root).as_posix()
-            if _candidate_reason(root, relative) is None and relative not in found:
+            if relative not in (known_paths or set()) and _candidate_reason(root, relative) is None and relative not in found:
                 found.append(relative)
 
     for raw in re.findall(r"(?:import|export)\s+['\"]([^'\"]+)['\"]", text):
@@ -178,10 +186,12 @@ def _workspace_config(entry: dict) -> WorkspaceConfig:
     return WorkspaceConfig.from_file(path)
 
 
-def _manifest_facts(texts: dict[str, str]) -> tuple[str | None, str | None, list[dict], list[str]]:
+def _manifest_facts(texts: dict[str, str], primary_manifest: str = "pubspec.yaml") -> tuple[str | None, str | None, list[dict], list[str]]:
     """Bind consumer declarations to selected lockfiles, never sibling HEADs."""
-    version, version_path = None, None
-    manifests, lockfiles, gaps = {}, {}, []
+    from agent_hub.projects.inventory import manifest_versions
+    versions = manifest_versions(texts, primary_manifest)
+    version, version_path = versions["version"], versions["version_source"]
+    manifests, lockfiles, gaps = {}, {}, list(versions["unknowns"])
     for value, text in texts.items():
         name = Path(value).name
         if name not in {"pubspec.yaml", "pubspec.lock"}:
@@ -201,8 +211,6 @@ def _manifest_facts(texts: dict[str, str]) -> tuple[str | None, str | None, list
             lockfiles[value] = payload
         else:
             manifests[value] = payload
-            if version is None and payload.get("version") is not None:
-                version, version_path = str(payload["version"]), value
     pins = []
     for manifest_path, manifest in manifests.items():
         for section in ("dependencies", "dev_dependencies", "dependency_overrides"):
@@ -289,13 +297,21 @@ def _target_repository(config: WorkspaceConfig, root: Path, repo_id: str) -> tup
     return repository, "CACHED_TARGET_METADATA", gaps
 
 
-def _refresh_project(project_id: str, entry: dict, registry_path: Path, max_files: int, protected_outputs: set[Path], requirement: str | None = None) -> dict:
-    project = load_decomposition_project(project_id, registry_path=registry_path)
+def _refresh_project(project_id: str, entry: dict, registry_path: Path, max_files: int, protected_outputs: set[Path], requirement: str | None = None, *, intake_profile: dict | None = None, project_facts=None, project_config=None, workspace_config=None) -> dict:
+    project = project_config or load_decomposition_project(project_id, registry_path=registry_path)
     root = project.repository_paths[project.primary_repository_id].resolve()
-    config = _workspace_config(entry)
+    config = workspace_config or _workspace_config(entry)
     protected_outputs.update(path.resolve() for path in (config.registry_path, config.registry_storage_path) if path is not None)
     spec = entry.get("agent_context") or {}
-    seeds = list(dict.fromkeys(str(value) for value in spec.get("seed_files", [])))
+    required = list(dict.fromkeys([project.primary_manifest, *intake_profile.get("required_files", [])])) if intake_profile is not None else []
+    if intake_profile is not None:
+        normalized_required = []
+        for value in required:
+            active = ancestor_agent_rules(root, root / value) if Path(value).name in AGENT_RULE_NAMES else []
+            replacement = next((rule.relative_to(root).as_posix() for rule in active if rule.parent == (root / value).parent), value)
+            normalized_required.append(replacement)
+        required = list(dict.fromkeys(normalized_required))
+    seeds = list(dict.fromkeys([*required, *(intake_profile.get("candidate_paths", []) if intake_profile is not None else spec.get("seed_files", []))]))
     prefixes = [str(value).rstrip("/") for value in spec.get("change_prefixes", [])]
     unknowns = []
     git_results = {}
@@ -314,11 +330,17 @@ def _refresh_project(project_id: str, entry: dict, registry_path: Path, max_file
         git_results[key] = output
         if error:
             unknowns.append(f"GIT_{key.upper()}_UNAVAILABLE: {error}")
+    if intake_profile is not None and not any(rule.parent == root for rule in ancestor_agent_rules(root, root / project.primary_manifest)):
+        return {'project_id': project_id, 'repository_id': project.primary_repository_id,
+                'repository_root': str(root), 'status': 'CONTEXT_REFRESH_FAILED', 'version': None,
+                'source_sha': git_results['source_sha'].strip() or None, 'source_snapshot_id': None,
+                'required_files': required, 'selected_files': [], 'unknowns': ['REQUIRED_ROOT_GUIDE_NOT_OBSERVED'],
+                'project_facts': {}, 'acceptance': False, 'metrics': {'inspected_files': 0, 'selected_files': 0, 'max_files': max_files, 'no_walk': True}}
     recent = _names(git_results["recent_paths"])
     worktree = _names(git_results["worktree_paths"])
     index = _names(git_results["index_paths"])
     dirty = sorted(set(worktree + index))
-    origins: dict[str, list[str]] = {value: ["seed"] for value in seeds}
+    origins: dict[str, list[str]] = {value: ["required" if value in required else "seed"] for value in seeds}
     ignored = []
     for origin, values in (("dirty_worktree", worktree), ("dirty_index", index), ("recent_commit", recent)):
         for value in values:
@@ -334,13 +356,33 @@ def _refresh_project(project_id: str, entry: dict, registry_path: Path, max_file
         if error:
             unknowns.append(f"GIT_PATH_INDEX_UNAVAILABLE: {error}")
         else:
-            for value in _names(names):
-                if _path_score(value, query) > 0 and _candidate_reason(root, value) is None:
+            indexed = [value for value in _names(names) if _path_score(value, query) > 0]
+            if intake_profile is not None:
+                indexed.sort(key=lambda value: (-_path_score(value, query), value))
+                available = max(0, max_files * 4 - len(origins))
+                if len(indexed) > available:
+                    unknowns.append('CANDIDATE_PROBE_BUDGET_EXHAUSTED: query metadata')
+                indexed = indexed[:available]
+            for value in indexed:
+                if intake_profile is not None or _candidate_reason(root, value) is None:
                     origins.setdefault(value, []).append("query_path_metadata")
+    probe_limit = max_files * 4 if intake_profile is not None else None
+    if probe_limit is not None and len(origins) > probe_limit:
+        unknowns.append(f'CANDIDATE_PROBE_BUDGET_EXHAUSTED: {len(origins) - probe_limit}')
+        origins = dict(list(origins.items())[:probe_limit])
     candidates = {}
+    retired = []
     for value, origin in origins.items():
         reason = _candidate_reason(root, value)
         if reason:
+            if intake_profile is not None and reason == 'MISSING_OR_DELETED' and origin == ['recent_commit']:
+                # Only a historical optional input can retire. Explicit seeds,
+                # required files and dirty paths never silently downgrade.
+                head, head_error = _git(root, 'cat-file', '-e', f'HEAD:{value}')
+                deletion, deletion_error = _git(root, 'log', '-1', '--diff-filter=D', '--format=%H', '--', value)
+                if head_error and not deletion_error and re.fullmatch(r'[0-9a-f]{40}', deletion.strip()):
+                    retired.append({'path': value, 'reason': 'HISTORICAL_INPUT_DELETED', 'deletion_commit': deletion.strip(), 'origins': origin})
+                    continue
             ignored.append({"path": value, "reason": reason, "origins": origin})
             if reason != "UNSUPPORTED_TEXT_FORMAT": unknowns.append(f"{reason}: {value}")
             continue
@@ -380,7 +422,10 @@ def _refresh_project(project_id: str, entry: dict, registry_path: Path, max_file
     pending = list(candidates)
     deferred = []
     while pending:
-        pending.sort(key=lambda value: (-_path_score(value, query) if requirement else 0, sequence[value]))
+        def priority(value):
+            tier = 0 if intake_profile is None or value in required else 1 if Path(value).name in {'pubspec.yaml', 'pubspec.lock'} else 2
+            return tier, -_path_score(value, query) if requirement else 0, sequence[value]
+        pending.sort(key=priority)
         value = pending.pop(0)
         guide_paths = [rule.relative_to(root).as_posix() for rule in ancestor_agent_rules(root, root / value)]
         for rule in guide_paths: rule_origins.setdefault(rule, ["ancestor_rule"])
@@ -391,8 +436,25 @@ def _refresh_project(project_id: str, entry: dict, registry_path: Path, max_file
         if missing:
             ignored.append({"path": value, "reason": "REQUIRED_AGENT_GUIDE_UNAVAILABLE", "origins": candidates[value], "required_guides": missing});unknowns.append(f"REQUIRED_AGENT_GUIDE_UNAVAILABLE: {value}: {', '.join(missing)}");continue
         if not capture(value, candidates[value]): continue
+        if intake_profile is not None and Path(value).name == 'pubspec.yaml':
+            for reference in _local_manifests(value, texts[value]):
+                if reference == '..' or reference.startswith('../') or reference.startswith('/') or '$' in reference:
+                    unknowns.append(f'REQUIRED_LOCAL_MANIFEST_UNSAFE: {value}: {reference}')
+                    continue
+                if reference not in required:
+                    required.append(reference)
+                retired = [item for item in retired if item['path'] != reference]
+                if reference not in candidates and reference not in texts and reference not in attempted:
+                    if reference not in origins and len(origins) >= probe_limit:
+                        unknowns.append(f'CANDIDATE_PROBE_BUDGET_EXHAUSTED: {reference}')
+                        continue
+                    origins.setdefault(reference, []).append('required_local_manifest')
+                    candidates[reference] = ['required_local_manifest']
+                    sequence[reference] = len(sequence)
+                    pending.append(reference)
         if requirement:
-            for reference in _references(root, value, texts[value], package_roots):
+            remaining = max(0, probe_limit - len(origins)) if probe_limit is not None else None
+            for reference in _references(root, value, texts[value], package_roots, max_candidates=remaining, known_paths=set(origins) if intake_profile is not None else None):
                 if reference not in candidates:
                     candidates[reference] = ["literal_reference"]
                     origins.setdefault(reference, ["literal_reference"])
@@ -430,10 +492,24 @@ def _refresh_project(project_id: str, entry: dict, registry_path: Path, max_file
                 unknowns.append(f"UNTRACKED_EXPLICIT_FILE: {item['path']}")
     if dirty:
         unknowns.append("DIRTY_WORKSPACE: observations include current worktree content beyond source SHA")
-    version, version_path, dependency_pins, manifest_gaps = _manifest_facts(texts)
+    version, version_path, dependency_pins, manifest_gaps = _manifest_facts(texts, project.primary_manifest)
+    from agent_hub.projects.inventory import project_inventory
+    inventory = project_inventory(texts, project.primary_repository_id, project.primary_manifest)
+    unknowns.extend(inventory["unknowns"])
     unknowns.extend(manifest_gaps)
     if version is None:
         unknowns.append("VERSION_NOT_OBSERVED_IN_SELECTED_MANIFESTS")
+    facts = project_facts(dict(texts)) if project_facts is not None else {}
+    if intake_profile is not None:
+        for item in selected:
+            try:
+                if hashlib.sha256((root / item['path']).read_bytes()).hexdigest() != item['sha256']:
+                    unknowns.append(f'SOURCE_CHANGED_DURING_CAPTURE: {item["path"]}')
+            except OSError:
+                unknowns.append(f'SOURCE_CHANGED_DURING_CAPTURE: {item["path"]}')
+        final_sha, error = _git(root, 'rev-parse', 'HEAD')
+        if error or final_sha != git_results['source_sha']:
+            unknowns.append('SOURCE_CHANGED_DURING_CAPTURE: HEAD')
     repository, metadata_mode, metadata_gaps = _target_repository(config, root, project.primary_repository_id)
     unknowns.extend(metadata_gaps)
     with tempfile.TemporaryDirectory(prefix="agent-hub-context-", dir="/private/tmp") as temporary:
@@ -446,14 +522,16 @@ def _refresh_project(project_id: str, entry: dict, registry_path: Path, max_file
     return {
         "project_id": project_id, "repository_id": project.primary_repository_id, "repository_root": str(root), "adapter": project.adapter,
         "status": "REFRESHED_WITH_GAPS" if unknowns else "REFRESHED", "source_sha": git_results["source_sha"].strip() or None, "branch": git_results["branch"].strip() or None,
+        "manifest_versions": inventory["manifest_versions"], "primary_manifest": project.primary_manifest, "project_inventory": inventory,
         "version": version, "version_source": version_path, "dependency_pins": dependency_pins, "content_state": "CURRENT_WORKTREE", "acceptance": False,
         "workspace_dirty_paths": dirty, "worktree_dirty_paths": worktree, "index_dirty_paths": index,
         "untracked_inventory": "NOT_SCANNED_ONLY_EXPLICIT_FILES_CLASSIFIED", "recent_commit_limit": 6, "recent_changed_paths": recent,
         "selected_files": selected, "ignored_candidates": ignored, "unknowns": list(dict.fromkeys(unknowns)), "registry_metadata_mode": metadata_mode, "registry_metadata_freshness": repository.freshness,
         "requirement": requirement, "evidence_mode": "FROZEN_SOURCE_TEXTS",
         "source_snapshot_id": hashlib.sha256(json.dumps({"project_id": project_id, "source_sha": git_results["source_sha"].strip(), "files": {item["path"]: item["sha256"] for item in selected}}, sort_keys=True).encode()).hexdigest(),
-        "scope": context["scope"], "metrics": {"candidate_files": len(set(origins) | set(rule_origins)), "rule_candidates": len(rule_origins), "inspected_files": inspected, "selected_files": len(selected), "max_files": max_files, "no_walk": True, "source_discovery_performed": False},
+        "scope": context["scope"], "metrics": {"candidate_files": len(set(origins) | set(rule_origins)), "rule_candidates": len(rule_origins), "inspected_files": inspected, "selected_files": len(selected), "max_files": max_files, "no_walk": True, "source_discovery_performed": False, "candidate_probe_limit": probe_limit},
         "context_package": context, "capability_analysis": capabilities,
+        "retired_candidates": retired, "required_files": required, "project_facts": facts,
     }
 
 
@@ -497,3 +575,26 @@ def refresh_agent_contexts(project_ids: list[str] | None = None, output_path: Pa
     }
     _write_snapshot(output, snapshot)
     return snapshot
+
+
+def _local_manifests(value: str, text: str) -> list[str]:
+    """Follow only path/workspace literals in a captured manifest, never list dirs."""
+    try:
+        payload = yaml.safe_load(text)
+        if not isinstance(payload, dict):
+            return []
+        base = posixpath.dirname(value)
+        paths = []
+        for member in payload.get('workspace', []) if isinstance(payload.get('workspace', []), list) else []:
+            if isinstance(member, str):
+                paths.append(posixpath.normpath(posixpath.join(base, member, 'pubspec.yaml')))
+        for section in ('dependencies', 'dev_dependencies', 'dependency_overrides'):
+            deps = payload.get(section, {})
+            if not isinstance(deps, dict):
+                continue
+            for spec in deps.values():
+                if isinstance(spec, dict) and isinstance(spec.get('path'), str):
+                    paths.append(posixpath.normpath(posixpath.join(base, spec['path'], 'pubspec.yaml')))
+        return list(dict.fromkeys(paths))
+    except yaml.YAMLError:
+        return []

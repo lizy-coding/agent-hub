@@ -26,6 +26,8 @@ class DecompositionProjectConfig(BaseModel):
     repository_paths: dict[str, Path] = Field(default_factory=dict)
     snapshot_namespace: str
     delivery_stage: dict[str, object] = Field(default_factory=dict)
+    project_inventory: dict[str, object] = Field(default_factory=dict)
+    primary_manifest: str = "pubspec.yaml"
 
     @model_validator(mode="after")
     def normalize(self) -> "DecompositionProjectConfig":
@@ -58,6 +60,8 @@ class DecompositionProjectConfig(BaseModel):
             },
             "snapshot_namespace": self.snapshot_namespace,
             "delivery_stage": dict(self.delivery_stage),
+            "project_inventory": dict(self.project_inventory),
+            "primary_manifest": self.primary_manifest,
         }
 
 
@@ -100,4 +104,10 @@ def load_decomposition_project(
         },
         snapshot_namespace=str(entry.get("snapshot_namespace") or selected),
         delivery_stage=dict(entry.get("delivery_stage") or {}),
+        project_inventory=dict(entry.get("project_inventory") or {
+            "max_files": 64,
+            "candidate_paths": [*((entry.get("sync_profiles") or {}).get("maintenance", {}).get("required_files", [])),
+                                *((entry.get("sync_profiles") or {}).get("maintenance", {}).get("candidate_paths", []))],
+        }),
+        primary_manifest=str((entry.get("agent_context") or {}).get("primary_manifest") or "pubspec.yaml"),
     )

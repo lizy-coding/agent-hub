@@ -1,0 +1,934 @@
+{
+  "schema_version": "project-maintenance-evidence.v1",
+  "date": "2026-10-10",
+  "timezone": "Asia/Shanghai",
+  "hub_base_sha": "bd6daadecb8d66fd34b61f5bf95e433f782ec1dc",
+  "hub_content_state": "UNCOMMITTED_WORKTREE",
+  "scope": [
+    "registry_consistency",
+    "bounded_capability_and_package_projection",
+    "primary_and_package_versions"
+  ],
+  "acceptance": false,
+  "platform_acceptance": "NOT_RUN",
+  "registry_check": {
+    "ok": true,
+    "errors": [],
+    "warnings": [
+      {
+        "project_id": "flutter-forge",
+        "reason": "seed list exceeds default context budget; ancestor guides also consume budget"
+      }
+    ],
+    "projects": [
+      {
+        "project_id": "gcode-core",
+        "adapter": "gcode_core",
+        "primary_repository_id": "gcode_core",
+        "repository_path": "/Users/forest/code/langGraph/gcode_core",
+        "writable": true
+      },
+      {
+        "project_id": "flutter-forge",
+        "adapter": "flutter_forge",
+        "primary_repository_id": "flutter_forge",
+        "repository_path": "/Users/forest/code/langGraph/flutter_forge",
+        "writable": true
+      },
+      {
+        "project_id": "flutterguard",
+        "adapter": "generic",
+        "primary_repository_id": "flutterguard",
+        "repository_path": "/Users/forest/code/flutterguard",
+        "writable": false
+      }
+    ],
+    "source_discovery_performed": false
+  },
+  "forge_inventory": {
+    "schema_version": "project-inventory.v1",
+    "version": "1.2.8+2",
+    "version_source": "apps/flutter_forge/pubspec.yaml",
+    "primary_manifest": "apps/flutter_forge/pubspec.yaml",
+    "manifest_versions": [
+      {
+        "manifest": "apps/flutter_forge/pubspec.yaml",
+        "name": "flutter_forge_app",
+        "version": "1.2.8+2"
+      },
+      {
+        "manifest": "packages/desktop_multi_window/pubspec.yaml",
+        "name": "desktop_multi_window",
+        "version": "0.3.0"
+      },
+      {
+        "manifest": "packages/file_picker_bridge/pubspec.yaml",
+        "name": "file_picker_bridge",
+        "version": "0.1.0"
+      },
+      {
+        "manifest": "packages/flutter_battery/pubspec.yaml",
+        "name": "flutter_battery",
+        "version": "0.1.0-dev.1"
+      },
+      {
+        "manifest": "packages/flutter_ioc_core/pubspec.yaml",
+        "name": "flutter_ioc_core",
+        "version": "0.1.0"
+      },
+      {
+        "manifest": "packages/usb_network_bridge/pubspec.yaml",
+        "name": "usb_network_bridge",
+        "version": "0.0.1"
+      },
+      {
+        "manifest": "pubspec.yaml",
+        "name": "flutter_forge_workspace",
+        "version": null
+      }
+    ],
+    "unknowns": [],
+    "capabilities": [
+      {
+        "capability_id": "flutter_forge_app.modules.platform.battery_monitor",
+        "contract_id": "flutter_forge_app.modules.platform.battery_monitor",
+        "current_owners": [
+          "flutter_forge/apps/flutter_forge/lib/modules/platform/battery_monitor"
+        ],
+        "source_paths": [
+          "flutter_forge/apps/flutter_forge/lib/modules/platform/battery_monitor"
+        ],
+        "target_package": "apps/flutter_forge",
+        "declared_responsibilities": [
+          "module_entry",
+          "module_ui",
+          "battery_session_lifecycle"
+        ],
+        "dependencies": [
+          "shared_learning",
+          "flutter_battery",
+          "module_registry"
+        ],
+        "route": "/battery-monitor",
+        "declared_status": "ready",
+        "supported_platforms": [
+          "android",
+          "macOS"
+        ],
+        "classification": "KEEP_APP_ONLY",
+        "evidence": [
+          "apps/flutter_forge/lib/modules/platform/battery_monitor/AI_ANALYSIS.md"
+        ],
+        "acceptance": false
+      },
+      {
+        "capability_id": "flutter_forge_app.modules.platform.usb_network",
+        "contract_id": "flutter_forge_app.modules.platform.usb_network",
+        "current_owners": [
+          "flutter_forge/apps/flutter_forge/lib/modules/platform/usb_network"
+        ],
+        "source_paths": [
+          "flutter_forge/apps/flutter_forge/lib/modules/platform/usb_network"
+        ],
+        "target_package": "apps/flutter_forge",
+        "declared_responsibilities": [
+          "module_entry",
+          "module_ui",
+          "module_docs",
+          "tcp_session_lifecycle"
+        ],
+        "dependencies": [
+          "shared_learning",
+          "usb_network_bridge"
+        ],
+        "route": "/usb-network",
+        "declared_status": "pending",
+        "supported_platforms": [
+          "macOS",
+          "windows"
+        ],
+        "classification": "KEEP_APP_ONLY",
+        "evidence": [
+          "apps/flutter_forge/lib/modules/platform/usb_network/AI_ANALYSIS.md"
+        ],
+        "acceptance": false
+      },
+      {
+        "capability_id": "flutter_forge.workspace.desktop_multi_window",
+        "contract_id": "flutter_forge.workspace.desktop_multi_window",
+        "current_owners": [
+          "flutter_forge/packages/desktop_multi_window"
+        ],
+        "source_paths": [
+          "flutter_forge/packages/desktop_multi_window"
+        ],
+        "target_package": "packages/desktop_multi_window",
+        "declared_responsibilities": [
+          "desktop_window_lifecycle",
+          "multi_window_host_bridge"
+        ],
+        "dependencies": [
+          "flutter_sdk"
+        ],
+        "route": null,
+        "declared_status": "active",
+        "supported_platforms": null,
+        "classification": "KEEP_PACKAGE",
+        "evidence": [
+          "packages/desktop_multi_window/AI_ANALYSIS.md"
+        ],
+        "acceptance": false
+      },
+      {
+        "capability_id": "flutter_forge.workspace.file_picker_bridge",
+        "contract_id": "flutter_forge.workspace.file_picker_bridge",
+        "current_owners": [
+          "flutter_forge/packages/file_picker_bridge"
+        ],
+        "source_paths": [
+          "flutter_forge/packages/file_picker_bridge"
+        ],
+        "target_package": "packages/file_picker_bridge",
+        "declared_responsibilities": [
+          "file_picker_api",
+          "method_channel_client",
+          "file_selector_client"
+        ],
+        "dependencies": [
+          "flutter_sdk",
+          "file_selector",
+          "file_selector_web"
+        ],
+        "route": null,
+        "declared_status": "active",
+        "supported_platforms": null,
+        "classification": "KEEP_PACKAGE",
+        "evidence": [
+          "packages/file_picker_bridge/AI_ANALYSIS.md"
+        ],
+        "acceptance": false
+      },
+      {
+        "capability_id": "flutter_forge.workspace.flutter_battery",
+        "contract_id": "flutter_forge.workspace.flutter_battery",
+        "current_owners": [
+          "flutter_forge/packages/flutter_battery"
+        ],
+        "source_paths": [
+          "flutter_forge/packages/flutter_battery"
+        ],
+        "target_package": "packages/flutter_battery",
+        "declared_responsibilities": [
+          "battery_api",
+          "battery_native_adapters",
+          "battery_event_lifecycle"
+        ],
+        "dependencies": [
+          "flutter_sdk",
+          "plugin_platform_interface"
+        ],
+        "route": null,
+        "declared_status": "active",
+        "supported_platforms": null,
+        "classification": "KEEP_PACKAGE",
+        "evidence": [
+          "packages/flutter_battery/AI_ANALYSIS.md"
+        ],
+        "acceptance": false
+      },
+      {
+        "capability_id": "flutter_forge.workspace.flutter_ioc_core",
+        "contract_id": "flutter_forge.workspace.flutter_ioc_core",
+        "current_owners": [
+          "flutter_forge/packages/flutter_ioc_core"
+        ],
+        "source_paths": [
+          "flutter_forge/packages/flutter_ioc_core"
+        ],
+        "target_package": "packages/flutter_ioc_core",
+        "declared_responsibilities": [
+          "ioc_container",
+          "registration_lifetimes",
+          "scoped_resolution"
+        ],
+        "dependencies": [],
+        "route": null,
+        "declared_status": "active",
+        "supported_platforms": null,
+        "classification": "KEEP_PACKAGE",
+        "evidence": [
+          "packages/flutter_ioc_core/AI_ANALYSIS.md"
+        ],
+        "acceptance": false
+      },
+      {
+        "capability_id": "flutter_forge.workspace.usb_network_bridge",
+        "contract_id": "flutter_forge.workspace.usb_network_bridge",
+        "current_owners": [
+          "flutter_forge/packages/usb_network_bridge"
+        ],
+        "source_paths": [
+          "flutter_forge/packages/usb_network_bridge"
+        ],
+        "target_package": "packages/usb_network_bridge",
+        "declared_responsibilities": [
+          "ncm_interface_enumeration",
+          "interface_bound_tcp",
+          "native_relay_lifecycle"
+        ],
+        "dependencies": [
+          "flutter_sdk",
+          "ffi"
+        ],
+        "route": null,
+        "declared_status": "active",
+        "supported_platforms": null,
+        "classification": "KEEP_PACKAGE",
+        "evidence": [
+          "packages/usb_network_bridge/AI_ANALYSIS.md"
+        ],
+        "acceptance": false
+      }
+    ],
+    "package_candidates": [
+      {
+        "package_id": "apps/flutter_forge",
+        "target_path": "apps/flutter_forge",
+        "package_type": "APP_ONLY",
+        "package_name": "flutter_forge_app",
+        "version": "1.2.8+2",
+        "dependencies": [
+          "collection",
+          "desktop_multi_window",
+          "device_info_plus",
+          "dio",
+          "equatable",
+          "file_picker_bridge",
+          "flutter",
+          "flutter_battery",
+          "flutter_bloc",
+          "flutter_ioc_core",
+          "flutter_riverpod",
+          "flutter_scene",
+          "flutter_svg",
+          "gcode_core",
+          "go_router",
+          "hooks",
+          "provider",
+          "shared_preferences",
+          "two_dimensional_scrollables",
+          "universal_ble",
+          "url_launcher",
+          "usb_network_bridge",
+          "vector_math",
+          "video_player",
+          "video_player_web",
+          "video_player_win",
+          "webview_flutter",
+          "webview_windows"
+        ],
+        "dependency_specs": {
+          "usb_network_bridge": {
+            "path": "../../packages/usb_network_bridge"
+          },
+          "flutter_battery": {
+            "path": "../../packages/flutter_battery"
+          },
+          "gcode_core": {
+            "git": {
+              "url": "https://github.com/lizy-coding/gcode_core.git",
+              "ref": "v0.2.1"
+            }
+          },
+          "file_picker_bridge": {
+            "path": "../../packages/file_picker_bridge"
+          },
+          "flutter_ioc_core": {
+            "path": "../../packages/flutter_ioc_core"
+          },
+          "flutter": {
+            "sdk": "flutter"
+          },
+          "go_router": "^14.2.0",
+          "provider": "^6.1.5+1",
+          "flutter_riverpod": "^2.5.1",
+          "flutter_bloc": "^8.1.3",
+          "equatable": "^2.0.5",
+          "dio": "^5.11.0",
+          "collection": "^1.18.0",
+          "flutter_svg": "^2.0.10+1",
+          "two_dimensional_scrollables": "^0.3.0",
+          "device_info_plus": "^10.1.2",
+          "desktop_multi_window": {
+            "path": "../../packages/desktop_multi_window"
+          },
+          "video_player": "^2.10.0",
+          "video_player_web": "^2.4.0",
+          "video_player_win": "^3.2.2",
+          "shared_preferences": "^2.5.5",
+          "url_launcher": "^6.3.2",
+          "webview_flutter": "^4.9.0",
+          "webview_windows": "^0.4.0",
+          "flutter_scene": "0.23.0",
+          "hooks": "^2.0.0",
+          "vector_math": "^2.1.4",
+          "universal_ble": "^2.3.0"
+        },
+        "owned_capabilities": [
+          "flutter_forge_app.modules.platform.battery_monitor",
+          "flutter_forge_app.modules.platform.usb_network"
+        ],
+        "evidence": [
+          "apps/flutter_forge/pubspec.yaml"
+        ]
+      },
+      {
+        "package_id": "packages/desktop_multi_window",
+        "target_path": "packages/desktop_multi_window",
+        "package_type": "MANIFEST_DECLARED",
+        "package_name": "desktop_multi_window",
+        "version": "0.3.0",
+        "dependencies": [
+          "flutter"
+        ],
+        "dependency_specs": {
+          "flutter": {
+            "sdk": "flutter"
+          }
+        },
+        "owned_capabilities": [
+          "flutter_forge.workspace.desktop_multi_window"
+        ],
+        "evidence": [
+          "packages/desktop_multi_window/pubspec.yaml"
+        ]
+      },
+      {
+        "package_id": "packages/file_picker_bridge",
+        "target_path": "packages/file_picker_bridge",
+        "package_type": "MANIFEST_DECLARED",
+        "package_name": "file_picker_bridge",
+        "version": "0.1.0",
+        "dependencies": [
+          "file_selector",
+          "flutter"
+        ],
+        "dependency_specs": {
+          "file_selector": "^1.0.0",
+          "flutter": {
+            "sdk": "flutter"
+          }
+        },
+        "owned_capabilities": [
+          "flutter_forge.workspace.file_picker_bridge"
+        ],
+        "evidence": [
+          "packages/file_picker_bridge/pubspec.yaml"
+        ]
+      },
+      {
+        "package_id": "packages/flutter_battery",
+        "target_path": "packages/flutter_battery",
+        "package_type": "MANIFEST_DECLARED",
+        "package_name": "flutter_battery",
+        "version": "0.1.0-dev.1",
+        "dependencies": [
+          "flutter",
+          "plugin_platform_interface"
+        ],
+        "dependency_specs": {
+          "flutter": {
+            "sdk": "flutter"
+          },
+          "plugin_platform_interface": "^2.0.2"
+        },
+        "owned_capabilities": [
+          "flutter_forge.workspace.flutter_battery"
+        ],
+        "evidence": [
+          "packages/flutter_battery/pubspec.yaml"
+        ]
+      },
+      {
+        "package_id": "packages/flutter_ioc_core",
+        "target_path": "packages/flutter_ioc_core",
+        "package_type": "MANIFEST_DECLARED",
+        "package_name": "flutter_ioc_core",
+        "version": "0.1.0",
+        "dependencies": [],
+        "dependency_specs": {},
+        "owned_capabilities": [
+          "flutter_forge.workspace.flutter_ioc_core"
+        ],
+        "evidence": [
+          "packages/flutter_ioc_core/pubspec.yaml"
+        ]
+      },
+      {
+        "package_id": "packages/usb_network_bridge",
+        "target_path": "packages/usb_network_bridge",
+        "package_type": "MANIFEST_DECLARED",
+        "package_name": "usb_network_bridge",
+        "version": "0.0.1",
+        "dependencies": [
+          "ffi",
+          "flutter"
+        ],
+        "dependency_specs": {
+          "flutter": {
+            "sdk": "flutter"
+          },
+          "ffi": "^2.2.0"
+        },
+        "owned_capabilities": [
+          "flutter_forge.workspace.usb_network_bridge"
+        ],
+        "evidence": [
+          "packages/usb_network_bridge/pubspec.yaml"
+        ]
+      },
+      {
+        "package_id": ".",
+        "target_path": ".",
+        "package_type": "MANIFEST_DECLARED",
+        "package_name": "flutter_forge_workspace",
+        "version": null,
+        "dependencies": [],
+        "dependency_specs": {},
+        "owned_capabilities": [],
+        "evidence": [
+          "pubspec.yaml"
+        ]
+      }
+    ],
+    "target_dependency_graph": {
+      "nodes": [
+        ".",
+        "apps/flutter_forge",
+        "packages/desktop_multi_window",
+        "packages/file_picker_bridge",
+        "packages/flutter_battery",
+        "packages/flutter_ioc_core",
+        "packages/usb_network_bridge"
+      ],
+      "edges": [
+        [
+          "apps/flutter_forge",
+          "packages/desktop_multi_window"
+        ],
+        [
+          "apps/flutter_forge",
+          "packages/file_picker_bridge"
+        ],
+        [
+          "apps/flutter_forge",
+          "packages/flutter_battery"
+        ],
+        [
+          "apps/flutter_forge",
+          "packages/flutter_ioc_core"
+        ],
+        [
+          "apps/flutter_forge",
+          "packages/usb_network_bridge"
+        ]
+      ],
+      "cycles": []
+    },
+    "acceptance": false,
+    "allowed_paths_by_repository": {},
+    "execution_authority": "FROZEN_PROPOSAL_REQUIRED",
+    "files": [
+      {
+        "path": "AGENTS.md",
+        "sha256": "3765d72ccf0946f35caa959b8c2de546ede26d9ef2cecc4cc03daf57a4f1796b"
+      },
+      {
+        "path": "apps/flutter_forge/lib/modules/platform/battery_monitor/AI_ANALYSIS.md",
+        "sha256": "dcd354250cd34a8b228fd7f62d5c509fed26d44d7e1d2606e43578580e493691"
+      },
+      {
+        "path": "apps/flutter_forge/lib/modules/platform/usb_network/AI_ANALYSIS.md",
+        "sha256": "575bc06744018a5b2dca527e25b26e9024f24b3089b06048bd8b9c3bb748c30c"
+      },
+      {
+        "path": "apps/flutter_forge/pubspec.yaml",
+        "sha256": "378154e6a39eee4f0b8f6ebb0eaf196eb201dc7fbdcef229ef58dc2a571ac275"
+      },
+      {
+        "path": "packages/desktop_multi_window/AI_ANALYSIS.md",
+        "sha256": "0a29cc1549ed2788e6908553f3a183ebc36f017c1d2f639be7690188879f63dd"
+      },
+      {
+        "path": "packages/desktop_multi_window/pubspec.yaml",
+        "sha256": "641c8b7c255e89207819b9d0d2dc81f147e7c6251802d8775c0a65eb35634a13"
+      },
+      {
+        "path": "packages/file_picker_bridge/AI_ANALYSIS.md",
+        "sha256": "08327391418860ffb40d4d200af179c1869f4bb5e9e693481d6db7d3369d9149"
+      },
+      {
+        "path": "packages/file_picker_bridge/pubspec.yaml",
+        "sha256": "c65d7fa017b83b7f61db96bc6f90ac4501c782fc83d0d61b4973cc23b502dcca"
+      },
+      {
+        "path": "packages/flutter_battery/AI_ANALYSIS.md",
+        "sha256": "1cc4e583e3094ea99e6d21d000de645d62ab2c3abdf6696d838e0b11ab99b8be"
+      },
+      {
+        "path": "packages/flutter_battery/pubspec.yaml",
+        "sha256": "b35b0ffcdbeaf8c53458cc31b4267f249ab99e869e88cb68c0534b6d8dd0f4e9"
+      },
+      {
+        "path": "packages/flutter_ioc_core/AI_ANALYSIS.md",
+        "sha256": "0f890458976ab8fadcabff2d287a418d970f350229ff8596115662cf721de94d"
+      },
+      {
+        "path": "packages/flutter_ioc_core/pubspec.yaml",
+        "sha256": "59812493697a03ce28e111b6b1e49b369f7384145f6dd89752fb2738233f5df6"
+      },
+      {
+        "path": "packages/usb_network_bridge/AI_ANALYSIS.md",
+        "sha256": "8d3bf7d79dfdaee22e3655a2e4751e57b804809bf52bda877d04ca1416041323"
+      },
+      {
+        "path": "packages/usb_network_bridge/pubspec.yaml",
+        "sha256": "987bbce5940fbd52438ae464365b9b64aba5357cd0fd0fb8aa6c7dbc0b75ea68"
+      },
+      {
+        "path": "pubspec.yaml",
+        "sha256": "02924131e81853dfc2956ba60e2a90bb844defa35092c34189af0a6d824fa80a"
+      }
+    ],
+    "source_observation": {
+      "revision": "b90d5971a8af6de4a6eaedf979344a9e53ef0cac",
+      "worktree_status": "CLEAN",
+      "changed_paths": []
+    },
+    "metrics": {
+      "max_files": 32,
+      "inspected_files": 15,
+      "no_walk": true
+    }
+  },
+  "forge_agent_context": {
+    "source_sha": "b90d5971a8af6de4a6eaedf979344a9e53ef0cac",
+    "branch": "dev",
+    "status": "REFRESHED_WITH_GAPS",
+    "version": "1.2.8+2",
+    "version_source": "apps/flutter_forge/pubspec.yaml",
+    "manifest_versions": [
+      {
+        "manifest": "apps/flutter_forge/pubspec.yaml",
+        "name": "flutter_forge_app",
+        "version": "1.2.8+2"
+      },
+      {
+        "manifest": "packages/flutter_battery/pubspec.yaml",
+        "name": "flutter_battery",
+        "version": "0.1.0-dev.1"
+      },
+      {
+        "manifest": "packages/usb_network_bridge/pubspec.yaml",
+        "name": "usb_network_bridge",
+        "version": "0.0.1"
+      }
+    ],
+    "unknowns": [
+      "FILE_BUDGET_EXHAUSTED: packages/usb_network_bridge/windows/bound_tcp.cpp",
+      "FILE_BUDGET_EXHAUSTED: packages/usb_network_bridge/windows/net_interfaces.cpp",
+      "FILE_BUDGET_EXHAUSTED: tool/agent_indexes/availability.js",
+      "FILE_BUDGET_EXHAUSTED: tool/agent_indexes/availability.test.js",
+      "FILE_BUDGET_EXHAUSTED: tool/agent_indexes/catalog.js",
+      "FILE_BUDGET_EXHAUSTED: tool/agent_indexes/verification.js",
+      "FILE_BUDGET_EXHAUSTED: tool/agent_indexes/visual_flows.js",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/CHANGELOG.md",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/README.md",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/android/src/main/kotlin/com/example/flutter_battery/FlutterBatteryPlugin.kt",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/android/src/main/kotlin/com/example/flutter_battery/channel/BatteryChangesHandler.kt",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/android/src/main/kotlin/com/example/flutter_battery/channel/BatteryMethodHandler.kt",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/android/src/main/kotlin/com/example/flutter_battery/channel/EventChannelHandler.kt",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/android/src/main/kotlin/com/example/flutter_battery/channel/MethodChannelHandler.kt",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/android/src/main/kotlin/com/example/flutter_battery/core/BatteryMonitor.kt",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/docs/PHASE1_API.md",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/docs/USABILITY_AND_EXTENSION.md",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/lib/flutter_battery_method_channel.dart",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/lib/flutter_battery_platform_interface.dart",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/lib/legacy_flutter_battery.dart",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/lib/src/battery_channel_contract.dart",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/macos/flutter_battery/Classes/BatteryChangesHandler.swift",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/macos/flutter_battery/Classes/BatteryMonitor.swift",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/macos/flutter_battery/Classes/BatteryStreamHandler.swift",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/macos/flutter_battery/Classes/FlutterBatteryPlugin.swift",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/test/battery_observation_test.dart",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/test/battery_stream_lifecycle_test.dart",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/test/capacity_details_test.dart",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/test/delivery_modes_test.dart",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/test/flutter_battery_test.dart",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/test/phase1_api_test.dart",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/test/power_state_test.dart",
+      "FILE_BUDGET_EXHAUSTED: packages/flutter_battery/upstream-files.json",
+      "LOCAL_DEPENDENCY_NOT_OBSERVED: apps/flutter_forge/pubspec.yaml: desktop_multi_window: packages/desktop_multi_window",
+      "LOCAL_DEPENDENCY_NOT_OBSERVED: apps/flutter_forge/pubspec.yaml: file_picker_bridge: packages/file_picker_bridge",
+      "LOCAL_DEPENDENCY_NOT_OBSERVED: apps/flutter_forge/pubspec.yaml: flutter_ioc_core: packages/flutter_ioc_core"
+    ],
+    "metrics": {
+      "candidate_files": 99,
+      "rule_candidates": 3,
+      "inspected_files": 64,
+      "selected_files": 64,
+      "max_files": 64,
+      "no_walk": true,
+      "source_discovery_performed": false
+    },
+    "source_snapshot_id": "e507e12a384ab09ebae8e08c339bdc46398d72d6b1ddd7f85ac573e584c640df"
+  },
+  "validation": {
+    "focused_suite": {
+      "status": "PASS",
+      "tests": 60,
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m unittest tests.test_project_maintenance tests.test_agent_context tests.test_agent_context_integrity tests.test_project_adapters tests.test_gcode_core_adapter tests.test_bounded_context tests.test_decomposition_projects tests.test_release_integrity tests.test_release_program tests.test_flutter_forge_adapter"
+    },
+    "final_project_maintenance_recheck": {
+      "status": "PASS",
+      "tests": 8
+    },
+    "diff_check": "PASS",
+    "no_walk_fixture": "PASS: walk/glob/rglob/WorkspaceRegistry.refresh fail if called",
+    "full_suite": {
+      "status": "NOT_PASSED",
+      "reasons": [
+        "DevelopmentGraphWorkerTest socket bind denied by sandbox (PermissionError)",
+        "Interrupted test_shadow_benchmark.test_repeatable_suite_and_metrics after it entered legacy unbounded source parsing; do not rerun for this maintenance scope"
+      ]
+    }
+  },
+  "implementation_hashes": {
+    "src/agent_hub/projects/registry_check.py": "278f862d99f16e2bc16350f2ddbaaf2bc53c2fb7ea42d30d0119b440c2361bb6",
+    "src/agent_hub/projects/inventory.py": "be89b161b3551649c8bc713915f31fcab088cbe7fb8590531d3243a187aa024b",
+    "src/agent_hub/projects/release_config.py": "7ef6d0a2a82ef68c63997cde4b8c80b9758c5803011d1f79f115ea9d403a756b",
+    "src/agent_hub/projects/decomposition_config.py": "a29ca5a9f495e23befe449f532e9d00a36e80e98c2a387d75c231501d7ff94a4",
+    "src/agent_hub/projects/adapters.py": "23d6d139dc5c67d8a03aed9cff1e51875f45a33a4aceba295f682e8c89414489",
+    "src/agent_hub/projects/flutter_forge_adapter.py": "982bf97db4b0c6d64bf12ff68cf2360a734f540b166cd78e9fc0eed7f5fba4d8",
+    "src/agent_hub/projects/agent_context.py": "56f079ae7bfc07d90de54f68fc4fb9edb4a3533398a11859502a88f85804789f",
+    "scripts/check_project_registry.py": "cf94d301dc27ed0a820cdf24c8e273a3093c5a5992b51349d5ff41d2419812b3",
+    "scripts/project_inventory.py": "8651c16ecaed1b19d67d701a26ca5a673805e56c80e9ccfd94987a5a8a4eb41f",
+    "tests/test_project_maintenance.py": "8cc9211e4bb12ed855d5a61a5719e7ad48c3cb2392c14a2f71912c384573c6ed",
+    "tests/test_agent_context.py": "4cb91563999faf83110da32aad359e9b2118b45316a3007628c85a8c7f41dc71",
+    "workspace/projects.json": "28125f86a0d316a868f9937a320f5ad3afa8d70da4c975facd18859226efaa85",
+    "README.md": "5b4e48a2c539272a0da87028aa5c9fb5b05ab3683999ff0435771d366f9fb347"
+  },
+  "other_registered_inventory_smoke": {
+    "gcode": {
+      "schema_version": "project-inventory.v1",
+      "version": "0.2.1",
+      "version_source": "pubspec.yaml",
+      "primary_manifest": "pubspec.yaml",
+      "manifest_versions": [
+        {
+          "manifest": "example/pubspec.yaml",
+          "name": "example",
+          "version": "1.0.0+1"
+        },
+        {
+          "manifest": "pubspec.yaml",
+          "name": "gcode_core",
+          "version": "0.2.1"
+        }
+      ],
+      "unknowns": [],
+      "capabilities": [],
+      "package_candidates": [
+        {
+          "package_id": "example",
+          "target_path": "example",
+          "package_type": "MANIFEST_DECLARED",
+          "package_name": "example",
+          "version": "1.0.0+1",
+          "dependencies": [
+            "cupertino_icons",
+            "file_selector",
+            "flutter",
+            "gcode_core"
+          ],
+          "dependency_specs": {
+            "flutter": {
+              "sdk": "flutter"
+            },
+            "cupertino_icons": "^1.0.8",
+            "gcode_core": {
+              "path": "../"
+            },
+            "file_selector": "^1.1.0"
+          },
+          "owned_capabilities": [],
+          "evidence": [
+            "example/pubspec.yaml"
+          ]
+        },
+        {
+          "package_id": ".",
+          "target_path": ".",
+          "package_type": "MANIFEST_DECLARED",
+          "package_name": "gcode_core",
+          "version": "0.2.1",
+          "dependencies": [
+            "flutter",
+            "flutter_gpu"
+          ],
+          "dependency_specs": {
+            "flutter_gpu": {
+              "sdk": "flutter"
+            },
+            "flutter": {
+              "sdk": "flutter"
+            }
+          },
+          "owned_capabilities": [],
+          "evidence": [
+            "pubspec.yaml"
+          ]
+        }
+      ],
+      "target_dependency_graph": {
+        "nodes": [
+          ".",
+          "example"
+        ],
+        "edges": [
+          [
+            "example",
+            "."
+          ]
+        ],
+        "cycles": []
+      },
+      "acceptance": false,
+      "allowed_paths_by_repository": {},
+      "execution_authority": "FROZEN_PROPOSAL_REQUIRED",
+      "files": [
+        {
+          "path": "AGENTS.md",
+          "sha256": "34885ba713f26c0563d04b1b944fbac1c30b92b436307ae9d5864e78c6974c69"
+        },
+        {
+          "path": "example/pubspec.yaml",
+          "sha256": "8f4a33b15f10090cf666f1e34d40af7c87281169b4c42dcbdc146069d6aa2acc"
+        },
+        {
+          "path": "pubspec.yaml",
+          "sha256": "27b4494220439366a151464f3bc225514553e6574de672752319e47a3356226c"
+        }
+      ],
+      "source_observation": {
+        "revision": "2c6945da2f0f1c721fcbae9043b25d3c2f92dcfc",
+        "worktree_status": "CLEAN",
+        "changed_paths": []
+      },
+      "metrics": {
+        "max_files": 16,
+        "inspected_files": 3,
+        "no_walk": true
+      }
+    },
+    "guard": {
+      "schema_version": "project-inventory.v1",
+      "version": "0.7.1",
+      "version_source": "pubspec.yaml",
+      "primary_manifest": "pubspec.yaml",
+      "manifest_versions": [
+        {
+          "manifest": "pubspec.yaml",
+          "name": "flutterguard_cli",
+          "version": "0.7.1"
+        }
+      ],
+      "unknowns": [],
+      "capabilities": [],
+      "package_candidates": [
+        {
+          "package_id": ".",
+          "target_path": ".",
+          "package_type": "MANIFEST_DECLARED",
+          "package_name": "flutterguard_cli",
+          "version": "0.7.1",
+          "dependencies": [
+            "analyzer",
+            "args",
+            "glob",
+            "path",
+            "yaml"
+          ],
+          "dependency_specs": {
+            "analyzer": "^7.3.0",
+            "args": "^2.5.0",
+            "glob": "^2.1.2",
+            "path": "^1.9.0",
+            "yaml": "^3.1.2"
+          },
+          "owned_capabilities": [],
+          "evidence": [
+            "pubspec.yaml"
+          ]
+        }
+      ],
+      "target_dependency_graph": {
+        "nodes": [
+          "."
+        ],
+        "edges": [],
+        "cycles": []
+      },
+      "acceptance": false,
+      "allowed_paths_by_repository": {},
+      "execution_authority": "FROZEN_PROPOSAL_REQUIRED",
+      "files": [
+        {
+          "path": "AGENTS.md",
+          "sha256": "aafd6d3ef4cd7465f6fee3b5a4f1a51a6bddfaf81cb328984a6d6f420ef8b21b"
+        },
+        {
+          "path": "pubspec.yaml",
+          "sha256": "950b951039015bc72193d185256faa369e4852d6670cde6de3e28185c5469976"
+        }
+      ],
+      "source_observation": {
+        "revision": "fb86f4ffa322bb0dbe69748c5c594296bf44657d",
+        "worktree_status": "DIRTY",
+        "changed_paths": [
+          "README.md",
+          "doc/FLUTTERGUARD_SPEC.md",
+          "idea-plugin/.gitignore",
+          "idea-plugin/AGENTS.md",
+          "idea-plugin/build.gradle.kts",
+          "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardExternalAnnotator.kt",
+          "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardStartupActivity.kt",
+          "idea-plugin/src/main/resources/META-INF/plugin.xml",
+          "lib/src/rules/lifecycle_resource.dart",
+          "scripts/idea_plugin_preflight.sh",
+          "scripts/idea_plugin_publish.sh",
+          "test/AGENTS.md",
+          "idea-plugin/README.md",
+          "idea-plugin/RELEASING.md",
+          "idea-plugin/docs/",
+          "idea-plugin/examples/",
+          "idea-plugin/release-review/",
+          "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardConfigurable.kt",
+          "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardDocumentation.kt",
+          "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardGuideAction.kt",
+          "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardNativeCli.kt",
+          "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardProtocol.kt",
+          "idea-plugin/src/main/kotlin/com/flutterguard/FlutterGuardScanAction.kt",
+          "idea-plugin/src/main/resources/META-INF/flutterguard-dart.xml",
+          "idea-plugin/src/test/",
+          "test/lifecycle_resource_test.dart"
+        ]
+      },
+      "metrics": {
+        "max_files": 8,
+        "inspected_files": 2,
+        "no_walk": true
+      }
+    }
+  }
+}

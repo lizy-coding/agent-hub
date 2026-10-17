@@ -168,6 +168,23 @@ def build_release_hosting_graph(control_root: Path | None = None):
             return _block(program, "RELEASE_ARTIFACTS_MISSING", "frozen release has no artifacts to publish.")
         context = state.get("project_context") if isinstance(state.get("project_context"), dict) else {}
         root = _repository_root(program, context)
+        provenance = release.get('provenance')
+        required_policy = program.get('provenance_policy') or (context.get('release') or {}).get('provenance_policy')
+        if required_policy:
+            if not isinstance(provenance, dict) or provenance.get('status') != 'FROZEN':
+                return _block(program, 'RELEASE_PROVENANCE_INVALID', 'Frozen producer evidence is required.')
+            if set(provenance.get('required_platforms', [])) != {a.get('platform') for a in artifacts}:
+                return _block(program, 'RELEASE_PLATFORMS_INCOMPLETE', 'Required platform artifacts are incomplete.')
+            manifests = provenance.get('manifests', [])
+            if not isinstance(manifests, list) or {m.get('platform') for m in manifests if isinstance(m, dict)} != set(provenance['required_platforms']):
+                return _block(program, 'RELEASE_PROVENANCE_INVALID', 'Required platform manifests are incomplete.')
+            for manifest in manifests:
+                relative_manifest = Path(str(manifest.get('path', '')))
+                if relative_manifest.is_absolute() or '..' in relative_manifest.parts:
+                    return _block(program, 'RELEASE_PROVENANCE_INVALID', 'Manifest path escapes the repository.')
+                file = root / relative_manifest
+                if file.resolve() != file or not file.is_file() or _sha256(file) != manifest.get('sha256'):
+                    return _block(program, 'RELEASE_PROVENANCE_CHANGED', 'Producer manifest changed after freezing.')
         verified = []
         for artifact in artifacts:
             relative = Path(str(artifact.get("path") or ""))
@@ -178,6 +195,8 @@ def build_release_hosting_graph(control_root: Path | None = None):
                 return _block(program, "ARTIFACT_MISSING", f"frozen artifact not found on disk: {relative}")
             digest = _sha256(full)
             frozen = str(artifact.get("sha256") or "").lower()
+            if artifact.get("size") and artifact["size"] != full.stat().st_size:
+                return _block(program, "ARTIFACT_SIZE_MISMATCH", f"size mismatch for {relative}")
             if frozen and frozen != digest:
                 return _block(program, "ARTIFACT_CHECKSUM_MISMATCH", f"sha256 mismatch for {relative}: frozen {frozen}, computed {digest}", artifact=str(relative))
             verified.append({**artifact, "sha256": digest, "size": full.stat().st_size})
@@ -204,6 +223,41 @@ def build_release_hosting_graph(control_root: Path | None = None):
         repository = _gh(["gh", "repo", "view", github_repo], github_repo)
         if not repository["ok"]:
             return _block(program, "RELEASE_REPO_UNREACHABLE", f"frozen GitHub repository is not accessible: {github_repo}: {str(repository.get('stderr', ''))[-300:]}")
+        provenance = release.get('provenance')
+        if program.get('provenance_policy'):
+            checked = set()
+            for manifest in provenance['manifests']:
+                identity = (manifest['run_id'], manifest['run_attempt'])
+                if identity in checked:
+                    continue
+                checked.add(identity)
+                proof = _gh(['gh', 'run', 'view', identity[0], '--attempt', str(identity[1]), '--repo', github_repo,
+                             '--json', 'attempt,headSha,status,conclusion,workflowName'], github_repo)
+                try:
+                    run = json.loads(proof.get('stdout') or '{}') if proof['ok'] else {}
+                except ValueError:
+                    run = {}
+                if not isinstance(run, dict):
+                    run = {}
+                if (run.get('headSha') != provenance['source_sha'] or run.get('attempt') != identity[1]
+                        or run.get('status') != 'completed' or run.get('conclusion') != 'success'
+                        or run.get('workflowName') != provenance['workflow_name']):
+                    return _block(program, 'RELEASE_CI_SOURCE_UNVERIFIED', 'CI completion and source binding could not be verified.')
+            template = program['provenance_policy'].get('ci_artifact_name_template')
+            if not template:
+                return _block(program, 'RELEASE_CI_ARTIFACT_UNVERIFIED', 'A frozen CI artifact name template is required.')
+            for manifest in provenance['manifests']:
+                try:
+                    name = template.format(platform=manifest['producer_platform'], source_sha=provenance['source_sha'])
+                except (KeyError, ValueError):
+                    return _block(program, 'RELEASE_CI_ARTIFACT_UNVERIFIED', 'CI artifact name cannot be resolved.')
+                with tempfile.TemporaryDirectory(prefix='agent-hub-ci-proof-') as raw:
+                    directory = Path(raw)
+                    fetched = _gh(['gh', 'run', 'download', manifest['run_id'], '--repo', github_repo,
+                                   '--name', name, '--dir', str(directory)], github_repo)
+                    file = directory / ('RELEASE_MANIFEST-' + manifest['producer_platform'] + '.json')
+                    if not fetched['ok'] or not file.is_file() or file.is_symlink() or _sha256(file) != manifest['sha256']:
+                        return _block(program, 'RELEASE_CI_ARTIFACT_UNVERIFIED', 'CI producer manifest does not match the frozen local evidence.')
         existing = _gh(["gh", "release", "view", tag, "--repo", github_repo, "--json", "tagName,assets,url,isDraft"], github_repo)
         program = dict(program)
         if existing["ok"]:
@@ -330,6 +384,11 @@ def build_release_hosting_graph(control_root: Path | None = None):
                 current = {**state, **preflight(state)}
                 if current.get("release_program", {}).get("status") == "PROGRAM_BLOCKED":
                     return {"release_program": current["release_program"]}
+                # Read all frozen evidence again inside the publication lock,
+                # after remote CI checks and before even creating a release.
+                current.update(verify_artifacts(current))
+                if current.get('release_program', {}).get('status') == 'PROGRAM_BLOCKED':
+                    return {'release_program': current['release_program']}
                 output = publish(current)
                 current.update(output)
                 if current.get("publish_result", {}).get("status") == "PUBLISH_COMPLETE":

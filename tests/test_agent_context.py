@@ -270,6 +270,7 @@ class AgentContextTest(unittest.TestCase):
         (app / "pubspec.yaml").write_text(f"name: app\nversion: 1.2.8+2\ndependencies:\n  gcode_core:\n    git:\n      url: https://example.invalid/gcode_core.git\n      ref: v0.2.1\ndev_dependencies:\n  flutterguard_cli:\n    git:\n      url: https://example.invalid/flutterguard.git\n      ref: {guard_sha}\n", encoding="utf-8")
         (self.repo / "pubspec.lock").write_text(f"packages:\n  gcode_core:\n    source: git\n    version: 0.2.1\n    description:\n      url: https://example.invalid/gcode_core.git\n      ref: v0.2.1\n      resolved-ref: {core_sha}\n  flutterguard_cli:\n    source: git\n    version: 0.6.0\n    description:\n      url: https://example.invalid/flutterguard.git\n      ref: {guard_sha}\n      resolved-ref: {guard_sha}\n", encoding="utf-8")
         payload = json.loads(self.project_registry.read_text(encoding="utf-8"))
+        payload["projects"]["fixture"]["agent_context"]["primary_manifest"] = "apps/app/pubspec.yaml"
         payload["projects"]["fixture"]["agent_context"]["seed_files"] = ["pubspec.yaml", "apps/app/pubspec.yaml", "pubspec.lock"]
         self.project_registry.write_text(json.dumps(payload), encoding="utf-8")
         with self.guarded() as stack:
