@@ -37,16 +37,16 @@ Forge 在本轮三次捕获之间先后出现 `be0757b…`、`8d17ac8…`、`691
 
 以下为提案，不是冻结的执行范围；机器记录中的操作和写路径均为空。
 
-| 优先级 | 优化项 | 责任方 | 完成条件 |
-| --- | --- | --- | --- |
-| P1 新增 | 整批索引发布前的新鲜度检查 | Agent Hub | 所有投影结束后及更新 latest 前复核 SHA、配置与选中文件；并发改动最多有限重采，仍变化则保留 stale 观察，不宣称当前可用 |
-| P1 本轮部分完成 | 入口声明驱动 profile 校准 | Agent Hub | 从已捕获的 executables、descriptor 引用生成有限差异提案；保留稳定管理身份，不扫描源码猜入口 |
-| P1 新增 | 工作区迁移与历史退役分类 | Hub 与项目维护者 | 工作区 D、声明替代和已提交 D 分开记录；新入口存在不等于旧路径已完成迁移；必需输入缺失不降级 |
-| P1 延续 | 按 daily、IDE、release 等任务拆分 profile | Agent Hub | 每轮仍共享 64 文件；关键闭包完整，可选遗漏可追溯，避免将 IDE 文档和原生实现全部挤入同一轮 |
-| P1 外部待补 | producer manifest 的 architecture/toolchain | flutter-forge | 生成源输出真实构建字段，再核对同 SHA 的 CI、平台、签名、模式、大小与 SHA256；旧 manifest 继续阻断 |
-| P1 延续 | CLI 根开发单元的有限元数据缓存 | Agent Hub | 消除 TARGET_REGISTRY_METADATA_MISSING 的根因，绑定身份和来源；不得调用全量 refresh 或复制 detector 注册表 |
-| P2 新增 | 未配置、未观察和空队列的差异语义 | Agent Hub | NOT_OBSERVED 不应仅输出 COMPARED 加空数组；只有可比较的声明才计算 delta，不能据空数组断言没有工作 |
-| P2 新增 | 统一归档与项目级增量失效 | Agent Hub | 一次发布保留 canonical、archive、配置、哈希与比较基线；评估减少全局 alias 变更导致的无关项目 plan_id 抖动，变更身份规则前更新 ADR |
+| 优先级 | 优化项 | 责任方 | 当前状态 | 完成条件 |
+| --- | --- | --- | --- | --- |
+| P1 新增 | 整批索引发布前的新鲜度检查 | Agent Hub | 待实施 | 所有投影结束后及更新 latest 前复核 SHA、配置与选中文件；并发改动最多有限重采，仍变化则保留 stale 观察，不宣称当前可用 |
+| P1 本轮部分完成 | 入口声明驱动 profile 校准 | Agent Hub | 入口校准已提交；自动提案待实施 | 从已捕获的 executables、descriptor 引用生成有限差异提案；保留稳定管理身份，不扫描源码猜入口 |
+| P1 新增 | 工作区迁移与历史退役分类 | Hub 与项目维护者 | 待实施 | 工作区 D、声明替代和已提交 D 分开记录；新入口存在不等于旧路径已完成迁移；必需输入缺失不降级 |
+| P1 延续 | 按 daily、IDE、release 等任务拆分 profile | Agent Hub | 待实施 | 每轮仍共享 64 文件；关键闭包完整，可选遗漏可追溯，避免将 IDE 文档和原生实现全部挤入同一轮 |
+| P1 外部待补 | producer manifest 的 architecture/toolchain | flutter-forge | Hub 门禁已提交；producer 待补 | 生成源输出真实构建字段，再核对同 SHA 的 CI、平台、签名、模式、大小与 SHA256；旧 manifest 继续阻断 |
+| P1 延续 | CLI 根开发单元的有限元数据缓存 | Agent Hub | 待实施 | 消除 TARGET_REGISTRY_METADATA_MISSING 的根因，绑定身份和来源；不得调用全量 refresh 或复制 detector 注册表 |
+| P2 新增 | 未配置、未观察和空队列的差异语义 | Agent Hub | 待实施 | NOT_OBSERVED 不应仅输出 COMPARED 加空数组；只有可比较的声明才计算 delta，不能据空数组断言没有工作 |
+| P2 新增 | 统一归档与项目级增量失效 | Agent Hub | 待实施 | 一次发布保留 canonical、archive、配置、哈希与比较基线；评估减少全局 alias 变更导致的无关项目 plan_id 抖动，变更身份规则前更新 ADR |
 
 优先推进第一项，再把本轮手工的入口校准固化为有限声明提案。架构与工具链缺口仍由 Forge producer 拥有；Hub 不填造字段或放松已确认的发布门禁。
 
@@ -54,4 +54,10 @@ Forge 在本轮三次捕获之间先后出现 `be0757b…`、`8d17ac8…`、`691
 
 维护菜单 49 项通过，包含禁止 walk/glob/rglob 与全量 refresh 的 fixture；注册校验通过，新 alias 解析后仍是只读的 flutterguard 项目。所选内容复核结果按项目记录，BoundaryLens 的采集后变化没有被隐藏。
 
-本轮只修改 Hub 注册配置、索引与报告，保留此前未提交实现；没有修改业务 checkout，没有恢复或协调运行 checkpoint，没有运行真实 CI、业务全量测试、平台验收或发布，也没有提交或推送。
+本轮只修改 Hub 注册配置、索引与报告，保留此前未提交实现；没有修改业务 checkout，没有恢复或协调运行 checkpoint，没有运行真实 CI、业务全量测试、平台验收或发布，该索引采集阶段没有提交或推送；其后的本地交付见下节。
+
+## 本地交付状态
+
+实现与本轮索引归档已提交为 `296589e81f5148691ac995b224d0799d2c2a3ccc`，未推送。八项后续优化只有入口校准部分已有本地交付；其余待办与 producer/平台缺口没有因提交而关闭。
+
+清单状态及本节在该提交之后回写，留在工作区，未额外创建第二个 commit。历史快照和采集后过期标识保持原样。

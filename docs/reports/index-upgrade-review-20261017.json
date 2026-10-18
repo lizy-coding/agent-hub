@@ -226,7 +226,8 @@
       ],
       "status": "PROPOSED_NOT_FROZEN",
       "allowed_operations": [],
-      "allowed_paths_by_repository": {}
+      "allowed_paths_by_repository": {},
+      "delivery_status": "PENDING"
     },
     {
       "id": "O2",
@@ -243,7 +244,15 @@
       ],
       "status": "PROPOSED_NOT_FROZEN",
       "allowed_operations": [],
-      "allowed_paths_by_repository": {}
+      "allowed_paths_by_repository": {},
+      "delivery_status": "PARTIALLY_COMMITTED",
+      "delivery_commit": "296589e81f5148691ac995b224d0799d2c2a3ccc",
+      "delivered_parts": [
+        "BoundaryLens alias and explicit CLI/IDE profile calibration"
+      ],
+      "remaining_parts": [
+        "declaration-driven profile proposal automation"
+      ]
     },
     {
       "id": "O3",
@@ -260,7 +269,8 @@
       ],
       "status": "PROPOSED_NOT_FROZEN",
       "allowed_operations": [],
-      "allowed_paths_by_repository": {}
+      "allowed_paths_by_repository": {},
+      "delivery_status": "PENDING"
     },
     {
       "id": "O4",
@@ -277,7 +287,8 @@
       ],
       "status": "PROPOSED_NOT_FROZEN",
       "allowed_operations": [],
-      "allowed_paths_by_repository": {}
+      "allowed_paths_by_repository": {},
+      "delivery_status": "PENDING"
     },
     {
       "id": "O5",
@@ -294,7 +305,16 @@
       ],
       "status": "PROPOSED_NOT_FROZEN",
       "allowed_operations": [],
-      "allowed_paths_by_repository": {}
+      "allowed_paths_by_repository": {},
+      "delivery_status": "HUB_GATE_COMMITTED_PRODUCER_PENDING",
+      "delivery_commit": "296589e81f5148691ac995b224d0799d2c2a3ccc",
+      "delivered_parts": [
+        "Hub source/CI/platform/artifact provenance gate"
+      ],
+      "remaining_parts": [
+        "producer architecture/toolchain fields",
+        "real remote CI/release validation"
+      ]
     },
     {
       "id": "O6",
@@ -311,7 +331,8 @@
       ],
       "status": "PROPOSED_NOT_FROZEN",
       "allowed_operations": [],
-      "allowed_paths_by_repository": {}
+      "allowed_paths_by_repository": {},
+      "delivery_status": "PENDING"
     },
     {
       "id": "O7",
@@ -328,7 +349,8 @@
       ],
       "status": "PROPOSED_NOT_FROZEN",
       "allowed_operations": [],
-      "allowed_paths_by_repository": {}
+      "allowed_paths_by_repository": {},
+      "delivery_status": "PENDING"
     },
     {
       "id": "O8",
@@ -345,7 +367,8 @@
       ],
       "status": "PROPOSED_NOT_FROZEN",
       "allowed_operations": [],
-      "allowed_paths_by_repository": {}
+      "allowed_paths_by_repository": {},
+      "delivery_status": "PENDING"
     }
   ],
   "validation": {
@@ -390,5 +413,24 @@
   "business_checkout_edits": "NONE_BY_THIS_TASK",
   "hub_changes": "Registry/profile calibration and index/report artifacts only; earlier uncommitted implementation preserved",
   "allowed_operations": [],
-  "allowed_paths_by_repository": {}
+  "allowed_paths_by_repository": {},
+  "local_delivery": {
+    "commit": "296589e81f5148691ac995b224d0799d2c2a3ccc",
+    "subject": "feat: unify bounded project indexing and release provenance",
+    "scope": "LOCAL_COMMIT_ONLY",
+    "pushed": false,
+    "validation": {
+      "maintenance": 49,
+      "execution_default_environment": 47,
+      "release": 18,
+      "status": "PASS"
+    },
+    "checklist_update": "POST_COMMIT_WORKTREE_UPDATE_NOT_INCLUDED_IN_IMPLEMENTATION_COMMIT",
+    "unchanged_boundaries": [
+      "historical source SHA",
+      "post-capture freshness",
+      "producer pending fields",
+      "remote CI and platform acceptance"
+    ]
+  }
 }

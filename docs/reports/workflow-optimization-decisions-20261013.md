@@ -44,4 +44,12 @@
 
 最新统一采集保持每项目 64 文件上限：gcode-core SUCCESS，Forge 与 FlutterGuard PARTIAL，无关键输入阻断。Forge 发布工作流声明 MATCH；可选预算不足和元数据缺口保留，未作为平台验收。所选文件哈希与来源 HEAD 已复核。
 
-[实施证据](workflow-optimization-evidence-20261013.json)与[最新同步观察](workflow-optimization-sync-20261013.json)已保存。修改未提交或推送，业务仓库与运行检查点未修改；真实 CI 与发布没有执行。
+[实施证据](workflow-optimization-evidence-20261013.json)与[最新同步观察](workflow-optimization-sync-20261013.json)已保存。上述验证阶段修改尚未提交；业务仓库与运行检查点未修改，真实 CI 与发布没有执行。
+
+## 2026-10-17 本地交付状态
+
+本地实现提交：`296589e81f5148691ac995b224d0799d2c2a3ccc`（feat: unify bounded project indexing and release provenance），未推送。维护 49 项、默认环境执行 47 项、发布 18 项在提交前复验通过。
+
+已提交内容包括统一事实入口、共享预算与结果协议、注册/profile 校准、缓存隔离、测试菜单、发布来源门禁、队列差异和只读 checkpoint 检查。ADR 仍为 accepted；本地提交不等于远端交付或平台验收。
+
+后续八项优化以 [最新清单](index-upgrade-20261017.md) 为准：入口手工校准已提交，但声明驱动的自动提案尚未实现；整批新鲜度、迁移分类、细分 profile、CLI 元数据缓存、队列空值语义与统一归档仍待处理。Forge producer 架构和工具链字段继续待补，旧 manifest 仍被门禁阻断。
