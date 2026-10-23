@@ -228,6 +228,35 @@
             "apps/flutter_forge/lib/shared/popup/AI_ANALYSIS.md",
             "apps/flutter_forge/lib/shared/table/AI_ANALYSIS.md"
           ]
+        },
+        "workflow": {
+          "required_files": [
+            "apps/flutter_forge/pubspec.yaml",
+            "packages/forge_articles/pubspec.yaml",
+            "apps/flutter_forge/lib/modules/ui/workflow_workbench/workflow_session.dart",
+            "apps/flutter_forge/lib/shared/workflows/hub_client.dart",
+            "packages/forge_articles/lib/forge_articles.dart"
+          ],
+          "candidate_paths": [
+            "AGENTS.md",
+            "CONTEXT.md",
+            "AI_ANALYSIS_SCHEMA.json",
+            "AI_PROJECT_CONTEXT.md",
+            "REFACTOR_PLAN.md",
+            "pubspec.yaml",
+            "pubspec.lock",
+            "apps/flutter_forge/lib/modules/ui/workflow_workbench/AI_ANALYSIS.md",
+            "apps/flutter_forge/lib/shared/workflows/AI_ANALYSIS.md",
+            "packages/forge_articles/AI_ANALYSIS.md",
+            "apps/flutter_forge/lib/modules/ui/workflow_workbench/workflow_page.dart",
+            "apps/flutter_forge/test/modules/ui/workflow_workbench/workflow_page_test.dart",
+            "apps/flutter_forge/integration_test/workflow_ecosystem_test.dart",
+            "packages/forge_articles/test/article_workflow_test.dart",
+            "tool/agent_indexes/AGENTS.md",
+            "tool/agent_indexes/catalog.js",
+            "tool/agent_indexes/contracts.js",
+            "docs/WORKFLOW_ECOSYSTEM_FOUNDATION.md"
+          ]
         }
       }
     },

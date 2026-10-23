@@ -5,6 +5,7 @@ import subprocess
 import sys
 
 PROFILES = {
+    'workflow': ['tests.test_learning_workflows'],
     'maintenance': ['tests.test_sync_plan', 'tests.test_project_maintenance', 'tests.test_agent_context',
                     'tests.test_agent_context_integrity', 'tests.test_bounded_context'],
     'execution': ['tests.test_validation_cache', 'tests.test_execution_control', 'tests.test_completion_evidence'],

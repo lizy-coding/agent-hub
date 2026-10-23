@@ -43,3 +43,8 @@ workspace/registry.json
 *.log
 *.pid
 *.pckl
+*.sqlite3
+*.sqlite3-*
+*.sqlite3.lock
+*.sqlite3.backups/
+*.token

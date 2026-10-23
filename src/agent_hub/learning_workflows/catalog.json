@@ -1,0 +1,32 @@
+{
+  "schema": "forge.workflow.v1",
+  "capabilities": [
+    {"id": "articles.fetch", "version": 1, "title": "请求教学文章", "effect": "read_synthetic_data"},
+    {"id": "articles.organize", "version": 1, "title": "筛选整理文章", "effect": "pure_transform"}
+  ],
+  "workflows": [
+    {
+      "schema": "forge.workflow.v1",
+      "id": "articles.explore",
+      "version": 1,
+      "title": "文章数据探索",
+      "source": "synthetic teaching data",
+      "steps": [
+        {"id": "fetch", "capability": "articles.fetch", "version": 1},
+        {"id": "organize", "capability": "articles.organize", "version": 1}
+      ],
+      "output": {"kind": "table", "columns": ["ID", "标题", "作者"]},
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "page": {"type": "integer", "title": "页码", "minimum": 1, "maximum": 20, "default": 1},
+          "pageSize": {"type": "integer", "title": "每页数量", "minimum": 1, "maximum": 20, "default": 10},
+          "query": {"type": "string", "title": "筛选标题或作者", "maxLength": 80, "default": ""},
+          "delayMs": {"type": "integer", "title": "教学延迟（毫秒）", "minimum": 0, "maximum": 5000, "default": 500},
+          "simulateFailure": {"type": "boolean", "title": "模拟请求失败", "default": false}
+        }
+      }
+    }
+  ]
+}

@@ -20,6 +20,16 @@
 - FlutterGuard 是 executable-only CLI；IDE adapter 通过 JSON/SARIF 使用能力，不复制 detector 或规则注册表。其初始托管为只读 PLAN_ONLY，执行迁移需要另外冻结精确范围。
 - 未经当前任务授权，不提交、推送、合并或发布。Release 必须经 `release-plan` 与 `release-run --execute`；核对远端大小及 SHA256 后才报告完成。
 
+## 单用户工作流维护
+
+- `learning_workflows` 是单用户本机业务控制面，与工程迁移/发布 Graph 分开；改动前读取 `src/agent_hub/learning_workflows/AGENTS.md` 和 `docs/learning-workflows.md`。
+- 仅维护当前声明与执行能力，不增加旧命令代理、旧库迁移或旧执行版本兼容矩阵。历史不可变用于追溯，不承诺旧实现仍可执行。
+- 源码、声明、规则与脱敏证据通过所属仓库 Git 协作；运行库、备份、token 和模型会话留在本地。远端模型调用与远端 Git 同步分别报告，本机桥接不代表本地推理。
+- `workflow inspect` 是只读入口；`serve` 会启用目录并可能升级终止旧任务，`maintain` 会清理/备份，`restore` 会创建新库。不能用有写入的动作替代观察，也不能从一次推送授权推导服务重启、数据清理或发布授权。已有任务授权范围内不重复询问。
+- Forge 工作流准备使用 `./agent agent-context --project flutter-forge --profile workflow --max-files 40 --output <仓库外临时路径>`；保持显式候选和共享预算。Hub 定向 fixture 通过不代表 Forge 消费、取消确认、平台或调度验收通过。
+
 ## 验证
 
 先运行本次改动关联的 fixture 定向测试。验证有界入口时，将 walk/glob/rglob 设为报错，证明没有隐藏递归。真实业务改动和平台验收保持独立；Agent 文档更新不默认触发业务全量扫描或构建。
+
+工作流代码运行 `./agent maintenance-test --profile workflow`；根命令或索引配置变化再运行 `--profile maintenance`，规则解析变化定向运行 `tests.test_rule_entrypoints`。测试使用临时状态与随机回环端口，不连接用户运行库；发布前核对暂存范围，保留无关改动，推送后比对远端 SHA。

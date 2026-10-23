@@ -266,3 +266,8 @@ python -m unittest discover -s tests
 发布声明核对使用捕获的 workflow 与 Hub 策略，正式发布继续走 `release-plan` / `release-run --execute`。必须提供每个必需平台的 producer manifest，绑定源码 SHA、成功 CI run/attempt、架构、工具链、签名、模式、产物大小和 SHA256；缺失或不一致阻断。当前 Forge producer 尚缺架构与工具链字段，Hub 不伪造，生产端补齐前旧 manifest 不能通过新门禁。
 
 决议与边界见 [工作流优化决议](docs/reports/workflow-optimization-decisions-20261013.md)。
+
+
+## Forge 业务工作流基建
+
+单用户本机业务工作流控制面以 `./agent workflow serve|inspect|maintain|restore` 维护当前 JSON 声明、任务队列、租约和运行历史。升级终止旧任务、重试采用当前版，提供 30 天保留和每日一致性备份；不维护旧执行版本或旧库迁移，不执行模型或仓库操作。维护菜单为 `./agent maintenance-test --profile workflow`。启动、HTTP 协议和验收边界见 [本机工作流维护](docs/learning-workflows.md)。

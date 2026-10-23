@@ -13,12 +13,15 @@ if sys.version_info < (3, 11):
         os.execv(local_python, [local_python, *sys.argv])
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
-from agent_hub.gateway.refactor_dashboard import DEFAULT_SERVER, DEFAULT_THREAD_ID, status
 
 
 def main() -> int:
+    if sys.argv[1:2] == ["workflow"]:
+        from agent_hub.learning_workflows.cli import main as workflow_main
+        return workflow_main(sys.argv[2:])
+    from agent_hub.gateway.refactor_dashboard import DEFAULT_SERVER, DEFAULT_THREAD_ID, status
     parser = argparse.ArgumentParser(description="Agent Hub local LangGraph orchestration CLI.")
-    parser.add_argument("command", choices=("sync-plan", "maintenance-test", "agent-context", "refactor-status", "refactor-watch", "refactor-run", "refactor-decide", "decomposition-plan", "decomposition-propose", "decomposition-sync", "decomposition-status", "decomposition-run", "decomposition-decide", "release-plan", "release-status", "release-run", "release-decide"))
+    parser.add_argument("command", choices=("workflow", "sync-plan", "maintenance-test", "agent-context", "refactor-status", "refactor-watch", "refactor-run", "refactor-decide", "decomposition-plan", "decomposition-propose", "decomposition-sync", "decomposition-status", "decomposition-run", "decomposition-decide", "release-plan", "release-status", "release-run", "release-decide"))
     parser.add_argument("--thread-id")
     parser.add_argument("--server", default=DEFAULT_SERVER)
     parser.add_argument("--verbose", action="store_true")
