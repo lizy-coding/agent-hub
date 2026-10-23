@@ -1,0 +1,278 @@
+{
+  "schema": "agent_hub.workflow_stage2_preparation.v1",
+  "prepared_on": "2026-10-23",
+  "status": "PREPARED_EXECUTION_NOT_STARTED",
+  "hub_baseline": {
+    "commit": "15c95b4b46d045b3d39cdecf4193d6ee0ddb0f30",
+    "remote": "origin",
+    "branch": "main",
+    "remote_sha_verified": true,
+    "tests": {
+      "workflow": 22,
+      "maintenance": 49,
+      "rule_entrypoints": 11
+    }
+  },
+  "consumer": {
+    "project_id": "flutter-forge",
+    "namespace": "flutter-forge",
+    "repository_root": "/Users/forest/code/langGraph/flutter_forge",
+    "branch": "dev",
+    "head": "b501f210f275a5a40197e3be2fd38b5d808a782b",
+    "content_state": "DIRTY_WORKTREE_WITH_EXPLICIT_UNTRACKED_IMPLEMENTATION",
+    "acceptance": false,
+    "modified_by_this_preparation": false
+  },
+  "observation": {
+    "plan_id": "3c0b7c61d55ffbcf39a93e55cb02ca5aed35d4a9c709e6073732ee24c82cf99b",
+    "source_snapshot_id": "cd5805558325ac849af1def11ae6c97b9364246e70a2fe4bfc0c8559aede9a33",
+    "source_sha": "b501f210f275a5a40197e3be2fd38b5d808a782b",
+    "branch": "dev",
+    "status": "PARTIAL",
+    "capture_status": "REFRESHED_WITH_GAPS",
+    "metrics": {
+      "candidate_files": 160,
+      "rule_candidates": 3,
+      "inspected_files": 40,
+      "selected_files": 40,
+      "max_files": 40,
+      "no_walk": true,
+      "source_discovery_performed": false,
+      "candidate_probe_limit": 160
+    },
+    "blockers": [],
+    "gaps_count": 115,
+    "acceptance": false,
+    "supplement_files": [
+      {
+        "path": "AI_ANALYSIS_SCHEMA.json",
+        "sha256": "fdfeaee580aab5ca3cd2d3e7a0e39febbf30d1d64e6b186ba8f3f5a8a82f45bf",
+        "lines": 106
+      },
+      {
+        "path": "AI_PROJECT_CONTEXT.md",
+        "sha256": "4805244f514f2cd0ff76a78616e55619ff4f9324146723a34553485fd5a9acdf",
+        "lines": 359
+      },
+      {
+        "path": "REFACTOR_PLAN.md",
+        "sha256": "753d180247ad287e8ed955f774af4dc0cd7d357dc673d88d378bb36d94aef126",
+        "lines": 547
+      },
+      {
+        "path": "CONTEXT.md",
+        "sha256": "eb468b4f1b5e0a75cdbf063f3ba97fa1bd6478be63be827ba8381667b47f1eaf",
+        "lines": 153
+      },
+      {
+        "path": "apps/flutter_forge/lib/modules/ui/workflow_workbench/AI_ANALYSIS.md",
+        "sha256": "73769f20c7d0bd52ed4b922863f1f99ba41c1ae90a908c7bb63a10455980dc31",
+        "lines": 80
+      },
+      {
+        "path": "apps/flutter_forge/lib/shared/workflows/AI_ANALYSIS.md",
+        "sha256": "2c78867fd39872f1045b55094fe55e2ead2d8a1fe829116a5cd29395cdf6b12e",
+        "lines": 31
+      },
+      {
+        "path": "packages/forge_articles/AI_ANALYSIS.md",
+        "sha256": "7f3e38277ec658cee986f99c4700e9d6877338f056f47899b94e47a9220224ba",
+        "lines": 40
+      },
+      {
+        "path": "apps/flutter_forge/lib/modules/ui/workflow_workbench/workflow_session.dart",
+        "sha256": "53f8637c83bdda9a1f18710da20f117385e75152ea0064079f48e4f7ad7b6430",
+        "lines": 301
+      },
+      {
+        "path": "apps/flutter_forge/lib/shared/workflows/hub_client.dart",
+        "sha256": "2c82590d0554ae121cc67152937baa8e17888241e85246f6d44d869f1aeedae8",
+        "lines": 97
+      },
+      {
+        "path": "packages/forge_articles/lib/forge_articles.dart",
+        "sha256": "6c7349cf689742679f1e03eaca898a48f1b914fffac9fa5bb96827d0fed72b42",
+        "lines": 236
+      },
+      {
+        "path": "apps/flutter_forge/lib/modules/ui/workflow_workbench/workflow_page.dart",
+        "sha256": "bc4ab7c3452341d8ba07ee7665691f0fc10c27cbb3f68ad5b6c81ead0d4a96fb",
+        "lines": 408
+      },
+      {
+        "path": "apps/flutter_forge/test/modules/ui/workflow_workbench/workflow_page_test.dart",
+        "sha256": "a02fdfbad61d4d4e806c34d91b274a8bf5c54f770efc0e65d77234552d6a6b00",
+        "lines": 135
+      },
+      {
+        "path": "packages/forge_articles/test/article_workflow_test.dart",
+        "sha256": "5bfc195fe9097276db4894e8733db48d2ae365b03982e94fe7de38575525386d",
+        "lines": 91
+      },
+      {
+        "path": "apps/flutter_forge/integration_test/workflow_ecosystem_test.dart",
+        "sha256": "480d23f5dbc31efe94be8215bed2790f0a5ae6f90ee76518df7d9084857d8c33",
+        "lines": 130
+      },
+      {
+        "path": "tool/agent_indexes/AGENTS.md",
+        "sha256": "16b5fe7c5aafcc0f24b8bd23a8da84f0c7a5d510724655591c0603f83b756f06",
+        "lines": 20
+      },
+      {
+        "path": "tool/agent_indexes/catalog.js",
+        "sha256": "604701ccc11a64f19e5314aabc9106bfb5add903b9dd9c4b5fc046f11668654e",
+        "lines": 97
+      },
+      {
+        "path": "tool/agent_indexes/contracts.js",
+        "sha256": "a5edfbd1d3c6e6d19a34bfa09b5a89300492b2082136c82ac852c8420f9a5bb4",
+        "lines": 337
+      }
+    ],
+    "source_read_accounting": {
+      "capture": 40,
+      "root_guide": 1,
+      "supplement": 17,
+      "failed_supplement_attempt": 1,
+      "total_upper_bound": 59,
+      "ceiling": 64
+    },
+    "source_walk": false,
+    "combined_complete_coverage_claim": false,
+    "known_gap": "Initial keyword matches exhausted budget before optional guides. Essential guides promoted to required inputs in workflow profile; revised profile needs a fresh capture at execution start."
+  },
+  "execution_boundary": {
+    "phase": "preparation_only",
+    "allow_business_writes": false,
+    "allow_service_restart": false,
+    "allow_runtime_state_reads": false,
+    "allow_runtime_migration": false,
+    "allow_release": false,
+    "execution_authority": "NONE",
+    "preserve_unrelated_dirty_work": true
+  },
+  "tasks": [
+    {
+      "id": "WF2-01",
+      "project": "flutter-forge",
+      "goal": "Consume the current workflow by protocol, required capabilities and supported step/output structure; remove workflow version == 1 selection and runner rejection of otherwise supported definition revisions.",
+      "paths": [
+        "apps/flutter_forge/lib/modules/ui/workflow_workbench/workflow_session.dart",
+        "packages/forge_articles/lib/forge_articles.dart",
+        "packages/forge_articles/test/article_workflow_test.dart"
+      ],
+      "done_when": [
+        "Current definition v2 with the same supported capabilities executes in an isolated fixture.",
+        "Unsupported capability or structure is rejected before execution.",
+        "Only current execution is supported; no legacy dispatch table."
+      ]
+    },
+    {
+      "id": "WF2-02",
+      "project": "flutter-forge",
+      "goal": "Refresh current catalog and input form before creating or retrying; display the actual version frozen by Hub and retain retryOf.",
+      "paths": [
+        "apps/flutter_forge/lib/shared/workflows/hub_client.dart",
+        "apps/flutter_forge/lib/modules/ui/workflow_workbench/workflow_session.dart",
+        "apps/flutter_forge/lib/modules/ui/workflow_workbench/workflow_page.dart"
+      ],
+      "done_when": [
+        "Retry after upgrade uses current definition and a new requestKey.",
+        "Invalid old inputs require user adjustment; no silent field conversion.",
+        "Reconnect with a new executor may retry the previous run."
+      ]
+    },
+    {
+      "id": "WF2-03",
+      "project": "flutter-forge",
+      "goal": "Observe upgrade cancellation, stop local execution and reject late completion without rewriting terminal history.",
+      "paths": [
+        "apps/flutter_forge/lib/modules/ui/workflow_workbench/workflow_session.dart",
+        "packages/forge_articles/lib/forge_articles.dart",
+        "apps/flutter_forge/integration_test/workflow_ecosystem_test.dart"
+      ],
+      "done_when": [
+        "Queued and running upgrade cases preserve cancelled history with the upgrade reason.",
+        "Cancellation of the actual local operation is observed separately from the Hub terminal state.",
+        "Token rotation/reconnect and stale poll responses do not revive old work."
+      ]
+    },
+    {
+      "id": "WF2-04",
+      "project": "flutter-forge",
+      "goal": "Expose current catalog digest, run version, backup state and maintenance failures through the existing workbench.",
+      "paths": [
+        "apps/flutter_forge/lib/shared/workflows/hub_client.dart",
+        "apps/flutter_forge/lib/modules/ui/workflow_workbench/workflow_page.dart",
+        "apps/flutter_forge/test/modules/ui/workflow_workbench/workflow_page_test.dart"
+      ],
+      "done_when": [
+        "Authenticated status is displayed without exposing tokens or lease values.",
+        "Narrow layout and large text remain usable.",
+        "Maintenance failure is not shown as a successful backup."
+      ]
+    },
+    {
+      "id": "WF2-05",
+      "project": "flutter-forge",
+      "goal": "Update generated contracts through their owner only when capability/ownership declarations change.",
+      "paths": [
+        "tool/agent_indexes/catalog.js",
+        "tool/agent_indexes/contracts.js",
+        "tool/generate_agent_indexes.js"
+      ],
+      "done_when": [
+        "Relevant generated module/shared/package declarations agree with actual imports.",
+        "Full generator and existing quality gate pass without weakening their semantics."
+      ]
+    },
+    {
+      "id": "WF2-06",
+      "project": "flutter-forge",
+      "goal": "Validate against an isolated Hub fixture and record code, consumer and host evidence separately.",
+      "paths": [
+        "apps/flutter_forge/integration_test/workflow_ecosystem_test.dart",
+        "apps/flutter_forge/test/modules/ui/workflow_workbench/workflow_page_test.dart",
+        "packages/forge_articles/test/article_workflow_test.dart"
+      ],
+      "done_when": [
+        "Current selection, upgrade interruption, latest retry, new executor, backup failure and reconnection are covered.",
+        "Package tests, widget tests, real Hub integration and repository quality gate have distinct results.",
+        "No real user database, model provider or remote business API is used by fixtures."
+      ]
+    },
+    {
+      "id": "WF2-HOST",
+      "project": "agent-hub",
+      "goal": "Prepare offline daily maintenance scheduling after an explicit host scope identifies state path, interpreter and log destination.",
+      "status": "HOST_CONFIGURATION_PENDING",
+      "done_when": [
+        "A scheduler invokes maintain against the intended local state while service ownership is respected.",
+        "Service-on lock conflicts and service-off backup failures are diagnosed.",
+        "At least one actual scheduled run is verified; generated configuration alone is not acceptance."
+      ]
+    }
+  ],
+  "next_entry": {
+    "project": "flutter-forge",
+    "profile": "workflow",
+    "max_files": 40,
+    "requirement": "articles.explore workflow_workbench forge_articles hub_client",
+    "output": "external temporary path",
+    "preconditions": [
+      "Recheck registered checkout, dev branch, selected-file hashes and dirty scope; preparation is not an execution baseline.",
+      "Re-read mandatory guides and current contracts using the revised profile.",
+      "Freeze exact write paths and acceptance for the consumer task; preserve network diagnostics, desktop and GenUI parallel work.",
+      "Do not raise budgets or aggregate multiple captures into a completeness claim."
+    ]
+  },
+  "deferred": [
+    "remote Hub service",
+    "background executor",
+    "multi-tenant permissions",
+    "online definition authoring",
+    "arbitrary DAG or model-generated executable workflow",
+    "legacy command, database or runtime compatibility layers"
+  ]
+}

@@ -26,7 +26,7 @@
 - 仅维护当前声明与执行能力，不增加旧命令代理、旧库迁移或旧执行版本兼容矩阵。历史不可变用于追溯，不承诺旧实现仍可执行。
 - 源码、声明、规则与脱敏证据通过所属仓库 Git 协作；运行库、备份、token 和模型会话留在本地。远端模型调用与远端 Git 同步分别报告，本机桥接不代表本地推理。
 - `workflow inspect` 是只读入口；`serve` 会启用目录并可能升级终止旧任务，`maintain` 会清理/备份，`restore` 会创建新库。不能用有写入的动作替代观察，也不能从一次推送授权推导服务重启、数据清理或发布授权。已有任务授权范围内不重复询问。
-- Forge 工作流准备使用 `./agent agent-context --project flutter-forge --profile workflow --max-files 40 --output <仓库外临时路径>`；保持显式候选和共享预算。Hub 定向 fixture 通过不代表 Forge 消费、取消确认、平台或调度验收通过。
+- Forge 工作流准备使用 `./agent agent-context --project flutter-forge --profile workflow --max-files 40 --requirement "articles.explore workflow_workbench forge_articles hub_client" --output <仓库外临时路径>`；必需指南和核心契约优先，保持显式候选和共享预算。Hub 定向 fixture 通过不代表 Forge 消费、取消确认、平台或调度验收通过。
 
 ## 验证
 
