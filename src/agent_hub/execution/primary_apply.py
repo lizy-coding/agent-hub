@@ -71,8 +71,8 @@ def validate_applied(root: Path, task: dict[str, object]) -> dict[str, object]:
     if unauthorized: return {"status":"PRIMARY_SCOPE_VIOLATION","changed_files":changed,"unauthorized_files":unauthorized}
     # Mirror the Worker-only topology repair for the declared sibling dev
     # dependency; this is outside the repository and never changes pubspec.
-    target=(root / "../flutterguard").resolve()
-    source=os.environ.get("AGENT_HUB_PATH_DEPENDENCY_FLUTTERGUARD")
+    target=(root / "../boundarylens").resolve()
+    source=os.environ.get("AGENT_HUB_PATH_DEPENDENCY_BOUNDARYLENS")
     if source and Path(source).is_dir() and not target.exists(): target.symlink_to(Path(source).resolve(), target_is_directory=True)
     analyze=subprocess.run(["flutter","analyze"],cwd=root,text=True,capture_output=True)
     if analyze.returncode: return {"status":"PRIMARY_VALIDATION_FAILED","changed_files":changed,"validation":{"analyze":{"status":"FAIL","output":analyze.stdout[-2000:]+analyze.stderr[-2000:]}}}

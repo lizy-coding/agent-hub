@@ -1,0 +1,19 @@
+{
+  "workspace_root": "../../boundarylens",
+  "allowed_paths": ["../../boundarylens"],
+  "registry_path": "../../workspace-bootstrap.json",
+  "registry_storage_path": "boundarylens-registry.json",
+  "runtime": {
+    "environment": "LOCAL",
+    "primary_repository_id": "boundarylens",
+    "repositories": {
+      "boundarylens": {
+        "runtime_path": "../../boundarylens",
+        "role": "PRIMARY",
+        "managed": true,
+        "writable": false,
+        "source_type": "LOCAL_PATH"
+      }
+    }
+  }
+}

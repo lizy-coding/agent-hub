@@ -2,7 +2,7 @@
   "default_project": "flutter-forge",
   "aliases": {
     "forge": "flutter-forge",
-    "boundarylens": "flutterguard"
+    "flutterguard": "boundarylens"
   },
   "projects": {
     "gcode-core": {
@@ -260,12 +260,12 @@
         }
       }
     },
-    "flutterguard": {
+    "boundarylens": {
       "adapter": "generic",
-      "program_id": "flutterguard-decomposition-program",
-      "refactor_program_id": "flutterguard-refactor-program",
-      "snapshot_namespace": "flutterguard",
-      "workspace_config": "workspace/flutterguard.json",
+      "program_id": "boundarylens-decomposition-program",
+      "refactor_program_id": "boundarylens-refactor-program",
+      "snapshot_namespace": "boundarylens",
+      "workspace_config": "workspace/boundarylens.json",
       "agent_context": {
         "primary_manifest": "pubspec.yaml",
         "change_prefixes": [

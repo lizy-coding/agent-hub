@@ -106,7 +106,7 @@ python -c 'from pathlib import Path; from agent_hub.workspace.config import Work
 ```bash
 ./agent agent-context --project flutter-forge
 ./agent agent-context --project gcode-core
-./agent agent-context --project flutterguard
+./agent agent-context --project boundarylens
 ./agent sync-plan --max-files 64
 ```
 
@@ -116,7 +116,7 @@ python -c 'from pathlib import Path; from agent_hub.workspace.config import Work
 
 规则入口按实际文件的祖先目录解析，根到深层继承；同目录 `AGENTS.override.md` 优先于 `AGENTS.md`。候选选择会将必需指南纳入同一文件预算，避免只有源码而没有适用规则。指南缺失、不可读、越界或预算不足会记录具体缺口；规则解析不依赖历史 registry 已经收录新指南，也不向兄弟目录或邻居仓库扩散。
 
-FlutterGuard 通过独立 `workspace/flutterguard.json` 只读接入，仓库 ID 为 `flutterguard`，包名为 `flutterguard_cli`。它与 Forge 消费的 immutable Git pin 分开核对；IDE adapter 不成为新的检测实现来源。
+BoundaryLens 通过独立 `workspace/boundarylens.json` 只读接入，仓库 ID 为 `boundarylens`，包名为 `boundarylens_cli`（项目 ID 由 `flutterguard` 正式更名，旧 ID 经注册表 alias 继续解析）。它与 Forge 消费的 immutable Git pin 分开核对；IDE adapter 不成为新的检测实现来源。
 
 ### 5.3 重构程序（development Graph）
 

@@ -141,20 +141,20 @@ class CodeWorkerProcessTest(unittest.TestCase):
             root = Path(raw)
             source = root / "source"
             worktree = root / "isolated" / "flutter_forge"
-            provider = root / "flutterguard"
+            provider = root / "boundarylens"
             (source / "apps/app").mkdir(parents=True)
             (worktree / "apps/app").mkdir(parents=True)
             provider.mkdir()
-            manifest = "dev_dependencies:\n  flutterguard_cli:\n    path: ../../../flutterguard\n"
+            manifest = "dev_dependencies:\n  boundarylens_cli:\n    path: ../../../boundarylens\n"
             (source / "apps/app/pubspec.yaml").write_text(manifest)
             (worktree / "apps/app/pubspec.yaml").write_text(manifest)
             subprocess.run(["git", "init", "-q"], cwd=worktree)
             subprocess.run(["git", "add", "apps/app/pubspec.yaml"], cwd=worktree)
             executor = LocalCodeExecutor(source, repository_id="flutter_forge")
-            with patch.dict(os.environ, {"AGENT_HUB_PATH_DEPENDENCY_FLUTTERGUARD_CLI": str(provider)}):
+            with patch.dict(os.environ, {"AGENT_HUB_PATH_DEPENDENCY_BOUNDARYLENS_CLI": str(provider)}):
                 executor._link_path_dependencies(worktree, worktree.parent)
-            self.assertEqual((worktree / "apps/app/../../../flutterguard").resolve(), provider.resolve())
-            self.assertTrue((worktree / "apps/app/../../../flutterguard").is_symlink())
+            self.assertEqual((worktree / "apps/app/../../../boundarylens").resolve(), provider.resolve())
+            self.assertTrue((worktree / "apps/app/../../../boundarylens").is_symlink())
 
 
 class _Worker(BaseHTTPRequestHandler):

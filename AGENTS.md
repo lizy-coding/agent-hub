@@ -2,7 +2,7 @@
 
 ## 维护入口
 
-先读 `workspace/projects.json`、选中项目的 `workspace_config` 与 `langgraph.json`。项目身份和运行路径通过注册表解析；Forge、gcode-core、FlutterGuard 各自保持独立 checkout、namespace 和权限。
+先读 `workspace/projects.json`、选中项目的 `workspace_config` 与 `langgraph.json`。项目身份和运行路径通过注册表解析；Forge、gcode-core、BoundaryLens 各自保持独立 checkout、namespace 和权限。
 
 ## 从图开始探索
 
@@ -17,7 +17,7 @@
 - Graph 负责 lifecycle、冻结、ScopeGuard、验证与集成；adapter 负责项目事实和能力归属。
 - Forge 的机器契约由它的生成器维护；Hub 不直接修改生成物或把新工具 checkout 替代消费者的 immutable pin。
 - gcode-core 独立拥有 parser/model/GPU，example 拥有会话与演示。维护者手测确认、历史报告、当前详细验收分开记录。
-- FlutterGuard 是 executable-only CLI；IDE adapter 通过 JSON/SARIF 使用能力，不复制 detector 或规则注册表。其初始托管为只读 PLAN_ONLY，执行迁移需要另外冻结精确范围。
+- BoundaryLens 是 executable-only CLI；IDE adapter 通过 JSON/SARIF 使用能力，不复制 detector 或规则注册表。其初始托管为只读 PLAN_ONLY，执行迁移需要另外冻结精确范围。
 - 未经当前任务授权，不提交、推送、合并或发布。Release 必须经 `release-plan` 与 `release-run --execute`；核对远端大小及 SHA256 后才报告完成。
 
 ## 单用户工作流维护

@@ -97,7 +97,7 @@ Access 只允许指定邮箱，通过一次性验证码登录，验证码有效�
 
 身份先受 tailnet 权限约束，控制台再通过电脑生成的一次性配对凭据建立可撤销会话。凭据有有效期、限速与单次消费，会话使用 Secure、HttpOnly、SameSite Cookie；写请求校验来源与 CSRF。配对、撤销和具体会话期限在实现时固定并测试。Cloudflare 备选沿用相同应用会话合同。
 
-服务端从注册表核对 `project_id → program_id → thread_id → repository_id`，已有多个 Thread 时不静默附着到错误程序。首版写操作仅开放已核对配置与模板的项目；FlutterGuard 保持 PLAN_ONLY，其执行迁移需另行冻结范围。手机不能指定本机路径、Worker endpoint、Graph 名、任意命令或 Graph 自有的 allowed/candidate paths。业务 Git 与模型凭据留在电脑，返回日志须限长并过滤密钥。
+服务端从注册表核对 `project_id → program_id → thread_id → repository_id`，已有多个 Thread 时不静默附着到错误程序。首版写操作仅开放已核对配置与模板的项目；BoundaryLens 保持 PLAN_ONLY，其执行迁移需另行冻结范围。手机不能指定本机路径、Worker endpoint、Graph 名、任意命令或 Graph 自有的 allowed/candidate paths。业务 Git 与模型凭据留在电脑，返回日志须限长并过滤密钥。
 
 写命令必须满足以下约束：
 
